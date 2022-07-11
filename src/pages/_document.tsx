@@ -2,11 +2,11 @@ import Document, { Head, Html, Main, NextScript } from 'next/document'
 
 const name = 'Liquid Staking'
 const description = 'A simple DApp for Celo liquid staking.'
-const url=''
+const url = ''
 
 class MyDocument extends Document {
   render() {
-  return (
+    return (
       <Html>
         <Head>
           <meta charSet="utf-8" />
