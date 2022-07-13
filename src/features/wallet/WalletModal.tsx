@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 import Modal from 'src/components/modals/Modal';
 import { useWallet } from './useWallet';
 
@@ -32,6 +32,16 @@ export default function WalletModal({
 }: WalletModalProps) {
   const { address,  changeWallet, disconnectWallet, changingWallet } = useWallet();
 
+  const changeWalletWithClose = useCallback(async () => {
+    const walletChanged = await changeWallet();
+    if (walletChanged) close();
+  }, [changeWallet, close]);
+
+  const disconnectWalletWithClose = useCallback(async () => {
+    await disconnectWallet();
+    close();
+  }, [disconnectWallet, close]);
+
   return (
     <Modal
       isOpen={changingWallet ? false : isOpen}
@@ -54,8 +64,8 @@ export default function WalletModal({
           </div>
           { address }
         </section>
-        <WalletModalAction action={changeWallet}>Change Wallet</WalletModalAction>
-        <WalletModalAction action={disconnectWallet}>Disconnect</WalletModalAction>
+        <WalletModalAction action={changeWalletWithClose}>Change Wallet</WalletModalAction>
+        <WalletModalAction action={disconnectWalletWithClose}>Disconnect</WalletModalAction>
       </div>
     </Modal>
   );
