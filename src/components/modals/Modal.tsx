@@ -25,7 +25,7 @@ export default function Modal({
     >
       <div className="flex flex-col h-full">
         <div className="flex justify-end">
-          <span style={{ cursor: 'pointer' }} onClick={close}>
+          <span className="cursor-pointer" onClick={close}>
             <Image src={Close} alt="Close button" width={18} height={18} />
           </span>
         </div>
