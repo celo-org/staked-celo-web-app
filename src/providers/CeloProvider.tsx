@@ -1,7 +1,7 @@
-import { CeloProvider as ReactCeloProvider, SupportedProviders } from '@celo/react-celo';
+import { CeloProvider as ReactCeloProvider } from '@celo/react-celo';
 import '@celo/react-celo/lib/styles.css';
 import { PropsWithChildren } from 'react';
-import { networkConfig, supportedProviders } from 'src/config/celo';
+import { networkConfig } from 'src/config/celo';
 
 export function CeloProvider(props: PropsWithChildren) {
   return (
@@ -17,8 +17,6 @@ export function CeloProvider(props: PropsWithChildren) {
         title: <span>Connect Wallet</span>,
         providersOptions: {
           searchable: false,
-          hideFromDefaults: Object.values(SupportedProviders)
-            .filter(provider => !supportedProviders.includes(provider)),
         },
       }}
     >
