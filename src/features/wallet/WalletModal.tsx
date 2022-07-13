@@ -30,11 +30,11 @@ export default function WalletModal({
   isOpen,
   close,
 }: WalletModalProps) {
-  const { address,  connectWallet, disconnectWallet } = useWallet();
+  const { address,  changeWallet, disconnectWallet, changingWallet } = useWallet();
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={changingWallet ? false : isOpen}
       screenReaderLabel="Connect wallet modal"
       close={close}
     >
@@ -54,7 +54,7 @@ export default function WalletModal({
           </div>
           { address }
         </section>
-        <WalletModalAction action={connectWallet}>Change Wallet</WalletModalAction>
+        <WalletModalAction action={changeWallet}>Change Wallet</WalletModalAction>
         <WalletModalAction action={disconnectWallet}>Disconnect</WalletModalAction>
       </div>
     </Modal>
