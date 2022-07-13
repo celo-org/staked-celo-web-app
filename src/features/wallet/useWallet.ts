@@ -25,13 +25,15 @@ export function useWallet() {
   }, [destroy]);
 
   const [changingWallet, setChangingWallet] = useState(false);
-  const changeWallet = useCallback(async () => {
+  const changeWallet = useCallback(async (): Promise<boolean> => {
     try {
       setChangingWallet(true);
       await connectWallet();
       setChangingWallet(false);
+      return true;
     } catch (error) {
       setChangingWallet(false);
+      return false;
     }
   }, [connectWallet]);
 
