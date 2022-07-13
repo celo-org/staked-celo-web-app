@@ -1,8 +1,12 @@
 import type { NextPage } from 'next'
-import { FloatingBox } from 'src/layout/FloatingBox'
+import { StakeForm } from 'src/features/stake/StakeForm'
 
 const Stake: NextPage = () => {
-  return <FloatingBox>Stake!</FloatingBox>
+  return (
+    <>
+      <StakeForm />
+    </>
+  )
 }
 
 export default Stake

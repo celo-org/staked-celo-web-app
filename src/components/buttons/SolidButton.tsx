@@ -4,7 +4,7 @@ interface ButtonProps {
   size?: 'xs' | 's' | 'm' | 'l' | 'xl'
   type?: 'submit' | 'reset' | 'button'
   onClick?: () => void
-  color?: 'white' | 'green' | 'red' // defaults to green
+  color?: 'white' | 'blue' | 'red' // defaults to blue
   classes?: string
   bold?: boolean
   disabled?: boolean
@@ -26,15 +26,15 @@ export function SolidButton(props: PropsWithChildren<ButtonProps>) {
     title,
     passThruProps,
   } = props
-  const color = _color ?? 'green'
+  const color = _color ?? 'blue'
 
   const base = 'flex items-center justify-center rounded-full transition-all duration-300'
   const sizing = sizeToClasses(size)
   let baseColors, onHover, onActive
-  if (color === 'green') {
-    baseColors = 'bg-green text-white'
-    onHover = 'hover:bg-green-dark'
-    onActive = 'active:bg-green-darkest'
+  if (color === 'blue') {
+    baseColors = 'bg-blue-700 text-white'
+    onHover = 'hover:bg-blue-800'
+    onActive = 'active:bg-blue-900'
   } else if (color === 'red') {
     baseColors = 'bg-red-600 text-white'
     onHover = 'hover:bg-red-500'
