@@ -48,7 +48,7 @@ export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
     >
       <Form>
         <FloatingBox width="w-96" classes="overflow-visible">
-          <StakeFormInputs balances={balances} isConnected={!!address} />
+          <StakeFormInputs balances={balances} />
         </FloatingBox>
 
         <div className="flex justify-center mt-5 mb-1">
@@ -61,11 +61,10 @@ export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
 
 interface FormInputProps {
   balances: AccountBalances
-  isConnected: boolean
 }
 
 function StakeFormInputs(props: FormInputProps) {
-  const { balances, isConnected } = props
+  const { balances } = props
   const { values, setFieldValue } = useFormikContext<StakeFormValues>()
   const { estDepositValue } = useEstimate()
   const value = values.amount && estDepositValue(values.amount)
@@ -96,12 +95,10 @@ function StakeFormInputs(props: FormInputProps) {
             className="ml-auto bg-transparent text-right text-xl font-mono focus:outline-none"
           />
         </div>
-        {isConnected && (
-          <BalanceTools
-            onClickUseDecimalFraction={onClickUseDecimalFraction}
-            roundedBalance={roundedBalance}
-          />
-        )}
+        <BalanceTools
+          onClickUseDecimalFraction={onClickUseDecimalFraction}
+          roundedBalance={roundedBalance}
+        />
       </div>
       <h2 className="text-lg font-medium">Receive</h2>
       <div className="flex justify-between items-center bg-greengray-lightest rounded-md">
