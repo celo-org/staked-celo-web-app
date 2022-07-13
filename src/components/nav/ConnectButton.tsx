@@ -1,27 +1,29 @@
-import Image from 'next/image'
-import { SolidButton } from 'src/components/buttons/SolidButton'
-import Wallet from 'src/images/icons/wallet.svg'
+import { useMemo, useState } from 'react';
+import { useWallet } from 'src/features/wallet/useWallet';
+import WalletModal from 'src/features/wallet/WalletModal';
 
 export function ConnectButton() {
-  // eslint-disable-next-line no-console
-  const connect = () => console.log('click')
-  return (
-    <SolidButton
-      size="l"
-      color="white"
-      classes="shadow-md px-3 sm:px-4"
-      icon={<WalletIcon />}
-      onClick={connect}
-    >
-      <div className="hidden sm:block">Connect</div>
-    </SolidButton>
-  )
-}
+  const [isModalOpened, setIsModalOpened] = useState(false);
+  const { address } = useWallet();
 
-function WalletIcon() {
+  const addressLabel = useMemo(() => {
+    if (!address) return '';
+    return `${address.slice(0, 2)}...${address.slice(-4)}`;
+  }, [address])
+
   return (
-    <div className="flex items-center sm:mr-2">
-      <Image src={Wallet} alt="Wallet" width={18} height={18} />
-    </div>
+    <>
+      <button
+        className="inline-flex flex-col"
+        onClick={() => setIsModalOpened(true)}
+      >
+        <span className="font-semibold">Connected</span>
+        <span className="underline text-lg">{ addressLabel }</span>
+      </button>
+      <WalletModal
+        isOpen={isModalOpened}
+        close={() => setIsModalOpened(false)}
+      />
+    </>
   )
 }
