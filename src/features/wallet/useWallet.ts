@@ -25,6 +25,7 @@ export function useWallet() {
   }, [destroy]);
 
   return {
+    address,
     connectWallet,
     disconnectWallet,
     isConnected,
