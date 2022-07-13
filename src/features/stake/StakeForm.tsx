@@ -1,10 +1,10 @@
-import { Field, Form, Formik, FormikErrors, useFormikContext } from 'formik'
+import { Field, Form, Formik, useFormikContext } from 'formik'
 import Image from 'next/image'
-import { useCallback } from 'react'
 import { toast } from 'react-toastify'
-import { SolidButton } from 'src/components/buttons/SolidButton'
 import { DISPLAY_DECIMALS } from 'src/config/consts'
+import { BalanceTools } from 'src/features/stake/BalanceTools'
 import { useEstimate } from 'src/features/stake/hooks'
+import { SubmitButton } from 'src/features/stake/SubmitTools'
 import { StakeFormValues } from 'src/features/stake/types'
 import { useFormValidator } from 'src/features/stake/useFormValidator'
 import { useWallet } from 'src/features/wallet/hooks'
@@ -12,7 +12,6 @@ import { AccountBalances } from 'src/features/wallet/types'
 import CeloDark from 'src/images/icons/celo-dark.svg'
 import { FloatingBox } from 'src/layout/FloatingBox'
 import { fromWeiRounded } from 'src/utils/amount'
-import { useTimeout } from 'src/utils/timeout'
 
 const initialValues: StakeFormValues = {
   amount: undefined,
@@ -24,22 +23,20 @@ export const StakeForm = () => {
     console.log(values)
   }
 
-  const validateForm = useFormValidator()
-
   return (
     <div className="flex justify-center">
-      <StakeFormInner onSubmit={onSubmit} validateForm={validateForm} />
+      <StakeFormInner onSubmit={onSubmit} />
     </div>
   )
 }
 
 interface StakeFormInnerProps {
   onSubmit: (values: StakeFormValues) => void
-  validateForm: (values?: StakeFormValues) => FormikErrors<StakeFormValues>
 }
 
-export function StakeFormInner({ onSubmit, validateForm }: StakeFormInnerProps) {
+export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
   const { connect, address, balances } = useWallet()
+  const validateForm = useFormValidator()
 
   return (
     <Formik<StakeFormValues>
@@ -59,38 +56,6 @@ export function StakeFormInner({ onSubmit, validateForm }: StakeFormInnerProps) 
         </div>
       </Form>
     </Formik>
-  )
-}
-
-interface BalanceToolsProps {
-  roundedBalance: number
-  onClickUseDecimalFraction: (decimalFraction: number) => () => void
-}
-
-function BalanceTools(props: BalanceToolsProps) {
-  const { roundedBalance, onClickUseDecimalFraction } = props
-  return (
-    <div>
-      <span className="text-xs text-gray-500 mr-2">
-        Balance: {roundedBalance.toFixed(DISPLAY_DECIMALS)}
-      </span>
-      <button
-        type="button"
-        title="Use full balance"
-        className="text-xs text-gray-500 mr-2 hover:underline"
-        onClick={onClickUseDecimalFraction(0.5)}
-      >
-        50%
-      </button>
-      <button
-        type="button"
-        title="Use full balance"
-        className="text-xs text-gray-500 mr-2 hover:underline"
-        onClick={onClickUseDecimalFraction(1)}
-      >
-        Max
-      </button>
-    </div>
   )
 }
 
@@ -150,33 +115,5 @@ function StakeFormInputs(props: FormInputProps) {
         {estimatedRate ? `1 stCELO ~ ${estimatedRate} CELO` : 'Loading...'}
       </div>
     </div>
-  )
-}
-
-interface ButtonProps {
-  address: string | null
-  connect: () => Promise<boolean>
-}
-
-function SubmitButton({ address, connect }: ButtonProps) {
-  const { errors, setErrors, touched, setTouched } = useFormikContext<StakeFormValues>()
-  const error = touched.amount && errors.amount
-  const classes = error ? 'bg-red-500 hover:bg-red-500 active:bg-red-500' : ''
-  const text = error ? (error as string) : 'Continue'
-  const type = address ? 'submit' : 'button'
-  const onClick = address ? undefined : connect
-
-  const clearErrors = useCallback(() => {
-    setErrors({})
-    setTouched({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setErrors, setTouched, errors, touched])
-
-  useTimeout(clearErrors, 3000)
-
-  return (
-    <SolidButton size="m" type={type} onClick={onClick} classes={classes}>
-      {text}
-    </SolidButton>
   )
 }
