@@ -14,7 +14,7 @@ export const BalanceTools = (props: BalanceToolsProps) => {
       </span>
       <button
         type="button"
-        title="Use full balance"
+        title="Use half of the balance"
         className="text-xs text-gray-500 mr-2 hover:underline"
         onClick={onClickUseDecimalFraction(0.5)}
       >

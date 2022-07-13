@@ -14,7 +14,7 @@ export function fromWei(value: NumberT | null | undefined): number {
 // with a minimum floor, configured per token
 export function fromWeiRounded(
   value: NumberT | null | undefined,
-  roundDownIfSmall = false
+  roundToZeroIfSmall = false
 ): number {
   if (!value) return 0
   const flooredValue = new BigNumber(value).toFixed(0, BigNumber.ROUND_FLOOR)
@@ -23,7 +23,7 @@ export function fromWeiRounded(
 
   // If amount is less than min value
   if (amount.lt(MIN_ROUNDED_VALUE)) {
-    if (roundDownIfSmall) return 0
+    if (roundToZeroIfSmall) return 0
     else return MIN_ROUNDED_VALUE
   }
 
