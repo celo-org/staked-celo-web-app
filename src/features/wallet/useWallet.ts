@@ -1,5 +1,5 @@
 import { useCelo } from '@celo/react-celo';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 export class WalletConnectionFailed extends Error {}
 export class WalletDisconnectionFailed extends Error {}
@@ -24,10 +24,23 @@ export function useWallet() {
     }
   }, [destroy]);
 
+  const [changingWallet, setChangingWallet] = useState(false);
+  const changeWallet = useCallback(async () => {
+    try {
+      setChangingWallet(true);
+      await connectWallet();
+      setChangingWallet(false);
+    } catch (error) {
+      setChangingWallet(false);
+    }
+  }, [connectWallet]);
+
   return {
     address,
     connectWallet,
     disconnectWallet,
+    changeWallet,
+    changingWallet,
     isConnected,
   };
 };
