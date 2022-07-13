@@ -1,8 +1,16 @@
 import { useCelo } from '@celo/react-celo';
+import BigNumber from 'bignumber.js';
 import { useCallback, useMemo, useState } from 'react';
+import { WEI_PER_UNIT } from 'src/config/consts';
+import { AccountBalances } from 'src/features/wallet/types';
 
 export class WalletConnectionFailed extends Error {}
 export class WalletDisconnectionFailed extends Error {}
+
+const balances: AccountBalances = {
+  CELO: new BigNumber(WEI_PER_UNIT).multipliedBy(50),
+  stCELO: new BigNumber(WEI_PER_UNIT).multipliedBy(30),
+};
 
 export function useWallet() {
   const { address, connect, destroy } = useCelo();
@@ -39,6 +47,7 @@ export function useWallet() {
 
   return {
     address,
+    balances,
     connectWallet,
     disconnectWallet,
     changeWallet,
