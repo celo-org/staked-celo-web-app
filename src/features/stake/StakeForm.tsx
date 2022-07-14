@@ -6,11 +6,11 @@ import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { BalanceTools } from 'src/features/stake/BalanceTools';
 import { SubmitButton } from 'src/features/stake/SubmitButton';
 import { StakeFormValues } from 'src/features/stake/types';
-import { useEstimate } from 'src/features/stake/useEstimate';
 import { useFormValidator } from 'src/features/stake/useFormValidator';
 import { AccountBalances } from 'src/features/wallet/types';
 import { useWallet } from 'src/features/wallet/useWallet';
 import { fromWei, fromWeiRounded } from 'src/formatters/amount';
+import { useEstimations } from 'src/hooks/useEstimations';
 import CeloDark from 'src/images/icons/celo-dark.svg';
 
 const initialValues: StakeFormValues = {
@@ -66,7 +66,7 @@ interface FormInputProps {
 function StakeFormInputs(props: FormInputProps) {
   const { balances } = props;
   const { values, setFieldValue } = useFormikContext<StakeFormValues>();
-  const { estDepositValue } = useEstimate();
+  const { estDepositValue } = useEstimations();
   const value = values.amount && estDepositValue(values.amount);
   const estimatedRate: number = estDepositValue(1);
   const roundedBalance = fromWeiRounded(fromWei(balances.CELO));

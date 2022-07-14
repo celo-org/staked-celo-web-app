@@ -4,7 +4,7 @@ import { useContracts } from 'src/hooks/useContracts';
 
 const estDepositValue = (amount: number) => amount * 1.03;
 
-export function useEstimate() {
+export function useEstimations() {
   const { address } = useCelo();
   const { managerContract } = useContracts();
 
