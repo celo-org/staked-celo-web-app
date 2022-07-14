@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ConnectButton } from 'src/components/nav/ConnectButton';
+import ConnectWalletButton from 'src/features/wallet/ConnectWalletButton';
 import Logo from 'src/images/logo.svg';
 import { NavBar } from './NavBar';
 
@@ -15,7 +15,7 @@ export function Header({ pathName }: { pathName: string }) {
             </div>
           </a>
         </Link>
-        <ConnectButton />
+        <ConnectWalletButton />
       </div>
       <div className="flex justify-center py-6">
         <NavBar pathName={pathName} />
