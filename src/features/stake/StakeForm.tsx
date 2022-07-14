@@ -9,6 +9,7 @@ import { StakeFormValues } from 'src/features/stake/types';
 import { useFormValidator } from 'src/features/stake/useFormValidator';
 import { AccountBalances } from 'src/features/wallet/types';
 import { fromWei, fromWeiRounded } from 'src/formatters/amount';
+import { useAccount } from 'src/hooks/useAccount';
 import { useEstimations } from 'src/hooks/useEstimations';
 import { useWallet } from 'src/hooks/useWallet';
 import CeloDark from 'src/images/icons/celo-dark.svg';
@@ -35,7 +36,8 @@ interface StakeFormInnerProps {
 }
 
 export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
-  const { address, balances } = useWallet();
+  const { address } = useWallet();
+  const { balances } = useAccount();
   const validateForm = useFormValidator();
 
   return (
