@@ -4,14 +4,14 @@ import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { BalanceTools } from 'src/features/stake/BalanceTools';
-import { SubmitButton } from 'src/features/stake/SubmitButton';
-import { StakeFormValues } from 'src/features/stake/types';
-import { useEstimations } from 'src/features/stake/useEstimations';
-import { useFormValidator } from 'src/features/stake/useFormValidator';
 import { fromWei, fromWeiRounded } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import CeloDark from 'src/images/icons/celo-dark.svg';
+import { BalanceTools } from './BalanceTools';
+import { SubmitButton } from './SubmitButton';
+import { StakeFormValues } from './types';
+import { useEstimations } from './useEstimations';
+import { useFormValidator } from './useFormValidator';
 
 const initialValues: StakeFormValues = {
   amount: undefined,

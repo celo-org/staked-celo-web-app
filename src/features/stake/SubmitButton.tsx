@@ -1,8 +1,8 @@
 import { useFormikContext } from 'formik';
 import { useCallback } from 'react';
 import { SolidButton } from 'src/components/buttons/SolidButton';
-import { StakeFormValues } from 'src/features/stake/types';
 import { useTimeout } from 'src/hooks/timeout';
+import { StakeFormValues } from './types';
 
 interface ButtonProps {
   address?: string;
