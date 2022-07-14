@@ -9,9 +9,9 @@ import { StakeFormValues } from 'src/features/stake/types';
 import { useFormValidator } from 'src/features/stake/useFormValidator';
 import { AccountBalances } from 'src/features/wallet/types';
 import { useWallet } from 'src/features/wallet/useWallet';
+import { fromWeiRounded } from 'src/formatters/amount';
 import CeloDark from 'src/images/icons/celo-dark.svg';
 import { FloatingBox } from 'src/layout/FloatingBox';
-import { fromWeiRounded } from 'src/utils/amount';
 
 const initialValues: StakeFormValues = {
   amount: undefined,
@@ -35,7 +35,7 @@ interface StakeFormInnerProps {
 }
 
 export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
-  const { connect, address, balances } = useWallet();
+  const { address, balances } = useWallet();
   const validateForm = useFormValidator();
 
   return (
@@ -52,7 +52,7 @@ export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
         </FloatingBox>
 
         <div className="flex justify-center mt-5 mb-1">
-          <SubmitButton address={address} connect={connect} />
+          <SubmitButton address={address} />
         </div>
       </Form>
     </Formik>

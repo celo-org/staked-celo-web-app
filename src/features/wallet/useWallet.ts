@@ -6,7 +6,8 @@ import logger from 'src/services/logger';
 import { fromWei } from 'src/utils/amount';
 
 export function useWalletConnection() {
-  const { address, connect, destroy } = useCelo();
+  const { address: _address, connect, destroy } = useCelo();
+  const address = _address ?? undefined;
   const isConnected: boolean = useMemo(() => !!address, [address]);
 
   const connectWallet = useCallback(async () => {
