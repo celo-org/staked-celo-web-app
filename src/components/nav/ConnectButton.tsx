@@ -7,9 +7,8 @@ export function ConnectButton() {
   const { address } = useWallet();
 
   const addressLabel = useMemo(() => {
-    if (!address) return '';
-    return `${address.slice(0, 2)}...${address.slice(-4)}`;
-  }, [address])
+    return address ? `${address.slice(0, 2)}...${address.slice(-4)}` : '';
+  }, [address]);
 
   return (
     <>
