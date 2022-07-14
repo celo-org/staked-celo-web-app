@@ -5,12 +5,7 @@ import { WEI_PER_UNIT } from 'src/config/consts';
 import { AccountBalances } from 'src/features/wallet/types';
 import logger from 'src/services/logger';
 
-const balances: AccountBalances = {
-  CELO: new BigNumber(WEI_PER_UNIT).multipliedBy(50),
-  stCELO: new BigNumber(WEI_PER_UNIT).multipliedBy(30),
-};
-
-export function useWallet() {
+export function useWalletConnection() {
   const { address, connect, destroy } = useCelo();
   const isConnected: boolean = useMemo(() => !!address, [address]);
 
@@ -44,11 +39,26 @@ export function useWallet() {
 
   return {
     address,
-    balances,
     connectWallet,
     disconnectWallet,
     changeWallet,
     changingWallet,
     isConnected,
+  };
+}
+
+export function useWalletBalances() {
+  const balances: AccountBalances = {
+    CELO: new BigNumber(WEI_PER_UNIT).multipliedBy(50),
+    stCELO: new BigNumber(WEI_PER_UNIT).multipliedBy(30),
+  };
+
+  return balances;
+}
+
+export function useWallet() {
+  return {
+    ...useWalletConnection(),
+    ...useWalletBalances(),
   };
 }
