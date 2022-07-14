@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ConnectButton } from 'src/components/nav/ConnectButton';
-// import { ConnectButton } from 'src/components/nav/ConnectButton'
-import { NavBar } from 'src/components/nav/NavBar';
 import Logo from 'src/images/logo.svg';
+import { NavBar } from './NavBar';
 
 export function Header({ pathName }: { pathName: string }) {
   return (

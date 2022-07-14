@@ -1,5 +1,9 @@
 import Link from 'next/link';
-import { navLinks } from 'src/components/nav/navLinks';
+
+const navLinks = [
+  { label: 'Stake', to: '/' },
+  { label: 'Unstake', to: '/unstake' },
+];
 
 export function NavBar({ pathName }: { pathName: string }) {
   return (
