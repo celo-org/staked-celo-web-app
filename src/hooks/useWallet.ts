@@ -3,8 +3,7 @@ import { useCallback, useState } from 'react';
 import logger from 'src/services/logger';
 
 export function useWallet() {
-  const { address: _address, connect, destroy } = useCelo();
-  const address = _address ?? undefined;
+  const { connect, destroy } = useCelo();
 
   const connectWallet = useCallback(async () => {
     try {
@@ -35,7 +34,6 @@ export function useWallet() {
   }, [connectWallet]);
 
   return {
-    address,
     connectWallet,
     disconnectWallet,
     changeWallet,
