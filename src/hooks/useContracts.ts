@@ -4,7 +4,7 @@ import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import { managerAddress } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
 
-export function useStake() {
+export function useContracts() {
   const { kit } = useCelo();
 
   const managerContract = useMemo(() => {

@@ -1,12 +1,12 @@
 import { useCelo } from '@celo/react-celo';
 import BigNumber from 'bignumber.js';
-import { useStake } from 'src/features/stake/useStake';
+import { useContracts } from 'src/hooks/useContracts';
 
 const estDepositValue = (amount: number) => amount * 1.03;
 
 export function useEstimate() {
   const { address } = useCelo();
-  const { managerContract } = useStake();
+  const { managerContract } = useContracts();
 
   const estStCELO = async (celoAmount: BigNumber) => {
     const stCELOAmount = await managerContract.methods
