@@ -7,10 +7,10 @@ import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { BalanceTools } from 'src/features/stake/BalanceTools';
 import { SubmitButton } from 'src/features/stake/SubmitButton';
 import { StakeFormValues } from 'src/features/stake/types';
+import { useEstimations } from 'src/features/stake/useEstimations';
 import { useFormValidator } from 'src/features/stake/useFormValidator';
 import { fromWei, fromWeiRounded } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
-import { useEstimations } from 'src/hooks/useEstimations';
 import CeloDark from 'src/images/icons/celo-dark.svg';
 
 const initialValues: StakeFormValues = {
