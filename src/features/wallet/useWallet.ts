@@ -3,9 +3,7 @@ import BigNumber from 'bignumber.js';
 import { useCallback, useMemo, useState } from 'react';
 import { WEI_PER_UNIT } from 'src/config/consts';
 import { AccountBalances } from 'src/features/wallet/types';
-
-export class WalletConnectionFailed extends Error {}
-export class WalletDisconnectionFailed extends Error {}
+import logger from 'src/services/logger';
 
 const balances: AccountBalances = {
   CELO: new BigNumber(WEI_PER_UNIT).multipliedBy(50),
@@ -19,30 +17,29 @@ export function useWallet() {
   const connectWallet = useCallback(async () => {
     try {
       await connect();
+      return true;
     } catch (error: any) {
-      throw new WalletConnectionFailed(error?.message);
+      logger.error(error?.message);
+      return false;
     }
   }, [connect]);
 
   const disconnectWallet = useCallback(async () => {
     try {
       await destroy();
+      return true;
     } catch (error: any) {
-      throw new WalletDisconnectionFailed(error?.message);
+      logger.error(error?.message);
+      return false;
     }
   }, [destroy]);
 
   const [changingWallet, setChangingWallet] = useState(false);
   const changeWallet = useCallback(async (): Promise<boolean> => {
-    try {
-      setChangingWallet(true);
-      await connectWallet();
-      setChangingWallet(false);
-      return true;
-    } catch (error) {
-      setChangingWallet(false);
-      return false;
-    }
+    setChangingWallet(true);
+    const changed = await connectWallet();
+    setChangingWallet(false);
+    return changed;
   }, [connectWallet]);
 
   return {
