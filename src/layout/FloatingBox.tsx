@@ -1,13 +1,13 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react';
 
 interface Props {
-  width?: string
-  maxWidth?: string
-  classes?: string
+  width?: string;
+  maxWidth?: string;
+  classes?: string;
 }
 
 export function FloatingBox(props: PropsWithChildren<Props>) {
-  const { width, maxWidth, classes } = props
+  const { width, maxWidth, classes } = props;
   return (
     <div
       style={{ maxHeight: '80%' }}
@@ -15,5 +15,5 @@ export function FloatingBox(props: PropsWithChildren<Props>) {
     >
       {props.children}
     </div>
-  )
+  );
 }

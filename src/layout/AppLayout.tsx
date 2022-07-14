@@ -1,10 +1,10 @@
-import { PropsWithChildren } from 'react'
-import { Footer } from 'src/components/nav/Footer'
-import { Header } from 'src/components/nav/Header'
-import { HeadMeta } from 'src/layout/HeadMeta'
+import { PropsWithChildren } from 'react';
+import { Footer } from 'src/components/nav/Footer';
+import { Header } from 'src/components/nav/Header';
+import { HeadMeta } from 'src/layout/HeadMeta';
 
 interface Props {
-  pathName: string
+  pathName: string;
 }
 
 export function AppLayout({ pathName, children }: PropsWithChildren<Props>) {
@@ -19,5 +19,5 @@ export function AppLayout({ pathName, children }: PropsWithChildren<Props>) {
         <Footer />
       </div>
     </>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-import { DISPLAY_DECIMALS } from 'src/config/consts'
+import { DISPLAY_DECIMALS } from 'src/config/consts';
 
 interface BalanceToolsProps {
-  roundedBalance: number
-  onClickUseDecimalFraction: (decimalFraction: number) => () => void
+  roundedBalance: number;
+  onClickUseDecimalFraction: (decimalFraction: number) => () => void;
 }
 
 export const BalanceTools = (props: BalanceToolsProps) => {
-  const { roundedBalance, onClickUseDecimalFraction } = props
+  const { roundedBalance, onClickUseDecimalFraction } = props;
   return (
     <div>
       <span className="text-xs text-gray-500 mr-2">
@@ -29,5 +29,5 @@ export const BalanceTools = (props: BalanceToolsProps) => {
         Max
       </button>
     </div>
-  )
-}
+  );
+};

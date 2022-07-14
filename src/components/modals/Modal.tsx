@@ -4,9 +4,9 @@ import ReactModal from 'react-modal';
 import Close from 'src/images/icons/close.svg';
 
 interface ModalProps {
-  isOpen: boolean
-  close: () => void
-  screenReaderLabel?: string
+  isOpen: boolean;
+  close: () => void;
+  screenReaderLabel?: string;
 }
 
 export default function Modal({
@@ -29,7 +29,7 @@ export default function Modal({
             <Image src={Close} alt="Close button" width={18} height={18} />
           </span>
         </div>
-        { children }
+        {children}
       </div>
     </ReactModal>
   );

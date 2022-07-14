@@ -51,4 +51,4 @@ export function useWallet() {
     changingWallet,
     isConnected,
   };
-};
+}
