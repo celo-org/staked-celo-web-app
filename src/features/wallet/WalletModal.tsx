@@ -30,7 +30,7 @@ export default function WalletModal({
   isOpen,
   close,
 }: WalletModalProps) {
-  const { address,  changeWallet, disconnectWallet, changingWallet } = useWallet();
+  const { address, changeWallet, disconnectWallet, changingWallet } = useWallet();
 
   const changeWalletWithClose = useCallback(async () => {
     const walletChanged = await changeWallet();
