@@ -4,10 +4,10 @@ import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
 
 export type NumberT = BigNumber.Value;
 
-export function fromWei(value: NumberT | null | undefined): number {
-  if (!value) return 0;
+export function fromWei(value: NumberT | null | undefined): BigNumber {
+  if (!value) return new BigNumber(0);
   const flooredValue = new BigNumber(value).toFixed(0, BigNumber.ROUND_FLOOR);
-  return parseFloat(web3FromWei(flooredValue));
+  return new BigNumber(web3FromWei(flooredValue));
 }
 
 // Similar to fromWei above but rounds to set number of decimals

@@ -1,9 +1,9 @@
 import { useCelo } from '@celo/react-celo';
 import BigNumber from 'bignumber.js';
 import { useCallback, useMemo, useState } from 'react';
-import { WEI_PER_UNIT } from 'src/config/consts';
 import { AccountBalances } from 'src/features/wallet/types';
 import logger from 'src/services/logger';
+import { fromWei } from 'src/utils/amount';
 
 export function useWalletConnection() {
   const { address, connect, destroy } = useCelo();
@@ -48,12 +48,29 @@ export function useWalletConnection() {
 }
 
 export function useWalletBalances() {
-  const balances: AccountBalances = {
-    CELO: new BigNumber(WEI_PER_UNIT).multipliedBy(50),
-    stCELO: new BigNumber(WEI_PER_UNIT).multipliedBy(30),
-  };
+  const { account, kit } = useCelo();
 
-  return balances;
+  const [balances, setBalances] = useState<AccountBalances>({
+    CELO: new BigNumber(0),
+    stCELO: new BigNumber(0),
+  });
+
+  const loadBalances = useCallback(async () => {
+    const { eth } = kit.connection.web3;
+    if (!account) return;
+
+    const weiBalance = await eth.getBalance(account);
+
+    setBalances({
+      CELO: fromWei(weiBalance),
+      stCELO: new BigNumber(0),
+    });
+  }, [kit.connection, account]);
+
+  return {
+    balances,
+    loadBalances,
+  };
 }
 
 export function useWallet() {
