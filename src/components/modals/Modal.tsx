@@ -22,6 +22,7 @@ export default function Modal({
       contentLabel={screenReaderLabel}
       onRequestClose={close}
       shouldCloseOnOverlayClick={true}
+      ariaHideApp={false}
     >
       <div className="flex flex-col h-full">
         <div className="flex justify-end">
