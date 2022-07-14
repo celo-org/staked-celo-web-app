@@ -9,7 +9,7 @@ import { useEstimate } from 'src/features/stake/useEstimate';
 import { useFormValidator } from 'src/features/stake/useFormValidator';
 import { AccountBalances } from 'src/features/wallet/types';
 import { useWallet } from 'src/features/wallet/useWallet';
-import { fromWeiRounded } from 'src/formatters/amount';
+import { fromWei, fromWeiRounded } from 'src/formatters/amount';
 import CeloDark from 'src/images/icons/celo-dark.svg';
 import { FloatingBox } from 'src/layout/FloatingBox';
 
@@ -69,7 +69,7 @@ function StakeFormInputs(props: FormInputProps) {
   const { estDepositValue } = useEstimate();
   const value = values.amount && estDepositValue(values.amount);
   const estimatedRate: number = estDepositValue(1);
-  const roundedBalance = fromWeiRounded(balances.CELO);
+  const roundedBalance = fromWeiRounded(fromWei(balances.CELO));
 
   const onClickUseDecimalFraction = (decimalFraction: number) => () => {
     setFieldValue('amount', roundedBalance * decimalFraction);
