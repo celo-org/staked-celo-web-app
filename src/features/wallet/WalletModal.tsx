@@ -1,7 +1,7 @@
 import { PropsWithChildren, useCallback } from 'react';
 import Modal from 'src/components/modals/Modal';
 import { useAccount } from 'src/hooks/useAccount';
-import { useWallet } from '../../hooks/useWallet';
+import { useWallet } from './useWallet';
 
 interface WalletModalActionProps {
   action: () => void;
