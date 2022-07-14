@@ -20,7 +20,7 @@ export function CeloProvider(props: PropsWithChildren) {
         },
       }}
     >
-      { props.children }
+      {props.children}
     </ReactCeloProvider>
   );
 }

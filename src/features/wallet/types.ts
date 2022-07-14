@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js';
 
 export interface AccountBalances {
-  CELO: BigNumber
-  stCELO: BigNumber
+  CELO: BigNumber;
+  stCELO: BigNumber;
 }

@@ -6,7 +6,7 @@ import 'src/styles/fonts.css';
 import 'src/styles/globals.css';
 
 export default function App({ Component, pageProps, router }: AppProps) {
-  const pathName = router.pathname
+  const pathName = router.pathname;
   return (
     <CeloProvider>
       <AppLayout pathName={pathName}>
@@ -14,5 +14,5 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <ToastContainer transition={Zoom} position={toast.POSITION.TOP_RIGHT} />
       </AppLayout>
     </CeloProvider>
-  )
+  );
 }

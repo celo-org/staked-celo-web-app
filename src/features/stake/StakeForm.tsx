@@ -1,42 +1,42 @@
-import { Field, Form, Formik, useFormikContext } from 'formik'
-import Image from 'next/image'
-import { toast } from 'react-toastify'
-import { DISPLAY_DECIMALS } from 'src/config/consts'
-import { BalanceTools } from 'src/features/stake/BalanceTools'
-import { useEstimate } from 'src/features/stake/hooks'
-import { SubmitButton } from 'src/features/stake/SubmitButton'
-import { StakeFormValues } from 'src/features/stake/types'
-import { useFormValidator } from 'src/features/stake/useFormValidator'
-import { AccountBalances } from 'src/features/wallet/types'
-import { useWallet } from 'src/features/wallet/useWallet'
-import CeloDark from 'src/images/icons/celo-dark.svg'
-import { FloatingBox } from 'src/layout/FloatingBox'
-import { fromWeiRounded } from 'src/utils/amount'
+import { Field, Form, Formik, useFormikContext } from 'formik';
+import Image from 'next/image';
+import { toast } from 'react-toastify';
+import { DISPLAY_DECIMALS } from 'src/config/consts';
+import { BalanceTools } from 'src/features/stake/BalanceTools';
+import { useEstimate } from 'src/features/stake/hooks';
+import { SubmitButton } from 'src/features/stake/SubmitButton';
+import { StakeFormValues } from 'src/features/stake/types';
+import { useFormValidator } from 'src/features/stake/useFormValidator';
+import { AccountBalances } from 'src/features/wallet/types';
+import { useWallet } from 'src/features/wallet/useWallet';
+import CeloDark from 'src/images/icons/celo-dark.svg';
+import { FloatingBox } from 'src/layout/FloatingBox';
+import { fromWeiRounded } from 'src/utils/amount';
 
 const initialValues: StakeFormValues = {
   amount: undefined,
-}
+};
 
 export const StakeForm = () => {
   const onSubmit = (values: StakeFormValues) => {
     // eslint-disable-next-line no-console
-    console.log(values)
-  }
+    console.log(values);
+  };
 
   return (
     <div className="flex justify-center">
       <StakeFormInner onSubmit={onSubmit} />
     </div>
-  )
-}
+  );
+};
 
 interface StakeFormInnerProps {
-  onSubmit: (values: StakeFormValues) => void
+  onSubmit: (values: StakeFormValues) => void;
 }
 
 export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
-  const { connect, address, balances } = useWallet()
-  const validateForm = useFormValidator()
+  const { connect, address, balances } = useWallet();
+  const validateForm = useFormValidator();
 
   return (
     <Formik<StakeFormValues>
@@ -56,28 +56,28 @@ export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
         </div>
       </Form>
     </Formik>
-  )
+  );
 }
 
 interface FormInputProps {
-  balances: AccountBalances
+  balances: AccountBalances;
 }
 
 function StakeFormInputs(props: FormInputProps) {
-  const { balances } = props
-  const { values, setFieldValue } = useFormikContext<StakeFormValues>()
-  const { estDepositValue } = useEstimate()
-  const value = values.amount && estDepositValue(values.amount)
-  const estimatedRate: number = estDepositValue(1)
-  const roundedBalance = fromWeiRounded(balances.CELO)
+  const { balances } = props;
+  const { values, setFieldValue } = useFormikContext<StakeFormValues>();
+  const { estDepositValue } = useEstimate();
+  const value = values.amount && estDepositValue(values.amount);
+  const estimatedRate: number = estDepositValue(1);
+  const roundedBalance = fromWeiRounded(balances.CELO);
 
   const onClickUseDecimalFraction = (decimalFraction: number) => () => {
-    setFieldValue('amount', roundedBalance * decimalFraction)
+    setFieldValue('amount', roundedBalance * decimalFraction);
 
     if (decimalFraction === 1) {
-      toast.warn('Consider keeping some CELO for transaction fees')
+      toast.warn('Consider keeping some CELO for transaction fees');
     }
-  }
+  };
 
   return (
     <div className="relative">
@@ -112,5 +112,5 @@ function StakeFormInputs(props: FormInputProps) {
         {estimatedRate ? `1 stCELO ~ ${estimatedRate} CELO` : 'Loading...'}
       </div>
     </div>
-  )
+  );
 }

@@ -12,17 +12,11 @@ export function ConnectButton() {
 
   return (
     <>
-      <button
-        className="inline-flex flex-col"
-        onClick={() => setIsModalOpened(true)}
-      >
+      <button className="inline-flex flex-col" onClick={() => setIsModalOpened(true)}>
         <span className="font-semibold">Connected</span>
-        <span className="underline text-lg">{ addressLabel }</span>
+        <span className="underline text-lg">{addressLabel}</span>
       </button>
-      <WalletModal
-        isOpen={isModalOpened}
-        close={() => setIsModalOpened(false)}
-      />
+      <WalletModal isOpen={isModalOpened} close={() => setIsModalOpened(false)} />
     </>
-  )
+  );
 }

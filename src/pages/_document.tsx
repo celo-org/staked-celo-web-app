@@ -1,8 +1,8 @@
-import Document, { Head, Html, Main, NextScript } from 'next/document'
+import Document, { Head, Html, Main, NextScript } from 'next/document';
 
-const name = 'Liquid Staking'
-const description = 'A simple DApp for Celo liquid staking.'
-const url = ''
+const name = 'Liquid Staking';
+const description = 'A simple DApp for Celo liquid staking.';
+const url = '';
 
 class MyDocument extends Document {
   render() {
@@ -44,8 +44,8 @@ class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
-export default MyDocument
+export default MyDocument;

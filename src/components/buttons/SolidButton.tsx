@@ -1,16 +1,16 @@
-import { PropsWithChildren, ReactElement } from 'react'
+import { PropsWithChildren, ReactElement } from 'react';
 
 interface ButtonProps {
-  size?: 'xs' | 's' | 'm' | 'l' | 'xl'
-  type?: 'submit' | 'reset' | 'button'
-  onClick?: () => void
-  color?: 'white' | 'blue' | 'red' // defaults to blue
-  classes?: string
-  bold?: boolean
-  disabled?: boolean
-  icon?: ReactElement
-  title?: string
-  passThruProps?: any
+  size?: 'xs' | 's' | 'm' | 'l' | 'xl';
+  type?: 'submit' | 'reset' | 'button';
+  onClick?: () => void;
+  color?: 'white' | 'blue' | 'red'; // defaults to blue
+  classes?: string;
+  bold?: boolean;
+  disabled?: boolean;
+  icon?: ReactElement;
+  title?: string;
+  passThruProps?: any;
 }
 
 export function SolidButton(props: PropsWithChildren<ButtonProps>) {
@@ -25,28 +25,28 @@ export function SolidButton(props: PropsWithChildren<ButtonProps>) {
     disabled,
     title,
     passThruProps,
-  } = props
-  const color = _color ?? 'blue'
+  } = props;
+  const color = _color ?? 'blue';
 
-  const base = 'flex items-center justify-center rounded-full transition-all duration-300'
-  const sizing = sizeToClasses(size)
-  let baseColors, onHover, onActive
+  const base = 'flex items-center justify-center rounded-full transition-all duration-300';
+  const sizing = sizeToClasses(size);
+  let baseColors, onHover, onActive;
   if (color === 'blue') {
-    baseColors = 'bg-blue-700 text-white'
-    onHover = 'hover:bg-blue-800'
-    onActive = 'active:bg-blue-900'
+    baseColors = 'bg-blue-700 text-white';
+    onHover = 'hover:bg-blue-800';
+    onActive = 'active:bg-blue-900';
   } else if (color === 'red') {
-    baseColors = 'bg-red-600 text-white'
-    onHover = 'hover:bg-red-500'
-    onActive = 'active:bg-red-400'
+    baseColors = 'bg-red-600 text-white';
+    onHover = 'hover:bg-red-500';
+    onActive = 'active:bg-red-400';
   } else if (color === 'white') {
-    baseColors = 'bg-white text-black'
-    onHover = 'hover:bg-gray-100'
-    onActive = 'active:bg-gray-200'
+    baseColors = 'bg-white text-black';
+    onHover = 'hover:bg-gray-100';
+    onActive = 'active:bg-gray-200';
   }
-  const onDisabled = 'disabled:bg-gray-300 disabled:text-gray-500'
-  const weight = bold ? 'font-semibold' : ''
-  const allClasses = `${base} ${sizing} ${baseColors} ${onHover} ${onDisabled} ${onActive} ${weight} ${classes}`
+  const onDisabled = 'disabled:bg-gray-300 disabled:text-gray-500';
+  const weight = bold ? 'font-semibold' : '';
+  const allClasses = `${base} ${sizing} ${baseColors} ${onHover} ${onDisabled} ${onActive} ${weight} ${classes}`;
 
   return (
     <button
@@ -66,13 +66,13 @@ export function SolidButton(props: PropsWithChildren<ButtonProps>) {
         <>{props.children}</>
       )}
     </button>
-  )
+  );
 }
 
 function sizeToClasses(size?: string) {
-  if (size === 'xs') return 'h-7 px-4 py-1'
-  if (size === 's') return 'h-7 px-4 py-1'
-  if (size === 'l') return 'h-10 px-5 py-1 text-lg'
-  if (size === 'xl') return 'w-40 h-11 px-5 py-1.5 text-xl'
-  return 'px-5 py-1 h-9'
+  if (size === 'xs') return 'h-7 px-4 py-1';
+  if (size === 's') return 'h-7 px-4 py-1';
+  if (size === 'l') return 'h-10 px-5 py-1 text-lg';
+  if (size === 'xl') return 'w-40 h-11 px-5 py-1.5 text-xl';
+  return 'px-5 py-1 h-9';
 }
