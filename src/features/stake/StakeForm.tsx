@@ -1,6 +1,7 @@
 import { Field, Form, Formik, useFormikContext } from 'formik';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
+import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { BalanceTools } from 'src/features/stake/BalanceTools';
 import { SubmitButton } from 'src/features/stake/SubmitButton';
@@ -11,7 +12,6 @@ import { AccountBalances } from 'src/features/wallet/types';
 import { useWallet } from 'src/features/wallet/useWallet';
 import { fromWei, fromWeiRounded } from 'src/formatters/amount';
 import CeloDark from 'src/images/icons/celo-dark.svg';
-import { FloatingBox } from 'src/layout/FloatingBox';
 
 const initialValues: StakeFormValues = {
   amount: undefined,
