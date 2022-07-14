@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useWallet } from 'src/features/wallet/useWallet';
 import WalletModal from 'src/features/wallet/WalletModal';
+import { useWallet } from 'src/hooks/useWallet';
 
 export function ConnectButton() {
   const [isModalOpened, setIsModalOpened] = useState(false);

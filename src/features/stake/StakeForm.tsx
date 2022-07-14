@@ -8,9 +8,9 @@ import { SubmitButton } from 'src/features/stake/SubmitButton';
 import { StakeFormValues } from 'src/features/stake/types';
 import { useFormValidator } from 'src/features/stake/useFormValidator';
 import { AccountBalances } from 'src/features/wallet/types';
-import { useWallet } from 'src/features/wallet/useWallet';
 import { fromWei, fromWeiRounded } from 'src/formatters/amount';
 import { useEstimations } from 'src/hooks/useEstimations';
+import { useWallet } from 'src/hooks/useWallet';
 import CeloDark from 'src/images/icons/celo-dark.svg';
 
 const initialValues: StakeFormValues = {
