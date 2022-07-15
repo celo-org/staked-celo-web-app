@@ -66,9 +66,9 @@ interface FormInputProps {
 const StakeFormInputs = (props: FormInputProps) => {
   const { balance } = props;
   const { values, setFieldValue } = useFormikContext<StakeFormValues>();
-  const { estDepositValue } = useEstimations();
-  const value = values.amount && estDepositValue(values.amount);
-  const estimatedRate: number = estDepositValue(1);
+  const { estimateDepositValue } = useEstimations();
+  const value = values.amount && estimateDepositValue(values.amount);
+  const estimatedRate: number = estimateDepositValue(1);
   const roundedBalance = fromWeiRounded(fromWei(balance));
 
   const onClickUseDecimalFraction = (decimalFraction: number) => () => {
