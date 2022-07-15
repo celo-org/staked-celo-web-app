@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 
@@ -8,6 +9,8 @@ export function useUnstaking() {
 
   const createTxOptions = () => ({
     from: address,
+    gas: GAS_LIMIT,
+    gasPrice: GAS_PRICE,
   });
 
   const withdraw = (stakedCeloAmount: BigNumber) =>
