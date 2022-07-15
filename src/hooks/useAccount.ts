@@ -7,6 +7,7 @@ export function useAccount() {
   const { address: _address, kit } = useCelo();
   const { stakedCeloContract } = useContracts();
   const address = _address ?? undefined;
+  const isConnected = !!address;
 
   const [celoBalance, setCeloBalance] = useState(new BigNumber(0));
 
@@ -29,6 +30,7 @@ export function useAccount() {
   }, [address, stakedCeloContract]);
 
   return {
+    isConnected,
     address,
     celoBalance,
     loadCeloBalance,

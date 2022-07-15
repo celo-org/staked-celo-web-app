@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
+import { useAccount } from 'src/hooks/useAccount';
 import { Footer } from './partials/Footer';
 import { Header } from './partials/Header';
 
@@ -20,6 +21,8 @@ interface Props {
 }
 
 export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
+  const { isConnected } = useAccount();
+  const background = isConnected ? 'bg-gray-dark' : 'bg-white';
   return (
     <>
       <Head>
@@ -27,7 +30,7 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
         <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <div
-        className={`flex flex-col justify-between h-full min-h-screen w-full min-w-screen bg-gradient-radial`}
+        className={`flex flex-col justify-between h-full min-h-screen w-full min-w-screen ${background}`}
       >
         <Header pathName={pathName} />
         <main className="w-full">{children}</main>

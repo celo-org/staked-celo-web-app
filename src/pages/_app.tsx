@@ -8,15 +8,16 @@ import 'src/styles/globals.css';
 
 const App = ({ Component, pageProps, router }: AppProps) => {
   const pathName = router.pathname;
+
   return (
-    <CeloProvider>
-      <ClientOnly>
+    <ClientOnly>
+      <CeloProvider>
         <AppLayout pathName={pathName}>
           <Component {...pageProps} />
           <ToastContainer transition={Zoom} position={toast.POSITION.TOP_RIGHT} />
         </AppLayout>
-      </ClientOnly>
-    </CeloProvider>
+      </CeloProvider>
+    </ClientOnly>
   );
 };
 

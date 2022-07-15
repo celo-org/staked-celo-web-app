@@ -4,7 +4,7 @@ interface ButtonProps {
   size?: 'xs' | 's' | 'm' | 'l' | 'xl';
   type?: 'submit' | 'reset' | 'button';
   onClick?: () => void;
-  color?: 'white' | 'blue' | 'red'; // defaults to blue
+  color?: 'purple' | 'blue' | 'orange'; // defaults to blue
   classes?: string;
   bold?: boolean;
   disabled?: boolean;
@@ -30,23 +30,16 @@ export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
 
   const base = 'flex items-center justify-center rounded-full transition-all duration-300';
   const sizing = sizeToClasses(size);
-  let baseColors, onHover, onActive;
+  let baseColors;
   if (color === 'blue') {
     baseColors = 'bg-blue-700 text-white';
-    onHover = 'hover:bg-blue-800';
-    onActive = 'active:bg-blue-900';
-  } else if (color === 'red') {
+  } else if (color === 'purple') {
     baseColors = 'bg-red-600 text-white';
-    onHover = 'hover:bg-red-500';
-    onActive = 'active:bg-red-400';
-  } else if (color === 'white') {
-    baseColors = 'bg-white text-black';
-    onHover = 'hover:bg-gray-100';
-    onActive = 'active:bg-gray-200';
   }
+
   const onDisabled = 'disabled:bg-gray-300 disabled:text-gray-500';
   const weight = bold ? 'font-semibold' : '';
-  const allClasses = `${base} ${sizing} ${baseColors} ${onHover} ${onDisabled} ${onActive} ${weight} ${classes}`;
+  const allClasses = `${base} ${sizing} ${baseColors} ${onDisabled} ${weight} ${classes}`;
 
   return (
     <button
