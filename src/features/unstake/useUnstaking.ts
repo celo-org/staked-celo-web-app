@@ -27,7 +27,7 @@ export function useUnstaking() {
     return estimatedFee.plus(estimatedFee.dividedBy(10));
   };
 
-  const estimateCeloWithdrawal = async (stakedCeloAmount: BigNumber) =>
+  const estimateCeloWithdrawal = (stakedCeloAmount: BigNumber) =>
     managerContract.methods.toCelo(stakedCeloAmount.toString()).call({ from: address });
 
   const getPendingCeloWithdrawals = async (): Promise<PendingCeloWithdrawal[]> => {
