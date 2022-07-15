@@ -20,8 +20,12 @@ export function useStaking() {
     return estimatedFee.plus(estimatedFee.dividedBy(10));
   };
 
+  const estimateStakedCeloDeposit = async (celoAmount: BigNumber) =>
+    managerContract.methods.toStakedCelo(celoAmount.toString()).call({ from: address });
+
   return {
     stake,
     estimateStakingFee,
+    estimateStakedCeloDeposit,
   };
 }
