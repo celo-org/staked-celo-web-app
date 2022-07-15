@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
+import { Footer } from './partials/Footer';
 import { Header } from './partials/Header';
 
 function toTitleCase(str: string) {
@@ -30,7 +31,7 @@ export function AppLayout({ pathName, children }: PropsWithChildren<Props>) {
       >
         <Header pathName={pathName} />
         <main className="w-full">{children}</main>
-        <footer className="w-screen py-4 px-7">Empty footer</footer>
+        <Footer />
       </div>
     </>
   );
