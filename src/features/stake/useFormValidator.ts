@@ -1,6 +1,6 @@
 import { FormikErrors } from 'formik';
 import { useCallback } from 'react';
-import { StakeFormValues } from 'src/features/stake/types';
+import { StakeFormValues } from './types';
 
 export function useFormValidator() {
   return useCallback((values?: StakeFormValues): FormikErrors<StakeFormValues> => {

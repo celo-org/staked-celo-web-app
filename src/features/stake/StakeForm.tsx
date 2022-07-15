@@ -1,17 +1,17 @@
+import BigNumber from 'bignumber.js';
 import { Field, Form, Formik, useFormikContext } from 'formik';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
+import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { BalanceTools } from 'src/features/stake/BalanceTools';
-import { SubmitButton } from 'src/features/stake/SubmitButton';
-import { StakeFormValues } from 'src/features/stake/types';
-import { useEstimate } from 'src/features/stake/useEstimate';
-import { useFormValidator } from 'src/features/stake/useFormValidator';
-import { AccountBalances } from 'src/features/wallet/types';
-import { useWallet } from 'src/features/wallet/useWallet';
-import { fromWeiRounded } from 'src/formatters/amount';
+import { fromWei, fromWeiRounded } from 'src/formatters/amount';
+import { useAccount } from 'src/hooks/useAccount';
 import CeloDark from 'src/images/icons/celo-dark.svg';
-import { FloatingBox } from 'src/layout/FloatingBox';
+import { BalanceTools } from './BalanceTools';
+import { SubmitButton } from './SubmitButton';
+import { StakeFormValues } from './types';
+import { useEstimations } from './useEstimations';
+import { useFormValidator } from './useFormValidator';
 
 const initialValues: StakeFormValues = {
   amount: undefined,
@@ -35,7 +35,7 @@ interface StakeFormInnerProps {
 }
 
 export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
-  const { address, balances } = useWallet();
+  const { address, celoBalance } = useAccount();
   const validateForm = useFormValidator();
 
   return (
@@ -48,7 +48,7 @@ export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
     >
       <Form>
         <FloatingBox width="w-96" classes="overflow-visible">
-          <StakeFormInputs balances={balances} />
+          <StakeFormInputs balance={celoBalance} />
         </FloatingBox>
 
         <div className="flex justify-center mt-5 mb-1">
@@ -60,16 +60,16 @@ export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
 }
 
 interface FormInputProps {
-  balances: AccountBalances;
+  balance: BigNumber;
 }
 
 function StakeFormInputs(props: FormInputProps) {
-  const { balances } = props;
+  const { balance } = props;
   const { values, setFieldValue } = useFormikContext<StakeFormValues>();
-  const { estDepositValue } = useEstimate();
+  const { estDepositValue } = useEstimations();
   const value = values.amount && estDepositValue(values.amount);
   const estimatedRate: number = estDepositValue(1);
-  const roundedBalance = fromWeiRounded(balances.CELO);
+  const roundedBalance = fromWeiRounded(fromWei(balance));
 
   const onClickUseDecimalFraction = (decimalFraction: number) => () => {
     setFieldValue('amount', roundedBalance * decimalFraction);
