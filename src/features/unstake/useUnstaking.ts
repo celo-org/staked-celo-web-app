@@ -2,10 +2,11 @@ import BigNumber from 'bignumber.js';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
+import { PendingCeloWithdrawal } from './types';
 
 export function useUnstaking() {
   const { address } = useAccount();
-  const { managerContract } = useContracts();
+  const { managerContract, accountContract } = useContracts();
 
   const createTxOptions = () => ({
     from: address,
@@ -29,9 +30,20 @@ export function useUnstaking() {
   const estimateCeloWithdrawal = async (stakedCeloAmount: BigNumber) =>
     managerContract.methods.toCelo(stakedCeloAmount.toString()).call({ from: address });
 
+  const getPendingCeloWithdrawals = async (): Promise<PendingCeloWithdrawal[]> => {
+    const { values = [], timestamps = [] } =
+      (await accountContract.methods.getPendingWithdrawals(address).call({ from: address })) || {};
+
+    return values.map((value: string, index: number) => ({
+      value,
+      timestamp: timestamps[index],
+    }));
+  };
+
   return {
     unstake,
     estimateUnstakingFee,
     estimateCeloWithdrawal,
+    getPendingCeloWithdrawals,
   };
 }
