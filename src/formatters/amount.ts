@@ -2,9 +2,7 @@ import BigNumber from 'bignumber.js';
 import { MIN_ROUNDED_VALUE, WEI_PER_UNIT } from 'src/config/consts';
 import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
 
-export type NumberT = BigNumber.Value;
-
-export function fromWei(value: NumberT | null | undefined): BigNumber {
+export function fromWei(value: BigNumber | null | undefined): BigNumber {
   if (!value) return new BigNumber(0);
   const flooredValue = new BigNumber(value).toFixed(0, BigNumber.ROUND_FLOOR);
   return new BigNumber(web3FromWei(flooredValue));
@@ -13,7 +11,7 @@ export function fromWei(value: NumberT | null | undefined): BigNumber {
 // Similar to fromWei above but rounds to set number of decimals
 // with a minimum floor, configured per token
 export function fromWeiRounded(
-  value: NumberT | null | undefined,
+  value: BigNumber | null | undefined,
   roundToZeroIfSmall = false
 ): number {
   if (!value) return 0;
@@ -30,7 +28,7 @@ export function fromWeiRounded(
   return amount.toNumber();
 }
 
-export function toWei(value: NumberT | null | undefined): BigNumber {
+export function toWei(value: BigNumber | null | undefined): BigNumber {
   if (!value) return new BigNumber(0);
   const valueString = value.toString();
   const components = valueString.split('.');
