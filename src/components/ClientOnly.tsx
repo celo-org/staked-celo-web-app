@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 
 // https://github.com/vercel/next.js/issues/2473#issuecomment-587551234
-const ClientOnly = ({ children }: PropsWithChildren) => {
+export const ClientOnly = ({ children }: PropsWithChildren) => {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => setIsMounted(true), []);
 
@@ -11,5 +11,3 @@ const ClientOnly = ({ children }: PropsWithChildren) => {
 
   return <>{children}</>;
 };
-
-export default ClientOnly;
