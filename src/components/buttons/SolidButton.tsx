@@ -13,7 +13,7 @@ interface ButtonProps {
   passThruProps?: any;
 }
 
-export function SolidButton(props: PropsWithChildren<ButtonProps>) {
+export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
   const {
     size,
     type,
@@ -67,7 +67,7 @@ export function SolidButton(props: PropsWithChildren<ButtonProps>) {
       )}
     </button>
   );
-}
+};
 
 function sizeToClasses(size?: string) {
   if (size === 'xs') return 'h-7 px-4 py-1';

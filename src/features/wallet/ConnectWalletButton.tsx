@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useAccount } from 'src/hooks/useAccount';
-import WalletModal from './WalletModal';
+import { WalletModal } from './WalletModal';
 
-export default function ConnectWalletButton() {
+export const ConnectWalletButton = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const { address } = useAccount();
 
@@ -19,4 +19,4 @@ export default function ConnectWalletButton() {
       <WalletModal isOpen={isModalOpened} close={() => setIsModalOpened(false)} />
     </>
   );
-}
+};

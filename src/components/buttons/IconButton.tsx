@@ -12,7 +12,7 @@ export interface IconButtonProps {
   passThruProps?: any;
 }
 
-export function IconButton(props: PropsWithChildren<IconButtonProps>) {
+export const IconButton = (props: PropsWithChildren<IconButtonProps>) => {
   const { width, height, classes, onClick, imgSrc, disabled, title, passThruProps } = props;
 
   const base = 'flex items-center justify-center transition-all';
@@ -33,4 +33,4 @@ export function IconButton(props: PropsWithChildren<IconButtonProps>) {
       <Image src={imgSrc} alt={title} width={width} height={height} />
     </button>
   );
-}
+};

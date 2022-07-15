@@ -5,7 +5,7 @@ const navLinks = [
   { label: 'Unstake', to: '/unstake' },
 ];
 
-export function NavBar({ pathName }: { pathName: string }) {
+export const NavBar = ({ pathName }: { pathName: string }) => {
   return (
     <nav>
       <ul className="flex items-center justify-center list-none rounded-full bg-white shadow-md overflow-hidden opacity-90 mr-3">
@@ -27,4 +27,4 @@ export function NavBar({ pathName }: { pathName: string }) {
       </ul>
     </nav>
   );
-}
+};

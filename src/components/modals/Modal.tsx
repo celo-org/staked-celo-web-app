@@ -9,12 +9,12 @@ interface ModalProps {
   screenReaderLabel?: string;
 }
 
-export default function Modal({
+export const Modal = ({
   isOpen,
   screenReaderLabel,
   close,
   children,
-}: PropsWithChildren<ModalProps>) {
+}: PropsWithChildren<ModalProps>) => {
   return (
     <ReactModal
       isOpen={isOpen}
@@ -34,4 +34,4 @@ export default function Modal({
       </div>
     </ReactModal>
   );
-}
+};
