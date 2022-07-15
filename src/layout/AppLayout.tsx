@@ -19,7 +19,7 @@ interface Props {
   pathName: string;
 }
 
-export function AppLayout({ pathName, children }: PropsWithChildren<Props>) {
+export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
   return (
     <>
       <Head>
@@ -35,4 +35,4 @@ export function AppLayout({ pathName, children }: PropsWithChildren<Props>) {
       </div>
     </>
   );
-}
+};

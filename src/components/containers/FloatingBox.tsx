@@ -6,7 +6,7 @@ interface Props {
   classes?: string;
 }
 
-export function FloatingBox(props: PropsWithChildren<Props>) {
+export const FloatingBox = (props: PropsWithChildren<Props>) => {
   const { width, maxWidth, classes } = props;
   return (
     <div
@@ -16,4 +16,4 @@ export function FloatingBox(props: PropsWithChildren<Props>) {
       {props.children}
     </div>
   );
-}
+};

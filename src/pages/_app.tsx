@@ -6,7 +6,7 @@ import { CeloProvider } from 'src/providers/CeloProvider';
 import 'src/styles/fonts.css';
 import 'src/styles/globals.css';
 
-export default function App({ Component, pageProps, router }: AppProps) {
+const App = ({ Component, pageProps, router }: AppProps) => {
   const pathName = router.pathname;
   return (
     <CeloProvider>
@@ -18,4 +18,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
       </ClientOnly>
     </CeloProvider>
   );
-}
+};
+
+export default App;

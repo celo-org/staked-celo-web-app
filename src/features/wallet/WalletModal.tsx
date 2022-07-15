@@ -1,5 +1,5 @@
 import { PropsWithChildren, useCallback } from 'react';
-import Modal from 'src/components/modals/Modal';
+import { Modal } from 'src/components/modals/Modal';
 import { useAccount } from 'src/hooks/useAccount';
 import { useWallet } from './useWallet';
 
@@ -7,13 +7,13 @@ interface WalletModalActionProps {
   action: () => void;
 }
 
-function WalletModalAction({ children, action }: PropsWithChildren<WalletModalActionProps>) {
+const WalletModalAction = ({ children, action }: PropsWithChildren<WalletModalActionProps>) => {
   return (
     <button className="text-left font-bold text-lg m-4" onClick={action}>
       {children}
     </button>
   );
-}
+};
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ interface WalletModalProps {
   screenReaderLabel?: string;
 }
 
-export default function WalletModal({ isOpen, close }: WalletModalProps) {
+export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
   const { changeWallet, disconnectWallet, changingWallet } = useWallet();
   const { address } = useAccount();
 
@@ -60,4 +60,4 @@ export default function WalletModal({ isOpen, close }: WalletModalProps) {
       </div>
     </Modal>
   );
-}
+};

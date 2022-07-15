@@ -34,7 +34,7 @@ interface StakeFormInnerProps {
   onSubmit: (values: StakeFormValues) => void;
 }
 
-export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
+export const StakeFormInner = ({ onSubmit }: StakeFormInnerProps) => {
   const { address, celoBalance } = useAccount();
   const validateForm = useFormValidator();
 
@@ -57,13 +57,13 @@ export function StakeFormInner({ onSubmit }: StakeFormInnerProps) {
       </Form>
     </Formik>
   );
-}
+};
 
 interface FormInputProps {
   balance: BigNumber;
 }
 
-function StakeFormInputs(props: FormInputProps) {
+const StakeFormInputs = (props: FormInputProps) => {
   const { balance } = props;
   const { values, setFieldValue } = useFormikContext<StakeFormValues>();
   const { estDepositValue } = useEstimations();
@@ -113,4 +113,4 @@ function StakeFormInputs(props: FormInputProps) {
       </div>
     </div>
   );
-}
+};

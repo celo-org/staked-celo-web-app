@@ -3,7 +3,7 @@ import '@celo/react-celo/lib/styles.css';
 import { PropsWithChildren } from 'react';
 import { networkConfig } from 'src/config/celo';
 
-export function CeloProvider(props: PropsWithChildren) {
+export const CeloProvider = (props: PropsWithChildren) => {
   return (
     <ReactCeloProvider
       dapp={{
@@ -23,4 +23,4 @@ export function CeloProvider(props: PropsWithChildren) {
       {props.children}
     </ReactCeloProvider>
   );
-}
+};
