@@ -1,9 +1,9 @@
-import { useCelo } from '@celo/react-celo';
 import BigNumber from 'bignumber.js';
+import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 
 export function useUnstaking() {
-  const { address } = useCelo();
+  const { address } = useAccount();
   const { managerContract } = useContracts();
 
   const createTxOptions = () => ({
