@@ -1,6 +1,6 @@
 import { useCelo } from '@celo/react-celo';
 import BigNumber from 'bignumber.js';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { AccountBalances } from 'src/features/wallet/types';
 import { fromWei } from 'src/formatters/amount';
 import logger from 'src/services/logger';
@@ -8,7 +8,6 @@ import logger from 'src/services/logger';
 export function useWalletConnection() {
   const { address: _address, connect, destroy } = useCelo();
   const address = _address ?? undefined;
-  const isConnected: boolean = useMemo(() => !!address, [address]);
 
   const connectWallet = useCallback(async () => {
     try {
@@ -44,7 +43,6 @@ export function useWalletConnection() {
     disconnectWallet,
     changeWallet,
     changingWallet,
-    isConnected,
   };
 }
 
