@@ -6,7 +6,7 @@ import { useContracts } from 'src/hooks/useContracts';
 import logger from 'src/services/logger';
 
 export function useStaking() {
-  const { address } = useAccount();
+  const { address, loadCeloBalance } = useAccount();
   const { managerContract } = useContracts();
 
   const createTxOptions = useCallback(
@@ -20,8 +20,11 @@ export function useStaking() {
   const deposit = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
   const stake = useCallback(
-    (celoAmount: BigNumber) => deposit().send(createTxOptions(celoAmount)),
-    [createTxOptions, deposit]
+    async (celoAmount: BigNumber) => {
+      await deposit().send(createTxOptions(celoAmount));
+      await loadCeloBalance();
+    },
+    [createTxOptions, deposit, loadCeloBalance]
   );
 
   const estimateFee = useCallback(
@@ -44,7 +47,8 @@ export function useStaking() {
 
   useEffect(() => {
     loadExchangeRate().catch((error: any) => logger.error(error?.message));
-  }, [loadExchangeRate]);
+    loadCeloBalance().catch((error: any) => logger.error(error?.message));
+  }, [loadExchangeRate, loadCeloBalance]);
 
   return {
     stake,
