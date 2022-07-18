@@ -28,18 +28,22 @@ export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
   } = props;
   const color = _color ?? 'blue';
 
-  const base = 'flex items-center justify-center rounded-full transition-all duration-300';
+  const base = 'flex items-center justify-center rounded-2xl transition-all duration-300';
   const sizing = sizeToClasses(size);
-  let baseColors;
+  let baseColors, onHover, onActive;
   if (color === 'blue') {
     baseColors = 'bg-blue-700 text-white';
+    onHover = 'bg-blue-700';
+    onActive = 'bg-blue-700';
   } else if (color === 'purple') {
-    baseColors = 'bg-red-600 text-white';
+    baseColors = 'bg-purple-700';
+    onHover = 'hover:bg-purple-800';
+    onActive = 'active:bg-purple-900';
   }
 
   const onDisabled = 'disabled:bg-gray-300 disabled:text-gray-500';
   const weight = bold ? 'font-semibold' : '';
-  const allClasses = `${base} ${sizing} ${baseColors} ${onDisabled} ${weight} ${classes}`;
+  const allClasses = `${base} ${sizing} ${baseColors} ${onHover} ${onDisabled} ${onActive} ${weight} ${classes}`;
 
   return (
     <button

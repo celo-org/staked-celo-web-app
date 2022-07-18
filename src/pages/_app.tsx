@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { ClientOnly } from 'src/components/ClientOnly';
 import { AppLayout } from 'src/layout/AppLayout';
 import { CeloProvider } from 'src/providers/CeloProvider';

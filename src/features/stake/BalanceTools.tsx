@@ -10,20 +10,13 @@ export const BalanceTools = (props: BalanceToolsProps) => {
   return (
     <div>
       <span className="text-xs text-gray-500 mr-2">
-        Balance: {roundedBalance.toFixed(DISPLAY_DECIMALS)}
+        {roundedBalance.toFixed(DISPLAY_DECIMALS)} balance
       </span>
-      <button
-        type="button"
-        title="Use half of the balance"
-        className="text-xs text-gray-500 mr-2 hover:underline"
-        onClick={onClickUseDecimalFraction(0.5)}
-      >
-        50%
-      </button>
+      &bull;&nbsp;
       <button
         type="button"
         title="Use full balance"
-        className="text-xs text-gray-500 mr-2 hover:underline"
+        className="text-xs text-gray-500 mr-2 underline font-medium"
         onClick={onClickUseDecimalFraction(1)}
       >
         Max

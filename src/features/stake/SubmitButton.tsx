@@ -6,12 +6,15 @@ import { StakeFormValues } from './types';
 
 interface ButtonProps {
   address?: string;
+  color: 'purple' | 'orange';
 }
 
-export const SubmitButton = ({ address }: ButtonProps) => {
+export const SubmitButton = ({ address, color }: ButtonProps) => {
   const { errors, setErrors, touched, setTouched } = useFormikContext<StakeFormValues>();
   const error = touched.amount && errors.amount;
-  const classes = error ? 'bg-red-500 hover:bg-red-500 active:bg-red-500' : '';
+  const classes = error
+    ? `w-full h-14 bg-red-500 hover:bg-red-500 active:bg-red-500`
+    : 'w-full h-14';
   const text = error ? (error as string) : 'Continue';
   const type = address ? 'submit' : 'button';
 
@@ -24,7 +27,7 @@ export const SubmitButton = ({ address }: ButtonProps) => {
   useTimeout(clearErrors, 3000);
 
   return (
-    <SolidButton size="m" type={type} classes={classes}>
+    <SolidButton color={color} size="m" type={type} classes={classes}>
       {text}
     </SolidButton>
   );

@@ -1,12 +1,8 @@
 import type { NextPage } from 'next';
-import { StakeForm } from 'src/features/stake/StakeForm';
-import { useAccount } from 'src/hooks/useAccount';
+import { Swap } from 'src/features/stake/Swap';
 
 const Stake: NextPage = () => {
-  const { isConnected } = useAccount();
-
-  console.log(isConnected);
-  return <StakeForm />;
+  return <Swap />;
 };
 
 export default Stake;

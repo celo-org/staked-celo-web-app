@@ -6,6 +6,7 @@ module.exports = {
   theme: {
     colors: {
       // default
+      transparent: colors.transparent,
       blue: colors.blue,
       red: colors.red,
       yellow: colors.amber,
@@ -14,7 +15,12 @@ module.exports = {
       green: '#55A803',
       red: '#F17256',
       orange: '#F9B73E',
-      purple: '#A73EF9',
+      purple: {
+        DEFAULT: '#A73EF9',
+        700: '#9781EE',
+        800: '#9477F5',
+        900: '#8C62FF',
+      },
       gray: {
         light: '#324142',
         dark: '#212B2E',
