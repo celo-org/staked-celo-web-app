@@ -106,9 +106,9 @@ interface ReceiveSummaryProps {
 }
 
 export const ReceiveSummary = (props: ReceiveSummaryProps) => {
-  const { estDepositValue } = useEstimations();
-  const value = props.amount && estDepositValue(props.amount);
-  const estimatedRate: number = estDepositValue(1);
+  const { estimateDepositValue } = useEstimations();
+  const value = props.amount && estimateDepositValue(props.amount);
+  const estimatedRate: number = estimateDepositValue(1);
 
   return (
     <TokenCard
