@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
+import logger from 'src/services/logger';
 
 export function useStaking() {
   const { address } = useAccount();
@@ -31,17 +32,23 @@ export function useStaking() {
     [createTxOptions, deposit]
   );
 
-  const getStakedCeloExchageRate = useCallback(async (): Promise<BigNumber> => {
+  const [exchangeRate, setExchangeRate] = useState(0);
+
+  const loadExchangeRate = useCallback(async () => {
     const oneCeloInWei = toWei(new BigNumber('1'));
     const stakedCeloAmount = new BigNumber(
       await managerContract.methods.toStakedCelo(oneCeloInWei).call({ from: address })
     );
-    return stakedCeloAmount.dividedBy(oneCeloInWei);
+    setExchangeRate(stakedCeloAmount.dividedBy(oneCeloInWei).toNumber());
   }, [managerContract, address]);
+
+  useEffect(() => {
+    loadExchangeRate().catch((error: any) => logger.error(error?.message));
+  }, [loadExchangeRate]);
 
   return {
     stake,
     estimateStakingFee,
-    getStakedCeloExchageRate,
+    exchangeRate,
   };
 }
