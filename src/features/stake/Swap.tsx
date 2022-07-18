@@ -24,7 +24,7 @@ export const Swap = () => {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center md:w-96 mx-auto">
       <StakeForm onSubmit={onSubmit} />
     </div>
   );
@@ -46,8 +46,8 @@ export const StakeForm = ({ onSubmit }: StakeFormProps) => {
       validateOnChange={false}
       validateOnBlur={false}
     >
-      <Form>
-        <FloatingBox width="w-96" classes="overflow-visible bg-gray-light">
+      <Form className="w-full">
+        <FloatingBox width="w-full" classes="overflow-visible bg-gray-light">
           <StakeFormInput balance={celoBalance} />
         </FloatingBox>
 

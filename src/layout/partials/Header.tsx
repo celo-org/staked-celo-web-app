@@ -17,7 +17,7 @@ export const Header = ({ pathName }: { pathName: string }) => {
         </Link>
         <ConnectWalletButton />
       </div>
-      <div className="flex justify-center py-6">
+      <div className="flex justify-center py-3">
         <NavBar pathName={pathName} />
       </div>
     </header>

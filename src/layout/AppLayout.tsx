@@ -29,11 +29,9 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
       </Head>
-      <div
-        className={`flex flex-col justify-between h-full min-h-screen w-full min-w-screen ${background}`}
-      >
+      <div className={`flex flex-col h-full min-h-screen w-full min-w-screen ${background}`}>
         <Header pathName={pathName} />
-        <main className="w-full">{children}</main>
+        <main className="w-full flex-1 px-4">{children}</main>
         <Footer />
       </div>
     </>
