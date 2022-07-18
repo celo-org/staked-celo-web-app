@@ -39,6 +39,10 @@ export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
     baseColors = 'bg-purple-700';
     onHover = 'hover:bg-purple-800';
     onActive = 'active:bg-purple-900';
+  } else if (color === 'orange') {
+    baseColors = 'bg-orange-700';
+    onHover = 'hover:bg-orange-800';
+    onActive = 'active:bg-orange-900';
   }
 
   const onDisabled = 'disabled:bg-gray-300 disabled:text-gray-500';

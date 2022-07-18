@@ -14,7 +14,12 @@ module.exports = {
       // custom
       green: '#55A803',
       red: '#F17256',
-      orange: '#F9B73E',
+      orange: {
+        DEFAULT: '#E7B65D',
+        700: '#E7B65D',
+        800: '#DFA849',
+        900: '#EEAF43',
+      },
       purple: {
         DEFAULT: '#A73EF9',
         700: '#9781EE',
