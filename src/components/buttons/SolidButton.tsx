@@ -4,7 +4,7 @@ interface ButtonProps {
   size?: 'xs' | 's' | 'm' | 'l' | 'xl';
   type?: 'submit' | 'reset' | 'button';
   onClick?: () => void;
-  color?: 'white' | 'blue' | 'red'; // defaults to blue
+  color?: 'purple' | 'blue' | 'orange'; // defaults to blue
   classes?: string;
   bold?: boolean;
   disabled?: boolean;
@@ -28,22 +28,23 @@ export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
   } = props;
   const color = _color ?? 'blue';
 
-  const base = 'flex items-center justify-center rounded-full transition-all duration-300';
+  const base = 'flex items-center justify-center rounded-2xl transition-all duration-300';
   const sizing = sizeToClasses(size);
   let baseColors, onHover, onActive;
   if (color === 'blue') {
     baseColors = 'bg-blue-700 text-white';
-    onHover = 'hover:bg-blue-800';
-    onActive = 'active:bg-blue-900';
-  } else if (color === 'red') {
-    baseColors = 'bg-red-600 text-white';
-    onHover = 'hover:bg-red-500';
-    onActive = 'active:bg-red-400';
-  } else if (color === 'white') {
-    baseColors = 'bg-white text-black';
-    onHover = 'hover:bg-gray-100';
-    onActive = 'active:bg-gray-200';
+    onHover = 'bg-blue-700';
+    onActive = 'bg-blue-700';
+  } else if (color === 'purple') {
+    baseColors = 'bg-purple-700';
+    onHover = 'hover:bg-purple-800';
+    onActive = 'active:bg-purple-900';
+  } else if (color === 'orange') {
+    baseColors = 'bg-orange-700';
+    onHover = 'hover:bg-orange-800';
+    onActive = 'active:bg-orange-900';
   }
+
   const onDisabled = 'disabled:bg-gray-300 disabled:text-gray-500';
   const weight = bold ? 'font-semibold' : '';
   const allClasses = `${base} ${sizing} ${baseColors} ${onHover} ${onDisabled} ${onActive} ${weight} ${classes}`;

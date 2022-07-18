@@ -1,7 +1,9 @@
 import { CeloProvider as ReactCeloProvider } from '@celo/react-celo';
 import '@celo/react-celo/lib/styles.css';
+import { useRouter } from 'next/router';
 import { PropsWithChildren } from 'react';
 import { networkConfig } from 'src/config/celo';
+import { useAccount } from 'src/hooks/useAccount';
 
 export const CeloProvider = (props: PropsWithChildren) => {
   return (
@@ -20,7 +22,21 @@ export const CeloProvider = (props: PropsWithChildren) => {
         },
       }}
     >
-      {props.children}
+      <CeloConnectRedirect>{props.children}</CeloConnectRedirect>
     </ReactCeloProvider>
   );
+};
+
+const CeloConnectRedirect = (props: PropsWithChildren) => {
+  const router = useRouter();
+  const { isConnected } = useAccount();
+
+  if (!isConnected && router.pathname !== '/connect') {
+    void router.push('/connect');
+
+    // Router is async. Shows empty screen before redirect.
+    return null;
+  }
+
+  return <>{props.children}</>;
 };

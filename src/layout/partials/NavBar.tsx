@@ -7,20 +7,23 @@ const navLinks = [
 
 export const NavBar = ({ pathName }: { pathName: string }) => {
   return (
-    <nav>
-      <ul className="flex items-center justify-center list-none rounded-full bg-white shadow-md overflow-hidden opacity-90 mr-3">
-        {navLinks.map((l) => {
+    <nav className="w-full md:w-96">
+      <ul className="flex items-center justify-start list-none overflow-hidden opacity-90 mr-3">
+        {navLinks.map((l, i) => {
           const active = pathName === l.to;
-          const padding = `py-1.5 px-7`;
-          const colors = ` ${active && 'bg-blue-800 text-white rounded-full'} text-lg ${
-            active ? 'font-medium' : 'font-base'
-          }`;
-          const className = `${padding} ${colors}`;
+          const sizing = `py-1.5`;
+          const colors = `text-white text-lg font-base ${active ? 'font-medium' : 'font-light'}`;
+          const className = `${sizing} ${colors}`;
           return (
-            <li key={l.label} className="flex items-center justify-center">
+            <li key={l.label} className="flex flex-col items-center justify-center mx-4">
               <Link href={l.to}>
                 <a className={className}>{l.label}</a>
               </Link>
+              <hr
+                className={`w-full h-0.5 border-none ${
+                  active && (i === 0 ? 'bg-purple' : 'bg-orange')
+                }`}
+              />
             </li>
           );
         })}

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
-import { StakeForm } from 'src/features/stake/StakeForm';
+import { Swap } from 'src/features/stake/Swap';
 
 const Stake: NextPage = () => {
-  return <StakeForm />;
+  return <Swap />;
 };
 
 export default Stake;
