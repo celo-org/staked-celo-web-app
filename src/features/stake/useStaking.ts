@@ -1,9 +1,9 @@
-import { useCelo } from '@celo/react-celo';
 import BigNumber from 'bignumber.js';
+import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 
 export function useStaking() {
-  const { address } = useCelo();
+  const { address } = useAccount();
   const { managerContract } = useContracts();
 
   const createTxOptions = (celoAmount: BigNumber) => ({
@@ -20,7 +20,7 @@ export function useStaking() {
     return estimatedFee.plus(estimatedFee.dividedBy(10));
   };
 
-  const estimateStakedCeloDeposit = async (celoAmount: BigNumber) =>
+  const estimateStakedCeloDeposit = (celoAmount: BigNumber) =>
     managerContract.methods.toStakedCelo(celoAmount.toString()).call({ from: address });
 
   return {
