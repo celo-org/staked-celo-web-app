@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
+import { FeesSummary } from 'src/features/stake/FeesSummary';
 import { TokenCard } from 'src/features/stake/FormTemplate';
 import { ReceiveSummary } from 'src/features/stake/ReceiveSummary';
 import { fromWei, fromWeiRounded } from 'src/formatters/amount';
@@ -17,6 +18,32 @@ import { useFormValidator } from './useFormValidator';
 const initialValues: StakeFormValues = {
   amount: '' as unknown as number,
 };
+
+const fees = [
+  {
+    title: 'Exchange Rate',
+    value: 1.03,
+    tooltip: {
+      content:
+        'stCELO’s exchange rate continuously accrues value vs CELO. As you receive rewards, your amount of stCELO will not change but when you unstake it will be worth more CELO than what you paid.',
+    },
+  },
+  {
+    title: 'Transaction Cost',
+    value: '< $0.01',
+    tooltip: {
+      content:
+        'Every blockchain transaction requires gas fees to be paid. The amount mentioned is an estimate of these gas costs.',
+    },
+  },
+  {
+    title: 'Fees',
+    value: 'Free',
+    tooltip: {
+      content: 'For the launch of the stCELO protocol, fees are free.',
+    },
+  },
+];
 
 export const Stake = () => {
   const onSubmit = (values: StakeFormValues) => {
@@ -51,7 +78,7 @@ export const StakeForm = ({ onSubmit }: StakeFormProps) => {
       <Form className="w-full justify-center items-center text-white">
         <FloatingBox
           width="w-full"
-          classes="overflow-visible bg-gray-light flex flex-col justify-center items-center"
+          classes="overflow-visible bg-gray-800 flex flex-col justify-center items-center"
         >
           <StakeFormInput balance={celoBalance} onChange={setAmount} />
           <Link href="/unstake">
@@ -65,6 +92,8 @@ export const StakeForm = ({ onSubmit }: StakeFormProps) => {
         <div className="flex justify-center mt-5 mb-1">
           <SubmitButton color={'purple'} address={address} />
         </div>
+
+        <FeesSummary fees={fees} />
       </Form>
     </Formik>
   );
@@ -88,7 +117,7 @@ const StakeFormInput = (props: FormInputProps) => {
 
   return (
     <TokenCard
-      classes="w-full	bg-gray-dark"
+      classes="w-full	bg-gray-900"
       token="CELO"
       titleChild="Stake"
       inputChild={

@@ -22,7 +22,7 @@ interface Props {
 
 export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
   const { isConnected } = useAccount();
-  const background = isConnected ? 'bg-gray-dark' : 'bg-white';
+  const background = isConnected ? 'bg-gray-900' : 'bg-white';
   return (
     <>
       <Head>

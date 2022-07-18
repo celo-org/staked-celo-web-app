@@ -2,4 +2,12 @@ export interface StakeFormValues {
   amount?: number;
 }
 
-export type SwapToken = 'CELO' | 'stCELO';
+export interface Fee {
+  title: string;
+  value: string | number;
+  tooltip: {
+    content: string;
+  };
+}
+
+export type StakeToken = 'CELO' | 'stCELO';

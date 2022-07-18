@@ -10,9 +10,10 @@ module.exports = {
       blue: colors.blue,
       red: colors.red,
       yellow: colors.amber,
+      pear: '#C8D72B',
       teal: colors.teal,
       // custom
-      green: '#55A803',
+      green: '#7ED8C2',
       red: '#F17256',
       orange: {
         DEFAULT: '#E7B65D',
@@ -27,8 +28,9 @@ module.exports = {
         900: '#8C62FF',
       },
       gray: {
-        light: '#324142',
-        dark: '#212B2E',
+        400: '#7B9799',
+        800: '#324142',
+        900: '#212B2E',
       },
       white: '#FFFFFF',
     },

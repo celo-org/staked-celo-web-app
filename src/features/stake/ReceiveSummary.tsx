@@ -9,7 +9,6 @@ interface ReceiveSummaryProps {
 export const ReceiveSummary = (props: ReceiveSummaryProps) => {
   const { estimateDepositValue } = useEstimations();
   const value = props.amount && estimateDepositValue(props.amount);
-  const estimatedRate: number = estimateDepositValue(1);
 
   return (
     <TokenCard
@@ -17,7 +16,7 @@ export const ReceiveSummary = (props: ReceiveSummaryProps) => {
       token="stCELO"
       titleChild="Receive"
       inputChild={value ? value.toFixed(DISPLAY_DECIMALS) : 0.0}
-      infoChild={estimatedRate ? `1 stCELO ~ ${estimatedRate} CELO` : 'Loading...'}
+      infoChild={<span className="text-pear">4.56% projected APY</span>}
     />
   );
 };
