@@ -7,7 +7,7 @@ import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { FeesSummary } from 'src/features/stake/FeesSummary';
 import { TokenCard } from 'src/features/stake/FormTemplate';
 import { ReceiveSummary } from 'src/features/stake/ReceiveSummary';
-import { fromWei, fromWeiRounded } from 'src/formatters/amount';
+import { fromWeiRounded } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import Arrow from 'src/images/icons/arrow.svg';
 import { BalanceTools } from './BalanceTools';
@@ -107,7 +107,7 @@ interface FormInputProps {
 const StakeFormInput = (props: FormInputProps) => {
   const { balance, onChange } = props;
   const { values, setFieldValue } = useFormikContext<StakeFormValues>();
-  const roundedBalance = fromWeiRounded(fromWei(balance));
+  const roundedBalance = fromWeiRounded(balance);
 
   useEffect(() => onChange(values.amount), [onChange, values.amount]);
 
