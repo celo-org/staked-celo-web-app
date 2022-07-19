@@ -5,7 +5,7 @@ import { useTimeout } from 'src/hooks/useTimeout';
 import { StakeFormValues } from './types';
 
 interface ButtonProps {
-  address?: string;
+  address: string;
   color: 'purple' | 'orange';
 }
 

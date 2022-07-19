@@ -68,7 +68,7 @@ export const StakeForm = ({ onSubmit }: StakeFormProps) => {
         </FloatingBox>
 
         <div className="flex justify-center mt-5 mb-1">
-          <SubmitButton color={'purple'} address={address} />
+          <SubmitButton color="purple" address={address || ''} />
         </div>
 
         <CostsSummary costs={costs} />
