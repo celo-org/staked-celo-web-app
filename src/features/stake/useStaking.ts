@@ -28,10 +28,10 @@ export function useStaking() {
     [createTxOptions, deposit, loadBalances]
   );
 
-  const estimateFee = useCallback(
+  const estimateGasFee = useCallback(
     async (celoAmount: BigNumber): Promise<BigNumber> => {
-      const estimatedFee = new BigNumber(await deposit().estimateGas(createTxOptions(celoAmount)));
-      return estimatedFee.plus(estimatedFee.dividedBy(10));
+      const gasFee = new BigNumber(await deposit().estimateGas(createTxOptions(celoAmount)));
+      return gasFee.plus(gasFee.dividedBy(10));
     },
     [createTxOptions, deposit]
   );
@@ -39,6 +39,6 @@ export function useStaking() {
   return {
     stake,
     isStaking,
-    estimateFee,
+    estimateGasFee,
   };
 }
