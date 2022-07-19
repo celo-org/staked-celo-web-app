@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { toWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
-import logger from 'src/services/logger';
 
 export function useStaking() {
   const { address, loadBalances } = useAccount();
@@ -46,7 +45,8 @@ export function useStaking() {
   }, [managerContract, address]);
 
   useEffect(() => {
-    loadExchangeRate().catch((error: any) => logger.error(error?.message));
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    loadExchangeRate();
   }, [loadExchangeRate]);
 
   return {

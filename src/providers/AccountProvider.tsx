@@ -2,7 +2,6 @@ import { useCelo } from '@celo/react-celo';
 import BigNumber from 'bignumber.js';
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
-import logger from 'src/services/logger';
 
 interface IAccountContext {
   isConnected: boolean;
@@ -48,7 +47,8 @@ const useBalances = () => {
   }, [loadCeloBalance, loadStakedCeloBalance]);
 
   useEffect(() => {
-    loadBalances().catch((error: any) => logger.error(error?.message));
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    loadBalances();
   }, [loadBalances]);
 
   return {
