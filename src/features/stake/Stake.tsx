@@ -7,7 +7,8 @@ import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { CostsSummary } from 'src/features/stake/CostsSummary';
 import { TokenCard } from 'src/features/stake/FormTemplate';
 import { ReceiveSummary } from 'src/features/stake/ReceiveSummary';
-import { fromWeiRounded } from 'src/formatters/amount';
+import { useStaking } from 'src/features/stake/useStaking';
+import { fromWeiRounded, toWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import Arrow from 'src/images/icons/arrow.svg';
 import { BalanceTools } from './BalanceTools';
@@ -21,9 +22,10 @@ const initialValues: StakeFormValues = {
 };
 
 export const Stake = () => {
-  const onSubmit = (values: StakeFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log(values);
+  const { stake } = useStaking();
+  const onSubmit = async ({ amount }: StakeFormValues) => {
+    if (!amount) return;
+    await stake(toWei(new BigNumber(amount)));
   };
 
   return (
