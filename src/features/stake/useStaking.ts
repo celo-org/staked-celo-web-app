@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useState } from 'react';
-import { toWei } from 'src/formatters/amount';
+import { useCallback, useState } from 'react';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 
@@ -37,25 +36,9 @@ export function useStaking() {
     [createTxOptions, deposit]
   );
 
-  const [exchangeRate, setExchangeRate] = useState(0);
-
-  const loadExchangeRate = useCallback(async () => {
-    const oneCeloInWei = toWei(new BigNumber('1'));
-    const stakedCeloAmount = new BigNumber(
-      await managerContract.methods.toStakedCelo(oneCeloInWei).call({ from: address })
-    );
-    setExchangeRate(stakedCeloAmount.dividedBy(oneCeloInWei).toNumber());
-  }, [managerContract, address]);
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    loadExchangeRate();
-  }, [loadExchangeRate]);
-
   return {
     stake,
     isStaking,
     estimateFee,
-    exchangeRate,
   };
 }

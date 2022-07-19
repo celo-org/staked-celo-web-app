@@ -5,6 +5,7 @@ import { PropsWithChildren } from 'react';
 import { networkConfig } from 'src/config/celo';
 import { useAccount } from 'src/hooks/useAccount';
 import { AccountProvider } from './AccountProvider';
+import { ExchangeProvider } from './ExchangeProvider';
 
 export const CeloProvider = (props: PropsWithChildren) => {
   return (
@@ -24,7 +25,9 @@ export const CeloProvider = (props: PropsWithChildren) => {
       }}
     >
       <AccountProvider>
-        <CeloConnectRedirect>{props.children}</CeloConnectRedirect>
+        <ExchangeProvider>
+          <CeloConnectRedirect>{props.children}</CeloConnectRedirect>
+        </ExchangeProvider>
       </AccountProvider>
     </ReactCeloProvider>
   );
