@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
-import { FeesSummary } from 'src/features/stake/FeesSummary';
+import { CostsSummary } from 'src/features/stake/CostsSummary';
 import { TokenCard } from 'src/features/stake/FormTemplate';
 import { ReceiveSummary } from 'src/features/stake/ReceiveSummary';
 import { fromWeiRounded } from 'src/formatters/amount';
@@ -13,37 +13,12 @@ import Arrow from 'src/images/icons/arrow.svg';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeFormValues } from './types';
+import { useCosts } from './useCosts';
 import { useFormValidator } from './useFormValidator';
 
 const initialValues: StakeFormValues = {
   amount: '' as unknown as number,
 };
-
-const fees = [
-  {
-    title: 'Exchange Rate',
-    value: 1.03,
-    tooltip: {
-      content:
-        'stCELO’s exchange rate continuously accrues value vs CELO. As you receive rewards, your amount of stCELO will not change but when you unstake it will be worth more CELO than what you paid.',
-    },
-  },
-  {
-    title: 'Transaction Cost',
-    value: '< $0.01',
-    tooltip: {
-      content:
-        'Every blockchain transaction requires gas fees to be paid. The amount mentioned is an estimate of these gas costs.',
-    },
-  },
-  {
-    title: 'Fees',
-    value: 'Free',
-    tooltip: {
-      content: 'For the launch of the stCELO protocol, fees are free.',
-    },
-  },
-];
 
 export const Stake = () => {
   const onSubmit = (values: StakeFormValues) => {
@@ -65,6 +40,7 @@ interface StakeFormProps {
 export const StakeForm = ({ onSubmit }: StakeFormProps) => {
   const [amount, setAmount] = useState<number | undefined>(0);
   const { address, celoBalance } = useAccount();
+  const { costs } = useCosts(amount);
   const validateForm = useFormValidator();
 
   return (
@@ -93,7 +69,7 @@ export const StakeForm = ({ onSubmit }: StakeFormProps) => {
           <SubmitButton color={'purple'} address={address} />
         </div>
 
-        <FeesSummary fees={fees} />
+        <CostsSummary costs={costs} />
       </Form>
     </Formik>
   );
