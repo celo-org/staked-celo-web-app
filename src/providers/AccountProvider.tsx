@@ -1,13 +1,13 @@
 import { useCelo } from '@celo/react-celo';
-import BigNumber from 'bignumber.js';
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
+import { CeloWei, StakedCeloWei } from 'src/types/units';
 
 interface IAccountContext {
   isConnected: boolean;
   address: string | undefined | null;
-  celoBalance: BigNumber;
-  stakedCeloBalance: BigNumber;
+  celoBalance: CeloWei;
+  stakedCeloBalance: StakedCeloWei;
   loadBalances: () => Promise<void>;
 }
 
@@ -23,8 +23,8 @@ const useBalances = () => {
   const { address } = useAddress();
   const { stakedCeloContract } = useContracts();
 
-  const [celoBalance, setCeloBalance] = useState(new BigNumber(0));
-  const [stakedCeloBalance, setStakedCeloBalance] = useState(new BigNumber(0));
+  const [celoBalance, setCeloBalance] = useState(new CeloWei(0));
+  const [stakedCeloBalance, setStakedCeloBalance] = useState(new StakedCeloWei(0));
 
   const loadCeloBalance = useCallback(async () => {
     const { eth } = kit.connection.web3;
@@ -32,14 +32,14 @@ const useBalances = () => {
 
     const balance = await eth.getBalance(address);
 
-    setCeloBalance(new BigNumber(balance));
+    setCeloBalance(new CeloWei(balance));
   }, [kit.connection, address]);
 
   const loadStakedCeloBalance = useCallback(async () => {
     const stakedCeloBalance = await stakedCeloContract.methods.balanceOf(address).call({
       from: address,
     });
-    setStakedCeloBalance(new BigNumber(stakedCeloBalance));
+    setStakedCeloBalance(new StakedCeloWei(stakedCeloBalance));
   }, [address, stakedCeloContract]);
 
   const loadBalances = useCallback(async () => {
@@ -61,8 +61,8 @@ const useBalances = () => {
 export const AccountContext = createContext<IAccountContext>({
   isConnected: false,
   address: null,
-  celoBalance: new BigNumber(0),
-  stakedCeloBalance: new BigNumber(0),
+  celoBalance: new CeloWei(0),
+  stakedCeloBalance: new StakedCeloWei(0),
   loadBalances: () => Promise.resolve(),
 });
 

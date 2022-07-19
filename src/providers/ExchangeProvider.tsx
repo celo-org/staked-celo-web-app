@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js';
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { toWei } from 'src/formatters/amount';
+import { toCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
+import { Celo, StakedCeloWei } from 'src/types/units';
 
 interface IExchangeContext {
   celoExchangeRate: number;
@@ -17,11 +17,11 @@ const useExchangeRate = () => {
   const [celoExchangeRate, setCeloExchangeRate] = useState(0);
 
   const loadCeloExchangeRate = useCallback(async () => {
-    const oneCeloInWei = toWei(new BigNumber('1'));
-    const stakedCeloAmount = new BigNumber(
-      await managerContract.methods.toStakedCelo(oneCeloInWei).call({ from: address })
+    const oneCeloWei = toCeloWei(new Celo('1')).toString();
+    const stakedCeloAmount = new StakedCeloWei(
+      await managerContract.methods.toStakedCelo(oneCeloWei).call({ from: address })
     );
-    setCeloExchangeRate(stakedCeloAmount.dividedBy(oneCeloInWei).toNumber());
+    setCeloExchangeRate(stakedCeloAmount.dividedBy(oneCeloWei).toNumber());
   }, [managerContract, address]);
 
   const loadExchangeRates = useCallback(async () => {

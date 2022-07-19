@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { Field, Form, Formik, useFormikContext } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,9 +7,10 @@ import { CostsSummary } from 'src/features/stake/CostsSummary';
 import { TokenCard } from 'src/features/stake/FormTemplate';
 import { ReceiveSummary } from 'src/features/stake/ReceiveSummary';
 import { useStaking } from 'src/features/stake/useStaking';
-import { fromWeiRounded, toWei } from 'src/formatters/amount';
+import { fromWeiRounded, toCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import Arrow from 'src/images/icons/arrow.svg';
+import { Celo, CeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeFormValues } from './types';
@@ -25,7 +25,7 @@ export const Stake = () => {
   const { stake } = useStaking();
   const onSubmit = async ({ amount }: StakeFormValues) => {
     if (!amount) return;
-    await stake(toWei(new BigNumber(amount)));
+    await stake(toCeloWei(new Celo(amount)));
   };
 
   return (
@@ -78,7 +78,7 @@ export const StakeForm = ({ onSubmit }: StakeFormProps) => {
 };
 
 interface FormInputProps {
-  balance: BigNumber;
+  balance: CeloWei;
   onChange: (amount: number | undefined) => void;
 }
 

@@ -1,16 +1,16 @@
-import BigNumber from 'bignumber.js';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
+import { CeloWei } from 'src/types/units';
 
 export function useStaking() {
   const { address, loadBalances } = useAccount();
   const { managerContract } = useContracts();
 
   const createTxOptions = useCallback(
-    (celoAmount: BigNumber) => ({
+    (amount: CeloWei) => ({
       from: address,
-      value: celoAmount.toString(),
+      value: amount.toString(),
     }),
     [address]
   );
@@ -19,9 +19,9 @@ export function useStaking() {
 
   const [isStaking, setIsStaking] = useState(false);
   const stake = useCallback(
-    async (celoAmount: BigNumber) => {
+    async (amount: CeloWei) => {
       setIsStaking(true);
-      await deposit().send(createTxOptions(celoAmount));
+      await deposit().send(createTxOptions(amount));
       await loadBalances();
       setIsStaking(false);
     },
@@ -29,9 +29,10 @@ export function useStaking() {
   );
 
   const estimateGasFee = useCallback(
-    async (celoAmount: BigNumber): Promise<BigNumber> => {
-      const gasFee = new BigNumber(await deposit().estimateGas(createTxOptions(celoAmount)));
-      return gasFee.plus(gasFee.dividedBy(10));
+    async (amount: CeloWei): Promise<CeloWei> => {
+      const gasFee = new CeloWei(await deposit().estimateGas(createTxOptions(amount)));
+      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
+      return new CeloWei(increasedGasFee);
     },
     [createTxOptions, deposit]
   );

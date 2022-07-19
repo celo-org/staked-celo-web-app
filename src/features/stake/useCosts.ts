@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { fromWei, toWei } from 'src/formatters/amount';
+import { fromCeloWei, toCeloWei } from 'src/formatters/amount';
 import { useExchangeRates } from 'src/hooks/useExchangeRates';
+import { Celo } from 'src/types/units';
 import { Cost } from './types';
 import { useStaking } from './useStaking';
 
@@ -36,12 +36,12 @@ export const useCosts = (amount: number | undefined) => {
   const { celoExchangeRate } = useExchangeRates();
   const { estimateGasFee } = useStaking();
 
-  const [gasFee, setGasFee] = useState(new BigNumber(0));
+  const [gasFee, setGasFee] = useState(new Celo(0));
 
   const calculateGasFee = useCallback(async () => {
     if (!amount) return;
-    const gasFee = await estimateGasFee(toWei(new BigNumber(amount)));
-    setGasFee(fromWei(gasFee));
+    const estimatedGasFee = await estimateGasFee(toCeloWei(new Celo(amount)));
+    setGasFee(fromCeloWei(estimatedGasFee));
   }, [estimateGasFee, amount]);
 
   useEffect(() => {
