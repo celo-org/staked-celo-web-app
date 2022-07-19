@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
-import { Swap } from 'src/features/stake/Swap';
+import { Stake } from 'src/features/stake/Stake';
 
-const Stake: NextPage = () => {
-  return <Swap />;
+const StakePage: NextPage = () => {
+  return <Stake />;
 };
 
-export default Stake;
+export default StakePage;
