@@ -5,7 +5,7 @@ import { StakedCeloWei } from 'src/types/units';
 import { PendingCeloWithdrawal } from './types';
 
 export function useUnstaking() {
-  const { address } = useAccount();
+  const { address, loadBalances } = useAccount();
   const { managerContract, accountContract } = useContracts();
 
   const createTxOptions = () => ({
@@ -16,7 +16,10 @@ export function useUnstaking() {
 
   const withdraw = (amount: StakedCeloWei) => managerContract.methods.withdraw(amount.toString());
 
-  const unstake = (amount: StakedCeloWei) => withdraw(amount).send(createTxOptions());
+  const unstake = async (amount: StakedCeloWei) => {
+    await withdraw(amount).send(createTxOptions());
+    await loadBalances();
+  };
 
   const estimateUnstakingFee = async (amount: StakedCeloWei): Promise<StakedCeloWei> => {
     const gasFee = new StakedCeloWei(await withdraw(amount).estimateGas(createTxOptions()));
