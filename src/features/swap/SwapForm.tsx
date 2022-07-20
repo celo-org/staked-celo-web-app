@@ -25,10 +25,11 @@ interface SwapFormProps {
   balance: CeloWei | StakedCeloWei;
   fromToken: StakeToken;
   toToken: StakeToken;
+  estimateReceiveValue: (num: number) => number;
 }
 
 export const SwapForm = (props: SwapFormProps) => {
-  const { onSubmit, balance, fromToken, toToken } = props;
+  const { onSubmit, balance, fromToken, toToken, estimateReceiveValue } = props;
   const [amount, setAmount] = useState<number | undefined>(0);
   const { address } = useAccount();
   const { costs } = useCosts(amount);
@@ -53,7 +54,11 @@ export const SwapForm = (props: SwapFormProps) => {
               <Image src={Arrow} alt="Arrow" width={40} height={40} quality={100} />
             </a>
           </Link>
-          <ReceiveSummary amount={amount} token={toToken} />
+          <ReceiveSummary
+            estimateReceiveValue={estimateReceiveValue}
+            amount={amount}
+            token={toToken}
+          />
         </FloatingBox>
 
         <div className="flex justify-center mt-5 mb-1">

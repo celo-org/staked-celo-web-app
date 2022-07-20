@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Modal } from 'src/components/modals/Modal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { useEstimations } from 'src/features/stake/useEstimations';
 import { TokenCard } from 'src/features/swap/FormTemplate';
 import { StakeToken } from 'src/features/swap/types';
 import Info from 'src/images/icons/info.svg';
@@ -10,6 +9,7 @@ import Info from 'src/images/icons/info.svg';
 interface ReceiveSummaryProps {
   amount: number | undefined;
   token: StakeToken;
+  estimateReceiveValue: (num: number) => number;
 }
 
 const UnstakeInfo = () => {
@@ -50,9 +50,8 @@ const getInfoChild = (token: StakeToken) => {
   return;
 };
 
-export const ReceiveSummary = ({ amount, token }: ReceiveSummaryProps) => {
-  const { estimateDepositValue } = useEstimations();
-  const estimatedValue = amount && estimateDepositValue(amount);
+export const ReceiveSummary = ({ amount, token, estimateReceiveValue }: ReceiveSummaryProps) => {
+  const estimatedValue = amount && estimateReceiveValue(amount);
   const displayValue = estimatedValue ? estimatedValue.toFixed(DISPLAY_DECIMALS) : '0.00';
 
   return (
