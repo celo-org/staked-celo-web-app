@@ -27,9 +27,6 @@ export function useUnstaking() {
     return new StCeloWei(increasedGasFee);
   };
 
-  const estimateCeloWithdrawal = (amount: StCeloWei) =>
-    managerContract.methods.toCelo(amount.toString()).call({ from: address });
-
   const getPendingCeloWithdrawals = async (): Promise<PendingCeloWithdrawal[]> => {
     const { values = [], timestamps = [] } =
       (await accountContract.methods.getPendingWithdrawals(address).call({ from: address })) || {};
@@ -43,7 +40,6 @@ export function useUnstaking() {
   return {
     unstake,
     estimateUnstakingFee,
-    estimateCeloWithdrawal,
     getPendingCeloWithdrawals,
   };
 }
