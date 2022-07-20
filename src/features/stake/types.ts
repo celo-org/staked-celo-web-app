@@ -2,7 +2,7 @@ export interface StakeFormValues {
   amount?: number;
 }
 
-export interface Fee {
+export interface Cost {
   title: string;
   value: string | number;
   tooltip: {

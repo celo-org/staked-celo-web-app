@@ -1,57 +1,45 @@
-import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useState } from 'react';
-import { toWei } from 'src/formatters/amount';
+import { useCallback, useState } from 'react';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
-import logger from 'src/services/logger';
+import { CeloWei } from 'src/types/units';
 
 export function useStaking() {
   const { address, loadBalances } = useAccount();
   const { managerContract } = useContracts();
 
   const createTxOptions = useCallback(
-    (celoAmount: BigNumber) => ({
+    (amount: CeloWei) => ({
       from: address,
-      value: celoAmount.toString(),
+      value: amount.toString(),
     }),
     [address]
   );
 
   const deposit = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
+  const [isStaking, setIsStaking] = useState(false);
   const stake = useCallback(
-    async (celoAmount: BigNumber) => {
-      await deposit().send(createTxOptions(celoAmount));
+    async (amount: CeloWei) => {
+      setIsStaking(true);
+      await deposit().send(createTxOptions(amount));
       await loadBalances();
+      setIsStaking(false);
     },
     [createTxOptions, deposit, loadBalances]
   );
 
-  const estimateFee = useCallback(
-    async (celoAmount: BigNumber): Promise<BigNumber> => {
-      const estimatedFee = new BigNumber(await deposit().estimateGas(createTxOptions(celoAmount)));
-      return estimatedFee.plus(estimatedFee.dividedBy(10));
+  const estimateGasFee = useCallback(
+    async (amount: CeloWei): Promise<CeloWei> => {
+      const gasFee = new CeloWei(await deposit().estimateGas(createTxOptions(amount)));
+      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
+      return new CeloWei(increasedGasFee);
     },
     [createTxOptions, deposit]
   );
 
-  const [exchangeRate, setExchangeRate] = useState(0);
-
-  const loadExchangeRate = useCallback(async () => {
-    const oneCeloInWei = toWei(new BigNumber('1'));
-    const stakedCeloAmount = new BigNumber(
-      await managerContract.methods.toStakedCelo(oneCeloInWei).call({ from: address })
-    );
-    setExchangeRate(stakedCeloAmount.dividedBy(oneCeloInWei).toNumber());
-  }, [managerContract, address]);
-
-  useEffect(() => {
-    loadExchangeRate().catch((error: any) => logger.error(error?.message));
-  }, [loadExchangeRate]);
-
   return {
     stake,
-    estimateFee,
-    exchangeRate,
+    isStaking,
+    estimateGasFee,
   };
 }

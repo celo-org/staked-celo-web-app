@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
+import { StakedCeloWei } from 'src/types/units';
 import { PendingCeloWithdrawal } from './types';
 
 export function useUnstaking() {
@@ -14,21 +14,18 @@ export function useUnstaking() {
     gasPrice: GAS_PRICE,
   });
 
-  const withdraw = (stakedCeloAmount: BigNumber) =>
-    managerContract.methods.withdraw(stakedCeloAmount.toString());
+  const withdraw = (amount: StakedCeloWei) => managerContract.methods.withdraw(amount.toString());
 
-  const unstake = (stakedCeloAmount: BigNumber) =>
-    withdraw(stakedCeloAmount).send(createTxOptions());
+  const unstake = (amount: StakedCeloWei) => withdraw(amount).send(createTxOptions());
 
-  const estimateUnstakingFee = async (stakedCeloAmount: BigNumber): Promise<BigNumber> => {
-    const estimatedFee = new BigNumber(
-      await withdraw(stakedCeloAmount).estimateGas(createTxOptions())
-    );
-    return estimatedFee.plus(estimatedFee.dividedBy(10));
+  const estimateUnstakingFee = async (amount: StakedCeloWei): Promise<StakedCeloWei> => {
+    const gasFee = new StakedCeloWei(await withdraw(amount).estimateGas(createTxOptions()));
+    const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
+    return new StakedCeloWei(increasedGasFee);
   };
 
-  const estimateCeloWithdrawal = (stakedCeloAmount: BigNumber) =>
-    managerContract.methods.toCelo(stakedCeloAmount.toString()).call({ from: address });
+  const estimateCeloWithdrawal = (amount: StakedCeloWei) =>
+    managerContract.methods.toCelo(amount.toString()).call({ from: address });
 
   const getPendingCeloWithdrawals = async (): Promise<PendingCeloWithdrawal[]> => {
     const { values = [], timestamps = [] } =

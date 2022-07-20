@@ -1,54 +1,31 @@
-import BigNumber from 'bignumber.js';
 import { Field, Form, Formik, useFormikContext } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
-import { FeesSummary } from 'src/features/stake/FeesSummary';
+import { CostsSummary } from 'src/features/stake/CostsSummary';
 import { TokenCard } from 'src/features/stake/FormTemplate';
 import { ReceiveSummary } from 'src/features/stake/ReceiveSummary';
-import { fromWeiRounded } from 'src/formatters/amount';
+import { useStaking } from 'src/features/stake/useStaking';
+import { fromWeiRounded, toCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import Arrow from 'src/images/icons/arrow.svg';
+import { Celo, CeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeFormValues } from './types';
+import { useCosts } from './useCosts';
 import { useFormValidator } from './useFormValidator';
 
 const initialValues: StakeFormValues = {
   amount: '' as unknown as number,
 };
 
-const fees = [
-  {
-    title: 'Exchange Rate',
-    value: 1.03,
-    tooltip: {
-      content:
-        'stCELO’s exchange rate continuously accrues value vs CELO. As you receive rewards, your amount of stCELO will not change but when you unstake it will be worth more CELO than what you paid.',
-    },
-  },
-  {
-    title: 'Transaction Cost',
-    value: '< $0.01',
-    tooltip: {
-      content:
-        'Every blockchain transaction requires gas fees to be paid. The amount mentioned is an estimate of these gas costs.',
-    },
-  },
-  {
-    title: 'Fees',
-    value: 'Free',
-    tooltip: {
-      content: 'For the launch of the stCELO protocol, fees are free.',
-    },
-  },
-];
-
 export const Stake = () => {
-  const onSubmit = (values: StakeFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log(values);
+  const { stake } = useStaking();
+  const onSubmit = async ({ amount }: StakeFormValues) => {
+    if (!amount) return;
+    await stake(toCeloWei(new Celo(amount)));
   };
 
   return (
@@ -65,6 +42,7 @@ interface StakeFormProps {
 export const StakeForm = ({ onSubmit }: StakeFormProps) => {
   const [amount, setAmount] = useState<number | undefined>(0);
   const { address, celoBalance } = useAccount();
+  const { costs } = useCosts(amount);
   const validateForm = useFormValidator();
 
   return (
@@ -90,17 +68,17 @@ export const StakeForm = ({ onSubmit }: StakeFormProps) => {
         </FloatingBox>
 
         <div className="flex justify-center mt-5 mb-1">
-          <SubmitButton color={'purple'} address={address} />
+          <SubmitButton color="purple" address={address || ''} />
         </div>
 
-        <FeesSummary fees={fees} />
+        <CostsSummary costs={costs} />
       </Form>
     </Formik>
   );
 };
 
 interface FormInputProps {
-  balance: BigNumber;
+  balance: CeloWei;
   onChange: (amount: number | undefined) => void;
 }
 
