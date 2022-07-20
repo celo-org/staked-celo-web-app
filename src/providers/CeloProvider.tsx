@@ -40,7 +40,11 @@ const CeloConnectRedirect = (props: PropsWithChildren) => {
   if (!isConnected && router.pathname !== '/connect') {
     void router.push('/connect');
 
-    // Router is async. Shows empty screen before redirect.
+    // Router is async. Show empty screen before redirect.
+    return null;
+  } else if (isConnected && router.pathname == '/connect') {
+    void router.push('/');
+
     return null;
   }
 
