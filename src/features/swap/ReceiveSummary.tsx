@@ -10,6 +10,7 @@ interface ReceiveSummaryProps {
   amount: number | undefined;
   token: StakeToken;
   estimateReceiveValue: (num: number) => number;
+  isValid: boolean;
 }
 
 const UnstakeInfo = () => {
@@ -50,8 +51,13 @@ const getInfoChild = (token: StakeToken) => {
   return;
 };
 
-export const ReceiveSummary = ({ amount, token, estimateReceiveValue }: ReceiveSummaryProps) => {
-  const estimatedValue = amount && estimateReceiveValue(amount);
+export const ReceiveSummary = ({
+  amount,
+  token,
+  estimateReceiveValue,
+  isValid,
+}: ReceiveSummaryProps) => {
+  const estimatedValue = amount && isValid && estimateReceiveValue(amount);
   const displayValue = estimatedValue ? estimatedValue.toFixed(DISPLAY_DECIMALS) : '0.00';
 
   return (

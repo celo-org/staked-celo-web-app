@@ -7,7 +7,7 @@ import Twitter from 'src/images/icons/twitter.svg';
 export const Footer = () => {
   return (
     <footer className="w-screen bg-gray-800 text-gray-100 flex flex-col p-7 md:flex-row md:justify-between">
-      <div className="mt-2 md:order-first">
+      <div className="mt-2 flex flex-col md:order-first">
         <span className="text-l font-light">Total CELO staked</span>
         <span className="text-xl">1,234,567.89</span>
       </div>
