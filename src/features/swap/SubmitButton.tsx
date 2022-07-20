@@ -1,8 +1,8 @@
 import { useFormikContext } from 'formik';
 import { useCallback } from 'react';
 import { SolidButton } from 'src/components/buttons/SolidButton';
+import { SwapFormValues } from 'src/features/swap/types';
 import { useTimeout } from 'src/hooks/useTimeout';
-import { StakeFormValues } from './types';
 
 interface ButtonProps {
   address: string;
@@ -10,7 +10,7 @@ interface ButtonProps {
 }
 
 export const SubmitButton = ({ address, color }: ButtonProps) => {
-  const { errors, setErrors, touched, setTouched } = useFormikContext<StakeFormValues>();
+  const { errors, setErrors, touched, setTouched } = useFormikContext<SwapFormValues>();
   const error = touched.amount && errors.amount;
   const classes = error
     ? `w-full h-14 bg-red-500 hover:bg-red-500 active:bg-red-500`

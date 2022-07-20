@@ -1,4 +1,4 @@
-export interface StakeFormValues {
+export interface SwapFormValues {
   amount?: number;
 }
 

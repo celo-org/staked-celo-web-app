@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { Modal } from 'src/components/modals/Modal';
-import { Cost } from 'src/features/stake/types';
+import { Cost } from 'src/features/swap/types';
 import Info from 'src/images/icons/info.svg';
 
 interface CostsSummaryProps {
@@ -39,7 +39,7 @@ const CostItem = (props: CostItemProps) => {
           />
         </span>
       </span>
-      <span className={cost.value === 'Free' ? 'text-green' : ''}>{cost.value}</span>
+      <span className={cost.title === 'Fees' ? 'text-green' : ''}>{cost.value}</span>
       <Modal isOpen={isOpen} close={() => setIsOpen(false)}>
         {cost.tooltip.content}
       </Modal>

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
-import { FloatingBox } from 'src/components/containers/FloatingBox';
+import { Unstake } from 'src/features/unstake/Unstake';
 
-const Unstake: NextPage = () => {
-  return <FloatingBox>Unstake!</FloatingBox>;
+const UnstakePage: NextPage = () => {
+  return <Unstake />;
 };
 
-export default Unstake;
+export default UnstakePage;
