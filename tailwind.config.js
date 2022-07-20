@@ -6,6 +6,7 @@ module.exports = {
   theme: {
     colors: {
       // default
+      black: colors.black,
       transparent: colors.transparent,
       blue: colors.blue,
       red: colors.red,
@@ -28,6 +29,7 @@ module.exports = {
         900: '#8C62FF',
       },
       gray: {
+        100: '#E5EAEE',
         400: '#7B9799',
         800: '#324142',
         900: '#212B2E',

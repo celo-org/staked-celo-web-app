@@ -27,7 +27,7 @@ export const SubmitButton = ({ address, color }: ButtonProps) => {
   useTimeout(clearErrors, 3000);
 
   return (
-    <SolidButton color={color} size="m" type={type} classes={classes}>
+    <SolidButton color={color} size="xl" type={type} classes={classes}>
       {text}
     </SolidButton>
   );
