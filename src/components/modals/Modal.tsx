@@ -23,6 +23,11 @@ export const Modal = ({
       onRequestClose={close}
       shouldCloseOnOverlayClick={true}
       ariaHideApp={false}
+      style={{
+        overlay: {
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        },
+      }}
     >
       <div className="flex flex-col h-full">
         <div className="flex justify-end">
