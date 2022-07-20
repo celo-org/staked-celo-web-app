@@ -24,7 +24,7 @@ const useBalances = () => {
   const { stCeloContract } = useContracts();
 
   const [celoBalance, setCeloBalance] = useState(new CeloWei(0));
-  const [stCeloBalance, setStakedCeloBalance] = useState(new StCeloWei(0));
+  const [stCeloBalance, setStCeloBalance] = useState(new StCeloWei(0));
 
   const loadCeloBalance = useCallback(async () => {
     const { eth } = kit.connection.web3;
@@ -35,16 +35,16 @@ const useBalances = () => {
     setCeloBalance(new CeloWei(balance));
   }, [kit.connection, address]);
 
-  const loadStakedCeloBalance = useCallback(async () => {
+  const loadStCeloBalance = useCallback(async () => {
     const stCeloBalance = await stCeloContract.methods.balanceOf(address).call({
       from: address,
     });
-    setStakedCeloBalance(new StCeloWei(stCeloBalance));
+    setStCeloBalance(new StCeloWei(stCeloBalance));
   }, [address, stCeloContract]);
 
   const loadBalances = useCallback(async () => {
-    await Promise.all([loadCeloBalance(), loadStakedCeloBalance()]);
-  }, [loadCeloBalance, loadStakedCeloBalance]);
+    await Promise.all([loadCeloBalance(), loadStCeloBalance()]);
+  }, [loadCeloBalance, loadStCeloBalance]);
 
   useEffect(() => {
     if (!address) return;

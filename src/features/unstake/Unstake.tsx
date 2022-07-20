@@ -4,7 +4,7 @@ import { useEstimations } from 'src/features/unstake/useEstimations';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { toStCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
-import { StakedCelo } from 'src/types/units';
+import { StCelo } from 'src/types/units';
 
 export const Unstake = () => {
   const { stCeloBalance } = useAccount();
@@ -13,7 +13,7 @@ export const Unstake = () => {
 
   const onSubmit = async ({ amount }: SwapFormValues) => {
     if (!amount) return;
-    await unstake(toStCeloWei(new StakedCelo(amount)));
+    await unstake(toStCeloWei(new StCelo(amount)));
   };
 
   return (
