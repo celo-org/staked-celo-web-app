@@ -40,6 +40,12 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
       isOpen={changingWallet ? false : isOpen}
       screenReaderLabel="Connect wallet modal"
       close={close}
+      contentStyle={{
+        width: '90%',
+        height: '70%',
+        maxWidth: '350px',
+        maxHeight: '500px',
+      }}
     >
       <div className="flex flex-col flex-grow">
         <header className="font-semibold text-xl mb-8">Wallet Info</header>
