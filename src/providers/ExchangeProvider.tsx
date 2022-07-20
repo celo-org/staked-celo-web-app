@@ -10,7 +10,7 @@ interface IExchangeContext {
   loadExchangeRates: () => Promise<void>;
 }
 
-const useExchangeRate = () => {
+const useCeloExchangeRate = () => {
   const { address } = useAccount();
   const { managerContract } = useContracts();
 
@@ -23,6 +23,15 @@ const useExchangeRate = () => {
     );
     setCeloExchangeRate(stakedCeloAmount.dividedBy(oneCeloWei).toNumber());
   }, [managerContract, address]);
+
+  return {
+    celoExchangeRate,
+    loadCeloExchangeRate,
+  };
+};
+
+const useExchangeRate = () => {
+  const { celoExchangeRate, loadCeloExchangeRate } = useCeloExchangeRate();
 
   const loadExchangeRates = useCallback(async () => {
     await Promise.all([loadCeloExchangeRate()]);
