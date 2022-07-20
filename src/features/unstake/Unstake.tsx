@@ -17,13 +17,13 @@ export const Unstake = () => {
   };
 
   return (
-    <div className="flex justify-center md:w-96 mx-auto px-4">
+    <div className="flex justify-center md:w-96 mx-auto w-full px-4 mb-14">
       <SwapForm
         estimateReceiveValue={estimateWithdrawValue}
         onSubmit={onSubmit}
         balance={stCeloBalance}
-        toToken="stCELO"
-        fromToken="CELO"
+        fromToken="stCELO"
+        toToken="CELO"
       />
     </div>
   );
