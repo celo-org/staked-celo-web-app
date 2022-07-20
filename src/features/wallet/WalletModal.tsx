@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { Modal } from 'src/components/modals/Modal';
 import { useAccount } from 'src/hooks/useAccount';
 import { useWallet } from './useWallet';
@@ -9,7 +9,7 @@ interface WalletModalActionProps {
 
 const WalletModalAction = ({ children, action }: PropsWithChildren<WalletModalActionProps>) => {
   return (
-    <button className="text-left font-bold text-lg m-4" onClick={action}>
+    <button className="text-left text-xl font-normal my-2 underline" onClick={action}>
       {children}
     </button>
   );
@@ -35,17 +35,30 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
     close();
   }, [disconnectWallet, close]);
 
+  const displayAddress: string = useMemo(() => {
+    if (!address) return '';
+    const relevantNumbers = address.slice(2);
+    return `0x ${relevantNumbers.replaceAll(/([0-9a-zA-Z]{4})/g, '$1 ')}`;
+  }, [address]);
+
   return (
     <Modal
       isOpen={changingWallet ? false : isOpen}
       screenReaderLabel="Connect wallet modal"
       close={close}
+      contentStyle={{
+        width: '90%',
+        height: '40%',
+        maxWidth: '350px',
+        minHeight: '400px',
+        maxHeight: '500px',
+      }}
+      header={<span className="text-green">&bull; Connected</span>}
     >
       <div className="flex flex-col flex-grow">
-        <header className="font-semibold text-xl mb-8">Wallet Info</header>
         <section className="flex-grow">
-          <div className="flex justify-between mb-2">
-            <span className="font-semibold">Address</span>
+          <div className="flex mt-8 mb-2">
+            <span className="font-regular text-2xl mr-2">Wallet address</span>
             <button
               className="underline"
               onClick={() => navigator.clipboard.writeText(address || '')}
@@ -53,7 +66,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
               Copy
             </button>
           </div>
-          {address}
+          <span className="text-base">{displayAddress}</span>
         </section>
         <WalletModalAction action={changeWalletWithClose}>Change Wallet</WalletModalAction>
         <WalletModalAction action={disconnectWalletWithClose}>Disconnect</WalletModalAction>
