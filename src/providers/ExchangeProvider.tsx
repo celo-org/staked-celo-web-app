@@ -1,8 +1,8 @@
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { toCeloWei } from 'src/formatters/amount';
+import { toCeloWei, toStakedCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
-import { Celo, StakedCeloWei } from 'src/types/units';
+import { Celo, CeloWei, StakedCelo, StakedCeloWei } from 'src/types/units';
 
 interface ExchangeContext {
   celoExchangeRate: number;
@@ -30,12 +30,33 @@ const useCeloExchangeRate = () => {
   };
 };
 
+const useStakedCeloExchangeRate = () => {
+  const { address } = useAccount();
+  const { managerContract } = useContracts();
+
+  const [stakedCeloExchangeRate, setStakedCeloExchangeRate] = useState(0);
+
+  const loadStakedCeloExchangeRate = useCallback(async () => {
+    const oneStakedCeloWei = toStakedCeloWei(new StakedCelo('1')).toString();
+    const celoAmount = new CeloWei(
+      await managerContract.methods.toCelo(oneStakedCeloWei).call({ from: address })
+    );
+    setStakedCeloExchangeRate(celoAmount.dividedBy(oneStakedCeloWei).toNumber());
+  }, [managerContract, address]);
+
+  return {
+    stakedCeloExchangeRate,
+    loadStakedCeloExchangeRate,
+  };
+};
+
 const useExchangeRate = () => {
   const { celoExchangeRate, loadCeloExchangeRate } = useCeloExchangeRate();
+  const { stakedCeloExchangeRate, loadStakedCeloExchangeRate } = useStakedCeloExchangeRate();
 
   const loadExchangeRates = useCallback(async () => {
-    await Promise.all([loadCeloExchangeRate()]);
-  }, [loadCeloExchangeRate]);
+    await Promise.all([loadCeloExchangeRate(), loadStakedCeloExchangeRate()]);
+  }, [loadCeloExchangeRate, loadStakedCeloExchangeRate]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -44,7 +65,7 @@ const useExchangeRate = () => {
 
   return {
     celoExchangeRate,
-    stakedCeloExchangeRate: 0,
+    stakedCeloExchangeRate,
     loadExchangeRates,
   };
 };
