@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { CSSProperties, PropsWithChildren } from 'react';
+import { CSSProperties, PropsWithChildren, ReactElement } from 'react';
 import ReactModal from 'react-modal';
 import Close from 'src/images/icons/close.svg';
 
@@ -8,6 +8,7 @@ interface ModalProps {
   close: () => void;
   screenReaderLabel?: string;
   contentStyle?: CSSProperties;
+  header?: ReactElement | string;
 }
 
 export const Modal = ({
@@ -16,6 +17,7 @@ export const Modal = ({
   close,
   children,
   contentStyle,
+  header,
 }: PropsWithChildren<ModalProps>) => {
   return (
     <ReactModal
@@ -38,7 +40,8 @@ export const Modal = ({
       }}
     >
       <div className="flex flex-col h-full">
-        <div className="flex justify-end">
+        <div className={`flex ${header ? 'justify-between' : 'justify-end'}`}>
+          {header || null}
           <span className="cursor-pointer" onClick={close}>
             <Image src={Close} alt="Close button" width={18} height={18} />
           </span>
