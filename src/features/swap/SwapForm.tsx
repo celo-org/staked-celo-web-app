@@ -10,7 +10,7 @@ import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { fromWeiRounded } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import Arrow from 'src/images/icons/arrow.svg';
-import { CeloWei, StakedCeloWei } from 'src/types/units';
+import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeToken, SwapFormValues } from './types';
@@ -22,13 +22,14 @@ const initialValues: SwapFormValues = {
 
 interface SwapFormProps {
   onSubmit: (values: SwapFormValues) => void;
-  balance: CeloWei | StakedCeloWei;
+  balance: CeloWei | StCeloWei;
   fromToken: StakeToken;
   toToken: StakeToken;
+  estimateReceiveValue: (num: number) => number;
 }
 
 export const SwapForm = (props: SwapFormProps) => {
-  const { onSubmit, balance, fromToken, toToken } = props;
+  const { onSubmit, balance, fromToken, toToken, estimateReceiveValue } = props;
   const [amount, setAmount] = useState<number | undefined>(0);
   const { address } = useAccount();
   const { costs } = useCosts(amount);
@@ -53,7 +54,11 @@ export const SwapForm = (props: SwapFormProps) => {
               <Image src={Arrow} alt="Arrow" width={40} height={40} quality={100} />
             </a>
           </Link>
-          <ReceiveSummary amount={amount} token={toToken} />
+          <ReceiveSummary
+            estimateReceiveValue={estimateReceiveValue}
+            amount={amount}
+            token={toToken}
+          />
         </FloatingBox>
 
         <div className="flex justify-center mt-5 mb-1">
@@ -68,7 +73,7 @@ export const SwapForm = (props: SwapFormProps) => {
 
 interface FormInputProps {
   onChange: (amount: number | undefined) => void;
-  balance: CeloWei | StakedCeloWei;
+  balance: CeloWei | StCeloWei;
   token: StakeToken;
 }
 

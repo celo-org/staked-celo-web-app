@@ -12,6 +12,6 @@ export class StakedCelo extends BigNumber {
   private __tokenType = 'StakedCelo';
 }
 
-export class StakedCeloWei extends BigNumber {
-  private __tokenType = 'StakedCeloWei';
+export class StCeloWei extends BigNumber {
+  private __tokenType = 'StCeloWei';
 }

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StakedCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import { accountAddress, managerAddress, stakedCeloAddress } from 'src/config/contracts';
+import { accountAddress, managerAddress, stCeloAddress } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
 
 export function useContracts() {
@@ -14,9 +14,9 @@ export function useContracts() {
     return new eth.Contract(ManagerABI as AbiItem[], managerAddress);
   }, [kit.connection]);
 
-  const stakedCeloContract = useMemo(() => {
+  const stCeloContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(StakedCeloABI as AbiItem[], stakedCeloAddress);
+    return new eth.Contract(StakedCeloABI as AbiItem[], stCeloAddress);
   }, [kit.connection]);
 
   const accountContract = useMemo(() => {
@@ -26,7 +26,7 @@ export function useContracts() {
 
   return {
     managerContract,
-    stakedCeloContract,
+    stCeloContract,
     accountContract,
   };
 }

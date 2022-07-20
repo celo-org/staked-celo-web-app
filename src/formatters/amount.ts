@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { MIN_ROUNDED_VALUE, WEI_PER_UNIT } from 'src/config/consts';
-import { Celo, CeloWei, StakedCelo, StakedCeloWei } from 'src/types/units';
+import { Celo, CeloWei, StakedCelo, StCeloWei } from 'src/types/units';
 import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
 
 function fromWei(value: BigNumber): string {
@@ -13,13 +13,13 @@ export function fromCeloWei(value: CeloWei): Celo {
   return new Celo(fromWei(value));
 }
 
-export function fromStakedCeloWei(value: StakedCeloWei): StakedCelo {
+export function fromStCeloWei(value: StCeloWei): StakedCelo {
   return new StakedCelo(fromWei(value));
 }
 
 // Similar to fromWei above but rounds to set number of decimals
 // with a minimum floor, configured per token
-export function fromWeiRounded(value: CeloWei | StakedCeloWei, roundToZeroIfSmall = false): number {
+export function fromWeiRounded(value: CeloWei | StCeloWei, roundToZeroIfSmall = false): number {
   if (!value) return 0;
   const flooredValue = value.toFixed(0, BigNumber.ROUND_FLOOR);
   const amount = new BigNumber(web3FromWei(flooredValue));
@@ -52,6 +52,6 @@ export function toCeloWei(value: Celo): CeloWei {
   return new CeloWei(toWei(value));
 }
 
-export function toStakedCeloWei(value: StakedCelo): StakedCeloWei {
-  return new StakedCeloWei(toWei(value));
+export function toStCeloWei(value: StakedCelo): StCeloWei {
+  return new StCeloWei(toWei(value));
 }
