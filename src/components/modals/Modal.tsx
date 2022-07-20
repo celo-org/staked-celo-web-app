@@ -44,7 +44,7 @@ export const Modal = ({
         <div className={`flex ${header ? 'justify-between' : 'justify-end'}`}>
           {header || null}
           <span className="cursor-pointer" onClick={close}>
-            <Image src={Close} alt="Close button" width={18} height={18} />
+            <Image src={Close} alt="Close button" width={24} height={24} />
           </span>
         </div>
         {children}
