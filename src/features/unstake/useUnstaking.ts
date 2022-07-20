@@ -14,15 +14,15 @@ export function useUnstaking() {
     gasPrice: GAS_PRICE,
   });
 
-  const withdraw = (amount: StCeloWei) => managerContract.methods.withdraw(amount.toString());
+  const withdrawTx = (amount: StCeloWei) => managerContract.methods.withdraw(amount.toString());
 
   const unstake = async (amount: StCeloWei) => {
-    await withdraw(amount).send(createTxOptions());
+    await withdrawTx(amount).send(createTxOptions());
     await loadBalances();
   };
 
   const estimateUnstakingFee = async (amount: StCeloWei): Promise<StCeloWei> => {
-    const gasFee = new StCeloWei(await withdraw(amount).estimateGas(createTxOptions()));
+    const gasFee = new StCeloWei(await withdrawTx(amount).estimateGas(createTxOptions()));
     const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
     return new StCeloWei(increasedGasFee);
   };
