@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
@@ -8,26 +9,38 @@ export function useUnstaking() {
   const { address, loadBalances } = useAccount();
   const { managerContract, accountContract } = useContracts();
 
-  const createTxOptions = () => ({
-    from: address,
-    gas: GAS_LIMIT,
-    gasPrice: GAS_PRICE,
-  });
+  const createTxOptions = useCallback(
+    () => ({
+      from: address,
+      gas: GAS_LIMIT,
+      gasPrice: GAS_PRICE,
+    }),
+    [address]
+  );
 
-  const withdrawTx = (amount: StCeloWei) => managerContract.methods.withdraw(amount.toString());
+  const withdrawTx = useCallback(
+    (amount: StCeloWei) => managerContract.methods.withdraw(amount.toString()),
+    [managerContract]
+  );
 
-  const unstake = async (amount: StCeloWei) => {
-    await withdrawTx(amount).send(createTxOptions());
-    await loadBalances();
-  };
+  const unstake = useCallback(
+    async (amount: StCeloWei) => {
+      await withdrawTx(amount).send(createTxOptions());
+      await loadBalances();
+    },
+    [withdrawTx, createTxOptions, loadBalances]
+  );
 
-  const estimateUnstakingFee = async (amount: StCeloWei): Promise<StCeloWei> => {
-    const gasFee = new StCeloWei(await withdrawTx(amount).estimateGas(createTxOptions()));
-    const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
-    return new StCeloWei(increasedGasFee);
-  };
+  const estimateUnstakingFee = useCallback(
+    async (amount: StCeloWei): Promise<StCeloWei> => {
+      const gasFee = new StCeloWei(await withdrawTx(amount).estimateGas(createTxOptions()));
+      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
+      return new StCeloWei(increasedGasFee);
+    },
+    [withdrawTx, createTxOptions]
+  );
 
-  const getPendingCeloWithdrawals = async (): Promise<PendingCeloWithdrawal[]> => {
+  const getPendingCeloWithdrawals = useCallback(async (): Promise<PendingCeloWithdrawal[]> => {
     const { values = [], timestamps = [] } =
       (await accountContract.methods.getPendingWithdrawals(address).call({ from: address })) || {};
 
@@ -35,7 +48,7 @@ export function useUnstaking() {
       value,
       timestamp: timestamps[index],
     }));
-  };
+  }, [accountContract, address]);
 
   return {
     unstake,
