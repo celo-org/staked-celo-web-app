@@ -47,9 +47,10 @@ const useBalances = () => {
   }, [loadCeloBalance, loadStakedCeloBalance]);
 
   useEffect(() => {
+    if (!address) return;
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     loadBalances();
-  }, [loadBalances]);
+  }, [address, loadBalances]);
 
   return {
     celoBalance,
