@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { PropsWithChildren } from 'react';
+import { CSSProperties, PropsWithChildren } from 'react';
 import ReactModal from 'react-modal';
 import Close from 'src/images/icons/close.svg';
 
@@ -7,6 +7,7 @@ interface ModalProps {
   isOpen: boolean;
   close: () => void;
   screenReaderLabel?: string;
+  contentStyle?: CSSProperties;
 }
 
 export const Modal = ({
@@ -14,6 +15,7 @@ export const Modal = ({
   screenReaderLabel,
   close,
   children,
+  contentStyle,
 }: PropsWithChildren<ModalProps>) => {
   return (
     <ReactModal
@@ -28,6 +30,7 @@ export const Modal = ({
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
         },
         content: {
+          ...contentStyle,
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
