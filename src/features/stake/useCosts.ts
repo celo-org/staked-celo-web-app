@@ -3,7 +3,7 @@ import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { fromCeloWei, toCeloWei } from 'src/formatters/amount';
 import { useExchangeRates } from 'src/hooks/useExchangeRates';
 import { Celo } from 'src/types/units';
-import { Cost } from './types';
+import { Cost } from '../swap/types';
 import { useStaking } from './useStaking';
 
 const exchangeCost: Cost = {
@@ -26,7 +26,7 @@ const transactionCost: Cost = {
 
 const feeCost: Cost = {
   title: 'Fees',
-  value: 'Free',
+  value: 'Free*',
   tooltip: {
     content: 'For the launch of the stCELO protocol, fees are free.',
   },

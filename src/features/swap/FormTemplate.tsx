@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { ReactElement } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
-import { StakeToken } from 'src/features/stake/types';
+import { StakeToken } from 'src/features/swap/types';
 import Celo from 'src/images/icons/CELO.svg';
 import stCelo from 'src/images/icons/stCELO.svg';
 
