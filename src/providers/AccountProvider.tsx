@@ -1,13 +1,13 @@
 import { useCelo } from '@celo/react-celo';
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
-import { CeloWei, StakedCeloWei } from 'src/types/units';
+import { CeloWei, StCeloWei } from 'src/types/units';
 
 interface AccountContext {
   isConnected: boolean;
   address: string | undefined | null;
   celoBalance: CeloWei;
-  stakedCeloBalance: StakedCeloWei;
+  stCeloBalance: StCeloWei;
   loadBalances: () => Promise<void>;
 }
 
@@ -21,10 +21,10 @@ const useAddress = () => {
 const useBalances = () => {
   const { kit } = useCelo();
   const { address } = useAddress();
-  const { stakedCeloContract } = useContracts();
+  const { stCeloContract } = useContracts();
 
   const [celoBalance, setCeloBalance] = useState(new CeloWei(0));
-  const [stakedCeloBalance, setStakedCeloBalance] = useState(new StakedCeloWei(0));
+  const [stCeloBalance, setStakedCeloBalance] = useState(new StCeloWei(0));
 
   const loadCeloBalance = useCallback(async () => {
     const { eth } = kit.connection.web3;
@@ -36,11 +36,11 @@ const useBalances = () => {
   }, [kit.connection, address]);
 
   const loadStakedCeloBalance = useCallback(async () => {
-    const stakedCeloBalance = await stakedCeloContract.methods.balanceOf(address).call({
+    const stCeloBalance = await stCeloContract.methods.balanceOf(address).call({
       from: address,
     });
-    setStakedCeloBalance(new StakedCeloWei(stakedCeloBalance));
-  }, [address, stakedCeloContract]);
+    setStakedCeloBalance(new StCeloWei(stCeloBalance));
+  }, [address, stCeloContract]);
 
   const loadBalances = useCallback(async () => {
     await Promise.all([loadCeloBalance(), loadStakedCeloBalance()]);
@@ -53,7 +53,7 @@ const useBalances = () => {
 
   return {
     celoBalance,
-    stakedCeloBalance,
+    stCeloBalance,
     loadBalances,
   };
 };
@@ -62,13 +62,13 @@ export const AccountContext = createContext<AccountContext>({
   isConnected: false,
   address: null,
   celoBalance: new CeloWei(0),
-  stakedCeloBalance: new StakedCeloWei(0),
+  stCeloBalance: new StCeloWei(0),
   loadBalances: () => Promise.resolve(),
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
   const { isConnected, address } = useAddress();
-  const { loadBalances, celoBalance, stakedCeloBalance } = useBalances();
+  const { loadBalances, celoBalance, stCeloBalance } = useBalances();
 
   return (
     <AccountContext.Provider
@@ -77,7 +77,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         address,
         loadBalances,
         celoBalance,
-        stakedCeloBalance,
+        stCeloBalance,
       }}
     >
       {children}

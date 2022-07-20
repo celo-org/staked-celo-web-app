@@ -2,9 +2,9 @@ import { FormikErrors } from 'formik';
 import { useCallback } from 'react';
 import { SwapFormValues } from 'src/features/swap/types';
 import { toCeloWei } from 'src/formatters/amount';
-import { Celo, CeloWei, StakedCeloWei } from 'src/types/units';
+import { Celo, CeloWei, StCeloWei } from 'src/types/units';
 
-export function useFormValidator(balance: CeloWei | StakedCeloWei) {
+export function useFormValidator(balance: CeloWei | StCeloWei) {
   return useCallback(
     (values?: SwapFormValues): FormikErrors<SwapFormValues> => {
       if (!values || !values.amount) return { amount: 'Amount Required' };

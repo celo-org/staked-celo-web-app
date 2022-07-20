@@ -1,12 +1,12 @@
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { toCeloWei, toStakedCeloWei } from 'src/formatters/amount';
+import { toCeloWei, toStCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
-import { Celo, CeloWei, StakedCelo, StakedCeloWei } from 'src/types/units';
+import { Celo, CeloWei, StakedCelo, StCeloWei } from 'src/types/units';
 
 interface ExchangeContext {
   celoExchangeRate: number;
-  stakedCeloExchangeRate: number;
+  stCeloExchangeRate: number;
   loadExchangeRates: () => Promise<void>;
 }
 
@@ -18,10 +18,10 @@ const useCeloExchangeRate = () => {
 
   const loadCeloExchangeRate = useCallback(async () => {
     const oneCeloWei = toCeloWei(new Celo('1')).toString();
-    const stakedCeloAmount = new StakedCeloWei(
+    const stCeloAmount = new StCeloWei(
       await managerContract.methods.toStakedCelo(oneCeloWei).call({ from: address })
     );
-    setCeloExchangeRate(stakedCeloAmount.dividedBy(oneCeloWei).toNumber());
+    setCeloExchangeRate(stCeloAmount.dividedBy(oneCeloWei).toNumber());
   }, [managerContract, address]);
 
   return {
@@ -34,25 +34,25 @@ const useStakedCeloExchangeRate = () => {
   const { address } = useAccount();
   const { managerContract } = useContracts();
 
-  const [stakedCeloExchangeRate, setStakedCeloExchangeRate] = useState(0);
+  const [stCeloExchangeRate, setStakedCeloExchangeRate] = useState(0);
 
   const loadStakedCeloExchangeRate = useCallback(async () => {
-    const oneStakedCeloWei = toStakedCeloWei(new StakedCelo('1')).toString();
+    const oneStCeloWei = toStCeloWei(new StakedCelo('1')).toString();
     const celoAmount = new CeloWei(
-      await managerContract.methods.toCelo(oneStakedCeloWei).call({ from: address })
+      await managerContract.methods.toCelo(oneStCeloWei).call({ from: address })
     );
-    setStakedCeloExchangeRate(celoAmount.dividedBy(oneStakedCeloWei).toNumber());
+    setStakedCeloExchangeRate(celoAmount.dividedBy(oneStCeloWei).toNumber());
   }, [managerContract, address]);
 
   return {
-    stakedCeloExchangeRate,
+    stCeloExchangeRate,
     loadStakedCeloExchangeRate,
   };
 };
 
 const useExchangeRate = () => {
   const { celoExchangeRate, loadCeloExchangeRate } = useCeloExchangeRate();
-  const { stakedCeloExchangeRate, loadStakedCeloExchangeRate } = useStakedCeloExchangeRate();
+  const { stCeloExchangeRate, loadStakedCeloExchangeRate } = useStakedCeloExchangeRate();
 
   const loadExchangeRates = useCallback(async () => {
     await Promise.all([loadCeloExchangeRate(), loadStakedCeloExchangeRate()]);
@@ -65,25 +65,25 @@ const useExchangeRate = () => {
 
   return {
     celoExchangeRate,
-    stakedCeloExchangeRate,
+    stCeloExchangeRate,
     loadExchangeRates,
   };
 };
 
 export const ExchangeContext = createContext<ExchangeContext>({
   celoExchangeRate: 0,
-  stakedCeloExchangeRate: 0,
+  stCeloExchangeRate: 0,
   loadExchangeRates: () => Promise.resolve(),
 });
 
 export const ExchangeProvider = ({ children }: PropsWithChildren) => {
-  const { celoExchangeRate, stakedCeloExchangeRate, loadExchangeRates } = useExchangeRate();
+  const { celoExchangeRate, stCeloExchangeRate, loadExchangeRates } = useExchangeRate();
 
   return (
     <ExchangeContext.Provider
       value={{
         celoExchangeRate,
-        stakedCeloExchangeRate,
+        stCeloExchangeRate,
         loadExchangeRates,
       }}
     >

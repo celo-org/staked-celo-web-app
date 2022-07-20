@@ -2,18 +2,18 @@ import { SwapForm } from 'src/features/swap/SwapForm';
 import { SwapFormValues } from 'src/features/swap/types';
 import { useEstimations } from 'src/features/unstake/useEstimations';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
-import { toStakedCeloWei } from 'src/formatters/amount';
+import { toStCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { StakedCelo } from 'src/types/units';
 
 export const Unstake = () => {
-  const { stakedCeloBalance } = useAccount();
+  const { stCeloBalance } = useAccount();
   const { estimateWithdrawValue } = useEstimations();
   const { unstake } = useUnstaking();
 
   const onSubmit = async ({ amount }: SwapFormValues) => {
     if (!amount) return;
-    await unstake(toStakedCeloWei(new StakedCelo(amount)));
+    await unstake(toStCeloWei(new StakedCelo(amount)));
   };
 
   return (
@@ -21,7 +21,7 @@ export const Unstake = () => {
       <SwapForm
         estimateReceiveValue={estimateWithdrawValue}
         onSubmit={onSubmit}
-        balance={stakedCeloBalance}
+        balance={stCeloBalance}
         toToken="stCELO"
         fromToken="CELO"
       />

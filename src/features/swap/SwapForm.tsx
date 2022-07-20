@@ -10,7 +10,7 @@ import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { fromWeiRounded } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import Arrow from 'src/images/icons/arrow.svg';
-import { CeloWei, StakedCeloWei } from 'src/types/units';
+import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeToken, SwapFormValues } from './types';
@@ -22,7 +22,7 @@ const initialValues: SwapFormValues = {
 
 interface SwapFormProps {
   onSubmit: (values: SwapFormValues) => void;
-  balance: CeloWei | StakedCeloWei;
+  balance: CeloWei | StCeloWei;
   fromToken: StakeToken;
   toToken: StakeToken;
   estimateReceiveValue: (num: number) => number;
@@ -73,7 +73,7 @@ export const SwapForm = (props: SwapFormProps) => {
 
 interface FormInputProps {
   onChange: (amount: number | undefined) => void;
-  balance: CeloWei | StakedCeloWei;
+  balance: CeloWei | StCeloWei;
   token: StakeToken;
 }
 
