@@ -4,7 +4,7 @@ import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 import { Celo, StakedCeloWei } from 'src/types/units';
 
-interface IExchangeContext {
+interface ExchangeContext {
   celoExchangeRate: number;
   stakedCeloExchangeRate: number;
   loadExchangeRates: () => Promise<void>;
@@ -49,7 +49,7 @@ const useExchangeRate = () => {
   };
 };
 
-export const ExchangeContext = createContext<IExchangeContext>({
+export const ExchangeContext = createContext<ExchangeContext>({
   celoExchangeRate: 0,
   stakedCeloExchangeRate: 0,
   loadExchangeRates: () => Promise.resolve(),

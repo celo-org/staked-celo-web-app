@@ -3,7 +3,7 @@ import { createContext, PropsWithChildren, useCallback, useEffect, useState } fr
 import { useContracts } from 'src/hooks/useContracts';
 import { CeloWei, StakedCeloWei } from 'src/types/units';
 
-interface IAccountContext {
+interface AccountContext {
   isConnected: boolean;
   address: string | undefined | null;
   celoBalance: CeloWei;
@@ -58,7 +58,7 @@ const useBalances = () => {
   };
 };
 
-export const AccountContext = createContext<IAccountContext>({
+export const AccountContext = createContext<AccountContext>({
   isConnected: false,
   address: null,
   celoBalance: new CeloWei(0),
