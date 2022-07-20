@@ -27,6 +27,11 @@ export const Modal = ({
         overlay: {
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
         },
+        content: {
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        },
       }}
     >
       <div className="flex flex-col h-full">
