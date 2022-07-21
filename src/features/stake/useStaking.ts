@@ -18,24 +18,24 @@ export function useStaking() {
     [address]
   );
 
-  const deposit = useCallback(() => managerContract.methods.deposit(), [managerContract]);
+  const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
   const stake = useCallback(
     async (amount: CeloWei) => {
-      await deposit().send(createTxOptions(amount));
+      await depositTx().send(createTxOptions(amount));
       await loadBalances();
     },
-    [createTxOptions, deposit, loadBalances]
+    [createTxOptions, depositTx, loadBalances]
   );
 
   const estimateStakingFee = useCallback(
     async (amount: number): Promise<Celo> => {
       const celoAmount = toCeloWei(new Celo(amount));
-      const gasFee = new CeloWei(await deposit().estimateGas(createTxOptions(celoAmount)));
+      const gasFee = new CeloWei(await depositTx().estimateGas(createTxOptions(celoAmount)));
       const adjustedGasFee = gasFee.plus(gasFee.dividedBy(10)) as CeloWei;
       return fromCeloWei(adjustedGasFee);
     },
-    [createTxOptions, deposit]
+    [createTxOptions, depositTx]
   );
 
   const estimateDepositValue = useCallback(
