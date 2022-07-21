@@ -8,8 +8,8 @@ export class CeloWei extends BigNumber {
   private __tokenType = 'CeloWei';
 }
 
-export class StakedCelo extends BigNumber {
-  private __tokenType = 'StakedCelo';
+export class StCelo extends BigNumber {
+  private __tokenType = 'StCelo';
 }
 
 export class StCeloWei extends BigNumber {

@@ -1,9 +1,9 @@
-import { Field, Form, Formik, FormikErrors, useFormikContext } from 'formik';
+import BigNumber from 'bignumber.js';
+import { Field, Form, Formik, FormikErrors, FormikHelpers, useFormikContext } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
-import { useCosts } from 'src/features/stake/useCosts';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { TokenCard } from 'src/features/swap/FormTemplate';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
@@ -13,6 +13,7 @@ import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeToken, SwapFormValues } from './types';
+import { useCosts } from './useCosts';
 import { useFormValidator } from './useFormValidator';
 
 const initialValues: SwapFormValues = {
@@ -22,21 +23,45 @@ const initialValues: SwapFormValues = {
 interface SwapFormProps {
   onSubmit: (values: SwapFormValues) => void;
   balance: CeloWei | StCeloWei;
+  exchangeRate: number;
   fromToken: StakeToken;
   toToken: StakeToken;
   estimateReceiveValue: (num: number) => number;
+  estimateGasFee: (amount: number) => Promise<BigNumber>;
 }
 
 export const SwapForm = (props: SwapFormProps) => {
-  const { onSubmit, balance, fromToken, toToken, estimateReceiveValue } = props;
+  const {
+    onSubmit,
+    balance,
+    exchangeRate,
+    fromToken,
+    toToken,
+    estimateReceiveValue,
+    estimateGasFee,
+  } = props;
+
   const [amount, setAmount] = useState<number | undefined>(0);
-  const { costs } = useCosts(amount);
+  const [isLoading, setIsLoading] = useState(false);
+  const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
   const validateForm = useFormValidator(balance, fromToken);
+  const submit = useCallback(
+    async (formValues: SwapFormValues, { resetForm }: FormikHelpers<SwapFormValues>) => {
+      setIsLoading(true);
+      try {
+        await onSubmit(formValues);
+      } finally {
+        setIsLoading(false);
+      }
+      resetForm({ values: initialValues });
+    },
+    [onSubmit]
+  );
 
   return (
     <Formik<SwapFormValues>
       initialValues={initialValues}
-      onSubmit={onSubmit}
+      onSubmit={submit}
       validate={validateForm}
       validateOnChange
       validateOnBlur={false}
@@ -62,7 +87,7 @@ export const SwapForm = (props: SwapFormProps) => {
           </FloatingBox>
 
           <div className="flex justify-center mt-5 mb-1">
-            <SubmitButton color="purple" toToken={toToken} />
+            <SubmitButton color="purple" toToken={toToken} pending={isLoading} />
           </div>
 
           {!!amount && <CostsSummary costs={costs} />}

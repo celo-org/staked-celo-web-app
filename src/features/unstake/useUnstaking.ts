@@ -1,36 +1,57 @@
+import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
+import { fromStCeloWei, toStCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
-import { StCeloWei } from 'src/types/units';
+import { useExchangeRates } from 'src/hooks/useExchangeRates';
+import { StCelo, StCeloWei } from 'src/types/units';
 import { PendingCeloWithdrawal } from './types';
 
 export function useUnstaking() {
   const { address, loadBalances } = useAccount();
   const { managerContract, accountContract } = useContracts();
+  const { stCeloExchangeRate } = useExchangeRates();
 
-  const createTxOptions = () => ({
-    from: address,
-    gas: GAS_LIMIT,
-    gasPrice: GAS_PRICE,
-  });
+  const createTxOptions = useCallback(
+    () => ({
+      from: address,
+      gas: GAS_LIMIT,
+      gasPrice: GAS_PRICE,
+    }),
+    [address]
+  );
 
-  const withdraw = (amount: StCeloWei) => managerContract.methods.withdraw(amount.toString());
+  const withdrawTx = useCallback(
+    (amount: StCeloWei) => managerContract.methods.withdraw(amount.toFixed()),
+    [managerContract]
+  );
 
-  const unstake = async (amount: StCeloWei) => {
-    await withdraw(amount).send(createTxOptions());
-    await loadBalances();
-  };
+  const unstake = useCallback(
+    async (amount: StCeloWei) => {
+      await withdrawTx(amount).send(createTxOptions());
+      await loadBalances();
+    },
+    [withdrawTx, createTxOptions, loadBalances]
+  );
 
-  const estimateUnstakingFee = async (amount: StCeloWei): Promise<StCeloWei> => {
-    const gasFee = new StCeloWei(await withdraw(amount).estimateGas(createTxOptions()));
-    const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
-    return new StCeloWei(increasedGasFee);
-  };
+  const estimateUnstakingFee = useCallback(
+    async (amount: number): Promise<StCelo> => {
+      const stCeloWeiAmount = toStCeloWei(new StCelo(amount));
+      const gasFee = new StCeloWei(
+        await withdrawTx(stCeloWeiAmount).estimateGas(createTxOptions())
+      );
+      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)) as StCeloWei;
+      return fromStCeloWei(increasedGasFee);
+    },
+    [withdrawTx, createTxOptions]
+  );
 
-  const estimateCeloWithdrawal = (amount: StCeloWei) =>
-    managerContract.methods.toCelo(amount.toString()).call({ from: address });
+  const estimateWithdrawalValue = useCallback(
+    (amount: number) => amount * stCeloExchangeRate,
+    [stCeloExchangeRate]
+  );
 
-  const getPendingCeloWithdrawals = async (): Promise<PendingCeloWithdrawal[]> => {
+  const getPendingCeloWithdrawals = useCallback(async (): Promise<PendingCeloWithdrawal[]> => {
     const { values = [], timestamps = [] } =
       (await accountContract.methods.getPendingWithdrawals(address).call({ from: address })) || {};
 
@@ -38,12 +59,13 @@ export function useUnstaking() {
       value,
       timestamp: timestamps[index],
     }));
-  };
+  }, [accountContract, address]);
 
   return {
     unstake,
+    stCeloExchangeRate,
     estimateUnstakingFee,
-    estimateCeloWithdrawal,
+    estimateWithdrawalValue,
     getPendingCeloWithdrawals,
   };
 }
