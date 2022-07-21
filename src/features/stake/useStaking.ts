@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 import { useExchangeRates } from 'src/hooks/useExchangeRates';
@@ -19,13 +19,10 @@ export function useStaking() {
 
   const deposit = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
-  const [isStaking, setIsStaking] = useState(false);
   const stake = useCallback(
     async (amount: CeloWei) => {
-      setIsStaking(true);
       await deposit().send(createTxOptions(amount));
       await loadBalances();
-      setIsStaking(false);
     },
     [createTxOptions, deposit, loadBalances]
   );
@@ -46,7 +43,6 @@ export function useStaking() {
 
   return {
     stake,
-    isStaking,
     estimateGasFee,
     estimateDepositValue,
   };
