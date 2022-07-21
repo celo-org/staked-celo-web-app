@@ -42,11 +42,17 @@ export const SwapForm = (props: SwapFormProps) => {
   } = props;
 
   const [amount, setAmount] = useState<number | undefined>(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
   const validateForm = useFormValidator(balance, fromToken);
   const submit = useCallback(
     async (formValues: SwapFormValues, { resetForm }: FormikHelpers<SwapFormValues>) => {
-      await onSubmit(formValues);
+      setIsLoading(true);
+      try {
+        await onSubmit(formValues);
+      } finally {
+        setIsLoading(false);
+      }
       resetForm({ values: initialValues });
     },
     [onSubmit]
@@ -81,7 +87,7 @@ export const SwapForm = (props: SwapFormProps) => {
           </FloatingBox>
 
           <div className="flex justify-center mt-5 mb-1">
-            <SubmitButton color="purple" toToken={toToken} />
+            <SubmitButton color="purple" toToken={toToken} pending={isLoading} />
           </div>
 
           {!!amount && <CostsSummary costs={costs} />}
