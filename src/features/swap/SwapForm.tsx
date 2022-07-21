@@ -14,7 +14,6 @@ import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeToken, SwapFormValues } from './types';
-import { useCosts } from './useCosts';
 import { useFormValidator } from './useFormValidator';
 
 const initialValues: SwapFormValues = {
@@ -44,7 +43,6 @@ export const SwapForm = (props: SwapFormProps) => {
 
   const [amount, setAmount] = useState<number | undefined>(0);
   const [isLoading, setIsLoading] = useState(false);
-  const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
   const validateForm = useFormValidator(balance, fromToken);
   const { reloadExchangeContext } = useExchangeContext();
   const submit = useCallback(
@@ -69,7 +67,7 @@ export const SwapForm = (props: SwapFormProps) => {
       validateOnChange
       validateOnBlur={false}
     >
-      {({ isValid }) => (
+      {({ isValid, values }) => (
         <Form className="w-full justify-center items-center text-white">
           <FloatingBox
             width="w-full"
@@ -88,12 +86,16 @@ export const SwapForm = (props: SwapFormProps) => {
               token={toToken}
             />
           </FloatingBox>
-
           <div className="flex justify-center mt-5 mb-1">
             <SubmitButton color="purple" toToken={toToken} pending={isLoading} />
           </div>
-
-          {!!amount && <CostsSummary costs={costs} />}
+          {!!amount && (
+            <CostsSummary
+              amount={isValid && values.amount ? values.amount : 0}
+              exchangeRate={exchangeRate}
+              estimateGasFee={estimateGasFee}
+            />
+          )}
         </Form>
       )}
     </Formik>
