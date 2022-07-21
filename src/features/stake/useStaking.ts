@@ -27,7 +27,7 @@ export function useStaking() {
     [createTxOptions, deposit, loadBalances]
   );
 
-  const estimateGasFee = useCallback(
+  const estimateStakingFee = useCallback(
     async (amount: CeloWei): Promise<CeloWei> => {
       const gasFee = new CeloWei(await deposit().estimateGas(createTxOptions(amount)));
       const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
@@ -43,7 +43,7 @@ export function useStaking() {
 
   return {
     stake,
-    estimateGasFee,
+    estimateStakingFee,
     estimateDepositValue,
   };
 }

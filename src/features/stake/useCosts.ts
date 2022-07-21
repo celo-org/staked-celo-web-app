@@ -34,15 +34,15 @@ const feeCost: Cost = {
 
 export const useCosts = (amount: number | undefined) => {
   const { celoExchangeRate } = useExchangeRates();
-  const { estimateGasFee } = useStaking();
+  const { estimateStakingFee } = useStaking();
 
   const [gasFee, setGasFee] = useState(new Celo(0));
 
   const calculateGasFee = useCallback(async () => {
     if (!amount) return;
-    const estimatedGasFee = await estimateGasFee(toCeloWei(new Celo(amount)));
+    const estimatedGasFee = await estimateStakingFee(toCeloWei(new Celo(amount)));
     setGasFee(fromCeloWei(estimatedGasFee));
-  }, [estimateGasFee, amount]);
+  }, [estimateStakingFee, amount]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
