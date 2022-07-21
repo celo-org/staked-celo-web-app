@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
+import { useExchangeRates } from 'src/hooks/useExchangeRates';
 import { CeloWei } from 'src/types/units';
 
 export function useStaking() {
   const { address, loadBalances } = useAccount();
   const { managerContract } = useContracts();
+  const { celoExchangeRate } = useExchangeRates();
 
   const createTxOptions = useCallback(
     (amount: CeloWei) => ({
@@ -37,9 +39,15 @@ export function useStaking() {
     [createTxOptions, deposit]
   );
 
+  const estimateDepositValue = useCallback(
+    (amount: number) => amount * celoExchangeRate,
+    [celoExchangeRate]
+  );
+
   return {
     stake,
     isStaking,
     estimateGasFee,
+    estimateDepositValue,
   };
 }
