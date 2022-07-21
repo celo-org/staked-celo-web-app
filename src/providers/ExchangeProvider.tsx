@@ -17,7 +17,7 @@ const useCeloExchangeRate = () => {
   const [celoExchangeRate, setCeloExchangeRate] = useState(0);
 
   const loadCeloExchangeRate = useCallback(async () => {
-    const oneCeloWei = toCeloWei(new Celo('1')).toString();
+    const oneCeloWei = toCeloWei(new Celo('1')).toFixed();
     const stCeloAmount = new StCeloWei(
       await managerContract.methods.toStakedCelo(oneCeloWei).call({ from: address })
     );
@@ -37,7 +37,7 @@ const useStCeloExchangeRate = () => {
   const [stCeloExchangeRate, setStCeloExchangeRate] = useState(0);
 
   const loadStCeloExchangeRate = useCallback(async () => {
-    const oneStCeloWei = toStCeloWei(new StCelo('1')).toString();
+    const oneStCeloWei = toStCeloWei(new StCelo('1')).toFixed();
     const celoAmount = new CeloWei(
       await managerContract.methods.toCelo(oneStCeloWei).call({ from: address })
     );

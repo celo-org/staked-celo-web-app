@@ -13,7 +13,7 @@ export function useStaking() {
   const createTxOptions = useCallback(
     (amount: CeloWei) => ({
       from: address,
-      value: amount.toString(),
+      value: amount.toFixed(),
     }),
     [address]
   );

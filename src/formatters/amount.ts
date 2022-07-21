@@ -36,10 +36,10 @@ export function fromWeiRounded(value: CeloWei | StCeloWei, roundToZeroIfSmall = 
 
 function toWei(value: BigNumber): string {
   if (!value) return '0';
-  const valueString = value.toString();
+  const valueString = value.toFixed();
   const components = valueString.split('.');
   if (components.length === 1) {
-    return web3ToWei(value.toString());
+    return web3ToWei(value.toFixed());
   } else if (components.length === 2) {
     const trimmedFraction = components[1].substring(0, WEI_PER_UNIT.length - 1);
     return web3ToWei(`${components[0]}.${trimmedFraction}`);

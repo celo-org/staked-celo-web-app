@@ -22,7 +22,7 @@ export function useUnstaking() {
   );
 
   const withdrawTx = useCallback(
-    (amount: StCeloWei) => managerContract.methods.withdraw(amount.toString()),
+    (amount: StCeloWei) => managerContract.methods.withdraw(amount.toFixed()),
     [managerContract]
   );
 
