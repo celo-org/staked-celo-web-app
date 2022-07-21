@@ -37,9 +37,9 @@ const UnstakeInfo = () => {
 };
 
 const getInfoChild = (token: StakeToken) => {
-  if (token === 'CELO') {
+  if (token === 'stCELO') {
     return <span className="text-pear">4.56% projected APY</span>;
-  } else if (token === 'stCELO') {
+  } else if (token === 'CELO') {
     return (
       <div className="flex">
         <span className="text-green">3-day unlock period</span>
