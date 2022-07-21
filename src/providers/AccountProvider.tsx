@@ -1,6 +1,8 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { useAddress } from 'src/hooks/useAddress';
 import { useBalances } from 'src/hooks/useBalances';
+import { useWithdrawals } from 'src/hooks/useWithdrawals';
+import { PendingWithdrawal } from 'src/types/account';
 import { CeloWei, StCeloWei } from 'src/types/units';
 
 interface AccountContext {
@@ -9,6 +11,7 @@ interface AccountContext {
   celoBalance: CeloWei;
   stCeloBalance: StCeloWei;
   loadBalances: () => Promise<void>;
+  pendingWithdrawals: PendingWithdrawal[];
 }
 
 export const AccountContext = createContext<AccountContext>({
@@ -17,11 +20,13 @@ export const AccountContext = createContext<AccountContext>({
   celoBalance: new CeloWei(0),
   stCeloBalance: new StCeloWei(0),
   loadBalances: () => Promise.resolve(),
+  pendingWithdrawals: [],
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
   const { isConnected, address } = useAddress();
   const { loadBalances, celoBalance, stCeloBalance } = useBalances();
+  const { pendingWithdrawals } = useWithdrawals(address);
 
   return (
     <AccountContext.Provider
@@ -31,6 +36,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         loadBalances,
         celoBalance,
         stCeloBalance,
+        pendingWithdrawals,
       }}
     >
       {children}
