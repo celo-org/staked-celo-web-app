@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
+import { fromStCeloWei, toStCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 import { useExchangeRates } from 'src/hooks/useExchangeRates';
-import { StCeloWei } from 'src/types/units';
+import { StCelo, StCeloWei } from 'src/types/units';
 import { PendingCeloWithdrawal } from './types';
 
 export function useUnstaking() {
@@ -34,10 +35,13 @@ export function useUnstaking() {
   );
 
   const estimateUnstakingFee = useCallback(
-    async (amount: StCeloWei): Promise<StCeloWei> => {
-      const gasFee = new StCeloWei(await withdrawTx(amount).estimateGas(createTxOptions()));
-      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
-      return new StCeloWei(increasedGasFee);
+    async (amount: number): Promise<StCelo> => {
+      const stCeloWeiAmount = toStCeloWei(new StCelo(amount));
+      const gasFee = new StCeloWei(
+        await withdrawTx(stCeloWeiAmount).estimateGas(createTxOptions())
+      );
+      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)) as StCeloWei;
+      return fromStCeloWei(increasedGasFee);
     },
     [withdrawTx, createTxOptions]
   );
@@ -59,6 +63,7 @@ export function useUnstaking() {
 
   return {
     unstake,
+    stCeloExchangeRate,
     estimateUnstakingFee,
     estimateWithdrawalValue,
     getPendingCeloWithdrawals,

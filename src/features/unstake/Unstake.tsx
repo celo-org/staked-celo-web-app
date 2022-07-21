@@ -7,7 +7,8 @@ import { StCelo } from 'src/types/units';
 
 export const Unstake = () => {
   const { stCeloBalance } = useAccount();
-  const { unstake, estimateWithdrawalValue } = useUnstaking();
+  const { unstake, stCeloExchangeRate, estimateWithdrawalValue, estimateUnstakingFee } =
+    useUnstaking();
 
   const onSubmit = async ({ amount }: SwapFormValues) => {
     if (!amount) return;
@@ -18,8 +19,10 @@ export const Unstake = () => {
     <div className="flex justify-center md:w-96 mx-auto w-full px-4 mb-14">
       <SwapForm
         estimateReceiveValue={estimateWithdrawalValue}
+        estimateGasFee={estimateUnstakingFee}
         onSubmit={onSubmit}
         balance={stCeloBalance}
+        exchangeRate={stCeloExchangeRate}
         fromToken="stCELO"
         toToken="CELO"
       />
