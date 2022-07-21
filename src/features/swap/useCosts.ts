@@ -1,10 +1,7 @@
+import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { fromCeloWei, toCeloWei } from 'src/formatters/amount';
-import { useExchangeRates } from 'src/hooks/useExchangeRates';
-import { Celo } from 'src/types/units';
 import { Cost } from '../swap/types';
-import { useStaking } from './useStaking';
 
 const exchangeCost: Cost = {
   title: 'Exchange Rate',
@@ -32,17 +29,18 @@ const feeCost: Cost = {
   },
 };
 
-export const useCosts = (amount: number | undefined) => {
-  const { celoExchangeRate } = useExchangeRates();
-  const { estimateStakingFee } = useStaking();
-
-  const [gasFee, setGasFee] = useState(new Celo(0));
+export const useCosts = (
+  amount: number | undefined,
+  exchangeRate: number,
+  estimateGasFee: (amount: number) => Promise<BigNumber>
+) => {
+  const [gasFee, setGasFee] = useState(new BigNumber(0));
 
   const calculateGasFee = useCallback(async () => {
     if (!amount) return;
-    const estimatedGasFee = await estimateStakingFee(toCeloWei(new Celo(amount)));
-    setGasFee(fromCeloWei(estimatedGasFee));
-  }, [estimateStakingFee, amount]);
+    const estimatedGasFee = await estimateGasFee(amount);
+    setGasFee(estimatedGasFee);
+  }, [estimateGasFee, amount]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -53,7 +51,7 @@ export const useCosts = (amount: number | undefined) => {
     () => [
       {
         ...exchangeCost,
-        value: celoExchangeRate ? celoExchangeRate.toFixed(DISPLAY_DECIMALS) : '...',
+        value: exchangeRate ? exchangeRate.toFixed(DISPLAY_DECIMALS) : '...',
       },
       {
         ...transactionCost,
@@ -61,7 +59,7 @@ export const useCosts = (amount: number | undefined) => {
       },
       feeCost,
     ],
-    [celoExchangeRate, gasFee]
+    [exchangeRate, gasFee]
   );
 
   return {

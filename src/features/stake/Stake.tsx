@@ -6,7 +6,7 @@ import { useAccount } from 'src/hooks/useAccount';
 import { Celo } from 'src/types/units';
 
 export const Stake = () => {
-  const { stake, estimateDepositValue } = useStaking();
+  const { stake, celoExchangeRate, estimateDepositValue, estimateStakingFee } = useStaking();
   const { celoBalance } = useAccount();
 
   const onSubmit = async ({ amount }: SwapFormValues) => {
@@ -18,8 +18,10 @@ export const Stake = () => {
     <div className="flex justify-center md:w-96 mx-auto w-full px-4 mb-14">
       <SwapForm
         estimateReceiveValue={estimateDepositValue}
+        estimateGasFee={estimateStakingFee}
         onSubmit={onSubmit}
         balance={celoBalance}
+        exchangeRate={celoExchangeRate}
         fromToken="CELO"
         toToken="stCELO"
       />

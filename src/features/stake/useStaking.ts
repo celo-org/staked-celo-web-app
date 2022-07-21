@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
+import { fromCeloWei, toCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
 import { useExchangeRates } from 'src/hooks/useExchangeRates';
-import { CeloWei } from 'src/types/units';
+import { Celo, CeloWei } from 'src/types/units';
 
 export function useStaking() {
   const { address, loadBalances } = useAccount();
@@ -28,10 +29,11 @@ export function useStaking() {
   );
 
   const estimateStakingFee = useCallback(
-    async (amount: CeloWei): Promise<CeloWei> => {
-      const gasFee = new CeloWei(await deposit().estimateGas(createTxOptions(amount)));
-      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)).toString();
-      return new CeloWei(increasedGasFee);
+    async (amount: number): Promise<Celo> => {
+      const celoAmount = toCeloWei(new Celo(amount));
+      const gasFee = new CeloWei(await deposit().estimateGas(createTxOptions(celoAmount)));
+      const adjustedGasFee = gasFee.plus(gasFee.dividedBy(10)) as CeloWei;
+      return fromCeloWei(adjustedGasFee);
     },
     [createTxOptions, deposit]
   );
@@ -43,6 +45,7 @@ export function useStaking() {
 
   return {
     stake,
+    celoExchangeRate,
     estimateStakingFee,
     estimateDepositValue,
   };

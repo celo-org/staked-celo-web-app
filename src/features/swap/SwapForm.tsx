@@ -1,9 +1,9 @@
+import BigNumber from 'bignumber.js';
 import { Field, Form, Formik, FormikErrors, useFormikContext } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
-import { useCosts } from 'src/features/stake/useCosts';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { TokenCard } from 'src/features/swap/FormTemplate';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
@@ -13,6 +13,7 @@ import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeToken, SwapFormValues } from './types';
+import { useCosts } from './useCosts';
 import { useFormValidator } from './useFormValidator';
 
 const initialValues: SwapFormValues = {
@@ -22,15 +23,25 @@ const initialValues: SwapFormValues = {
 interface SwapFormProps {
   onSubmit: (values: SwapFormValues) => void;
   balance: CeloWei | StCeloWei;
+  exchangeRate: number;
   fromToken: StakeToken;
   toToken: StakeToken;
   estimateReceiveValue: (num: number) => number;
+  estimateGasFee: (amount: number) => Promise<BigNumber>;
 }
 
 export const SwapForm = (props: SwapFormProps) => {
-  const { onSubmit, balance, fromToken, toToken, estimateReceiveValue } = props;
+  const {
+    onSubmit,
+    balance,
+    exchangeRate,
+    fromToken,
+    toToken,
+    estimateReceiveValue,
+    estimateGasFee,
+  } = props;
   const [amount, setAmount] = useState<number | undefined>(0);
-  const { costs } = useCosts(amount);
+  const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
   const validateForm = useFormValidator(balance, fromToken);
 
   return (
