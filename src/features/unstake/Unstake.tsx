@@ -1,6 +1,5 @@
 import { SwapForm } from 'src/features/swap/SwapForm';
 import { SwapFormValues } from 'src/features/swap/types';
-import { useEstimations } from 'src/features/unstake/useEstimations';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { toStCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
@@ -8,8 +7,7 @@ import { StCelo } from 'src/types/units';
 
 export const Unstake = () => {
   const { stCeloBalance } = useAccount();
-  const { estimateWithdrawValue } = useEstimations();
-  const { unstake } = useUnstaking();
+  const { unstake, estimateWithdrawalValue } = useUnstaking();
 
   const onSubmit = async ({ amount }: SwapFormValues) => {
     if (!amount) return;
@@ -19,7 +17,7 @@ export const Unstake = () => {
   return (
     <div className="flex justify-center md:w-96 mx-auto w-full px-4 mb-14">
       <SwapForm
-        estimateReceiveValue={estimateWithdrawValue}
+        estimateReceiveValue={estimateWithdrawalValue}
         onSubmit={onSubmit}
         balance={stCeloBalance}
         fromToken="stCELO"
