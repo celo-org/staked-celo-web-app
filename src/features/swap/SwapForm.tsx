@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { Field, Form, Formik, FormikErrors, useFormikContext } from 'formik';
+import { Field, Form, Formik, FormikErrors, FormikHelpers, useFormikContext } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { TokenCard } from 'src/features/swap/FormTemplate';
@@ -40,14 +40,22 @@ export const SwapForm = (props: SwapFormProps) => {
     estimateReceiveValue,
     estimateGasFee,
   } = props;
+
   const [amount, setAmount] = useState<number | undefined>(0);
   const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
   const validateForm = useFormValidator(balance, fromToken);
+  const submit = useCallback(
+    async (formValues: SwapFormValues, { resetForm }: FormikHelpers<SwapFormValues>) => {
+      await onSubmit(formValues);
+      resetForm({ values: initialValues });
+    },
+    [onSubmit]
+  );
 
   return (
     <Formik<SwapFormValues>
       initialValues={initialValues}
-      onSubmit={onSubmit}
+      onSubmit={submit}
       validate={validateForm}
       validateOnChange
       validateOnBlur={false}
