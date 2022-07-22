@@ -1,3 +1,4 @@
+import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
 import api from 'src/services/api';
@@ -31,6 +32,36 @@ export const useWithdrawalBot = (address: string | null) => {
       clearInterval(intervalId);
     };
   }, [finalizeWithdrawal]);
+};
+
+export const useClaimingBot = (address: string | null) => {
+  const { kit } = useCelo();
+  const { accountContract } = useContracts();
+
+  const claim = useCallback(async () => {
+    if (!address) return;
+    const { eth } = kit.connection.web3;
+
+    const [{ timestamp: currentBlockTimestamp }, { timestamps: withdrawalTimestamps }] =
+      await Promise.all([
+        eth.getBlock('latest'),
+        accountContract.methods.getPendingWithdrawals(address).call(),
+      ]);
+
+    const availableToClaim = !!(withdrawalTimestamps as string[]).find(
+      (withdrawalTimestamp) => withdrawalTimestamp < currentBlockTimestamp
+    );
+
+    if (availableToClaim) await api.claim(address);
+  }, [address, accountContract, kit.connection]);
+
+  useEffect(() => {
+    void claim();
+    const intervalId = setInterval(claim, 60 * 1000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [claim]);
 };
 
 export const useWithdrawals = (address: string | null) => {
