@@ -1,63 +1,18 @@
-import { useCelo } from '@celo/react-celo';
-import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { useContracts } from 'src/hooks/useContracts';
+import { createContext, PropsWithChildren, useContext } from 'react';
+import { useAddress } from 'src/hooks/useAddress';
+import { useBalances } from 'src/hooks/useBalances';
+import { useWithdrawals } from 'src/hooks/useWithdrawals';
+import { PendingWithdrawal } from 'src/types/account';
 import { CeloWei, StCeloWei } from 'src/types/units';
 
 interface AccountContext {
   isConnected: boolean;
-  address: string | undefined | null;
+  address: string | null;
   celoBalance: CeloWei;
   stCeloBalance: StCeloWei;
   loadBalances: () => Promise<void>;
+  pendingWithdrawals: PendingWithdrawal[];
 }
-
-const useAddress = () => {
-  const { address: _address } = useCelo();
-  const address = _address ?? undefined;
-  const isConnected = !!address;
-  return { isConnected, address };
-};
-
-const useBalances = () => {
-  const { kit } = useCelo();
-  const { address } = useAddress();
-  const { stCeloContract } = useContracts();
-
-  const [celoBalance, setCeloBalance] = useState(new CeloWei(0));
-  const [stCeloBalance, setStCeloBalance] = useState(new StCeloWei(0));
-
-  const loadCeloBalance = useCallback(async () => {
-    const { eth } = kit.connection.web3;
-    if (!address) return;
-
-    const balance = await eth.getBalance(address);
-
-    setCeloBalance(new CeloWei(balance));
-  }, [kit.connection, address]);
-
-  const loadStCeloBalance = useCallback(async () => {
-    const stCeloBalance = await stCeloContract.methods.balanceOf(address).call({
-      from: address,
-    });
-    setStCeloBalance(new StCeloWei(stCeloBalance));
-  }, [address, stCeloContract]);
-
-  const loadBalances = useCallback(async () => {
-    await Promise.all([loadCeloBalance(), loadStCeloBalance()]);
-  }, [loadCeloBalance, loadStCeloBalance]);
-
-  useEffect(() => {
-    if (!address) return;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    loadBalances();
-  }, [address, loadBalances]);
-
-  return {
-    celoBalance,
-    stCeloBalance,
-    loadBalances,
-  };
-};
 
 export const AccountContext = createContext<AccountContext>({
   isConnected: false,
@@ -65,11 +20,13 @@ export const AccountContext = createContext<AccountContext>({
   celoBalance: new CeloWei(0),
   stCeloBalance: new StCeloWei(0),
   loadBalances: () => Promise.resolve(),
+  pendingWithdrawals: [],
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
   const { isConnected, address } = useAddress();
   const { loadBalances, celoBalance, stCeloBalance } = useBalances();
+  const { pendingWithdrawals } = useWithdrawals(address);
 
   return (
     <AccountContext.Provider
@@ -79,9 +36,23 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         loadBalances,
         celoBalance,
         stCeloBalance,
+        pendingWithdrawals,
       }}
     >
       {children}
     </AccountContext.Provider>
   );
 };
+
+export function useAccountContext() {
+  const { isConnected, address, celoBalance, stCeloBalance, loadBalances } =
+    useContext(AccountContext);
+
+  return {
+    isConnected,
+    address,
+    celoBalance,
+    stCeloBalance,
+    loadBalances,
+  };
+}

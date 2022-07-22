@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { Modal } from 'src/components/modals/Modal';
-import { useAccount } from 'src/hooks/useAccount';
+import { useAccountContext } from 'src/providers/AccountProvider';
 import { useWallet } from './useWallet';
 
 interface WalletModalActionProps {
@@ -23,7 +23,7 @@ interface WalletModalProps {
 
 export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
   const { changeWallet, disconnectWallet, changingWallet } = useWallet();
-  const { address } = useAccount();
+  const { address } = useAccountContext();
 
   const changeWalletWithClose = useCallback(async () => {
     const walletChanged = await changeWallet();

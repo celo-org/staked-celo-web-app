@@ -3,8 +3,7 @@ import '@celo/react-celo/lib/styles.css';
 import { useRouter } from 'next/router';
 import { PropsWithChildren } from 'react';
 import { networkConfig } from 'src/config/celo';
-import { useAccount } from 'src/hooks/useAccount';
-import { AccountProvider } from './AccountProvider';
+import { AccountProvider, useAccountContext } from './AccountProvider';
 import { ExchangeProvider } from './ExchangeProvider';
 
 export const CeloProvider = (props: PropsWithChildren) => {
@@ -35,7 +34,7 @@ export const CeloProvider = (props: PropsWithChildren) => {
 
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
-  const { isConnected } = useAccount();
+  const { isConnected } = useAccountContext();
 
   if (!isConnected && router.pathname !== '/connect') {
     void router.push('/connect');
