@@ -9,6 +9,7 @@ import { TokenCard } from 'src/features/swap/FormTemplate';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { fromWeiRounded } from 'src/formatters/amount';
 import Arrow from 'src/images/icons/arrow.svg';
+import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
@@ -45,17 +46,19 @@ export const SwapForm = (props: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
   const validateForm = useFormValidator(balance, fromToken);
+  const { reloadExchangeContext } = useExchangeContext();
   const submit = useCallback(
     async (formValues: SwapFormValues, { resetForm }: FormikHelpers<SwapFormValues>) => {
       setIsLoading(true);
       try {
         await onSubmit(formValues);
+        await reloadExchangeContext();
       } finally {
         setIsLoading(false);
       }
       resetForm({ values: initialValues });
     },
-    [onSubmit]
+    [onSubmit, reloadExchangeContext]
   );
 
   return (
