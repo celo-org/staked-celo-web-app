@@ -1,0 +1,14 @@
+.connectHeader {
+  width: 100%;
+  height: 419px;
+  background: conic-gradient(from 180deg at 49.87% 55.37%, #EED9A9 -90deg, #A6E9C6 22.5deg, #BCA8F4 135deg, #EED9A9 270deg, #A6E9C6 382.5deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .connectHeader {
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+}
