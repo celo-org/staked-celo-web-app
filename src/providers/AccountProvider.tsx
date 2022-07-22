@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { useAddress } from 'src/hooks/useAddress';
 import { useBalances } from 'src/hooks/useBalances';
-import { useWithdrawalBot, useWithdrawals } from 'src/hooks/useWithdrawals';
+import { useClaimingBot, useWithdrawalBot, useWithdrawals } from 'src/hooks/useWithdrawals';
 import { PendingWithdrawal } from 'src/types/account';
 import { CeloWei, StCeloWei } from 'src/types/units';
 
@@ -28,6 +28,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
   const { loadBalances, celoBalance, stCeloBalance } = useBalances(address);
   const { pendingWithdrawals } = useWithdrawals(address);
   useWithdrawalBot(address);
+  useClaimingBot(address);
 
   return (
     <AccountContext.Provider
