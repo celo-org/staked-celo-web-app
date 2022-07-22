@@ -6,24 +6,28 @@ import Github from 'src/images/icons/github.svg';
 import Twitter from 'src/images/icons/twitter.svg';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
 
+const FAQLinks = () => (
+  <>
+    <div className="my-3 underline font-normal">
+      <Link href="/faq">FAQ</Link>
+    </div>
+    <div className="my-3 md:ml-5 underline font-normal">
+      <Link href="/docs">Docs</Link>
+    </div>
+  </>
+);
+
 export const Footer = () => {
   const { totalCeloBalance } = useExchangeContext();
 
   return (
-    <footer className="w-screen bg-gray-800 text-gray-100 flex flex-col p-7 md:flex-row md:justify-between">
-      <div className="mt-2 flex flex-col md:order-first">
-        <span className="text-l font-light">Total CELO staked</span>
-        <span className="text-xl">{totalCeloBalance.toFixed(DISPLAY_DECIMALS)}</span>
+    <footer className="w-screen bg-gray-800 text-gray-100 flex flex-col p-7 md:flex-row md:items-center md:justify-between">
+      <div className="mt-2 flex flex-col md:order-first md:w-1/5">
+        <span className="text-sm font-light">Total CELO staked</span>
+        <span className="text-2xl">{totalCeloBalance.toFixed(DISPLAY_DECIMALS)}</span>
       </div>
 
-      <ul className="my-4 underline md:order-last">
-        <li className="my-3">
-          <Link href="/faq">FAQ</Link>
-        </li>
-        <li className="my-3">
-          <Link href="/docs">DOCS</Link>
-        </li>
-      </ul>
+      <div className="my-4 md:order-last md:hidden">{FAQLinks()}</div>
 
       <ul className="flex mt-4 md:order-2">
         <li className="mx-2">
@@ -43,7 +47,10 @@ export const Footer = () => {
         </li>
       </ul>
 
-      <span className="mt-3 w-44 md:order-last">Open source Apache 2 © 2022 cLabs, Inc.</span>
+      <span className="mt-3 w-44 text-sm font-thin md:order-last md:w-1/5 md:text-right">
+        <div className="hidden md:flex flex-row justify-end">{FAQLinks()}</div>
+        Open source Apache 2 <br /> © 2022 cLabs, Inc.
+      </span>
     </footer>
   );
 };
