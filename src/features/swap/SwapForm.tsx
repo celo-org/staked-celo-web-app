@@ -26,6 +26,13 @@ interface SwapFormProps {
   estimateGasFee: (amount: number) => Promise<BigNumber>;
 }
 
+const getHref = (toToken: StakeToken) => {
+  if (toToken === 'CELO') return '/';
+  if (toToken === 'stCELO') return '/unstake';
+
+  return '';
+};
+
 export const SwapForm = (props: SwapFormProps) => {
   const {
     onSubmit,
@@ -39,6 +46,7 @@ export const SwapForm = (props: SwapFormProps) => {
 
   const [amount, setAmount] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const isValid = !error;
   const validateForm = useFormValidator(balance, fromToken);
@@ -47,7 +55,7 @@ export const SwapForm = (props: SwapFormProps) => {
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
-      if (error) {
+      if (error || !isTouched) {
         return;
       }
 
@@ -60,10 +68,11 @@ export const SwapForm = (props: SwapFormProps) => {
       }
       setAmount(0);
     },
-    [amount, error, onSubmit, reloadExchangeContext]
+    [amount, error, isTouched, onSubmit, reloadExchangeContext]
   );
 
   const onInputChange = (value: number | undefined) => {
+    setIsTouched(true);
     setError(validateForm(value));
     setAmount(value);
   };
@@ -81,7 +90,7 @@ export const SwapForm = (props: SwapFormProps) => {
           token={fromToken}
           error={error}
         />
-        <Link href="/unstake">
+        <Link href={getHref(toToken)}>
           <a className="absolute">
             <Image src={Arrow} alt="Arrow" width={40} height={40} quality={100} />
           </a>
@@ -94,7 +103,7 @@ export const SwapForm = (props: SwapFormProps) => {
         />
       </FloatingBox>
       <div className="flex justify-center mt-5 mb-1">
-        <SubmitButton color="purple" toToken={toToken} pending={isLoading} />
+        <SubmitButton toToken={toToken} pending={isLoading} />
       </div>
       {!!amount && (
         <CostsSummary
@@ -157,6 +166,7 @@ const SwapFormInput = (props: FormInputProps) => {
           thousandSeparator
           onValueChange={onInputChange}
           value={value}
+          allowNegative={false}
         />
       }
       infoChild={<BalanceTools onClickUseMax={onClickUseMax} roundedBalance={roundedBalance} />}

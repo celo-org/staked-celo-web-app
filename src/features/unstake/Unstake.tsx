@@ -2,6 +2,7 @@ import { SwapForm } from 'src/features/swap/SwapForm';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { toStCeloWei } from 'src/formatters/amount';
 import { useAccountContext } from 'src/providers/AccountProvider';
+import toast from 'src/services/toast';
 import { StCelo } from 'src/types/units';
 
 export const Unstake = () => {
@@ -12,6 +13,7 @@ export const Unstake = () => {
   const onSubmit = async (amount: number | undefined) => {
     if (!amount) return;
     await unstake(toStCeloWei(new StCelo(amount)));
+    toast.unstakingStartedSuccess();
   };
 
   return (

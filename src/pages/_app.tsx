@@ -15,7 +15,7 @@ const App = ({ Component, pageProps, router }: AppProps) => {
       <CeloProvider>
         <AppLayout pathName={pathName}>
           <Component {...pageProps} />
-          <ToastContainer transition={Zoom} position={toast.POSITION.TOP_RIGHT} />
+          <ToastContainer transition={Zoom} position={toast.POSITION.TOP_CENTER} icon={false} />
         </AppLayout>
       </CeloProvider>
     </ClientOnly>
