@@ -2,6 +2,7 @@ import { useStaking } from 'src/features/stake/useStaking';
 import { SwapForm } from 'src/features/swap/SwapForm';
 import { toCeloWei } from 'src/formatters/amount';
 import { useAccountContext } from 'src/providers/AccountProvider';
+import toast from 'src/services/toast';
 import { Celo } from 'src/types/units';
 
 export const Stake = () => {
@@ -10,7 +11,8 @@ export const Stake = () => {
 
   const onSubmit = async (amount: number | undefined) => {
     if (!amount) return;
-    await stake(toCeloWei(new Celo(amount)));
+    const receivedAmount = await stake(toCeloWei(new Celo(amount)));
+    toast.stakingSuccess(receivedAmount);
   };
 
   return (

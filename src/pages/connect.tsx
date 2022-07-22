@@ -9,7 +9,7 @@ const Connect = () => {
   return (
     <div className="w-full md:w-1/3 md:bg-gray-800 mx-auto self-center md:rounded-xl">
       <div className={styles.connectHeader}>
-        <Image src={stCELO} alt="Celo logo" quality={100} width={136} height={136} />
+        <Image src={stCELO} alt="stCelo logo" quality={100} width={136} height={136} />
       </div>
       <div className="p-8">
         <h1 className="text-3xl font-semibold text-white">Introducing stCELO</h1>
