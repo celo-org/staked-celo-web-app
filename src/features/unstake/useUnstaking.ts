@@ -4,6 +4,7 @@ import { fromStCeloWei, toStCeloWei } from 'src/formatters/amount';
 import { useContracts } from 'src/hooks/useContracts';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
+import api from 'src/services/api';
 import { StCelo, StCeloWei } from 'src/types/units';
 
 export function useUnstaking() {
@@ -27,10 +28,12 @@ export function useUnstaking() {
 
   const unstake = useCallback(
     async (amount: StCeloWei) => {
+      if (!address) return;
       await withdrawTx(amount).send(createTxOptions());
+      await api.withdraw(address);
       await loadBalances();
     },
-    [withdrawTx, createTxOptions, loadBalances]
+    [withdrawTx, createTxOptions, loadBalances, address]
   );
 
   const estimateUnstakingFee = useCallback(

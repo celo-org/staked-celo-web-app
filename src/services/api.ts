@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const { NEXT_PUBLIC_API_URL, NEXT_PUBLIC_API_ACCESS_TOKEN } = process.env;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const NEXT_PUBLIC_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN;
 
 type ActionType = 'withdraw' | 'claim';
 

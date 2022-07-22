@@ -1,6 +1,6 @@
-import { Celo } from 'src/types/units';
+import { CeloWei } from 'src/types/units';
 
 export interface PendingWithdrawal {
-  amount: Celo;
+  amount: CeloWei;
   timestamp: string;
 }
