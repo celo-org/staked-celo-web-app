@@ -83,6 +83,10 @@ export const useWithdrawals = (address: string | null) => {
   useEffect(() => {
     if (!address) return;
     void loadPendingWithdrawals();
+    const intervalId = setInterval(loadPendingWithdrawals, 60 * 1000);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [loadPendingWithdrawals, address]);
 
   return {
