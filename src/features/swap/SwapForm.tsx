@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { FormEventHandler, useCallback, useState } from 'react';
+import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
-import { TokenCard } from 'src/features/swap/FormTemplate';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
+import { TokenCard } from 'src/features/swap/TokenCard';
 import { fromWeiRounded } from 'src/formatters/amount';
 import Arrow from 'src/images/icons/arrow.svg';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
@@ -43,20 +44,24 @@ export const SwapForm = (props: SwapFormProps) => {
   const validateForm = useFormValidator(balance, fromToken);
   const { reloadExchangeContext } = useExchangeContext();
 
-  const submit = useCallback(async () => {
-    if (error) {
-      return;
-    }
+  const submit: FormEventHandler<HTMLFormElement> = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (error) {
+        return;
+      }
 
-    setIsLoading(true);
-    try {
-      await onSubmit(amount);
-      await reloadExchangeContext();
-    } finally {
-      setIsLoading(false);
-    }
-    setAmount(0);
-  }, [amount, error, onSubmit, reloadExchangeContext]);
+      setIsLoading(true);
+      try {
+        await onSubmit(amount);
+        await reloadExchangeContext();
+      } finally {
+        setIsLoading(false);
+      }
+      setAmount(0);
+    },
+    [amount, error, onSubmit, reloadExchangeContext]
+  );
 
   const onInputChange = (value: number | undefined) => {
     setError(validateForm(value));
@@ -97,7 +102,7 @@ export const SwapForm = (props: SwapFormProps) => {
 };
 
 interface FormInputProps {
-  onChange: (amount: number) => void;
+  onChange: (amount?: number) => void;
   balance: CeloWei | StCeloWei;
   token: StakeToken;
   error?: string;
@@ -127,9 +132,9 @@ const SwapFormInput = (props: FormInputProps) => {
     onChange(roundedBalance);
   };
 
-  const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    onChange(parseFloat(e.target.value));
-  }, []);
+  const onInputChange = (values: NumberFormatValues) => {
+    onChange(values.floatValue);
+  };
 
   return (
     <TokenCard
@@ -137,15 +142,13 @@ const SwapFormInput = (props: FormInputProps) => {
       token={token}
       titleChild={getTitle(props.error, token)}
       inputChild={
-        <input
-          id="amount"
-          name="amount"
-          type="number"
-          placeholder="0.00"
+        <NumberFormat
           className={`mr-auto bg-transparent text-left focus:outline-none ${
             props.error ? 'text-red' : ''
           }`}
-          onChange={onInputChange}
+          placeholder="0.00"
+          thousandSeparator
+          onValueChange={onInputChange}
         />
       }
       infoChild={<BalanceTools onClickUseMax={onClickUseMax} roundedBalance={roundedBalance} />}

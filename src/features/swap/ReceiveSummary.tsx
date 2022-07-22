@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Modal } from 'src/components/modals/Modal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { TokenCard } from 'src/features/swap/FormTemplate';
+import { TokenCard } from 'src/features/swap/TokenCard';
 import { StakeToken } from 'src/features/swap/types';
 import Info from 'src/images/icons/info.svg';
 
