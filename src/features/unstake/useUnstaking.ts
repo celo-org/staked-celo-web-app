@@ -3,14 +3,14 @@ import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { fromStCeloWei, toStCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
-import { useExchangeRates } from 'src/hooks/useExchangeRates';
+import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import { Celo, StCelo, StCeloWei } from 'src/types/units';
 import { PendingWithdrawal } from './types';
 
 export function useUnstaking() {
   const { address, loadBalances } = useAccount();
   const { managerContract, accountContract } = useContracts();
-  const { stCeloExchangeRate } = useExchangeRates();
+  const { stCeloExchangeRate } = useExchangeContext();
 
   const createTxOptions = useCallback(
     () => ({

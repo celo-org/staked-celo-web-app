@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import { fromCeloWei, toCeloWei } from 'src/formatters/amount';
 import { useAccount } from 'src/hooks/useAccount';
 import { useContracts } from 'src/hooks/useContracts';
-import { useExchangeRates } from 'src/hooks/useExchangeRates';
+import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import { Celo, CeloWei } from 'src/types/units';
 
 export function useStaking() {
   const { address, loadBalances } = useAccount();
   const { managerContract } = useContracts();
-  const { celoExchangeRate } = useExchangeRates();
+  const { celoExchangeRate } = useExchangeContext();
 
   const createTxOptions = useCallback(
     (amount: CeloWei) => ({
