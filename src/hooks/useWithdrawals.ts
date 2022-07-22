@@ -69,8 +69,9 @@ export const useWithdrawals = (address: string | null) => {
 
   const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawal[]>([]);
   const loadPendingWithdrawals = useCallback(async () => {
-    const { values = [], timestamps = [] } =
-      (await accountContract.methods.getPendingWithdrawals(address).call({ from: address })) || {};
+    const { values = [], timestamps = [] } = await accountContract.methods
+      .getPendingWithdrawals(address)
+      .call();
 
     setPendingWithdrawals(
       values.map((amount: string, index: number) => ({
