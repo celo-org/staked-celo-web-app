@@ -7,7 +7,7 @@ import { CeloWei, StCeloWei } from 'src/types/units';
 
 interface AccountContext {
   isConnected: boolean;
-  address: string | undefined | null;
+  address: string | null;
   celoBalance: CeloWei;
   stCeloBalance: StCeloWei;
   loadBalances: () => Promise<void>;

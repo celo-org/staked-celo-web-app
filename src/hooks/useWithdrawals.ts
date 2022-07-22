@@ -3,7 +3,7 @@ import { useContracts } from 'src/hooks/useContracts';
 import { PendingWithdrawal } from 'src/types/account';
 import { Celo } from 'src/types/units';
 
-export const useWithdrawals = (address: string | undefined) => {
+export const useWithdrawals = (address: string | null) => {
   const { accountContract } = useContracts();
 
   const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawal[]>([]);
