@@ -1,28 +1,23 @@
 import BigNumber from 'bignumber.js';
-import { Field, Form, Formik, FormikErrors, FormikHelpers, useFormikContext } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { FormEventHandler, useCallback, useState } from 'react';
+import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
-import { TokenCard } from 'src/features/swap/FormTemplate';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
+import { TokenCard } from 'src/features/swap/TokenCard';
 import { fromWeiRounded } from 'src/formatters/amount';
 import Arrow from 'src/images/icons/arrow.svg';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
-import { StakeToken, SwapFormValues } from './types';
-import { useCosts } from './useCosts';
+import { StakeToken } from './types';
 import { useFormValidator } from './useFormValidator';
 
-const initialValues: SwapFormValues = {
-  amount: '' as unknown as number,
-};
-
 interface SwapFormProps {
-  onSubmit: (values: SwapFormValues) => void;
+  onSubmit: (amount: number | undefined) => void;
   balance: CeloWei | StCeloWei;
   exchangeRate: number;
   fromToken: StakeToken;
@@ -44,71 +39,78 @@ export const SwapForm = (props: SwapFormProps) => {
 
   const [amount, setAmount] = useState<number | undefined>(0);
   const [isLoading, setIsLoading] = useState(false);
-  const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
+  const [error, setError] = useState<string | undefined>();
+  const isValid = !error;
   const validateForm = useFormValidator(balance, fromToken);
   const { reloadExchangeContext } = useExchangeContext();
-  const submit = useCallback(
-    async (formValues: SwapFormValues, { resetForm }: FormikHelpers<SwapFormValues>) => {
+
+  const submit: FormEventHandler<HTMLFormElement> = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (error) {
+        return;
+      }
+
       setIsLoading(true);
       try {
-        await onSubmit(formValues);
+        await onSubmit(amount);
         await reloadExchangeContext();
       } finally {
         setIsLoading(false);
       }
-      resetForm({ values: initialValues });
+      setAmount(0);
     },
-    [onSubmit, reloadExchangeContext]
+    [amount, error, onSubmit, reloadExchangeContext]
   );
 
+  const onInputChange = (value: number | undefined) => {
+    setError(validateForm(value));
+    setAmount(value);
+  };
+
   return (
-    <Formik<SwapFormValues>
-      initialValues={initialValues}
-      onSubmit={submit}
-      validate={validateForm}
-      validateOnChange
-      validateOnBlur={false}
-    >
-      {({ isValid }) => (
-        <Form className="w-full justify-center items-center text-white">
-          <FloatingBox
-            width="w-full"
-            classes="overflow-visible bg-gray-800 flex flex-col justify-center items-center"
-          >
-            <SwapFormInput balance={balance} onChange={setAmount} token={fromToken} />
-            <Link href="/unstake">
-              <a className="absolute">
-                <Image src={Arrow} alt="Arrow" width={40} height={40} quality={100} />
-              </a>
-            </Link>
-            <ReceiveSummary
-              estimateReceiveValue={estimateReceiveValue}
-              amount={amount}
-              isValid={isValid}
-              token={toToken}
-            />
-          </FloatingBox>
-
-          <div className="flex justify-center mt-5 mb-1">
-            <SubmitButton color="purple" toToken={toToken} pending={isLoading} />
-          </div>
-
-          {!!amount && <CostsSummary costs={costs} />}
-        </Form>
+    <form className="w-full justify-center items-center text-white" onSubmit={submit}>
+      <FloatingBox
+        width="w-full"
+        classes="overflow-visible bg-gray-800 flex flex-col justify-center items-center"
+      >
+        <SwapFormInput balance={balance} onChange={onInputChange} token={fromToken} error={error} />
+        <Link href="/unstake">
+          <a className="absolute">
+            <Image src={Arrow} alt="Arrow" width={40} height={40} quality={100} />
+          </a>
+        </Link>
+        <ReceiveSummary
+          estimateReceiveValue={estimateReceiveValue}
+          amount={amount}
+          isValid={isValid}
+          token={toToken}
+        />
+      </FloatingBox>
+      <div className="flex justify-center mt-5 mb-1">
+        <SubmitButton color="purple" toToken={toToken} pending={isLoading} />
+      </div>
+      {!!amount && (
+        <CostsSummary
+          amount={isValid ? amount : 0}
+          exchangeRate={exchangeRate}
+          estimateGasFee={estimateGasFee}
+        />
       )}
-    </Formik>
+    </form>
   );
 };
 
 interface FormInputProps {
-  onChange: (amount: number | undefined) => void;
+  onChange: (amount?: number) => void;
   balance: CeloWei | StCeloWei;
   token: StakeToken;
+  error?: string;
 }
 
-const getTitle = (errors: FormikErrors<SwapFormValues>, fromToken: StakeToken) => {
-  if (errors.amount) {
-    return <span className="text-red">{errors.amount}</span>;
+const getTitle = (error: string | undefined, fromToken: StakeToken) => {
+  if (error) {
+    return <span className="text-red">{error}</span>;
   }
 
   if (fromToken === 'stCELO') {
@@ -124,29 +126,29 @@ const getTitle = (errors: FormikErrors<SwapFormValues>, fromToken: StakeToken) =
 
 const SwapFormInput = (props: FormInputProps) => {
   const { token, balance, onChange } = props;
-  const { values, setFieldValue, errors } = useFormikContext<SwapFormValues>();
   const roundedBalance = fromWeiRounded(balance);
 
-  useEffect(() => onChange(values.amount), [onChange, values.amount]);
-
   const onClickUseMax = () => () => {
-    setFieldValue('amount', roundedBalance);
+    onChange(roundedBalance);
+  };
+
+  const onInputChange = (values: NumberFormatValues) => {
+    onChange(values.floatValue);
   };
 
   return (
     <TokenCard
       classes="w-full	bg-gray-900"
       token={token}
-      titleChild={getTitle(errors, token)}
+      titleChild={getTitle(props.error, token)}
       inputChild={
-        <Field
-          id="amount"
-          name="amount"
-          type="number"
-          placeholder="0.00"
+        <NumberFormat
           className={`mr-auto bg-transparent text-left focus:outline-none ${
-            errors.amount ? 'text-red' : ''
+            props.error ? 'text-red' : ''
           }`}
+          placeholder="0.00"
+          thousandSeparator
+          onValueChange={onInputChange}
         />
       }
       infoChild={<BalanceTools onClickUseMax={onClickUseMax} roundedBalance={roundedBalance} />}

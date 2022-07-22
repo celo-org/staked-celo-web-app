@@ -1,20 +1,29 @@
+import BigNumber from 'bignumber.js';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Modal } from 'src/components/modals/Modal';
 import { Cost } from 'src/features/swap/types';
+import { useCosts } from 'src/features/swap/useCosts';
 import Info from 'src/images/icons/info.svg';
 
 interface CostsSummaryProps {
-  costs: Cost[];
+  estimateGasFee: (amount: number) => Promise<BigNumber>;
+  exchangeRate: number;
+  amount: number;
 }
 
-export const CostsSummary = (props: CostsSummaryProps) => (
-  <ul className="mx-2 mt-5">
-    {props.costs.map((cost) => (
-      <CostItem cost={cost} key={cost.title} />
-    ))}
-  </ul>
-);
+export const CostsSummary = (props: CostsSummaryProps) => {
+  const { estimateGasFee, exchangeRate, amount } = props;
+  const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
+
+  return (
+    <ul className="mx-2 mt-5">
+      {costs.map((cost) => (
+        <CostItem cost={cost} key={cost.title} />
+      ))}
+    </ul>
+  );
+};
 
 interface CostItemProps {
   cost: Cost;
