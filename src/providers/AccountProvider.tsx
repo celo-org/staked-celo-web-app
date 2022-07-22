@@ -25,7 +25,7 @@ export const AccountContext = createContext<AccountContext>({
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
   const { isConnected, address } = useAddress();
-  const { loadBalances, celoBalance, stCeloBalance } = useBalances();
+  const { loadBalances, celoBalance, stCeloBalance } = useBalances(address);
   const { pendingWithdrawals } = useWithdrawals(address);
 
   return (

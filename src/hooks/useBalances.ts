@@ -2,11 +2,9 @@ import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
 import { CeloWei, StCeloWei } from 'src/types/units';
-import { useAddress } from './useAddress';
 
-export const useBalances = () => {
+export const useBalances = (address: string | null) => {
   const { kit } = useCelo();
-  const { address } = useAddress();
   const { stCeloContract } = useContracts();
 
   const [celoBalance, setCeloBalance] = useState(new CeloWei(0));
