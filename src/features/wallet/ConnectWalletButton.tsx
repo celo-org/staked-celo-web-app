@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
-import { useAccount } from 'src/hooks/useAccount';
+import { useAccountContext } from 'src/providers/AccountProvider';
 import { WalletModal } from './WalletModal';
 
 export const ConnectWalletButton = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
-  const { address } = useAccount();
+  const { address } = useAccountContext();
 
   const addressLabel = useMemo(() => {
     return address ? `${address.slice(0, 2)}...${address.slice(-4)}` : '';

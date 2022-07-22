@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
-import { useAccount } from 'src/hooks/useAccount';
+import { useAccountContext } from 'src/providers/AccountProvider';
 import { Footer } from './partials/Footer';
 import { Header } from './partials/Header';
 
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
-  const { isConnected } = useAccount();
+  const { isConnected } = useAccountContext();
 
   return (
     <>

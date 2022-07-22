@@ -2,11 +2,11 @@ import { SwapForm } from 'src/features/swap/SwapForm';
 import { SwapFormValues } from 'src/features/swap/types';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { toStCeloWei } from 'src/formatters/amount';
-import { useAccount } from 'src/hooks/useAccount';
+import { useAccountContext } from 'src/providers/AccountProvider';
 import { StCelo } from 'src/types/units';
 
 export const Unstake = () => {
-  const { stCeloBalance } = useAccount();
+  const { stCeloBalance } = useAccountContext();
   const { unstake, stCeloExchangeRate, estimateWithdrawalValue, estimateUnstakingFee } =
     useUnstaking();
 

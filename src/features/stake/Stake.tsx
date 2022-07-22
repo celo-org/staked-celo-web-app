@@ -2,12 +2,12 @@ import { useStaking } from 'src/features/stake/useStaking';
 import { SwapForm } from 'src/features/swap/SwapForm';
 import { SwapFormValues } from 'src/features/swap/types';
 import { toCeloWei } from 'src/formatters/amount';
-import { useAccount } from 'src/hooks/useAccount';
+import { useAccountContext } from 'src/providers/AccountProvider';
 import { Celo } from 'src/types/units';
 
 export const Stake = () => {
   const { stake, celoExchangeRate, estimateDepositValue, estimateStakingFee } = useStaking();
-  const { celoBalance } = useAccount();
+  const { celoBalance } = useAccountContext();
 
   const onSubmit = async ({ amount }: SwapFormValues) => {
     if (!amount) return;
