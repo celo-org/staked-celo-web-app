@@ -37,7 +37,7 @@ export const SwapForm = (props: SwapFormProps) => {
     estimateGasFee,
   } = props;
 
-  const [amount, setAmount] = useState<number | undefined>(0);
+  const [amount, setAmount] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const isValid = !error;
@@ -74,7 +74,13 @@ export const SwapForm = (props: SwapFormProps) => {
         width="w-full"
         classes="overflow-visible bg-gray-800 flex flex-col justify-center items-center"
       >
-        <SwapFormInput balance={balance} onChange={onInputChange} token={fromToken} error={error} />
+        <SwapFormInput
+          balance={balance}
+          value={amount}
+          onChange={onInputChange}
+          token={fromToken}
+          error={error}
+        />
         <Link href="/unstake">
           <a className="absolute">
             <Image src={Arrow} alt="Arrow" width={40} height={40} quality={100} />
@@ -106,6 +112,7 @@ interface FormInputProps {
   balance: CeloWei | StCeloWei;
   token: StakeToken;
   error?: string;
+  value: number | undefined;
 }
 
 const getTitle = (error: string | undefined, fromToken: StakeToken) => {
@@ -125,7 +132,7 @@ const getTitle = (error: string | undefined, fromToken: StakeToken) => {
 };
 
 const SwapFormInput = (props: FormInputProps) => {
-  const { token, balance, onChange } = props;
+  const { token, balance, value, onChange } = props;
   const roundedBalance = fromWeiRounded(balance);
 
   const onClickUseMax = () => () => {
@@ -149,6 +156,7 @@ const SwapFormInput = (props: FormInputProps) => {
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
+          value={value}
         />
       }
       infoChild={<BalanceTools onClickUseMax={onClickUseMax} roundedBalance={roundedBalance} />}
