@@ -1,15 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { DISPLAY_DECIMALS } from 'src/config/consts';
 import Discord from 'src/images/icons/discord.svg';
 import Github from 'src/images/icons/github.svg';
 import Twitter from 'src/images/icons/twitter.svg';
+import { useExchangeContext } from 'src/providers/ExchangeProvider';
 
 export const Footer = () => {
+  const { totalCeloBalance } = useExchangeContext();
+
   return (
     <footer className="w-screen bg-gray-800 text-gray-100 flex flex-col p-7 md:flex-row md:justify-between">
       <div className="mt-2 flex flex-col md:order-first">
         <span className="text-l font-light">Total CELO staked</span>
-        <span className="text-xl">1,234,567.89</span>
+        <span className="text-xl">{totalCeloBalance.toFixed(DISPLAY_DECIMALS)}</span>
       </div>
 
       <ul className="my-4 underline md:order-last">
