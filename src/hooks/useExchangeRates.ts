@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toCeloWei, toStCeloWei } from 'src/formatters/amount';
-import { useAddress } from 'src/hooks/useAddress';
 import { useContracts } from 'src/hooks/useContracts';
 import { Celo, CeloWei, StCelo, StCeloWei } from 'src/types/units';
 
 const useCeloExchangeRate = () => {
-  const { address } = useAddress();
   const { managerContract } = useContracts();
 
   const [celoExchangeRate, setCeloExchangeRate] = useState(0);
@@ -13,10 +11,10 @@ const useCeloExchangeRate = () => {
   const loadCeloExchangeRate = useCallback(async () => {
     const oneCeloWei = toCeloWei(new Celo('1')).toFixed();
     const stCeloAmount = new StCeloWei(
-      await managerContract.methods.toStakedCelo(oneCeloWei).call({ from: address })
+      await managerContract.methods.toStakedCelo(oneCeloWei).call()
     );
     setCeloExchangeRate(stCeloAmount.dividedBy(oneCeloWei).toNumber());
-  }, [managerContract, address]);
+  }, [managerContract]);
 
   return {
     celoExchangeRate,
@@ -25,18 +23,15 @@ const useCeloExchangeRate = () => {
 };
 
 const useStCeloExchangeRate = () => {
-  const { address } = useAddress();
   const { managerContract } = useContracts();
 
   const [stCeloExchangeRate, setStCeloExchangeRate] = useState(0);
 
   const loadStCeloExchangeRate = useCallback(async () => {
     const oneStCeloWei = toStCeloWei(new StCelo('1')).toFixed();
-    const celoAmount = new CeloWei(
-      await managerContract.methods.toCelo(oneStCeloWei).call({ from: address })
-    );
+    const celoAmount = new CeloWei(await managerContract.methods.toCelo(oneStCeloWei).call());
     setStCeloExchangeRate(celoAmount.dividedBy(oneStCeloWei).toNumber());
-  }, [managerContract, address]);
+  }, [managerContract]);
 
   return {
     stCeloExchangeRate,
