@@ -37,7 +37,6 @@ export const useCosts = (
   const [costs, setCosts] = useState<Cost[]>([]);
 
   const calculateCosts = useCallback(async () => {
-    console.log(amount);
     if (!amount) {
       setCosts([]);
     } else {
@@ -55,7 +54,7 @@ export const useCosts = (
         feeCost,
       ]);
     }
-  }, [amount]);
+  }, [amount, estimateGasFee, exchangeRate]);
 
   useEffect(() => {
     void calculateCosts();

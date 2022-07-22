@@ -1,5 +1,4 @@
 import { SwapForm } from 'src/features/swap/SwapForm';
-import { SwapFormValues } from 'src/features/swap/types';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { toStCeloWei } from 'src/formatters/amount';
 import { useAccountContext } from 'src/providers/AccountProvider';
@@ -10,7 +9,7 @@ export const Unstake = () => {
   const { unstake, stCeloExchangeRate, estimateWithdrawalValue, estimateUnstakingFee } =
     useUnstaking();
 
-  const onSubmit = async ({ amount }: SwapFormValues) => {
+  const onSubmit = async (amount: number | undefined) => {
     if (!amount) return;
     await unstake(toStCeloWei(new StCelo(amount)));
   };
