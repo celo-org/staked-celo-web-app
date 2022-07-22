@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
-import { fromCeloWei, toCeloWei } from 'src/formatters/amount';
+import { fromCeloWei, fromStCeloWei, toCeloWei } from 'src/formatters/amount';
 import { useContracts } from 'src/hooks/useContracts';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
-import { Celo, CeloWei } from 'src/types/units';
+import { Celo, CeloWei, StCelo, StCeloWei } from 'src/types/units';
 
 export function useStaking() {
   const { address, loadBalances } = useAccountContext();
-  const { managerContract } = useContracts();
+  const { managerContract, stCeloContract } = useContracts();
   const { celoExchangeRate } = useExchangeContext();
 
   const createTxOptions = useCallback(
@@ -21,11 +21,19 @@ export function useStaking() {
   const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
   const stake = useCallback(
-    async (amount: CeloWei) => {
+    async (amount: CeloWei): Promise<StCelo> => {
+      const preDepositStWeiBalance = new StCeloWei(
+        await stCeloContract.methods.balanceOf(address).call()
+      );
       await depositTx().send(createTxOptions(amount));
       await loadBalances();
+      const postDepositStWeiBalance = new StCeloWei(
+        await stCeloContract.methods.balanceOf(address).call()
+      );
+      const receivedStCeloWei = postDepositStWeiBalance.minus(preDepositStWeiBalance);
+      return fromStCeloWei(receivedStCeloWei as StCeloWei);
     },
-    [createTxOptions, depositTx, loadBalances]
+    [createTxOptions, depositTx, loadBalances, stCeloContract, address]
   );
 
   const estimateStakingFee = useCallback(
