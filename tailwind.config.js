@@ -6,10 +6,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // default
         yellow: colors.amber,
         pear: '#C8D72B',
-        // custom
         green: '#7ED8C2',
         red: '#F17256',
         orange: {
