@@ -5,6 +5,8 @@ import api from 'src/services/api';
 import { PendingWithdrawal } from 'src/types/account';
 import { CeloWei } from 'src/types/units';
 
+const botActionDelay = 120 * 1000;
+
 export const useWithdrawalBot = (address: string | null) => {
   const { managerContract, accountContract } = useContracts();
 
@@ -27,7 +29,7 @@ export const useWithdrawalBot = (address: string | null) => {
 
   useEffect(() => {
     void finalizeWithdrawal();
-    const intervalId = setInterval(finalizeWithdrawal, 120 * 1000);
+    const intervalId = setInterval(finalizeWithdrawal, botActionDelay);
     return () => {
       clearInterval(intervalId);
     };
@@ -57,7 +59,7 @@ export const useClaimingBot = (address: string | null) => {
 
   useEffect(() => {
     void claim();
-    const intervalId = setInterval(claim, 120 * 1000);
+    const intervalId = setInterval(claim, botActionDelay);
     return () => {
       clearInterval(intervalId);
     };
