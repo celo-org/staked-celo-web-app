@@ -7,13 +7,8 @@ module.exports = {
     extend: {
       colors: {
         // default
-        black: colors.black,
-        transparent: colors.transparent,
-        blue: colors.blue,
-        red: colors.red,
         yellow: colors.amber,
         pear: '#C8D72B',
-        teal: colors.teal,
         // custom
         green: '#7ED8C2',
         red: '#F17256',
