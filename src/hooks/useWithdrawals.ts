@@ -21,9 +21,7 @@ export const useWithdrawalBot = (address: string | null) => {
       const scheduledWithdrawals = await accountContract.methods
         .scheduledWithdrawalsForGroupAndBeneficiary(group, address)
         .call();
-      if (scheduledWithdrawals === '0') continue;
-      await api.withdraw(address);
-      return;
+      if (scheduledWithdrawals !== '0') return api.withdraw(address);
     }
   }, [address, managerContract, accountContract]);
 
