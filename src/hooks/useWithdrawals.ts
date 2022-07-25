@@ -67,7 +67,7 @@ export const useClaimingBot = (address: string | null) => {
 /**
  * Groups pending withdrawals that are within 5 minutes time span
  */
-const fiveMinInSec: number = 5 * 60;
+const groupingTimeSpan: number = 5 * 60;
 const formatPendingWithdrawals = (values: string[], timestamps: string[]): PendingWithdrawal[] => {
   const sortedTimestamps = [...timestamps].sort();
   const pendingWithdrawals: PendingWithdrawal[] = [];
@@ -78,7 +78,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
     const amount = values[index];
 
     /* If next timestamp is not within allowed time span create new pending withdrawal */
-    if (parseInt(timestamp) > referenceTimestamp + fiveMinInSec) {
+    if (parseInt(timestamp) > referenceTimestamp + groupingTimeSpan) {
       referenceTimestamp = parseInt(timestamp);
       pendingWithdrawals.push({
         amount: new CeloWei(amount),
