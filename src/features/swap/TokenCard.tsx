@@ -1,14 +1,7 @@
-import Image from 'next/image';
 import { ReactElement } from 'react';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
+import { TokenIcon } from 'src/components/icons/TokenIcon';
 import { StakeToken } from 'src/features/swap/types';
-import Celo from 'src/images/icons/CELO.svg';
-import stCelo from 'src/images/icons/stCELO.svg';
-
-const tokenIcon: { [key in StakeToken]: any } = {
-  CELO: Celo,
-  stCELO: stCelo,
-};
 
 export const TokenCard = (props: {
   inputChild?: number | string | ReactElement;
@@ -21,13 +14,7 @@ export const TokenCard = (props: {
     <div className="flex justify-between items-center">
       <h2 className="text-sm">{props.titleChild}</h2>
       <div className="flex justify-between items-center">
-        <Image
-          src={tokenIcon[props.token]}
-          alt={`${props.token} logo`}
-          quality={100}
-          width={32}
-          height={32}
-        />
+        <TokenIcon token={props.token} />
         <span className="ml-3 text-sm">{props.token}</span>
       </div>
     </div>
