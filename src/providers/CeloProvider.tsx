@@ -13,7 +13,7 @@ export const CeloProvider = (props: PropsWithChildren) => {
         icon: '/logo.svg',
         name: 'Celo Staking',
         description: 'Celo staking application',
-        url: process.env.NEXT_PUBLIC_APP_URL as string,
+        url: '',
       }}
       network={networkConfig}
       connectModal={{
