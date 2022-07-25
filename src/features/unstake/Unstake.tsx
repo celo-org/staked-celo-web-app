@@ -4,9 +4,10 @@ import { toStCeloWei } from 'src/formatters/amount';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import toast from 'src/services/toast';
 import { StCelo } from 'src/types/units';
+import { PendingWithdrawal } from './PendingWithdrawal';
 
 export const Unstake = () => {
-  const { stCeloBalance } = useAccountContext();
+  const { stCeloBalance, pendingWithdrawals } = useAccountContext();
   const { unstake, stCeloExchangeRate, estimateWithdrawalValue, estimateUnstakingFee } =
     useUnstaking();
 
@@ -17,7 +18,7 @@ export const Unstake = () => {
   };
 
   return (
-    <div className="flex justify-center md:w-96 mx-auto w-full px-4 mb-14">
+    <div className="flex flex-col justify-center md:w-96 mx-auto w-full px-4 mb-14">
       <SwapForm
         estimateReceiveValue={estimateWithdrawalValue}
         estimateGasFee={estimateUnstakingFee}
@@ -27,6 +28,12 @@ export const Unstake = () => {
         fromToken="stCELO"
         toToken="CELO"
       />
+      {pendingWithdrawals.length > 0 ? (
+        <span className="text-white text-bold text-sm mt-12">Currently unstaking</span>
+      ) : null}
+      {pendingWithdrawals.map(({ amount, timestamp }) => (
+        <PendingWithdrawal key={timestamp} amount={amount} timestamp={timestamp} />
+      ))}
     </div>
   );
 };
