@@ -47,7 +47,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
 };
 
 export function useAccountContext() {
-  const { isConnected, address, celoBalance, stCeloBalance, loadBalances } =
+  const { isConnected, address, celoBalance, stCeloBalance, loadBalances, pendingWithdrawals } =
     useContext(AccountContext);
 
   return {
@@ -56,5 +56,6 @@ export function useAccountContext() {
     celoBalance,
     stCeloBalance,
     loadBalances,
+    pendingWithdrawals,
   };
 }
