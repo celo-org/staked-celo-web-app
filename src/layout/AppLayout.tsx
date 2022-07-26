@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
 import { useAccountContext } from 'src/providers/AccountProvider';
+import { useThemeContext } from 'src/providers/ThemeProvider';
 import { Footer } from './partials/Footer';
 import { Header } from './partials/Header';
 
@@ -22,6 +23,7 @@ interface Props {
 
 export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
   const { isConnected } = useAccountContext();
+  const { theme } = useThemeContext();
 
   return (
     <>
@@ -29,7 +31,7 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
       </Head>
-      <div className={`flex flex-col h-full min-h-screen w-full min-w-screen bg-gray-900`}>
+      <div className={`flex flex-col h-full min-h-screen w-full min-w-screen bg-gray-900 ${theme}`}>
         {isConnected && <Header pathName={pathName} />}
         <main className="w-full flex-1 flex">{children}</main>
         <Footer />
