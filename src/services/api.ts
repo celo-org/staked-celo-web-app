@@ -11,6 +11,7 @@ const sendRequest = async (address: string, action: ActionType) => {
   await apiService.post('/', {
     beneficiary: address,
     action,
+    network: process.env.NODE_ENV === 'production' ? 'mainnet' : 'alfajores',
   });
 };
 
