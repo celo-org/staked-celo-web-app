@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
+import { discordUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
 import Discord from 'src/images/icons/discord.svg';
 import Github from 'src/images/icons/github.svg';
 import Twitter from 'src/images/icons/twitter.svg';
@@ -31,17 +32,17 @@ export const Footer = () => {
 
       <ul className="flex mt-4 md:order-2">
         <li className="mx-2">
-          <a href="/twitter">
+          <a href={twitterUrl}>
             <Image src={Twitter} alt="Twitter logo" quality={100} width={40} height={40} />
           </a>
         </li>
         <li className="mx-2">
-          <a href="/discord">
+          <a href={discordUrl}>
             <Image src={Discord} alt="Discord logo" quality={100} width={40} height={40} />
           </a>
         </li>
         <li className="mx-2">
-          <a href="/github">
+          <a href={githubUrl}>
             <Image src={Github} alt="Github logo" quality={100} width={40} height={40} />
           </a>
         </li>
