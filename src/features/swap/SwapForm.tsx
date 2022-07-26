@@ -55,7 +55,7 @@ export const SwapForm = (props: SwapFormProps) => {
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
-      if (error || !isTouched) {
+      if (!amount || error || !isTouched) {
         return;
       }
 

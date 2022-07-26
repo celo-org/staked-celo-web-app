@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
-import { Modal } from 'src/components/modals/Modal';
+import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { TokenCard } from 'src/features/swap/TokenCard';
 import { StakeToken } from 'src/features/swap/types';
@@ -28,10 +28,10 @@ const UnstakeInfo = () => {
           onClick={() => setIsOpen(true)}
         />
       </span>
-      <Modal isOpen={isOpen} close={() => setIsOpen(false)}>
+      <InfoModal title="Unstaking period" isOpen={isOpen} close={() => setIsOpen(false)}>
         Unlocking staked Celo for withdrawal requires a three day waiting period, a timeframe set by
         the Celo protocol.
-      </Modal>
+      </InfoModal>
     </>
   );
 };

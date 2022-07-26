@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Modal } from 'src/components/modals/Modal';
+import { InfoModal } from 'src/components/modals/InfoModal';
 import { Cost } from 'src/features/swap/types';
 import { useCosts } from 'src/features/swap/useCosts';
 import Info from 'src/images/icons/info.svg';
@@ -49,9 +49,9 @@ const CostItem = (props: CostItemProps) => {
         </span>
       </span>
       <span className={cost.title === 'Fees' ? 'text-green' : ''}>{cost.value}</span>
-      <Modal isOpen={isOpen} close={() => setIsOpen(false)}>
+      <InfoModal title={cost.title} isOpen={isOpen} close={() => setIsOpen(false)}>
         {cost.tooltip.content}
-      </Modal>
+      </InfoModal>
     </li>
   );
 };
