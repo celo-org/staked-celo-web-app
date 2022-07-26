@@ -2,9 +2,6 @@ import { CeloProvider as ReactCeloProvider } from '@celo/react-celo';
 import '@celo/react-celo/lib/styles.css';
 import { PropsWithChildren } from 'react';
 import { networkConfig } from 'src/config/celo';
-import { AccountProvider } from './AccountProvider';
-import { ExchangeProvider } from './ExchangeProvider';
-import { ThemeProvider } from './ThemeProvider';
 
 export const CeloProvider = (props: PropsWithChildren) => {
   return (
@@ -23,11 +20,7 @@ export const CeloProvider = (props: PropsWithChildren) => {
         },
       }}
     >
-      <ThemeProvider>
-        <AccountProvider>
-          <ExchangeProvider>{props.children}</ExchangeProvider>
-        </AccountProvider>
-      </ThemeProvider>
+      {props.children}
     </ReactCeloProvider>
   );
 };

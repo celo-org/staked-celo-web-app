@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ClientOnly } from 'src/components/ClientOnly';
 import { AppLayout } from 'src/layout/AppLayout';
 import { useAccountContext } from 'src/providers/AccountProvider';
-import { CeloProvider } from 'src/providers/CeloProvider';
+import { TopProvider } from 'src/providers/TopProvider';
 import 'src/styles/fonts.css';
 import 'src/styles/globals.css';
 
@@ -37,14 +37,14 @@ const App = ({ Component, pageProps, router }: AppProps) => {
 
   return (
     <ClientOnly>
-      <CeloProvider>
+      <TopProvider>
         <CeloConnectRedirect>
           <AppLayout pathName={pathName}>
             <Component {...pageProps} />
             <ToastContainer transition={Zoom} position={toast.POSITION.TOP_CENTER} icon={false} />
           </AppLayout>
         </CeloConnectRedirect>
-      </CeloProvider>
+      </TopProvider>
     </ClientOnly>
   );
 };
