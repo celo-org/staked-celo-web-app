@@ -11,8 +11,7 @@ export function useFormValidator(balance: CeloWei | StCeloWei, token: StakeToken
       if (balance.isLessThan(toCeloWei(new Celo(amount)))) {
         return `Not enough ${token}`;
       }
-
-      return undefined;
+      return;
     },
     [balance, token]
   );
