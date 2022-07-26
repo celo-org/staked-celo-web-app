@@ -1,0 +1,145 @@
+/**
+ * Color names proposed by a person
+ * for whom the difference between purple and blue
+ * is as inconceivable as quantum physics
+ */
+$white-milk: #FFFDF4;
+$white-chocolate: #EBE7DD;
+
+$gray-100: #999187;
+$gray-400: #7E9B9D;
+$gray-900: #1C3D42;
+
+$green-mint: #F4FDF6;
+$green-aqua: #7ED8C2;
+$green-blue: #06B595;
+$green: #55A803;
+
+$purple-800: #6F61D7;
+$purple-900: #6759CC;
+$purple-1000: #6051CD;
+
+$orange-100: #E8AB43;
+$orange-200: #E5B253;
+$orange-300: #E3AD49;
+$orange-900: #AF5F14;
+
+$red-200: #F48A72;
+$red-600: #CB5733;
+
+/* LIGHT */
+body:not(.dark) {
+  color: $gray-900;
+  background-color: $white-milk;
+
+  @mixin purple-button {
+    background-color: $purple-900;
+
+    &:hover {
+      background-color: $purple-1000;
+    }
+
+    &:active, &:disabled {
+      background-color: $purple-800;
+    }
+  }
+
+  .c-welcome {
+    &__connect-button {
+      @include purple-button;
+      color: $white-milk;
+    }
+  }
+
+  .c-connect-button {
+    color: $gray-100;
+
+    &__bull {
+      color: $green;
+    }
+  }
+
+  .c-connect-modal {
+    &__header {
+      color: $green;
+    }
+  }
+
+  .c-nav {
+    &__stake.active {
+      background-color: $purple-900;
+    }
+
+    &__unstake.active {
+      background-color: $orange-200;
+    }
+  }
+
+  .c-swap-form {
+    &__box {
+      background-color: $white-chocolate;
+    }
+
+    &__input {
+      background-color: $green-mint;
+    }
+
+    &__error-text {
+      color: $red-600;
+    }
+  }
+
+  .c-balance-tools {
+    &__balance {
+      color: $gray-400;
+    }
+  }
+
+  .c-receive-summary {
+    &__stake-info {
+      color: $green-blue;
+    }
+
+    &__unstake-info {
+      color: $orange-900;
+    }
+  }
+
+  .c-submit-button {
+    color: $white-milk;
+
+    &--stcelo {
+      @include purple-button;
+    }
+
+    &--celo {
+      background-color: $orange-200;
+
+      &:hover {
+        background-color: $orange-300;
+      }
+
+      &:active, &:disabled {
+        background-color: $orange-100;
+      }
+    }
+  }
+
+  .c-costs-summary {
+    color: $gray-100;
+
+    &__free-value {
+      color: $green-blue;
+    }
+  }
+
+  .c-pending-withdrawal {
+    &__period {
+      color: $gray-100;
+    }
+  }
+
+  .c-footer {
+    background-color: $white-chocolate;
+  }
+}

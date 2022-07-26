@@ -1,14 +1,13 @@
 import BigNumber from 'bignumber.js';
-import Image from 'next/image';
 import Link from 'next/link';
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
+import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
 import { fromWeiRounded } from 'src/formatters/amount';
-import Arrow from 'src/images/icons/arrow.svg';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import { CeloWei, StCeloWei } from 'src/types/units';
 import { BalanceTools } from './BalanceTools';
@@ -51,14 +50,11 @@ export const SwapForm = (props: SwapFormProps) => {
   const isValid = !error;
   const validateForm = useFormValidator(balance, fromToken);
   const { reloadExchangeContext } = useExchangeContext();
+  const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
-      if (!amount || error || !isTouched) {
-        return;
-      }
-
       setIsLoading(true);
       try {
         await onSubmit(amount);
@@ -68,7 +64,7 @@ export const SwapForm = (props: SwapFormProps) => {
       }
       setAmount(0);
     },
-    [amount, error, isTouched, onSubmit, reloadExchangeContext]
+    [amount, onSubmit, reloadExchangeContext]
   );
 
   const onInputChange = (value: number | undefined) => {
@@ -78,10 +74,10 @@ export const SwapForm = (props: SwapFormProps) => {
   };
 
   return (
-    <form className="w-full justify-center items-center text-white" onSubmit={submit}>
+    <form className="c-swap-form w-full justify-center items-center" onSubmit={submit}>
       <FloatingBox
         width="w-full"
-        classes="overflow-visible bg-gray-800 flex flex-col justify-center items-center"
+        classes="c-swap-form__box overflow-visible flex flex-col justify-center items-center"
       >
         <SwapFormInput
           balance={balance}
@@ -92,7 +88,7 @@ export const SwapForm = (props: SwapFormProps) => {
         />
         <Link href={getHref(toToken)}>
           <a className="absolute">
-            <Image src={Arrow} alt="Arrow" width={40} height={40} quality={100} />
+            <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </a>
         </Link>
         <ReceiveSummary
@@ -103,7 +99,7 @@ export const SwapForm = (props: SwapFormProps) => {
         />
       </FloatingBox>
       <div className="flex justify-center mt-5 mb-1">
-        <SubmitButton toToken={toToken} pending={isLoading} />
+        <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
       </div>
       {!!amount && (
         <CostsSummary
@@ -126,7 +122,7 @@ interface FormInputProps {
 
 const getTitle = (error: string | undefined, fromToken: StakeToken) => {
   if (error) {
-    return <span className="text-red">{error}</span>;
+    return <span className="c-swap-form__error-text">{error}</span>;
   }
 
   if (fromToken === 'stCELO') {
@@ -154,13 +150,13 @@ const SwapFormInput = (props: FormInputProps) => {
 
   return (
     <TokenCard
-      classes="w-full	bg-gray-900"
+      classes="c-swap-form__input w-full"
       token={token}
       titleChild={getTitle(props.error, token)}
       inputChild={
         <NumberFormat
           className={`mr-auto bg-transparent text-left focus:outline-none ${
-            props.error ? 'text-red' : ''
+            props.error ? 'c-swap-form__error-text' : ''
           }`}
           placeholder="0.00"
           thousandSeparator

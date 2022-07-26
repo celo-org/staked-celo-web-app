@@ -12,8 +12,13 @@ export const ConnectWalletButton = () => {
 
   return (
     <>
-      <button className="inline-flex flex-col" onClick={() => setIsModalOpened(true)}>
-        <span className="text-lg text-green">&bull; {addressLabel}</span>
+      <button
+        className="c-connect-button inline-flex flex-col"
+        onClick={() => setIsModalOpened(true)}
+      >
+        <span className="text-lg">
+          <span className="c-connect-button__bull">&bull;</span> {addressLabel}
+        </span>
       </button>
       <WalletModal isOpen={isModalOpened} close={() => setIsModalOpened(false)} />
     </>

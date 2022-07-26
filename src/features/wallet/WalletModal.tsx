@@ -53,7 +53,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
         minHeight: '400px',
         maxHeight: '500px',
       }}
-      header={<span className="text-green">&bull; Connected</span>}
+      header={<span className="c-connect-modal__header">&bull; Connected</span>}
     >
       <div className="flex flex-col flex-grow">
         <section className="flex-grow">

@@ -18,7 +18,7 @@ export const TokenCard = (props: {
         <span className="ml-3 text-sm">{props.token}</span>
       </div>
     </div>
-    <div className="flex justify-start text-xl font-mono">{props.inputChild}</div>
-    <div className="flex justify-start my-2">{props.infoChild}</div>
+    <div className="flex justify-start text-3xl my-2">{props.inputChild}</div>
+    <div className="flex justify-start mb-2">{props.infoChild}</div>
   </FloatingBox>
 );

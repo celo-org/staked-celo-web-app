@@ -1,15 +1,36 @@
 import Image from 'next/image';
+import ArrowDark from 'src/images/icons/arrow-dark.svg';
+import ArrowLight from 'src/images/icons/arrow-light.svg';
+import DiscordDark from 'src/images/icons/discord-dark.svg';
+import DiscordLight from 'src/images/icons/discord-light.svg';
+import GithubDark from 'src/images/icons/github-dark.svg';
+import GithubLight from 'src/images/icons/github-light.svg';
+import InfoAqua from 'src/images/icons/info-aqua.svg';
+import InfoDark from 'src/images/icons/info-dark.svg';
+import InfoLight from 'src/images/icons/info-light.svg';
+import InfoOrange from 'src/images/icons/info-orange.svg';
+import LogoDark from 'src/images/icons/logo-dark.svg';
+import LogoLight from 'src/images/icons/logo-light.svg';
+import TwitterDark from 'src/images/icons/twitter-dark.svg';
+import TwitterLight from 'src/images/icons/twitter-light.svg';
 import { useThemeContext } from 'src/providers/ThemeProvider';
 
-type IconName = '';
+type IconName = 'arrow' | 'logo' | 'info' | 'receive_info' | 'github' | 'discord' | 'twitter';
 
 interface ThemedIcons {
   dark: any;
   light: any;
 }
 
-// @ts-ignore
-const icons: Record<IconName, ThemedIcons> = {};
+const icons: Record<IconName, ThemedIcons> = {
+  arrow: { light: ArrowDark, dark: ArrowLight },
+  logo: { light: LogoDark, dark: LogoLight },
+  info: { light: InfoDark, dark: InfoLight },
+  receive_info: { light: InfoOrange, dark: InfoAqua },
+  github: { light: GithubDark, dark: GithubLight },
+  discord: { light: DiscordDark, dark: DiscordLight },
+  twitter: { light: TwitterDark, dark: TwitterLight },
+};
 
 interface ThemedIconProps {
   name: IconName;

@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { ConnectWalletButton } from 'src/features/wallet/ConnectWalletButton';
 import DarkThemeIcon from 'src/images/icons/darkTheme.svg';
 import LightThemeIcon from 'src/images/icons/lightTheme.svg';
-import Logo from 'src/images/logo.svg';
 import { Theme, useThemeContext } from 'src/providers/ThemeProvider';
 import { NavBar } from './NavBar';
 
@@ -39,7 +39,13 @@ export const Header = ({ pathName }: { pathName: string }) => {
         <Link href="/">
           <a className="flex items-center">
             <div className="flex scale-90 sm:scale-100">
-              <Image src={Logo} alt="Liquid Staking Logo" quality={100} width={50} height={50} />
+              <ThemedIcon
+                name="logo"
+                alt="Liquid Staking Logo"
+                quality={100}
+                width={50}
+                height={50}
+              />
             </div>
           </a>
         </Link>
