@@ -18,7 +18,7 @@ export const Unstake = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center md:w-96 mx-auto w-full px-4 mb-14">
+    <div className="flex flex-col md:w-96 mx-auto w-full px-4 mb-14">
       <SwapForm
         estimateReceiveValue={estimateWithdrawalValue}
         estimateGasFee={estimateUnstakingFee}
