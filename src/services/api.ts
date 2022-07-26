@@ -10,7 +10,7 @@ const sendRequest = async (address: string, action: ActionType) => {
   if (!NEXT_PUBLIC_API_URL) return;
   await apiService.post('/', {
     beneficiary: address,
-    action,
+    type: action,
     network: process.env.NODE_ENV === 'production' ? 'mainnet' : 'alfajores',
   });
 };
