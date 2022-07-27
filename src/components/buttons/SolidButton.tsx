@@ -16,7 +16,7 @@ export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
   const { type, onClick, classes, bold, icon, disabled, title, passThruProps } = props;
 
   const base =
-    'c-solid-button flex items-center justify-center rounded-2xl transition-all duration-300 disabled:cursor-not-allowed';
+    'themed:solid-button flex items-center justify-center rounded-2xl transition-all duration-300 disabled:cursor-not-allowed';
 
   const weight = bold ? 'font-semibold' : '';
   const allClasses = `${base} ${weight} ${classes}`;

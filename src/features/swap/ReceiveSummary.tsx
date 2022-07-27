@@ -37,11 +37,11 @@ const UnstakeInfo = () => {
 
 const getInfoChild = (token: StakeToken) => {
   if (token === 'stCELO') {
-    return <span className="c-receive-summary__stake-info">4.56% projected APY</span>;
+    return <span className="themed:receive-summary__stake-info">4.56% projected APY</span>;
   } else if (token === 'CELO') {
     return (
       <div className="flex">
-        <span className="c-receive-summary__unstake-info">3-day unlock period</span>
+        <span className="themed:receive-summary__unstake-info">3-day unlock period</span>
         <UnstakeInfo />
       </div>
     );
@@ -61,7 +61,7 @@ export const ReceiveSummary = ({
 
   return (
     <TokenCard
-      classes="c-receive-summary w-full mt-6"
+      classes="themed:receive-summary w-full mt-6"
       token={token}
       titleChild="Receive"
       inputChild={displayValue}

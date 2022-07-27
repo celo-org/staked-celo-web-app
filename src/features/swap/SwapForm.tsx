@@ -74,10 +74,10 @@ export const SwapForm = (props: SwapFormProps) => {
   };
 
   return (
-    <form className="c-swap-form w-full justify-center items-center" onSubmit={submit}>
+    <form className="themed:swap-form w-full justify-center items-center" onSubmit={submit}>
       <FloatingBox
         width="w-full"
-        classes="c-swap-form__box overflow-visible flex flex-col justify-center items-center"
+        classes="themed:swap-form__box overflow-visible flex flex-col justify-center items-center"
       >
         <SwapFormInput
           balance={balance}
@@ -122,7 +122,7 @@ interface FormInputProps {
 
 const getTitle = (error: string | undefined, fromToken: StakeToken) => {
   if (error) {
-    return <span className="c-swap-form__error-text">{error}</span>;
+    return <span className="themed:swap-form__error-text">{error}</span>;
   }
 
   if (fromToken === 'stCELO') {
@@ -150,13 +150,13 @@ const SwapFormInput = (props: FormInputProps) => {
 
   return (
     <TokenCard
-      classes="c-swap-form__input w-full"
+      classes="themed:swap-form__input w-full"
       token={token}
       titleChild={getTitle(props.error, token)}
       inputChild={
         <NumberFormat
           className={`mr-auto bg-transparent text-left focus:outline-none ${
-            props.error ? 'c-swap-form__error-text' : ''
+            props.error ? 'themed:swap-form__error-text' : ''
           }`}
           placeholder="0.00"
           thousandSeparator

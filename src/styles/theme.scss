@@ -56,14 +56,14 @@ body:not(.dark-mode) {
     }
   }
 
-  .c-welcome {
+  .themed\:welcome {
     &__connect-button {
       @include purple-button;
       color: $white-milk;
     }
   }
 
-  .c-connect-button {
+  .themed\:connect-button {
     color: $gray-100;
 
     &__bull {
@@ -71,13 +71,13 @@ body:not(.dark-mode) {
     }
   }
 
-  .c-connect-modal {
+  .themed\:connect-modal {
     &__header {
       color: $green;
     }
   }
 
-  .c-nav {
+  .themed\:nav {
     &__stake.active {
       background-color: $purple-900;
     }
@@ -87,7 +87,7 @@ body:not(.dark-mode) {
     }
   }
 
-  .c-swap-form {
+  .themed\:swap-form {
     &__box {
       background-color: $white-chocolate;
     }
@@ -101,13 +101,13 @@ body:not(.dark-mode) {
     }
   }
 
-  .c-balance-tools {
+  .themed\:balance-tools {
     &__balance {
       color: $gray-300;
     }
   }
 
-  .c-receive-summary {
+  .themed\:receive-summary {
     &__stake-info {
       color: $green-blue;
     }
@@ -117,7 +117,7 @@ body:not(.dark-mode) {
     }
   }
 
-  .c-submit-button {
+  .themed\:submit-button {
     color: $white-milk;
 
     &--stcelo {
@@ -137,7 +137,7 @@ body:not(.dark-mode) {
     }
   }
 
-  .c-costs-summary {
+  .themed\:costs-summary {
     color: $gray-100;
 
     &__free-value {
@@ -145,13 +145,13 @@ body:not(.dark-mode) {
     }
   }
 
-  .c-pending-withdrawal {
+  .themed\:pending-withdrawal {
     &__period {
       color: $gray-100;
     }
   }
 
-  .c-footer {
+  .themed\:footer {
     background-color: $white-chocolate;
   }
 }
@@ -173,14 +173,14 @@ body.dark-mode {
     }
   }
 
-  .c-welcome {
+  .themed\:welcome {
     &__connect-button {
       @include purple-button;
       color: $gray-700;
     }
   }
 
-  .c-connect-button {
+  .themed\:connect-button {
     color: $gray-400;
 
     &__bull {
@@ -188,7 +188,7 @@ body.dark-mode {
     }
   }
 
-  .c-connect-modal {
+  .themed\:connect-modal {
     &__header {
       color: $green;
     }
@@ -198,11 +198,11 @@ body.dark-mode {
     }
   }
 
-  .c-info-modal {
+  .themed\:info-modal {
     color: $gray-900;
   }
 
-  .c-nav {
+  .themed\:nav {
     &__stake.active {
       background-color: $purple-200;
     }
@@ -212,7 +212,7 @@ body.dark-mode {
     }
   }
 
-  .c-swap-form {
+  .themed\:swap-form {
     &__box {
       background-color: $gray-500;
     }
@@ -226,14 +226,14 @@ body.dark-mode {
     }
   }
 
-  .c-balance-tools {
+  .themed\:balance-tools {
     &__balance,
     &__max-button {
       color: $gray-400;
     }
   }
 
-  .c-receive-summary {
+  .themed\:receive-summary {
     &__stake-info {
       color: $green-pear;
     }
@@ -243,7 +243,7 @@ body.dark-mode {
     }
   }
 
-  .c-submit-button {
+  .themed\:submit-button {
     color: $gray-700;
 
     &--stcelo {
@@ -263,7 +263,7 @@ body.dark-mode {
     }
   }
 
-  .c-costs-summary {
+  .themed\:costs-summary {
     color: $gray-400;
 
     &__free-value {
@@ -271,13 +271,13 @@ body.dark-mode {
     }
   }
 
-  .c-pending-withdrawal {
+  .themed\:pending-withdrawal {
     &__period {
       color: $gray-400;
     }
   }
 
-  .c-footer {
+  .themed\:footer {
     background-color: $gray-500;
   }
 }

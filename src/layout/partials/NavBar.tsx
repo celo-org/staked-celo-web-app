@@ -1,13 +1,13 @@
 import Link from 'next/link';
 
 const navLinks = [
-  { label: 'Stake', to: '/', class: 'c-nav__stake' },
-  { label: 'Unstake', to: '/unstake', class: 'c-nav__unstake' },
+  { label: 'Stake', to: '/', class: 'themed:nav__stake' },
+  { label: 'Unstake', to: '/unstake', class: 'themed:nav__unstake' },
 ];
 
 export const NavBar = ({ pathName }: { pathName: string }) => {
   return (
-    <nav className="c-nav w-full md:w-96">
+    <nav className="themed:nav w-full md:w-96">
       <ul className="flex items-center justify-start list-none overflow-hidden opacity-90 mr-3">
         {navLinks.map((l) => {
           const active = pathName === l.to;

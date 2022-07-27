@@ -15,7 +15,7 @@ const getText = (toToken: StakeToken) => {
 };
 
 export const SubmitButton = ({ toToken, pending, disabled }: ButtonProps) => {
-  const baseClass = 'c-submit-button';
+  const baseClass = 'themed:submit-button';
   const stateClasses = pending ? `${baseClass}--pending` : '';
 
   return (

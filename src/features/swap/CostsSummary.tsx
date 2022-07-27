@@ -16,7 +16,7 @@ export const CostsSummary = (props: CostsSummaryProps) => {
   const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
 
   return (
-    <ul className="c-costs-summary mx-2 mt-5">
+    <ul className="themed:costs-summary mx-2 mt-5">
       {costs.map((cost) => (
         <CostItem cost={cost} key={cost.title} />
       ))}
@@ -47,7 +47,9 @@ const CostItem = (props: CostItemProps) => {
           />
         </span>
       </span>
-      <span className={cost.value === freeValue ? 'c-costs-summary__free-value font-medium' : ''}>
+      <span
+        className={cost.value === freeValue ? 'themed:costs-summary__free-value font-medium' : ''}
+      >
         {cost.value}
       </span>
       <InfoModal title={cost.title} isOpen={isOpen} close={() => setIsOpen(false)}>
