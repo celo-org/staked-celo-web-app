@@ -4,28 +4,40 @@
  * is as inconceivable as quantum physics
  */
 $white-milk: #FFFDF4;
+$white-ecru: #E5EAEE;
 $white-chocolate: #EBE7DD;
 
 $gray-100: #999187;
-$gray-400: #7E9B9D;
+$gray-300: #7E9B9D;
+$gray-400: #7B9799;
+$gray-500: #324142;
+$gray-700: #212B2E;
 $gray-900: #1C3D42;
 
 $green-mint: #F4FDF6;
 $green-aqua: #7ED8C2;
 $green-blue: #06B595;
+$green-pear: #C8D72B;
 $green: #55A803;
 
+$purple-200: #A654E7;
+$purple-300: #9477F5;
+$purple-400: #9781EE;
+$purple-700: #8C62FF;
 $purple-800: #6F61D7;
 $purple-900: #6759CC;
 $purple-1000: #6051CD;
 
 $orange-100: #E8AB43;
-$orange-200: #E5B253;
-$orange-300: #E3AD49;
-$orange-900: #AF5F14;
+$orange-200: #E7B65D;
+$orange-300: #E5B253;
+$orange-400: #EEAF43;
+$orange-500: #E3AD49;
+$orange-700: #DFA849;
 
 $red-200: #F48A72;
 $red-600: #CB5733;
+$red-800: #AF5F14;
 
 /* LIGHT */
 body:not(.dark) {
@@ -71,7 +83,7 @@ body:not(.dark) {
     }
 
     &__unstake.active {
-      background-color: $orange-200;
+      background-color: $orange-300;
     }
   }
 
@@ -91,7 +103,7 @@ body:not(.dark) {
 
   .c-balance-tools {
     &__balance {
-      color: $gray-400;
+      color: $gray-300;
     }
   }
 
@@ -101,7 +113,7 @@ body:not(.dark) {
     }
 
     &__unstake-info {
-      color: $orange-900;
+      color: $red-800;
     }
   }
 
@@ -113,10 +125,10 @@ body:not(.dark) {
     }
 
     &--celo {
-      background-color: $orange-200;
+      background-color: $orange-300;
 
       &:hover {
-        background-color: $orange-300;
+        background-color: $orange-500;
       }
 
       &:active, &:disabled {
@@ -141,5 +153,131 @@ body:not(.dark) {
 
   .c-footer {
     background-color: $white-chocolate;
+  }
+}
+
+/* DARK */
+body.dark {
+  color: $white-ecru;
+  background-color: $gray-700;
+
+  @mixin purple-button {
+    background-color: $purple-400;
+
+    &:hover {
+      background-color: $purple-700;
+    }
+
+    &:active, &:disabled {
+      background-color: $purple-300;
+    }
+  }
+
+  .c-welcome {
+    &__connect-button {
+      @include purple-button;
+      color: $gray-700;
+    }
+  }
+
+  .c-connect-button {
+    color: $gray-400;
+
+    &__bull {
+      color: $green;
+    }
+  }
+
+  .c-connect-modal {
+    &__header {
+      color: $green;
+    }
+
+    &__content {
+      color: $gray-900;
+    }
+  }
+
+  .c-info-modal {
+    color: $gray-900;
+  }
+
+  .c-nav {
+    &__stake.active {
+      background-color: $purple-200;
+    }
+
+    &__unstake.active {
+      background-color: $orange-200;
+    }
+  }
+
+  .c-swap-form {
+    &__box {
+      background-color: $gray-500;
+    }
+
+    &__input {
+      background-color: $gray-700;
+    }
+
+    &__error-text {
+      color: $red-200;
+    }
+  }
+
+  .c-balance-tools {
+    &__balance,
+    &__max-button {
+      color: $gray-400;
+    }
+  }
+
+  .c-receive-summary {
+    &__stake-info {
+      color: $green-pear;
+    }
+
+    &__unstake-info {
+      color: $green-aqua;
+    }
+  }
+
+  .c-submit-button {
+    color: $gray-700;
+
+    &--stcelo {
+      @include purple-button;
+    }
+
+    &--celo {
+      background-color: $orange-200;
+
+      &:hover {
+        background-color: $orange-700;
+      }
+
+      &:active, &:disabled {
+        background-color: $orange-400;
+      }
+    }
+  }
+
+  .c-costs-summary {
+    color: $gray-400;
+
+    &__free-value {
+      color: $green-aqua;
+    }
+  }
+
+  .c-pending-withdrawal {
+    &__period {
+      color: $gray-400;
+    }
+  }
+
+  .c-footer {
+    background-color: $gray-500;
   }
 }

@@ -29,7 +29,7 @@ export const InfoModal = ({ isOpen, close, children, title }: PropsWithChildren<
         },
       }}
     >
-      <div className="flex flex-col h-full w-96">
+      <div className="c-info-modal flex flex-col h-full w-96">
         <div className="flex justify-between text-2xl mb-4 mt-2">{title}</div>
         <div className="font-light mb-4">{children}</div>
         <div className="cursor-pointer p-4 text-xl text-purple text-center" onClick={close}>

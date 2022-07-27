@@ -55,7 +55,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
       }}
       header={<span className="c-connect-modal__header">&bull; Connected</span>}
     >
-      <div className="flex flex-col flex-grow">
+      <div className="c-connect-modal__content flex flex-col flex-grow">
         <section className="flex-grow">
           <div className="flex mt-8 mb-2">
             <span className="font-regular text-2xl mr-2">Wallet address</span>

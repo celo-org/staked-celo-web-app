@@ -15,7 +15,7 @@ export const BalanceTools = (props: BalanceToolsProps) => {
       <button
         type="button"
         title="Use full balance"
-        className="text-xs mr-2 underline font-medium"
+        className="c-balance-tools__max-button text-xs mr-2 underline font-medium"
         onClick={onClickUseMax()}
       >
         Max
