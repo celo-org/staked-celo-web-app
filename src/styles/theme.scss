@@ -40,7 +40,7 @@ $red-600: #CB5733;
 $red-800: #AF5F14;
 
 /* LIGHT */
-body:not(.dark) {
+body:not(.dark-mode) {
   color: $gray-900;
   background-color: $white-milk;
 
@@ -157,7 +157,7 @@ body:not(.dark) {
 }
 
 /* DARK */
-body.dark {
+body.dark-mode {
   color: $white-ecru;
   background-color: $gray-700;
 
