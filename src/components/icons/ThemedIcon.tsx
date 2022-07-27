@@ -17,6 +17,7 @@ interface ThemedIconProps {
   quality?: number;
   width?: number;
   height?: number;
+  classes?: string;
 }
 
 export const ThemedIcon = ({
@@ -25,9 +26,17 @@ export const ThemedIcon = ({
   quality = 100,
   width = 32,
   height = 32,
+  classes = '',
 }: ThemedIconProps) => {
   const { theme } = useThemeContext();
   return (
-    <Image src={icons?.[name]?.[theme]} alt={alt} quality={quality} width={width} height={height} />
+    <Image
+      src={icons?.[name]?.[theme]}
+      alt={alt}
+      className={classes}
+      quality={quality}
+      width={width}
+      height={height}
+    />
   );
 };
