@@ -1,8 +1,36 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ConnectWalletButton } from 'src/features/wallet/ConnectWalletButton';
+import DarkThemeIcon from 'src/images/icons/darkTheme.svg';
+import LightThemeIcon from 'src/images/icons/lightTheme.svg';
 import Logo from 'src/images/logo.svg';
+import { Theme, useThemeContext } from 'src/providers/ThemeProvider';
 import { NavBar } from './NavBar';
+
+const themeIcons: Record<Theme, any> = {
+  light: LightThemeIcon,
+  dark: DarkThemeIcon,
+};
+
+export const ThemeToggle = () => {
+  const { theme, setTheme } = useThemeContext();
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  return (
+    <Image
+      src={themeIcons[theme]}
+      alt="Toggle theme"
+      quality={100}
+      width={25}
+      height={25}
+      onClick={toggleTheme}
+      className="cursor-pointer"
+    />
+  );
+};
 
 export const Header = ({ pathName }: { pathName: string }) => {
   return (
@@ -16,6 +44,7 @@ export const Header = ({ pathName }: { pathName: string }) => {
           </a>
         </Link>
         <ConnectWalletButton />
+        <ThemeToggle />
       </div>
       <div className="flex justify-center py-3">
         <NavBar pathName={pathName} />
