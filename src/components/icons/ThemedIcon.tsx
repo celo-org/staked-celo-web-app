@@ -18,6 +18,7 @@ interface ThemedIconProps {
   width?: number;
   height?: number;
   classes?: string;
+  onClick?: () => void;
 }
 
 export const ThemedIcon = ({
@@ -27,6 +28,7 @@ export const ThemedIcon = ({
   width = 32,
   height = 32,
   classes = '',
+  onClick,
 }: ThemedIconProps) => {
   const { theme } = useThemeContext();
   return (
@@ -37,6 +39,7 @@ export const ThemedIcon = ({
       quality={quality}
       width={width}
       height={height}
+      onClick={onClick}
     />
   );
 };
