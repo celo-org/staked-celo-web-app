@@ -26,7 +26,6 @@ export const useWithdrawalBot = (address: string | null) => {
   }, [address, managerContract, accountContract]);
 
   useEffect(() => {
-    void finalizeWithdrawal();
     const intervalId = setInterval(finalizeWithdrawal, botActionDelay);
     return () => {
       clearInterval(intervalId);
@@ -56,7 +55,6 @@ export const useClaimingBot = (address: string | null) => {
   }, [address, accountContract, kit.connection]);
 
   useEffect(() => {
-    void claim();
     const intervalId = setInterval(claim, botActionDelay);
     return () => {
       clearInterval(intervalId);
