@@ -16,7 +16,7 @@ export const Stake = () => {
   };
 
   return (
-    <div className="flex justify-center md:w-96 mx-auto w-full px-4 mb-14">
+    <div className="flex flex-col md:w-96 mx-auto w-full px-4 mb-14">
       <SwapForm
         estimateReceiveValue={estimateDepositValue}
         estimateGasFee={estimateStakingFee}
