@@ -8,15 +8,14 @@ interface BalanceToolsProps {
 export const BalanceTools = (props: BalanceToolsProps) => {
   const { roundedBalance, onClickUseMax } = props;
   return (
-    <div>
-      <span className="text-xs text-gray-500 mr-2">
-        {roundedBalance.toFixed(DISPLAY_DECIMALS)} balance
+    <div className="themed:balance-tools">
+      <span className="themed:balance-tools__balance text-xs mr-2">
+        {roundedBalance.toFixed(DISPLAY_DECIMALS)} balance &bull;&nbsp;
       </span>
-      &bull;&nbsp;
       <button
         type="button"
         title="Use full balance"
-        className="text-xs text-gray-500 mr-2 underline font-medium"
+        className="themed:balance-tools__max-button text-xs mr-2 underline font-medium"
         onClick={onClickUseMax()}
       >
         Max

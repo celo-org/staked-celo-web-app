@@ -28,9 +28,9 @@ export const Unstake = () => {
         fromToken="stCELO"
         toToken="CELO"
       />
-      {pendingWithdrawals.length && (
-        <span className="text-white text-bold text-sm mt-12">Currently unstaking</span>
-      )}
+      {pendingWithdrawals.length !== 0 ? (
+        <span className="font-semibold text-sm mt-12">Currently unstaking</span>
+      ) : null}
       {pendingWithdrawals.map(({ amount, timestamp }) => (
         <PendingWithdrawal key={timestamp} amount={amount} timestamp={timestamp} />
       ))}

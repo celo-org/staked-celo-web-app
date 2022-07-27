@@ -1,10 +1,9 @@
-import Image from 'next/image';
 import { useState } from 'react';
+import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { TokenCard } from 'src/features/swap/TokenCard';
 import { StakeToken } from 'src/features/swap/types';
-import Info from 'src/images/icons/info.svg';
 
 interface ReceiveSummaryProps {
   amount: number | undefined;
@@ -19,9 +18,9 @@ const UnstakeInfo = () => {
   return (
     <>
       <span className="flex ml-2">
-        <Image
-          className="cursor-pointer"
-          src={Info}
+        <ThemedIcon
+          name="receive_info"
+          classes="cursor-pointer"
           alt="Unstaking period info"
           height={20}
           width={20}
@@ -38,11 +37,11 @@ const UnstakeInfo = () => {
 
 const getInfoChild = (token: StakeToken) => {
   if (token === 'stCELO') {
-    return <span className="text-pear">4.56% projected APY</span>;
+    return <span className="themed:receive-summary__stake-info">4.56% projected APY</span>;
   } else if (token === 'CELO') {
     return (
       <div className="flex">
-        <span className="text-green">3-day unlock period</span>
+        <span className="themed:receive-summary__unstake-info">3-day unlock period</span>
         <UnstakeInfo />
       </div>
     );
@@ -62,7 +61,7 @@ export const ReceiveSummary = ({
 
   return (
     <TokenCard
-      classes="w-full"
+      classes="themed:receive-summary w-full mt-6"
       token={token}
       titleChild="Receive"
       inputChild={displayValue}

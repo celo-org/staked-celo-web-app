@@ -3,6 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { Cost } from '../swap/types';
 
+export const freeValue = 'Free*';
+
 const exchangeCost: Cost = {
   title: 'Exchange Rate',
   value: '...',
@@ -23,7 +25,7 @@ const transactionCost: Cost = {
 
 const feeCost: Cost = {
   title: 'Fees',
-  value: 'Free*',
+  value: freeValue,
   tooltip: {
     content: 'For the launch of the stCELO protocol, fees are free.',
   },

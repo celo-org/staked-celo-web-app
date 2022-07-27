@@ -4,6 +4,7 @@ import { StakeToken } from 'src/features/swap/types';
 interface ButtonProps {
   toToken: StakeToken;
   pending: boolean;
+  disabled?: boolean;
 }
 
 const getText = (toToken: StakeToken) => {
@@ -13,16 +14,16 @@ const getText = (toToken: StakeToken) => {
   return '';
 };
 
-const getColor = (toToken: StakeToken) => {
-  if (toToken === 'stCELO') return 'purple';
-  if (toToken === 'CELO') return 'orange';
+export const SubmitButton = ({ toToken, pending, disabled }: ButtonProps) => {
+  const baseClass = 'themed:submit-button';
+  const stateClasses = pending ? `${baseClass}--pending` : '';
 
-  return undefined;
-};
-
-export const SubmitButton = ({ toToken, pending }: ButtonProps) => {
   return (
-    <SolidButton color={getColor(toToken)} type="submit" classes="w-full h-14" disabled={pending}>
+    <SolidButton
+      type="submit"
+      classes={`${baseClass} ${baseClass}--${toToken.toLowerCase()} ${stateClasses} w-full h-14`}
+      disabled={disabled || pending}
+    >
       {pending ? 'Loading...' : getText(toToken)}
     </SolidButton>
   );
