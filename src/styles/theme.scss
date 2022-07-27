@@ -1,4 +1,11 @@
 /**
+ * "themed:" classes should define colors only!
+ * Themes could theoretically be done with tailwind, but 'dark:' was not an option
+ * and it was too hard to come up with meaningful names like 'primary' etc.
+ * If someone can handle it with Tailwind variables, please do!
+ */
+
+ /**
  * Color names proposed by a person
  * for whom the difference between purple and blue
  * is as inconceivable as quantum physics
