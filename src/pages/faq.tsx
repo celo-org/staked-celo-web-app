@@ -36,7 +36,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
       <div className="flex flex-row">
         <div className="flex-grow mr-2 font-light">{question}</div>
         <ThemedIcon
-          classes={`transition cursor-pointer ${opened ? '' : 'rotate-180'}`}
+          classes={`transition cursor-pointer ${opened ? 'rotate-180' : ''}`}
           name="caret"
           alt="Toggle faq item"
           width={24}

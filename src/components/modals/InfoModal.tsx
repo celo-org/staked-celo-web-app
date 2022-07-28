@@ -1,8 +1,6 @@
 import { PropsWithChildren } from 'react';
 import ReactModal from 'react-modal';
 
-export type ClosingMode = 'exit' | 'dismiss';
-
 interface ModalProps {
   isOpen: boolean;
   close: () => void;

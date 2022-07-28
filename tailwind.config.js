@@ -17,6 +17,9 @@ module.exports = {
         green: {
           DEFAULT: '#55A803',
         },
+        purple: {
+          DEFAULT: '#6A38F6',
+        },
       },
       backgroundColor: {
         primary: 'var(--c-bg-primary-color)',

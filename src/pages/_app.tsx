@@ -14,11 +14,13 @@ import 'src/styles/globals.css';
 
 dayjs.extend(relativeTime);
 
+const routingsWithoutConnection = ['/connect', '/faq'];
+
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
   const { isConnected } = useAccountContext();
 
-  if (!isConnected && router.pathname !== '/connect') {
+  if (!isConnected && !routingsWithoutConnection.includes(router.pathname)) {
     void router.push('/connect');
 
     // Router is async. Show empty screen before redirect.

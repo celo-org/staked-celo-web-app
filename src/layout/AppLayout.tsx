@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
-import { useAccountContext } from 'src/providers/AccountProvider';
 import { Footer } from './partials/Footer';
 import { Header } from './partials/Header';
 
@@ -21,8 +20,6 @@ interface Props {
 }
 
 export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
-  const { isConnected } = useAccountContext();
-
   return (
     <>
       <Head>
@@ -30,7 +27,7 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
         <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <div className="flex flex-col h-full min-h-screen w-full min-w-screen">
-        {isConnected && <Header />}
+        <Header />
         <main className="w-full flex-1 flex">{children}</main>
         <Footer />
       </div>
