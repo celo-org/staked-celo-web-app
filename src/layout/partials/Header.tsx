@@ -4,6 +4,7 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { ConnectWalletButton } from 'src/features/wallet/ConnectWalletButton';
 import DarkThemeIcon from 'src/images/icons/darkTheme.svg';
 import LightThemeIcon from 'src/images/icons/lightTheme.svg';
+import { useAccountContext } from 'src/providers/AccountProvider';
 import { Theme, useThemeContext } from 'src/providers/ThemeProvider';
 
 const themeIcons: Record<Theme, any> = {
@@ -32,6 +33,8 @@ export const ThemeToggle = () => {
 };
 
 export const Header = () => {
+  const { isConnected } = useAccountContext();
+
   return (
     <header className="w-screen py-5 px-3 sm:pl-5 sm:pr-6">
       <div className="flex items-center justify-between p-2">
@@ -48,7 +51,7 @@ export const Header = () => {
             </div>
           </a>
         </Link>
-        <ConnectWalletButton />
+        {isConnected && <ConnectWalletButton />}
         <ThemeToggle />
       </div>
     </header>
