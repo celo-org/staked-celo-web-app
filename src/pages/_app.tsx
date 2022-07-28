@@ -11,7 +11,6 @@ import { useAccountContext } from 'src/providers/AccountProvider';
 import { TopProvider } from 'src/providers/TopProvider';
 import 'src/styles/fonts.css';
 import 'src/styles/globals.css';
-import 'src/styles/theme.scss';
 
 dayjs.extend(relativeTime);
 
