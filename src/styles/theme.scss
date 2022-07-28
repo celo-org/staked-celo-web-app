@@ -161,6 +161,12 @@ body:not(.dark-mode) {
   .themed\:footer {
     background-color: $white-chocolate;
   }
+
+  .themed\:faq {
+    &__answer {
+      background-color: $white-chocolate;
+    }
+  }
 }
 
 /* DARK */
@@ -286,5 +292,11 @@ body.dark-mode {
 
   .themed\:footer {
     background-color: $gray-500;
+  }
+
+  .themed\:faq {
+    &__answer {
+      background-color: $gray-500;
+    }
   }
 }
