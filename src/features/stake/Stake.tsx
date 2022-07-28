@@ -2,6 +2,7 @@ import { useStaking } from 'src/features/stake/useStaking';
 import { SwapForm } from 'src/features/swap/SwapForm';
 import { Switcher } from 'src/features/swap/Switcher';
 import { toCeloWei } from 'src/formatters/amount';
+import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import toast from 'src/services/toast';
 import { Celo } from 'src/types/units';
@@ -17,7 +18,7 @@ export const Stake = () => {
   };
 
   return (
-    <div className="flex flex-col md:w-96 mx-auto w-full px-4 mb-14">
+    <CenteredLayout>
       <Switcher />
       <SwapForm
         estimateReceiveValue={estimateDepositValue}
@@ -28,6 +29,6 @@ export const Stake = () => {
         fromToken="CELO"
         toToken="stCELO"
       />
-    </div>
+    </CenteredLayout>
   );
 };
