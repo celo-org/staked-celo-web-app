@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const navLinks = [
-  { label: 'Stake', to: '/', class: 'themed:nav__stake' },
-  { label: 'Unstake', to: '/unstake', class: 'themed:nav__unstake' },
+  { label: 'Stake', to: '/', activeClass: 'bg-highlight-primary' },
+  { label: 'Unstake', to: '/unstake', activeClass: 'bg-highlight-secondary' },
 ];
 
 export const Switcher = () => {
@@ -12,7 +12,7 @@ export const Switcher = () => {
 
   return (
     <div className="flex justify-center py-3">
-      <nav className="themed:nav w-full md:w-96">
+      <nav className="w-full md:w-96">
         <ul className="flex items-center justify-start list-none overflow-hidden opacity-90 mr-3">
           {navLinks.map((l) => {
             const active = pathName === l.to;
@@ -24,7 +24,7 @@ export const Switcher = () => {
                 <Link href={l.to}>
                   <a className={className}>{l.label}</a>
                 </Link>
-                <hr className={`w-full h-0.5 border-none ${l.class} ${active ? 'active' : ''}`} />
+                <hr className={`w-full h-0.5 border-none ${active ? l.activeClass : ''}`} />
               </li>
             );
           })}

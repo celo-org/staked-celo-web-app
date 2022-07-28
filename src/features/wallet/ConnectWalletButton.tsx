@@ -13,11 +13,11 @@ export const ConnectWalletButton = () => {
   return (
     <>
       <button
-        className="themed:connect-button inline-flex flex-col"
+        className="text-secondary inline-flex flex-col"
         onClick={() => setIsModalOpened(true)}
       >
         <span className="text-lg">
-          <span className="themed:connect-button__bull">&bull;</span> {addressLabel}
+          <span className="text-green">&bull;</span> {addressLabel}
         </span>
       </button>
       <WalletModal isOpen={isModalOpened} close={() => setIsModalOpened(false)} />

@@ -7,7 +7,7 @@ import styles from './connect.module.css';
 const Connect = () => {
   const { connectWallet } = useWallet();
   return (
-    <div className="themed:welcome w-full md:w-1/3 mx-auto self-center md:rounded-xl">
+    <div className="w-full md:w-1/3 mx-auto self-center md:rounded-xl">
       <div className={styles.connectHeader}>
         <Image src={stCELO} alt="stCelo logo" quality={100} width={136} height={136} />
       </div>
@@ -21,7 +21,12 @@ const Connect = () => {
         </ul>
 
         <SolidButton
-          classes="themed:welcome__connect-button w-full h-14 py-9 mt-9 mb-14 md:mb-2"
+          classes={`
+            w-full h-14
+            py-9 mt-9 mb-14 md:mb-2
+            text-contrast
+            bg-action-primary-regular hover:bg-action-primary-dark active:bg-action-primary-light disabled:bg-action-primary-light
+          `}
           onClick={connectWallet}
         >
           Connect Wallet

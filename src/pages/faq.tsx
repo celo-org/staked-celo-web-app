@@ -12,7 +12,7 @@ const Faq = () => {
   const { faqItems } = useFaq();
   return (
     <CenteredLayout>
-      <div className="themed:faq text-3xl font-light leading-normal mt-6 mb-12">
+      <div className="text-3xl font-light leading-normal mt-6 mb-12">
         Frequently asked questions
       </div>
       {faqItems.map(({ question, answer }, index) => (
@@ -44,9 +44,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
           onClick={() => setOpened(!opened)}
         />
       </div>
-      <div
-        className={`themed:faq__answer rounded-md font-light overflow-hidden ${answerStateClasses}`}
-      >
+      <div className={`rounded-md font-light overflow-hidden bg-secondary ${answerStateClasses}`}>
         <div className="p-4">{answer}</div>
       </div>
     </div>
