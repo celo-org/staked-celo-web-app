@@ -53,9 +53,9 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
         minHeight: '400px',
         maxHeight: '500px',
       }}
-      header={<span className="themed:connect-modal__header">&bull; Connected</span>}
+      header={<span className="text-green">&bull; Connected</span>}
     >
-      <div className="themed:connect-modal__content flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow text-gray-900">
         <section className="flex-grow">
           <div className="flex mt-8 mb-2">
             <span className="font-regular text-2xl mr-2">Wallet address</span>

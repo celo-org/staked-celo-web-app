@@ -1,34 +1,35 @@
 /** @type {import('tailwindcss').Config} */
-const colors = require('tailwindcss/colors');
 
 module.exports = {
   content: ['src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
-      colors: {
-        yellow: colors.amber,
-        pear: '#C8D72B',
-        green: '#7ED8C2',
-        red: '#F17256',
-        orange: {
-          DEFAULT: '#E7B65D',
-          700: '#E7B65D',
-          800: '#DFA849',
-          900: '#EEAF43',
-        },
-        purple: {
-          DEFAULT: '#A73EF9',
-          700: '#9781EE',
-          800: '#9477F5',
-          900: '#8C62FF',
-        },
+      textColor: {
+        primary: 'var(--c-text-primary-color)',
+        secondary: 'var(--c-text-secondary-color)',
+        contrast: 'var(--c-text-contrast-color)',
+        error: 'var(--c-text-error-color)',
+        'primary-info': 'var(--c-text-primary-info-color)',
+        'secondary-info': 'var(--c-text-secondary-info-color)',
         gray: {
-          100: '#E5EAEE',
-          400: '#7B9799',
-          800: '#324142',
-          900: '#212B2E',
+          900: '#1C3D42',
         },
-        white: '#FFFFFF',
+        green: {
+          DEFAULT: '#55A803',
+        },
+      },
+      backgroundColor: {
+        primary: 'var(--c-bg-primary-color)',
+        secondary: 'var(--c-bg-secondary-color)',
+        tertiary: 'var(--c-bg-tertiary-color)',
+        'action-primary-light': 'var(--c-bg-action-primary-light-color)',
+        'action-primary-regular': 'var(--c-bg-action-primary-regular-color)',
+        'action-primary-dark': 'var(--c-bg-action-primary-dark-color)',
+        'action-secondary-light': 'var(--c-bg-action-secondary-light-color)',
+        'action-secondary-regular': 'var(--c-bg-action-secondary-regular-color)',
+        'action-secondary-dark': 'var(--c-bg-action-secondary-dark-color)',
+        'highlight-primary': 'var(--c-bg-highlight-primary-color)',
+        'highlight-secondary': 'var(--c-bg-highlight-secondary-color)',
       },
     },
   },

@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import ArrowDark from 'src/images/icons/arrow-dark.svg';
 import ArrowLight from 'src/images/icons/arrow-light.svg';
+import CaretDark from 'src/images/icons/caret-dark.svg';
+import CaretLight from 'src/images/icons/caret-light.svg';
 import DiscordDark from 'src/images/icons/discord-dark.svg';
 import DiscordLight from 'src/images/icons/discord-light.svg';
 import GithubDark from 'src/images/icons/github-dark.svg';
@@ -15,7 +17,15 @@ import TwitterDark from 'src/images/icons/twitter-dark.svg';
 import TwitterLight from 'src/images/icons/twitter-light.svg';
 import { useThemeContext } from 'src/providers/ThemeProvider';
 
-type IconName = 'arrow' | 'logo' | 'info' | 'receive_info' | 'github' | 'discord' | 'twitter';
+type IconName =
+  | 'arrow'
+  | 'logo'
+  | 'info'
+  | 'receive_info'
+  | 'github'
+  | 'discord'
+  | 'twitter'
+  | 'caret';
 
 interface ThemedIcons {
   dark: any;
@@ -30,6 +40,7 @@ const icons: Record<IconName, ThemedIcons> = {
   github: { light: GithubDark, dark: GithubLight },
   discord: { light: DiscordDark, dark: DiscordLight },
   twitter: { light: TwitterDark, dark: TwitterLight },
+  caret: { light: CaretDark, dark: CaretLight },
 };
 
 interface ThemedIconProps {

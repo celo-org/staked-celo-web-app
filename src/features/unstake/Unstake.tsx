@@ -1,6 +1,8 @@
 import { SwapForm } from 'src/features/swap/SwapForm';
+import { Switcher } from 'src/features/swap/Switcher';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { toStCeloWei } from 'src/formatters/amount';
+import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import toast from 'src/services/toast';
 import { StCelo } from 'src/types/units';
@@ -18,7 +20,8 @@ export const Unstake = () => {
   };
 
   return (
-    <div className="flex flex-col md:w-96 mx-auto w-full px-4 mb-14">
+    <CenteredLayout>
+      <Switcher />
       <SwapForm
         estimateReceiveValue={estimateWithdrawalValue}
         estimateGasFee={estimateUnstakingFee}
@@ -34,6 +37,6 @@ export const Unstake = () => {
       {pendingWithdrawals.map(({ amount, timestamp }) => (
         <PendingWithdrawal key={timestamp} amount={amount} timestamp={timestamp} />
       ))}
-    </div>
+    </CenteredLayout>
   );
 };

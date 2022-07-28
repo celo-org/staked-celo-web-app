@@ -5,7 +5,6 @@ import { ConnectWalletButton } from 'src/features/wallet/ConnectWalletButton';
 import DarkThemeIcon from 'src/images/icons/darkTheme.svg';
 import LightThemeIcon from 'src/images/icons/lightTheme.svg';
 import { Theme, useThemeContext } from 'src/providers/ThemeProvider';
-import { NavBar } from './NavBar';
 
 const themeIcons: Record<Theme, any> = {
   light: LightThemeIcon,
@@ -32,7 +31,7 @@ export const ThemeToggle = () => {
   );
 };
 
-export const Header = ({ pathName }: { pathName: string }) => {
+export const Header = () => {
   return (
     <header className="w-screen py-5 px-3 sm:pl-5 sm:pr-6">
       <div className="flex items-center justify-between p-2">
@@ -51,9 +50,6 @@ export const Header = ({ pathName }: { pathName: string }) => {
         </Link>
         <ConnectWalletButton />
         <ThemeToggle />
-      </div>
-      <div className="flex justify-center py-3">
-        <NavBar pathName={pathName} />
       </div>
     </header>
   );

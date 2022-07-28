@@ -19,7 +19,7 @@ export const Footer = () => {
   const { totalCeloBalance } = useExchangeContext();
 
   return (
-    <footer className="themed:footer w-screen flex flex-col p-7 md:flex-row md:items-center md:justify-between">
+    <footer className="w-screen flex flex-col p-7 md:flex-row md:items-center md:justify-between bg-secondary">
       <div className="mt-2 flex flex-col md:order-first md:w-1/5">
         <span className="text-sm font-semibold">Total CELO staked</span>
         <span className="text-2xl">{totalCeloBalance.toFixed(DISPLAY_DECIMALS)}</span>

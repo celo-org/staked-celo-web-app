@@ -15,13 +15,16 @@ const getText = (toToken: StakeToken) => {
 };
 
 export const SubmitButton = ({ toToken, pending, disabled }: ButtonProps) => {
-  const baseClass = 'themed:submit-button';
-  const stateClasses = pending ? `${baseClass}--pending` : '';
+  /* It has to be defined like this, otherwise Tailwind will not build CSS classes */
+  const stCELOClasses =
+    'bg-action-primary-regular disabled:bg-action-primary-light hover:bg-action-primary-dark active:bg-action-primary-light';
+  const CELOClasses =
+    'bg-action-secondary-regular disabled:bg-action-secondary-light hover:bg-action-secondary-dark active:bg-action-secondary-light';
 
   return (
     <SolidButton
       type="submit"
-      classes={`${baseClass} ${baseClass}--${toToken.toLowerCase()} ${stateClasses} w-full h-14`}
+      classes={`${toToken === 'stCELO' ? stCELOClasses : CELOClasses} text-contrast w-full h-14`}
       disabled={disabled || pending}
     >
       {pending ? 'Loading...' : getText(toToken)}
