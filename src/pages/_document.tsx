@@ -17,6 +17,8 @@ class MyDocument extends Document {
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#35d07f" />
           <link rel="shortcut icon" href="/favicon.ico" />
+          <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
+
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
           <meta name="msapplication-TileColor" content="#ffffff" />

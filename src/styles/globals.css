@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  font-family: 'Inter', ui-sans-serif, system-ui;
+}
+
 body:not(.dark-mode) {
   --c-text-primary-color: #1C3D42;
   --c-text-secondary-color: #999187;
