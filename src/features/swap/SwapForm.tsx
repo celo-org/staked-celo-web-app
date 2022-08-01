@@ -29,21 +29,18 @@ interface SwapFormProps {
 const getHref = (toToken: StakeToken) => {
   if (toToken === 'CELO') return '/';
   if (toToken === 'stCELO') return '/unstake';
-
   return '';
 };
 
-export const SwapForm = (props: SwapFormProps) => {
-  const {
-    onSubmit,
-    balance,
-    exchangeRate,
-    fromToken,
-    toToken,
-    estimateReceiveValue,
-    estimateGasFee,
-  } = props;
-
+export const SwapForm = ({
+  onSubmit,
+  balance,
+  exchangeRate,
+  fromToken,
+  toToken,
+  estimateReceiveValue,
+  estimateGasFee,
+}: SwapFormProps) => {
   const [amount, setAmount] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -122,41 +119,25 @@ interface FormInputProps {
 }
 
 const getTitle = (error: string | undefined, fromToken: StakeToken) => {
-  if (error) {
-    return <span className="text-error">{error}</span>;
-  }
-
-  if (fromToken === 'stCELO') {
-    return 'Unstake';
-  }
-
-  if (fromToken === 'CELO') {
-    return 'Stake';
-  }
-
+  if (error) return <span className="text-error">{error}</span>;
+  if (fromToken === 'stCELO') return 'Unstake';
+  if (fromToken === 'CELO') return 'Stake';
   return '';
 };
 
-const SwapFormInput = (props: FormInputProps) => {
-  const { token, balance, value, onChange } = props;
-
-  const onClickUseMax = () => () => {
-    onChange(fromWeiRounded(balance));
-  };
-
-  const onInputChange = (values: NumberFormatValues) => {
-    onChange(values.floatValue);
-  };
+const SwapFormInput = ({ token, balance, value, onChange, error }: FormInputProps) => {
+  const onClickUseMax = () => onChange(fromWeiRounded(balance));
+  const onInputChange = (values: NumberFormatValues) => onChange(values.floatValue);
 
   return (
     <TokenCard
       classes="bg-tertiary w-full"
       token={token}
-      titleChild={getTitle(props.error, token)}
+      titleChild={getTitle(error, token)}
       inputChild={
         <NumberFormat
           className={`mr-auto bg-transparent text-left focus:outline-none ${
-            props.error ? 'text-error' : ''
+            error ? 'text-error' : ''
           }`}
           placeholder="0.00"
           thousandSeparator

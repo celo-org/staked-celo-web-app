@@ -4,7 +4,7 @@ import { CeloWei, StCeloWei } from 'src/types/units';
 
 interface BalanceToolsProps {
   balance: CeloWei | StCeloWei;
-  onClickUseMax: () => () => void;
+  onClickUseMax: () => void;
 }
 
 export const BalanceTools = ({ balance, onClickUseMax }: BalanceToolsProps) => {
@@ -19,7 +19,7 @@ export const BalanceTools = ({ balance, onClickUseMax }: BalanceToolsProps) => {
         type="button"
         title="Use full balance"
         className="text-xs mr-2 underline font-medium"
-        onClick={onClickUseMax()}
+        onClick={onClickUseMax}
       >
         Max
       </button>
