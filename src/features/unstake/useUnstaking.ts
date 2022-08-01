@@ -8,7 +8,7 @@ import api from 'src/services/api';
 import { StCelo, StCeloWei } from 'src/types/units';
 
 export function useUnstaking() {
-  const { address, loadBalances } = useAccountContext();
+  const { address, loadBalances, loadPendingWithdrawals } = useAccountContext();
   const { managerContract } = useContracts();
   const { stCeloExchangeRate } = useExchangeContext();
 
@@ -31,9 +31,9 @@ export function useUnstaking() {
       if (!address) return;
       await withdrawTx(amount).send(createTxOptions());
       await api.withdraw(address);
-      await loadBalances();
+      await Promise.all([loadBalances(), loadPendingWithdrawals()]);
     },
-    [withdrawTx, createTxOptions, loadBalances, address]
+    [withdrawTx, createTxOptions, loadBalances, loadPendingWithdrawals, address]
   );
 
   const estimateUnstakingFee = useCallback(

@@ -116,5 +116,6 @@ export const useWithdrawals = (address: string | null) => {
 
   return {
     pendingWithdrawals,
+    loadPendingWithdrawals,
   };
 };
