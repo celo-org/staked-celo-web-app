@@ -12,6 +12,7 @@ interface AccountContext {
   stCeloBalance: StCeloWei;
   loadBalances: () => Promise<void>;
   pendingWithdrawals: PendingWithdrawal[];
+  loadPendingWithdrawals: () => Promise<void>;
 }
 
 export const AccountContext = createContext<AccountContext>({
@@ -21,12 +22,13 @@ export const AccountContext = createContext<AccountContext>({
   stCeloBalance: new StCeloWei(0),
   loadBalances: () => Promise.resolve(),
   pendingWithdrawals: [],
+  loadPendingWithdrawals: () => Promise.resolve(),
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
   const { isConnected, address } = useAddress();
   const { loadBalances, celoBalance, stCeloBalance } = useBalances(address);
-  const { pendingWithdrawals } = useWithdrawals(address);
+  const { pendingWithdrawals, loadPendingWithdrawals } = useWithdrawals(address);
   useWithdrawalBot(address);
   useClaimingBot(address);
 
@@ -39,6 +41,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         celoBalance,
         stCeloBalance,
         pendingWithdrawals,
+        loadPendingWithdrawals,
       }}
     >
       {children}
@@ -47,8 +50,15 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
 };
 
 export function useAccountContext() {
-  const { isConnected, address, celoBalance, stCeloBalance, loadBalances, pendingWithdrawals } =
-    useContext(AccountContext);
+  const {
+    isConnected,
+    address,
+    celoBalance,
+    stCeloBalance,
+    loadBalances,
+    pendingWithdrawals,
+    loadPendingWithdrawals,
+  } = useContext(AccountContext);
 
   return {
     isConnected,
@@ -57,5 +67,6 @@ export function useAccountContext() {
     stCeloBalance,
     loadBalances,
     pendingWithdrawals,
+    loadPendingWithdrawals,
   };
 }
