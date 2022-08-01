@@ -2,8 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { ConnectWalletButton } from 'src/features/wallet/ConnectWalletButton';
-import DarkThemeIcon from 'src/images/icons/darkTheme.svg';
-import LightThemeIcon from 'src/images/icons/lightTheme.svg';
+import DarkThemeIcon from 'src/images/icons/theme-dark.svg';
+import LightThemeIcon from 'src/images/icons/theme-light.svg';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { Theme, useThemeContext } from 'src/providers/ThemeProvider';
 
@@ -24,8 +24,8 @@ export const ThemeToggle = () => {
       src={themeIcons[theme]}
       alt="Toggle theme"
       quality={100}
-      width={25}
-      height={25}
+      width={40}
+      height={40}
       onClick={toggleTheme}
       className="cursor-pointer"
     />
@@ -36,24 +36,22 @@ export const Header = () => {
   const { isConnected } = useAccountContext();
 
   return (
-    <header className="w-screen py-5 px-3 sm:pl-5 sm:pr-6">
-      <div className="flex items-center justify-between p-2">
-        <Link href="/">
-          <a className="flex items-center">
-            <div className="flex scale-90 sm:scale-100">
-              <ThemedIcon
-                name="logo"
-                alt="Liquid Staking Logo"
-                quality={100}
-                width={50}
-                height={50}
-              />
-            </div>
-          </a>
-        </Link>
-        {isConnected && <ConnectWalletButton />}
-        <ThemeToggle />
-      </div>
+    <header className="w-screen px-[32px] h-[80px] flex items-center justify-between">
+      <Link href="/">
+        <a className="flex items-center">
+          <div className="flex scale-90 sm:scale-100">
+            <ThemedIcon
+              name="logo"
+              alt="Liquid Staking Logo"
+              quality={100}
+              width={40}
+              height={40}
+            />
+          </div>
+        </a>
+      </Link>
+      {isConnected && <ConnectWalletButton />}
+      <ThemeToggle />
     </header>
   );
 };

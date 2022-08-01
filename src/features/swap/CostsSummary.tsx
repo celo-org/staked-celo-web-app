@@ -11,8 +11,7 @@ interface CostsSummaryProps {
   amount: number;
 }
 
-export const CostsSummary = (props: CostsSummaryProps) => {
-  const { estimateGasFee, exchangeRate, amount } = props;
+export const CostsSummary = ({ estimateGasFee, exchangeRate, amount }: CostsSummaryProps) => {
   const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
 
   return (
@@ -28,8 +27,7 @@ interface CostItemProps {
   cost: Cost;
 }
 
-const CostItem = (props: CostItemProps) => {
-  const { cost } = props;
+const CostItem = ({ cost }: CostItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

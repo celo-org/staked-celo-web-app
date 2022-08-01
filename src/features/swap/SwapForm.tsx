@@ -4,6 +4,7 @@ import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { INPUT_DECIMALS } from 'src/config/consts';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
@@ -28,21 +29,18 @@ interface SwapFormProps {
 const getHref = (toToken: StakeToken) => {
   if (toToken === 'CELO') return '/';
   if (toToken === 'stCELO') return '/unstake';
-
   return '';
 };
 
-export const SwapForm = (props: SwapFormProps) => {
-  const {
-    onSubmit,
-    balance,
-    exchangeRate,
-    fromToken,
-    toToken,
-    estimateReceiveValue,
-    estimateGasFee,
-  } = props;
-
+export const SwapForm = ({
+  onSubmit,
+  balance,
+  exchangeRate,
+  fromToken,
+  toToken,
+  estimateReceiveValue,
+  estimateGasFee,
+}: SwapFormProps) => {
   const [amount, setAmount] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -121,51 +119,35 @@ interface FormInputProps {
 }
 
 const getTitle = (error: string | undefined, fromToken: StakeToken) => {
-  if (error) {
-    return <span className="text-error">{error}</span>;
-  }
-
-  if (fromToken === 'stCELO') {
-    return 'Unstake';
-  }
-
-  if (fromToken === 'CELO') {
-    return 'Stake';
-  }
-
+  if (error) return <span className="text-error">{error}</span>;
+  if (fromToken === 'stCELO') return 'Unstake';
+  if (fromToken === 'CELO') return 'Stake';
   return '';
 };
 
-const SwapFormInput = (props: FormInputProps) => {
-  const { token, balance, value, onChange } = props;
-  const roundedBalance = fromWeiRounded(balance);
-
-  const onClickUseMax = () => () => {
-    onChange(roundedBalance);
-  };
-
-  const onInputChange = (values: NumberFormatValues) => {
-    onChange(values.floatValue);
-  };
+const SwapFormInput = ({ token, balance, value, onChange, error }: FormInputProps) => {
+  const onClickUseMax = () => onChange(fromWeiRounded(balance));
+  const onInputChange = (values: NumberFormatValues) => onChange(values.floatValue);
 
   return (
     <TokenCard
       classes="bg-tertiary w-full"
       token={token}
-      titleChild={getTitle(props.error, token)}
+      titleChild={getTitle(error, token)}
       inputChild={
         <NumberFormat
           className={`mr-auto bg-transparent text-left focus:outline-none ${
-            props.error ? 'text-error' : ''
+            error ? 'text-error' : ''
           }`}
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
           value={value}
           allowNegative={false}
+          decimalScale={INPUT_DECIMALS}
         />
       }
-      infoChild={<BalanceTools onClickUseMax={onClickUseMax} roundedBalance={roundedBalance} />}
+      infoChild={<BalanceTools onClickUseMax={onClickUseMax} balance={balance} />}
     />
   );
 };
