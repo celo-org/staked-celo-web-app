@@ -4,6 +4,7 @@ import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { INPUT_DECIMALS } from 'src/config/consts';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
@@ -138,10 +139,9 @@ const getTitle = (error: string | undefined, fromToken: StakeToken) => {
 
 const SwapFormInput = (props: FormInputProps) => {
   const { token, balance, value, onChange } = props;
-  const roundedBalance = fromWeiRounded(balance);
 
   const onClickUseMax = () => () => {
-    onChange(roundedBalance);
+    onChange(fromWeiRounded(balance));
   };
 
   const onInputChange = (values: NumberFormatValues) => {
@@ -163,9 +163,10 @@ const SwapFormInput = (props: FormInputProps) => {
           onValueChange={onInputChange}
           value={value}
           allowNegative={false}
+          decimalScale={INPUT_DECIMALS}
         />
       }
-      infoChild={<BalanceTools onClickUseMax={onClickUseMax} roundedBalance={roundedBalance} />}
+      infoChild={<BalanceTools onClickUseMax={onClickUseMax} balance={balance} />}
     />
   );
 };
