@@ -1,4 +1,5 @@
 import { PropsWithChildren, useCallback, useMemo } from 'react';
+import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
 import { Modal } from 'src/components/modals/Modal';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useWallet } from './useWallet';
@@ -9,7 +10,7 @@ interface WalletModalActionProps {
 
 const WalletModalAction = ({ children, action }: PropsWithChildren<WalletModalActionProps>) => {
   return (
-    <button className="text-left text-xl font-normal my-2 underline" onClick={action}>
+    <button className="text-left text-[16px] leading-[24px] my-[8px] underline" onClick={action}>
       {children}
     </button>
   );
@@ -53,20 +54,25 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
         minHeight: '400px',
         maxHeight: '500px',
       }}
-      header={<span className="text-green">&bull; Connected</span>}
+      header={
+        <div className="flex items-center">
+          <IndicatorIcon classes="mr-[8px]" />
+          <label className="text-green">Connected</label>
+        </div>
+      }
     >
       <div className="flex flex-col flex-grow text-gray-900">
         <section className="flex-grow">
           <div className="flex mt-8 mb-2">
-            <span className="font-regular text-2xl mr-2">Wallet address</span>
+            <h2 className="font-medium text-[20px] leading-[24px] mr-[8px]">Wallet address</h2>
             <button
-              className="underline"
+              className="underline text-secondary text-[14px] leading-[100%]"
               onClick={() => navigator.clipboard.writeText(address || '')}
             >
               Copy
             </button>
           </div>
-          <span className="text-base">{displayAddress}</span>
+          <h2 className="text-base text-[16px] leading-[24px]">{displayAddress}</h2>
         </section>
         <WalletModalAction action={changeWalletWithClose}>Change Wallet</WalletModalAction>
         <WalletModalAction action={disconnectWalletWithClose}>Disconnect</WalletModalAction>
