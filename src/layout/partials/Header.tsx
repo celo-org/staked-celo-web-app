@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
-import { ConnectWalletButton } from 'src/features/wallet/ConnectWalletButton';
+import { WalletButton } from 'src/features/wallet/WalletButton';
 import DarkThemeIcon from 'src/images/icons/theme-dark.svg';
 import LightThemeIcon from 'src/images/icons/theme-light.svg';
 import { useAccountContext } from 'src/providers/AccountProvider';
@@ -50,7 +50,7 @@ export const Header = () => {
           </div>
         </a>
       </Link>
-      {isConnected && <ConnectWalletButton />}
+      {isConnected && <WalletButton />}
       <ThemeToggle />
     </header>
   );

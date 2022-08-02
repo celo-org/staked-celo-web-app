@@ -4,7 +4,7 @@ import { Label } from 'src/components/text/Label';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { WalletModal } from './WalletModal';
 
-export const ConnectWalletButton = () => {
+export const WalletButton = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const { address } = useAccountContext();
 
