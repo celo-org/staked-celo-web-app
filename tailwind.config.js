@@ -11,9 +11,7 @@ module.exports = {
         error: 'var(--c-text-error-color)',
         'primary-info': 'var(--c-text-primary-info-color)',
         'secondary-info': 'var(--c-text-secondary-info-color)',
-        gray: {
-          900: '#1C3D42',
-        },
+        modal: 'var(--c-text-modal)',
         green: {
           DEFAULT: '#55A803',
         },

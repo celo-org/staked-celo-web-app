@@ -13,6 +13,7 @@ body:not(.dark-mode) {
   --c-text-error-color: #CB5733;
   --c-text-primary-info-color: #06B595;
   --c-text-secondary-info-color: #AF5F14;
+  --c-text-modal: #1C3D42;
   --c-bg-primary-color: #FFFDF4;
   --c-bg-secondary-color: #EBE7DD;
   --c-bg-tertiary-color: #F4FDF6;
@@ -33,6 +34,7 @@ body.dark-mode {
   --c-text-error-color: #F48A72;
   --c-text-primary-info-color: #C8D72B;
   --c-text-secondary-info-color: #7ED8C2;
+  --c-text-modal: #212B2E;
   --c-bg-primary-color: #212B2E;
   --c-bg-secondary-color: #324142;
   --c-bg-tertiary-color: #212B2E;

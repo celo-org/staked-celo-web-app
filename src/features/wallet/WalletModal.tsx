@@ -61,7 +61,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
         </div>
       }
     >
-      <div className="flex flex-col flex-grow text-gray-900">
+      <div className="flex flex-col flex-grow">
         <section className="flex-grow">
           <div className="flex mt-8 mb-2">
             <h2 className="font-medium text-[20px] leading-[24px] mr-[8px]">Wallet address</h2>
