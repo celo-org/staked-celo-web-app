@@ -1,4 +1,9 @@
-const faqItems = [
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+const faqItems: FaqItem[] = [
   {
     question: 'Lorem ipsum dolor sit ametra enum adiposicing ucho nan?',
     answer:
@@ -16,6 +21,4 @@ const faqItems = [
   },
 ];
 
-export const useFaq = () => {
-  return { faqItems };
-};
+export const getFaqItems = () => faqItems;
