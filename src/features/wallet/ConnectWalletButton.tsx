@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Label } from 'src/components/elements/Label';
 import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
+import { Label } from 'src/components/text/Label';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { WalletModal } from './WalletModal';
 

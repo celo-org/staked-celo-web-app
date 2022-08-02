@@ -1,7 +1,7 @@
 import { PropsWithChildren, useCallback, useMemo } from 'react';
-import { Label } from 'src/components/elements/Label';
 import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
 import { Modal } from 'src/components/modals/Modal';
+import { Label } from 'src/components/text/Label';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useWallet } from './useWallet';
 
