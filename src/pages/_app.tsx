@@ -1,3 +1,5 @@
+import { CeloProvider as ReactCeloProvider } from '@celo/react-celo';
+import '@celo/react-celo/lib/styles.css';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
@@ -5,9 +7,11 @@ import { useRouter } from 'next/router';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { networkConfig } from 'src/config/celo';
+import { AccountProvider, useAccountContext } from 'src/contexts/account/AccountContext';
+import { ExchangeProvider } from 'src/contexts/exchange/ExchangeContext';
+import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
 import { AppLayout } from 'src/layout/AppLayout';
-import { TopProvider } from 'src/providers/TopProvider';
 import 'src/styles/globals.css';
 
 dayjs.extend(relativeTime);
@@ -39,6 +43,40 @@ const ClientOnly = ({ children }: PropsWithChildren) => {
   }
 
   return <>{children}</>;
+};
+
+const TopProvider = (props: PropsWithChildren) => {
+  return (
+    <CeloProvider>
+      <ThemeProvider>
+        <AccountProvider>
+          <ExchangeProvider>{props.children}</ExchangeProvider>
+        </AccountProvider>
+      </ThemeProvider>
+    </CeloProvider>
+  );
+};
+
+const CeloProvider = (props: PropsWithChildren) => {
+  return (
+    <ReactCeloProvider
+      dapp={{
+        icon: '/logo.svg',
+        name: 'Celo Staking',
+        description: 'Celo staking application',
+        url: '',
+      }}
+      network={networkConfig}
+      connectModal={{
+        title: <span>Connect Wallet</span>,
+        providersOptions: {
+          searchable: false,
+        },
+      }}
+    >
+      {props.children}
+    </ReactCeloProvider>
+  );
 };
 
 const routingsWithoutConnection = ['/connect', '/faq'];
