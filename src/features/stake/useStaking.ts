@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
-import { fromCeloWei, fromStCeloWei, toCeloWei } from 'src/formatters/amount';
 import { useContracts } from 'src/hooks/useContracts';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import { Celo, CeloWei, StCelo, StCeloWei } from 'src/types/units';
+import { fromCeloWei, fromStCeloWei, toCeloWei } from 'src/utils/tokens';
 
 export function useStaking() {
   const { address, loadBalances } = useAccountContext();

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fromCeloWei } from 'src/formatters/amount';
 import { useContracts } from 'src/hooks/useContracts';
 import { Celo, CeloWei } from 'src/types/units';
+import { fromCeloWei } from 'src/utils/tokens';
 
 export const useTokenBalances = () => {
   const { accountContract } = useContracts();

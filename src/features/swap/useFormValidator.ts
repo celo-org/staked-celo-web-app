@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { StakeToken } from 'src/features/swap/types';
-import { toCeloWei } from 'src/formatters/amount';
 import { Celo, CeloWei, StCeloWei } from 'src/types/units';
+import { toCeloWei } from 'src/utils/tokens';
 
 export function useFormValidator(balance: CeloWei | StCeloWei, token: StakeToken) {
   return useCallback(
