@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
-import { Footer } from './partials/Footer';
-import { Header } from './partials/Header';
+import { Footer } from './Footer';
+import { Header } from './Header';
 
 function toTitleCase(str: string) {
   return str.replace(/\w\S*/g, (txt) => {
