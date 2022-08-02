@@ -1,8 +1,8 @@
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { SwapForm } from 'src/features/swap/SwapForm';
 import { Switcher } from 'src/features/swap/Switcher';
 import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
-import { useAccountContext } from 'src/providers/AccountProvider';
 import toast from 'src/services/toast';
 import { StCelo, toStCeloWei } from 'src/utils/tokens';
 import { PendingWithdrawal } from './PendingWithdrawal';

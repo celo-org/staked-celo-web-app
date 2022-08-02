@@ -3,8 +3,8 @@ import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
 import { Modal } from 'src/components/modals/Modal';
 import { Label } from 'src/components/text/Label';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import Close from 'src/images/icons/close.svg';
-import { useAccountContext } from 'src/providers/AccountProvider';
 import { useWallet } from '../hooks/useWallet';
 
 interface WalletModalProps {

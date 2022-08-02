@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
-import { AccountProvider } from './AccountProvider';
+import { AccountProvider } from 'src/contexts/account/AccountContext';
+import { ExchangeProvider } from 'src/contexts/exchange/ExchangeContext';
+import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
 import { CeloProvider } from './CeloProvider';
-import { ExchangeProvider } from './ExchangeProvider';
-import { ThemeProvider } from './ThemeProvider';
 
 export const TopProvider = (props: PropsWithChildren) => {
   return (

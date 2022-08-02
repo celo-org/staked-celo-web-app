@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
 import { Label } from 'src/components/text/Label';
-import { useAccountContext } from 'src/providers/AccountProvider';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { WalletModal } from './WalletModal';
 
 export const WalletButton = () => {

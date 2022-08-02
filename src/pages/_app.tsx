@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { AppLayout } from 'src/layout/AppLayout';
-import { useAccountContext } from 'src/providers/AccountProvider';
 import { TopProvider } from 'src/providers/TopProvider';
 import 'src/styles/globals.css';
 

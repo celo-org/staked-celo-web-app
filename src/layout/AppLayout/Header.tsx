@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { Theme, useThemeContext } from 'src/contexts/theme/ThemeContext';
 import { WalletButton } from 'src/features/wallet/components/WalletButton';
 import DarkThemeIcon from 'src/images/icons/theme-dark.svg';
 import LightThemeIcon from 'src/images/icons/theme-light.svg';
-import { useAccountContext } from 'src/providers/AccountProvider';
-import { Theme, useThemeContext } from 'src/providers/ThemeProvider';
 
 const themeIcons: Record<Theme, any> = {
   light: LightThemeIcon,

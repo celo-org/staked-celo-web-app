@@ -1,13 +1,13 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { useAddress } from 'src/hooks/useAddress';
-import { useBalances } from 'src/hooks/useBalances';
+import { CeloWei, StCeloWei } from 'src/utils/tokens';
+import { useAccountAddress } from './useAddress';
+import { useAccountBalances } from './useBalances';
 import {
   PendingWithdrawal,
   useClaimingBot,
   useWithdrawalBot,
   useWithdrawals,
-} from 'src/hooks/useWithdrawals';
-import { CeloWei, StCeloWei } from 'src/utils/tokens';
+} from './useWithdrawals';
 
 interface AccountContext {
   isConnected: boolean;
@@ -30,8 +30,8 @@ export const AccountContext = createContext<AccountContext>({
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
-  const { isConnected, address } = useAddress();
-  const { loadBalances, celoBalance, stCeloBalance } = useBalances(address);
+  const { isConnected, address } = useAccountAddress();
+  const { loadBalances, celoBalance, stCeloBalance } = useAccountBalances(address);
   const { pendingWithdrawals, loadPendingWithdrawals } = useWithdrawals(address);
   useWithdrawalBot(address);
   useClaimingBot(address);
