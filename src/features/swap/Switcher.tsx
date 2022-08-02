@@ -11,7 +11,7 @@ export const Switcher = () => {
   const { pathname: pathName } = router;
 
   return (
-    <div className="flex justify-center mt-[16px] mb-[8px]">
+    <div className="flex justify-center mt-[16px] mb-[8px] ml-[8px]">
       <nav className="w-full">
         <ul className="flex items-center justify-start list-none overflow-hidden opacity-90">
           {navLinks.map((l) => {

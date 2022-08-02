@@ -19,6 +19,9 @@ module.exports = {
           DEFAULT: '#6A38F6',
         },
       },
+      placeholderColor: {
+        primary: 'var(--c-placeholder-primary)',
+      },
       backgroundColor: {
         primary: 'var(--c-bg-primary-color)',
         secondary: 'var(--c-bg-secondary-color)',
