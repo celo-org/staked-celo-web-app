@@ -8,23 +8,22 @@ import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
-import { CeloWei, fromWeiRounded, StCeloWei } from 'src/utils/tokens';
+import { CeloWei, fromWeiRounded, StCeloWei, Token } from 'src/utils/tokens';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
-import { StakeToken } from './types';
 import { useFormValidator } from './useFormValidator';
 
 interface SwapFormProps {
   onSubmit: (amount: number | undefined) => void;
   balance: CeloWei | StCeloWei;
   exchangeRate: number;
-  fromToken: StakeToken;
-  toToken: StakeToken;
+  fromToken: Token;
+  toToken: Token;
   estimateReceiveValue: (num: number) => number;
   estimateGasFee: (amount: number) => Promise<BigNumber>;
 }
 
-const getHref = (toToken: StakeToken) => {
+const getHref = (toToken: Token) => {
   if (toToken === 'CELO') return '/';
   if (toToken === 'stCELO') return '/unstake';
   return '';
@@ -108,12 +107,12 @@ export const SwapForm = ({
 interface FormInputProps {
   onChange: (amount?: number) => void;
   balance: CeloWei | StCeloWei;
-  token: StakeToken;
+  token: Token;
   error?: string;
   value: number | undefined;
 }
 
-const getTitle = (error: string | undefined, fromToken: StakeToken) => {
+const getTitle = (error: string | undefined, fromToken: Token) => {
   if (error) return <span className="text-error">{error}</span>;
   if (fromToken === 'stCELO') return 'Unstake';
   if (fromToken === 'CELO') return 'Stake';

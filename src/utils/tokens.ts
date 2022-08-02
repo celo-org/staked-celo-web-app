@@ -2,6 +2,8 @@ import BigNumber from 'bignumber.js';
 import { MIN_ROUNDED_VALUE, WEI_PER_UNIT } from 'src/config/consts';
 import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
 
+export type Token = 'CELO' | 'stCELO';
+
 export class Celo extends BigNumber {
   private __tokenType = 'Celo';
 }

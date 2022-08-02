@@ -1,7 +1,14 @@
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useState } from 'react';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { Cost } from '../swap/types';
+
+export interface Cost {
+  title: string;
+  value: string | number;
+  tooltip: {
+    content: string;
+  };
+}
 
 export const freeValue = 'Free*';
 
