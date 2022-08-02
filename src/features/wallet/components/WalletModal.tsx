@@ -5,7 +5,7 @@ import { Modal } from 'src/components/modals/Modal';
 import { Label } from 'src/components/text/Label';
 import Close from 'src/images/icons/close.svg';
 import { useAccountContext } from 'src/providers/AccountProvider';
-import { useWallet } from './useWallet';
+import { useWallet } from '../hooks/useWallet';
 
 interface WalletModalProps {
   isOpen: boolean;

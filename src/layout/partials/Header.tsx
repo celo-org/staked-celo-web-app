@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
-import { WalletButton } from 'src/features/wallet/WalletButton';
+import { WalletButton } from 'src/features/wallet/components/WalletButton';
 import DarkThemeIcon from 'src/images/icons/theme-dark.svg';
 import LightThemeIcon from 'src/images/icons/theme-light.svg';
 import { useAccountContext } from 'src/providers/AccountProvider';

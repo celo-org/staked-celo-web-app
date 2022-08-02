@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Button } from 'src/components/buttons/Button';
-import { useWallet } from 'src/features/wallet/useWallet';
+import { useWallet } from 'src/features/wallet/hooks/useWallet';
 import stCELO from 'src/images/icons/stCELO.svg';
 import styles from './connect.module.css';
 
