@@ -12,16 +12,16 @@ export const useTokenBalances = () => {
     setTotalCeloBalance(fromCeloWei(totalCeloWei));
   }, [accountContract]);
 
-  const loadTokensBalances = useCallback(async () => {
+  const loadTokenBalances = useCallback(async () => {
     await Promise.all([loadTotalCeloBalance()]);
   }, [loadTotalCeloBalance]);
 
   useEffect(() => {
-    void loadTokensBalances();
-  }, [loadTokensBalances]);
+    void loadTokenBalances();
+  }, [loadTokenBalances]);
 
   return {
     totalCeloBalance,
-    loadTokensBalances,
+    loadTokenBalances,
   };
 };
