@@ -1,4 +1,6 @@
+import BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
+import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { fromCeloWei, fromStCeloWei, toCeloWei } from 'src/formatters/amount';
 import { useContracts } from 'src/hooks/useContracts';
 import { useAccountContext } from 'src/providers/AccountProvider';
@@ -14,6 +16,8 @@ export function useStaking() {
     (amount: CeloWei) => ({
       from: address,
       value: amount.toFixed(),
+      gas: GAS_LIMIT,
+      gasPrice: GAS_PRICE,
     }),
     [address]
   );
@@ -39,9 +43,9 @@ export function useStaking() {
   const estimateStakingFee = useCallback(
     async (amount: number): Promise<Celo> => {
       const celoAmount = toCeloWei(new Celo(amount));
-      const gasFee = new CeloWei(await depositTx().estimateGas(createTxOptions(celoAmount)));
-      const adjustedGasFee = gasFee.plus(gasFee.dividedBy(10)) as CeloWei;
-      return fromCeloWei(adjustedGasFee);
+      const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions(celoAmount)));
+      const gasFeeInWei = new CeloWei(gasFee.multipliedBy(GAS_PRICE).toFixed());
+      return fromCeloWei(gasFeeInWei);
     },
     [createTxOptions, depositTx]
   );

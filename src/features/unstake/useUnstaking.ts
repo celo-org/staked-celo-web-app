@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { fromStCeloWei, toStCeloWei } from 'src/formatters/amount';
@@ -39,11 +40,11 @@ export function useUnstaking() {
   const estimateUnstakingFee = useCallback(
     async (amount: number): Promise<StCelo> => {
       const stCeloWeiAmount = toStCeloWei(new StCelo(amount));
-      const gasFee = new StCeloWei(
+      const gasFee = new BigNumber(
         await withdrawTx(stCeloWeiAmount).estimateGas(createTxOptions())
       );
-      const increasedGasFee = gasFee.plus(gasFee.dividedBy(10)) as StCeloWei;
-      return fromStCeloWei(increasedGasFee);
+      const gasFeeInStWei = new StCeloWei(gasFee.multipliedBy(GAS_PRICE).toFixed());
+      return fromStCeloWei(gasFeeInStWei);
     },
     [withdrawTx, createTxOptions]
   );
