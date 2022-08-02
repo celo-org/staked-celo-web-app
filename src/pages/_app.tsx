@@ -2,36 +2,15 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ClientOnly } from 'src/components/ClientOnly';
 import { AppLayout } from 'src/layout/AppLayout';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { TopProvider } from 'src/providers/TopProvider';
 import 'src/styles/globals.css';
 
 dayjs.extend(relativeTime);
-
-const routingsWithoutConnection = ['/connect', '/faq'];
-
-const CeloConnectRedirect = (props: PropsWithChildren) => {
-  const router = useRouter();
-  const { isConnected } = useAccountContext();
-
-  if (!isConnected && !routingsWithoutConnection.includes(router.pathname)) {
-    void router.push('/connect');
-
-    // Router is async. Show empty screen before redirect.
-    return null;
-  } else if (isConnected && router.pathname == '/connect') {
-    void router.push('/');
-
-    return null;
-  }
-
-  return <>{props.children}</>;
-};
 
 const App = ({ Component, pageProps, router }: AppProps) => {
   const pathName = router.pathname;
@@ -48,6 +27,37 @@ const App = ({ Component, pageProps, router }: AppProps) => {
       </TopProvider>
     </ClientOnly>
   );
+};
+
+// https://github.com/vercel/next.js/issues/2473#issuecomment-587551234
+const ClientOnly = ({ children }: PropsWithChildren) => {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
+const routingsWithoutConnection = ['/connect', '/faq'];
+const CeloConnectRedirect = (props: PropsWithChildren) => {
+  const router = useRouter();
+  const { isConnected } = useAccountContext();
+
+  if (!isConnected && !routingsWithoutConnection.includes(router.pathname)) {
+    void router.push('/connect');
+
+    // Router is async. Show empty screen before redirect.
+    return null;
+  } else if (isConnected && router.pathname == '/connect') {
+    void router.push('/');
+
+    return null;
+  }
+
+  return <>{props.children}</>;
 };
 
 export default App;
