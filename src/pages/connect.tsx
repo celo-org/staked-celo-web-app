@@ -23,7 +23,7 @@ const Connect = () => {
         <SolidButton
           classes={`
             w-full h-14
-            py-9 mt-9 mb-14 md:mb-2
+            mt-9 mb-14 md:mb-2
             text-contrast
             bg-action-primary-regular hover:bg-action-primary-dark active:bg-action-primary-light disabled:bg-action-primary-light
           `}

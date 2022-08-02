@@ -10,10 +10,11 @@ interface ButtonProps {
 export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
   const { type, onClick, classes, disabled } = props;
 
-  const base =
-    'flex items-center justify-center rounded-2xl transition-all duration-300 disabled:cursor-not-allowed';
+  const displayClasses = 'flex items-center justify-center rounded-[16px]  h-[72px]';
+  const transitionClasses = 'transition-all duration-300';
+  const textClasses = 'text-[18px] leading-[24px] font-medium';
 
-  const allClasses = `${base} ${classes}`;
+  const allClasses = `${displayClasses} ${transitionClasses} ${textClasses} ${classes} disabled:cursor-not-allowed`;
 
   return (
     <button
