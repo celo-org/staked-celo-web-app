@@ -1,4 +1,5 @@
 import { SolidButton } from 'src/components/buttons/SolidButton';
+import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { StakeToken } from 'src/features/swap/types';
 
 interface ButtonProps {
@@ -27,7 +28,11 @@ export const SubmitButton = ({ toToken, pending, disabled }: ButtonProps) => {
       classes={`${toToken === 'stCELO' ? stCELOClasses : CELOClasses} text-contrast w-full h-14`}
       disabled={disabled || pending}
     >
-      {pending ? 'Loading...' : getText(toToken)}
+      {pending ? (
+        <ThemedIcon classes="animate-spin" name="spinner" alt="Spinner" width={40} height={40} />
+      ) : (
+        getText(toToken)
+      )}
     </SolidButton>
   );
 };
