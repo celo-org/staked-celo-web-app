@@ -1,4 +1,5 @@
 import { PropsWithChildren, useCallback, useMemo } from 'react';
+import { Label } from 'src/components/elements/Label';
 import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
 import { Modal } from 'src/components/modals/Modal';
 import { useAccountContext } from 'src/providers/AccountProvider';
@@ -57,7 +58,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
       header={
         <div className="flex items-center">
           <IndicatorIcon classes="mr-[8px]" />
-          <label className="text-green">Connected</label>
+          <Label classes="text-green">Connected</Label>
         </div>
       }
     >

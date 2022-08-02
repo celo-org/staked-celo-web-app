@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Label } from 'src/components/elements/Label';
 import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { WalletModal } from './WalletModal';
@@ -13,13 +14,12 @@ export const ConnectWalletButton = () => {
 
   return (
     <>
-      <label
+      <span
         className="inline-flex items-center py-[2px] px-[9px] rounded-xl bg-secondary text-secondary"
         onClick={() => setIsModalOpened(true)}
       >
-        <IndicatorIcon classes="pr-[8px]" />{' '}
-        <span className="font-medium text-[14px] leading-[16px]">{addressLabel}</span>
-      </label>
+        <IndicatorIcon classes="pr-[8px]" /> <Label>{addressLabel}</Label>
+      </span>
       <WalletModal isOpen={isModalOpened} close={() => setIsModalOpened(false)} />
     </>
   );
