@@ -1,6 +1,5 @@
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { CeloWei, StCeloWei } from 'src/types/units';
-import { fromCeloWei, fromStCeloWei } from 'src/utils/tokens';
+import { CeloWei, fromCeloWei, fromStCeloWei, StCeloWei } from 'src/utils/tokens';
 
 interface BalanceToolsProps {
   balance: CeloWei | StCeloWei;

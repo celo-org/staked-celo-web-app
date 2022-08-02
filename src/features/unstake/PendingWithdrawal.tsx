@@ -1,8 +1,7 @@
 import dayjs from 'dayjs';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { CeloWei } from 'src/types/units';
-import { fromCeloWei } from 'src/utils/tokens';
+import { CeloWei, fromCeloWei } from 'src/utils/tokens';
 
 interface PendingWithdrawalProps {
   amount: CeloWei;

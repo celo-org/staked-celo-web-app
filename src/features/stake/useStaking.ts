@@ -4,8 +4,15 @@ import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useContracts } from 'src/hooks/useContracts';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
-import { Celo, CeloWei, StCelo, StCeloWei } from 'src/types/units';
-import { fromCeloWei, fromStCeloWei, toCeloWei } from 'src/utils/tokens';
+import {
+  Celo,
+  CeloWei,
+  fromCeloWei,
+  fromStCeloWei,
+  StCelo,
+  StCeloWei,
+  toCeloWei,
+} from 'src/utils/tokens';
 
 export function useStaking() {
   const { address, loadBalances } = useAccountContext();

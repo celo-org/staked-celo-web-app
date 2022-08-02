@@ -5,8 +5,7 @@ import { useContracts } from 'src/hooks/useContracts';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import api from 'src/services/api';
-import { StCelo, StCeloWei } from 'src/types/units';
-import { fromStCeloWei, toStCeloWei } from 'src/utils/tokens';
+import { fromStCeloWei, StCelo, StCeloWei, toStCeloWei } from 'src/utils/tokens';
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals } = useAccountContext();

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
-import { Celo, CeloWei, StCelo, StCeloWei } from 'src/types/units';
-import { toCeloWei, toStCeloWei } from 'src/utils/tokens';
+import { Celo, CeloWei, StCelo, StCeloWei, toCeloWei, toStCeloWei } from 'src/utils/tokens';
 
 const useCeloExchangeRate = () => {
   const { managerContract } = useContracts();

@@ -4,8 +4,7 @@ import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import toast from 'src/services/toast';
-import { StCelo } from 'src/types/units';
-import { toStCeloWei } from 'src/utils/tokens';
+import { StCelo, toStCeloWei } from 'src/utils/tokens';
 import { PendingWithdrawal } from './PendingWithdrawal';
 
 export const Unstake = () => {

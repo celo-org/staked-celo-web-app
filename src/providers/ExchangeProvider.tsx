@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { useExchangeRates } from 'src/hooks/useExchangeRates';
 import { useTokenBalances } from 'src/hooks/useTokenBalances';
-import { Celo } from 'src/types/units';
+import { Celo } from 'src/utils/tokens';
 
 interface ExchangeContext {
   celoExchangeRate: number;

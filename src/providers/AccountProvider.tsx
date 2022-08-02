@@ -7,7 +7,7 @@ import {
   useWithdrawalBot,
   useWithdrawals,
 } from 'src/hooks/useWithdrawals';
-import { CeloWei, StCeloWei } from 'src/types/units';
+import { CeloWei, StCeloWei } from 'src/utils/tokens';
 
 interface AccountContext {
   isConnected: boolean;

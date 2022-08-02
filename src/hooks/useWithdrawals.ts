@@ -2,7 +2,7 @@ import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
 import api from 'src/services/api';
-import { CeloWei } from 'src/types/units';
+import { CeloWei } from 'src/utils/tokens';
 
 export interface PendingWithdrawal {
   amount: CeloWei;

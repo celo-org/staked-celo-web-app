@@ -4,8 +4,7 @@ import { Switcher } from 'src/features/swap/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import toast from 'src/services/toast';
-import { Celo } from 'src/types/units';
-import { toCeloWei } from 'src/utils/tokens';
+import { Celo, toCeloWei } from 'src/utils/tokens';
 
 export const Stake = () => {
   const { stake, celoExchangeRate, estimateDepositValue, estimateStakingFee } = useStaking();

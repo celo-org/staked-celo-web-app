@@ -1,7 +1,22 @@
 import BigNumber from 'bignumber.js';
 import { MIN_ROUNDED_VALUE, WEI_PER_UNIT } from 'src/config/consts';
-import { Celo, CeloWei, StCelo, StCeloWei } from 'src/types/units';
 import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
+
+export class Celo extends BigNumber {
+  private __tokenType = 'Celo';
+}
+
+export class CeloWei extends BigNumber {
+  private __tokenType = 'CeloWei';
+}
+
+export class StCelo extends BigNumber {
+  private __tokenType = 'StCelo';
+}
+
+export class StCeloWei extends BigNumber {
+  private __tokenType = 'StCeloWei';
+}
 
 function fromWei(value: BigNumber): string {
   if (!value) return '0';
