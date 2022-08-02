@@ -1,8 +1,12 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { useAddress } from 'src/hooks/useAddress';
 import { useBalances } from 'src/hooks/useBalances';
-import { useClaimingBot, useWithdrawalBot, useWithdrawals } from 'src/hooks/useWithdrawals';
-import { PendingWithdrawal } from 'src/types/account';
+import {
+  PendingWithdrawal,
+  useClaimingBot,
+  useWithdrawalBot,
+  useWithdrawals,
+} from 'src/hooks/useWithdrawals';
 import { CeloWei, StCeloWei } from 'src/types/units';
 
 interface AccountContext {

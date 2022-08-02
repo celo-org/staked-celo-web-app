@@ -2,8 +2,12 @@ import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
 import api from 'src/services/api';
-import { PendingWithdrawal } from 'src/types/account';
 import { CeloWei } from 'src/types/units';
+
+export interface PendingWithdrawal {
+  amount: CeloWei;
+  timestamp: string;
+}
 
 const botActionDelay = 120 * 1000;
 
