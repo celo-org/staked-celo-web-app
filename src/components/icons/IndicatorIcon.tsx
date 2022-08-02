@@ -5,7 +5,7 @@ interface IndicatorIconProps {
   classes?: string;
 }
 export const IndicatorIcon = ({ classes }: IndicatorIconProps) => (
-  <div className={`${classes} inline-flex`}>
+  <span className={`${classes} inline-flex`}>
     <Image className={classes} src={IndicatorSVG} alt="Connection indicator" width={8} height={8} />
-  </div>
+  </span>
 );
