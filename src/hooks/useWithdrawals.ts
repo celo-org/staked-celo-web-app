@@ -91,7 +91,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
     lastPendingWithdrawal.amount = new CeloWei(lastPendingWithdrawal.amount.plus(amount).toFixed());
   }
 
-  return pendingWithdrawals;
+  return pendingWithdrawals.reverse();
 };
 
 export const useWithdrawals = (address: string | null) => {
