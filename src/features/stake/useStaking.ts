@@ -4,15 +4,17 @@ import { useContracts } from 'src/hooks/useContracts';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import { Celo, CeloWei, StCelo, StCeloWei } from 'src/types/units';
+import { useCelo } from '@celo/react-celo';
 
 export function useStaking() {
   const { address, loadBalances } = useAccountContext();
   const { managerContract, stCeloContract } = useContracts();
   const { celoExchangeRate } = useExchangeContext();
+  const { kit } = useCelo();
 
   const createTxOptions = useCallback(
     (amount: CeloWei) => ({
-      from: address,
+      from: address!,
       value: amount.toFixed(),
     }),
     [address]
@@ -25,7 +27,11 @@ export function useStaking() {
       const preDepositStWeiBalance = new StCeloWei(
         await stCeloContract.methods.balanceOf(address).call()
       );
-      await depositTx().send(createTxOptions(amount));
+
+      const tx = await kit.connection.sendTransactionObject(depositTx(), createTxOptions(amount))
+      const receipt = await tx.waitReceipt()
+      console.log(receipt)
+
       await loadBalances();
       const postDepositStWeiBalance = new StCeloWei(
         await stCeloContract.methods.balanceOf(address).call()
