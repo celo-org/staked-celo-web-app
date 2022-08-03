@@ -7,23 +7,21 @@ import styles from './connect.module.css';
 const Connect = () => {
   const { connectWallet } = useWallet();
   return (
-    <div className="w-full md:w-1/3 mx-auto self-center md:rounded-xl">
+    <div className="w-full sm:max-w-[480px] mx-auto sm:mt-[100px] self-center sm:rounded-[16px] overflow-hidden">
       <div className={styles.connectHeader}>
         <Image src={stCELO} alt="stCelo logo" quality={100} width={136} height={136} />
       </div>
-      <div className="p-8">
-        <h1 className="text-3xl">Introducing stCELO</h1>
-
-        <ul>
-          <li className="text-l font-normal mt-4">Earn a projected 4.56% APY</li>
-          <li className="text-l font-normal mt-0.5">Stake without locking</li>
-          <li className="text-l font-normal mt-0.5">No fees for launch</li>
+      <div className="p-[32px] sm:bg-secondary">
+        <h1 className="text-[27px] leading-[40px] font-medium mb-[16px]">Introducing stCELO</h1>
+        <ul className="text-[18px] leading-[28px] mb-[32px]">
+          <li className="mb-[4px]">Earn a projected 4.56% APY</li>
+          <li className="mb-[4px]">Stake without locking</li>
+          <li>No fees for launch</li>
         </ul>
 
         <Button
           classes={`
-            w-full h-14
-            mt-9 mb-14 md:mb-2
+            w-full
             text-contrast
             bg-action-primary-regular hover:bg-action-primary-dark active:bg-action-primary-light disabled:bg-action-primary-light
           `}
