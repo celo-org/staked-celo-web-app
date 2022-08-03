@@ -2,8 +2,7 @@ import BigNumber from 'bignumber.js';
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { Cost } from 'src/features/swap/types';
-import { freeValue, useCosts } from 'src/features/swap/useCosts';
+import { Cost, freeValue, useCosts } from 'src/features/swap/useCosts';
 
 interface CostsSummaryProps {
   estimateGasFee: (amount: number) => Promise<BigNumber>;

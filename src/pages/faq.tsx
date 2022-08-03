@@ -1,15 +1,15 @@
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
-import { useFaq } from 'src/hooks/useFaq';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
+import * as faq from 'src/services/faq';
 
 const FaqPage: NextPage = () => {
   return <Faq />;
 };
 
 const Faq = () => {
-  const { faqItems } = useFaq();
+  const faqItems = faq.getFaqItems();
   return (
     <CenteredLayout>
       <div className="text-3xl font-light leading-normal mt-6 mb-12">

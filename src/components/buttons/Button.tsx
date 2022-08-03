@@ -7,7 +7,7 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
+export const Button = (props: PropsWithChildren<ButtonProps>) => {
   const { type, onClick, classes, disabled } = props;
 
   const displayClasses = 'flex items-center justify-center rounded-[16px]  h-[72px]';

@@ -1,15 +1,15 @@
 import Image from 'next/image';
-import { StakeToken } from 'src/features/swap/types';
 import CeloIcon from 'src/images/icons/CELO.svg';
 import stCeloIcon from 'src/images/icons/stCELO.svg';
+import { Token } from 'src/utils/tokens';
 
-const tokenIcon: { [key in StakeToken]: any } = {
+const tokenIcon: { [key in Token]: any } = {
   CELO: CeloIcon,
   stCELO: stCeloIcon,
 };
 
 interface TokenIconProps {
-  token: StakeToken;
+  token: Token;
   quality?: number;
   width?: number;
   height?: number;

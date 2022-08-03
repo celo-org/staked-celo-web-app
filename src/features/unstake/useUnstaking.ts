@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { useContracts } from 'src/hooks/useContracts';
-import { useAccountContext } from 'src/providers/AccountProvider';
-import { useExchangeContext } from 'src/providers/ExchangeProvider';
 import api from 'src/services/api';
 import { fromStCeloWei, StCelo, StCeloWei, toStCeloWei } from 'src/utils/tokens';
 

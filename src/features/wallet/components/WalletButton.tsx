@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Label } from 'src/components/elements/Label';
 import { IndicatorIcon } from 'src/components/icons/IndicatorIcon';
-import { useAccountContext } from 'src/providers/AccountProvider';
+import { Label } from 'src/components/text/Label';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { WalletModal } from './WalletModal';
 
-export const ConnectWalletButton = () => {
+export const WalletButton = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const { address } = useAccountContext();
 

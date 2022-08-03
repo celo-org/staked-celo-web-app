@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useThemeContext } from 'src/contexts/theme/ThemeContext';
 import ArrowDark from 'src/images/icons/arrow-dark.svg';
 import ArrowLight from 'src/images/icons/arrow-light.svg';
 import CaretDark from 'src/images/icons/caret-dark.svg';
@@ -17,7 +18,6 @@ import SpinnerDark from 'src/images/icons/spinner-dark.svg';
 import SpinnerLight from 'src/images/icons/spinner-light.svg';
 import TwitterDark from 'src/images/icons/twitter-dark.svg';
 import TwitterLight from 'src/images/icons/twitter-light.svg';
-import { useThemeContext } from 'src/providers/ThemeProvider';
 
 type IconName =
   | 'arrow'

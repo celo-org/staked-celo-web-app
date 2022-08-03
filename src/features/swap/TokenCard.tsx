@@ -1,12 +1,12 @@
 import { ReactElement } from 'react';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
-import { StakeToken } from 'src/features/swap/types';
+import { Token } from 'src/utils/tokens';
 
 interface TokenCardProps {
   inputChild?: number | string | ReactElement;
   titleChild?: number | string | ReactElement;
   infoChild?: number | string | ReactElement;
-  token: StakeToken;
+  token: Token;
   classes?: string;
 }
 

@@ -1,14 +1,14 @@
-import { SolidButton } from 'src/components/buttons/SolidButton';
+import { Button } from 'src/components/buttons/Button';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
-import { StakeToken } from 'src/features/swap/types';
+import { Token } from 'src/utils/tokens';
 
 interface ButtonProps {
-  toToken: StakeToken;
+  toToken: Token;
   pending: boolean;
   disabled?: boolean;
 }
 
-const getText = (toToken: StakeToken) => {
+const getText = (toToken: Token) => {
   if (toToken === 'stCELO') return 'Stake';
   if (toToken === 'CELO') return 'Unstake';
 
@@ -23,7 +23,7 @@ export const SubmitButton = ({ toToken, pending, disabled }: ButtonProps) => {
     'bg-action-secondary-regular disabled:bg-action-secondary-light hover:bg-action-secondary-dark active:bg-action-secondary-light';
 
   return (
-    <SolidButton
+    <Button
       type="submit"
       classes={`${toToken === 'stCELO' ? stCELOClasses : CELOClasses} text-contrast w-full h-14`}
       disabled={disabled || pending}
@@ -33,6 +33,6 @@ export const SubmitButton = ({ toToken, pending, disabled }: ButtonProps) => {
       ) : (
         getText(toToken)
       )}
-    </SolidButton>
+    </Button>
   );
 };

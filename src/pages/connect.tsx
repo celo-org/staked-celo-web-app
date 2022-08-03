@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import { SolidButton } from 'src/components/buttons/SolidButton';
-import { useWallet } from 'src/features/wallet/useWallet';
+import { Button } from 'src/components/buttons/Button';
+import { useWallet } from 'src/features/wallet/hooks/useWallet';
 import stCELO from 'src/images/icons/stCELO.svg';
 import styles from './connect.module.css';
 
@@ -20,7 +20,7 @@ const Connect = () => {
           <li className="text-l font-normal mt-0.5">No fees for launch</li>
         </ul>
 
-        <SolidButton
+        <Button
           classes={`
             w-full h-14
             mt-9 mb-14 md:mb-2
@@ -30,7 +30,7 @@ const Connect = () => {
           onClick={connectWallet}
         >
           Connect Wallet
-        </SolidButton>
+        </Button>
       </div>
     </div>
   );

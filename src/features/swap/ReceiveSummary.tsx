@@ -3,11 +3,11 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { TokenCard } from 'src/features/swap/TokenCard';
-import { StakeToken } from 'src/features/swap/types';
+import { Token } from 'src/utils/tokens';
 
 interface ReceiveSummaryProps {
   amount: number | undefined;
-  token: StakeToken;
+  token: Token;
   estimateReceiveValue: (num: number) => number;
   isValid: boolean;
 }
@@ -35,7 +35,7 @@ const UnstakeInfo = () => {
   );
 };
 
-const getInfoChild = (token: StakeToken) => {
+const getInfoChild = (token: Token) => {
   if (token === 'stCELO') {
     return (
       <span className="text-primary-info text-[15px] leading-[24px]">4.56% projected APY</span>

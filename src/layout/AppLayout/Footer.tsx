@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { discordUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
-import { useExchangeContext } from 'src/providers/ExchangeProvider';
+import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 
 const FAQLinks = () => (
   <>

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
 import { CeloWei, StCeloWei } from 'src/utils/tokens';
 
-export const useBalances = (address: string | null) => {
+export const useAccountBalances = (address: string | null) => {
   const { kit } = useCelo();
   const { stCeloContract } = useContracts();
 
