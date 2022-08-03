@@ -24,7 +24,7 @@ export const Footer = () => {
 
   const footerFlexClasses = 'flex flex-col md:flex-row md:items-center md:justify-between';
   return (
-    <footer className={`w-screen ${footerFlexClasses} p-[32px] md:h-[168px] bg-secondary`}>
+    <footer className={`w-screen ${footerFlexClasses} p-base md:h-[168px] bg-secondary`}>
       <div className="flex flex-col md:order-first mb-[32px] md:mb-0">
         <Label classes="mb-[4px]">Total CELO staked</Label>
         <span className="text-[27px] leading-[40px]">

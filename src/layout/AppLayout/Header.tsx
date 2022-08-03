@@ -36,7 +36,7 @@ export const Header = () => {
   const { isConnected } = useAccountContext();
 
   return (
-    <header className="w-screen px-[32px] h-[80px] flex items-center justify-between">
+    <header className="w-screen px-base h-[80px] flex items-center justify-between">
       <Link href="/">
         <a className="flex items-center">
           <div className="flex">
