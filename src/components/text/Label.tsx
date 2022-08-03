@@ -5,5 +5,5 @@ interface LabelProps {
 }
 
 export const Label = ({ children, classes }: PropsWithChildren<LabelProps>) => {
-  return <span className={`font-[14px] leading-[16px] font-medium ${classes}`}>{children}</span>;
+  return <span className={`text-[14px] leading-[16px] font-medium ${classes}`}>{children}</span>;
 };
