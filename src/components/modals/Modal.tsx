@@ -1,11 +1,10 @@
-import { CSSProperties, PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import ReactModal from 'react-modal';
 
 interface ModalProps {
   isOpen: boolean;
   close: () => void;
   screenReaderLabel?: string;
-  contentStyle?: CSSProperties;
 }
 
 export const Modal = ({
@@ -13,25 +12,31 @@ export const Modal = ({
   screenReaderLabel,
   close,
   children,
-  contentStyle,
 }: PropsWithChildren<ModalProps>) => {
   return (
     <ReactModal
       isOpen={isOpen}
-      overlayClassName="fixed bg-gray-100 bg-opacity-75 inset-0"
+      overlayClassName="fixed inset-0"
       contentLabel={screenReaderLabel}
       onRequestClose={close}
       shouldCloseOnOverlayClick={true}
       ariaHideApp={false}
       style={{
         overlay: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 24px',
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
         },
         content: {
-          ...contentStyle,
+          position: 'static',
           display: 'inline-block',
-          inset: '50% auto auto 50%',
-          transform: 'translate(-50%, -50%)',
+          borderRadius: '8px',
+          padding: '24px',
+          border: 'none',
+          maxWidth: '520px',
+          width: '100%',
         },
       }}
     >
