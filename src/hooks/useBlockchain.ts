@@ -6,7 +6,7 @@ import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
 import { accountAddress, managerAddress, stCeloAddress } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
 
-export function useContracts() {
+export function useBlockchain() {
   const { kit } = useCelo();
 
   const managerContract = useMemo(() => {

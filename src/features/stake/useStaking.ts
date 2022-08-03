@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
-import { useContracts } from 'src/hooks/useContracts';
+import { useBlockchain } from 'src/hooks/useBlockchain';
 import {
   Celo,
   CeloWei,
@@ -16,7 +16,7 @@ import {
 
 export function useStaking() {
   const { address, loadBalances } = useAccountContext();
-  const { managerContract, stCeloContract } = useContracts();
+  const { managerContract, stCeloContract } = useBlockchain();
   const { celoExchangeRate } = useExchangeContext();
 
   const createTxOptions = useCallback(

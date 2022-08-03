@@ -1,6 +1,6 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
-import { useContracts } from 'src/hooks/useContracts';
+import { useBlockchain } from 'src/hooks/useBlockchain';
 import api from 'src/services/api';
 import { CeloWei } from 'src/utils/tokens';
 
@@ -12,7 +12,7 @@ export interface PendingWithdrawal {
 const botActionDelay = 120 * 1000;
 
 export const useWithdrawalBot = (address: string | null) => {
-  const { managerContract, accountContract } = useContracts();
+  const { managerContract, accountContract } = useBlockchain();
 
   const finalizeWithdrawal = useCallback(async () => {
     if (!address) return;
@@ -39,7 +39,7 @@ export const useWithdrawalBot = (address: string | null) => {
 
 export const useClaimingBot = (address: string | null) => {
   const { kit } = useCelo();
-  const { accountContract } = useContracts();
+  const { accountContract } = useBlockchain();
 
   const claim = useCallback(async () => {
     if (!address) return;
@@ -99,7 +99,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
 };
 
 export const useWithdrawals = (address: string | null) => {
-  const { accountContract } = useContracts();
+  const { accountContract } = useBlockchain();
 
   const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawal[]>([]);
   const loadPendingWithdrawals = useCallback(async () => {

@@ -1,11 +1,11 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
-import { useContracts } from 'src/hooks/useContracts';
+import { useBlockchain } from 'src/hooks/useBlockchain';
 import { CeloWei, StCeloWei } from 'src/utils/tokens';
 
 export const useAccountBalances = (address: string | null) => {
   const { kit } = useCelo();
-  const { stCeloContract } = useContracts();
+  const { stCeloContract } = useBlockchain();
 
   const [celoBalance, setCeloBalance] = useState(new CeloWei(0));
   const [stCeloBalance, setStCeloBalance] = useState(new StCeloWei(0));
