@@ -1,43 +1,29 @@
-import { PropsWithChildren, ReactElement } from 'react';
+import { PropsWithChildren } from 'react';
 
 interface ButtonProps {
-  size?: 'xs' | 's' | 'm' | 'l' | 'xl';
   type?: 'submit' | 'reset' | 'button';
   onClick?: () => void;
   classes?: string;
-  bold?: boolean;
   disabled?: boolean;
-  icon?: ReactElement;
-  title?: string;
-  passThruProps?: any;
 }
 
 export const SolidButton = (props: PropsWithChildren<ButtonProps>) => {
-  const { type, onClick, classes, bold, icon, disabled, title, passThruProps } = props;
+  const { type, onClick, classes, disabled } = props;
 
-  const base =
-    'flex items-center justify-center rounded-2xl transition-all duration-300 disabled:cursor-not-allowed';
+  const displayClasses = 'flex items-center justify-center rounded-[16px]  h-[72px]';
+  const transitionClasses = 'transition-all duration-300';
+  const textClasses = 'text-[18px] leading-[24px] font-medium';
 
-  const weight = bold ? 'font-semibold' : '';
-  const allClasses = `${base} ${weight} ${classes}`;
+  const allClasses = `${displayClasses} ${transitionClasses} ${textClasses} ${classes} disabled:cursor-not-allowed`;
 
   return (
     <button
       onClick={onClick}
       type={type ?? 'button'}
       disabled={disabled ?? false}
-      title={title}
       className={allClasses}
-      {...passThruProps}
     >
-      {icon ? (
-        <div className="flex items-center justify-center">
-          {props.icon}
-          {props.children}
-        </div>
-      ) : (
-        <>{props.children}</>
-      )}
+      {props.children}
     </button>
   );
 };

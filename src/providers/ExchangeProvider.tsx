@@ -1,14 +1,14 @@
 import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { useExchangeRates } from 'src/hooks/useExchangeRates';
-import { useTokenBalances } from 'src/hooks/useTokensBalances';
-import { Celo } from 'src/types/units';
+import { useTokenBalances } from 'src/hooks/useTokenBalances';
+import { Celo } from 'src/utils/tokens';
 
 interface ExchangeContext {
   celoExchangeRate: number;
   stCeloExchangeRate: number;
   totalCeloBalance: Celo;
   loadExchangeRates: () => Promise<void>;
-  loadTokensBalances: () => Promise<void>;
+  loadTokenBalances: () => Promise<void>;
 }
 
 export const ExchangeContext = createContext<ExchangeContext>({
@@ -16,12 +16,12 @@ export const ExchangeContext = createContext<ExchangeContext>({
   stCeloExchangeRate: 0,
   totalCeloBalance: new Celo(0),
   loadExchangeRates: () => Promise.resolve(),
-  loadTokensBalances: () => Promise.resolve(),
+  loadTokenBalances: () => Promise.resolve(),
 });
 
 export const ExchangeProvider = ({ children }: PropsWithChildren) => {
   const { celoExchangeRate, stCeloExchangeRate, loadExchangeRates } = useExchangeRates();
-  const { totalCeloBalance, loadTokensBalances } = useTokenBalances();
+  const { totalCeloBalance, loadTokenBalances } = useTokenBalances();
 
   return (
     <ExchangeContext.Provider
@@ -30,7 +30,7 @@ export const ExchangeProvider = ({ children }: PropsWithChildren) => {
         stCeloExchangeRate,
         totalCeloBalance,
         loadExchangeRates,
-        loadTokensBalances,
+        loadTokenBalances,
       }}
     >
       {children}
@@ -44,12 +44,12 @@ export function useExchangeContext() {
     stCeloExchangeRate,
     totalCeloBalance,
     loadExchangeRates,
-    loadTokensBalances,
+    loadTokenBalances,
   } = useContext(ExchangeContext);
 
   const reloadExchangeContext = useCallback(async () => {
-    await Promise.all([loadExchangeRates(), loadTokensBalances()]);
-  }, [loadExchangeRates, loadTokensBalances]);
+    await Promise.all([loadExchangeRates(), loadTokenBalances()]);
+  }, [loadExchangeRates, loadTokenBalances]);
 
   return {
     celoExchangeRate,

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fromCeloWei } from 'src/formatters/amount';
 import { useContracts } from 'src/hooks/useContracts';
-import { Celo, CeloWei } from 'src/types/units';
+import { Celo, CeloWei, fromCeloWei } from 'src/utils/tokens';
 
 export const useTokenBalances = () => {
   const { accountContract } = useContracts();
@@ -12,16 +11,16 @@ export const useTokenBalances = () => {
     setTotalCeloBalance(fromCeloWei(totalCeloWei));
   }, [accountContract]);
 
-  const loadTokensBalances = useCallback(async () => {
+  const loadTokenBalances = useCallback(async () => {
     await Promise.all([loadTotalCeloBalance()]);
   }, [loadTotalCeloBalance]);
 
   useEffect(() => {
-    void loadTokensBalances();
-  }, [loadTokensBalances]);
+    void loadTokenBalances();
+  }, [loadTokenBalances]);
 
   return {
     totalCeloBalance,
-    loadTokensBalances,
+    loadTokenBalances,
   };
 };

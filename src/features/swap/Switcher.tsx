@@ -11,20 +11,20 @@ export const Switcher = () => {
   const { pathname: pathName } = router;
 
   return (
-    <div className="flex justify-center py-3">
-      <nav className="w-full md:w-96">
-        <ul className="flex items-center justify-start list-none overflow-hidden opacity-90 mr-3">
+    <div className="flex justify-center mt-[16px] mb-[8px] ml-[8px]">
+      <nav className="w-full">
+        <ul className="flex items-center justify-start list-none overflow-hidden opacity-90">
           {navLinks.map((l) => {
             const active = pathName === l.to;
-            const sizing = `py-1.5`;
-            const colors = `text-lg font-base ${active ? 'font-medium' : 'font-light'}`;
-            const className = `${sizing} ${colors}`;
+            const className = `text-[18px] leading-[24px] ${
+              active ? 'font-medium' : 'font-regular'
+            }`;
             return (
-              <li key={l.label} className="flex flex-col items-center justify-center mx-4">
+              <li key={l.label} className="flex flex-col items-center justify-center mr-[24px]">
                 <Link href={l.to}>
                   <a className={className}>{l.label}</a>
                 </Link>
-                <hr className={`w-full h-0.5 border-none ${active ? l.activeClass : ''}`} />
+                <hr className={`w-full h-px mt-[8px] border-none ${active ? l.activeClass : ''}`} />
               </li>
             );
           })}

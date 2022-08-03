@@ -3,7 +3,7 @@ import { toast as reactToast } from 'react-toastify';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import Clock from 'src/images/icons/clock.svg';
 import stCELO from 'src/images/icons/stCELO.svg';
-import { StCelo } from 'src/types/units';
+import { StCelo } from 'src/utils/tokens';
 
 const toast = {
   stakingSuccess: (amount: StCelo) =>

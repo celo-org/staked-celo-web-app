@@ -1,7 +1,7 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
-import { CeloWei, StCeloWei } from 'src/types/units';
+import { CeloWei, StCeloWei } from 'src/utils/tokens';
 
 export const useBalances = (address: string | null) => {
   const { kit } = useCelo();

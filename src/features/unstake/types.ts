@@ -1,4 +1,4 @@
-import { Celo } from 'src/types/units';
+import { Celo } from 'src/utils/tokens';
 
 export interface PendingWithdrawal {
   amount: Celo;

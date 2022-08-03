@@ -40,7 +40,7 @@ export const Modal = ({
         },
       }}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full text-modal">
         <div className={`flex ${header ? 'justify-between' : 'justify-end'}`}>
           {header || null}
           <span className="cursor-pointer" onClick={close}>

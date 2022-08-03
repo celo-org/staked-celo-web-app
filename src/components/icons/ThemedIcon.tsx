@@ -13,6 +13,8 @@ import InfoLight from 'src/images/icons/info-light.svg';
 import InfoOrange from 'src/images/icons/info-orange.svg';
 import LogoDark from 'src/images/icons/logo-dark.svg';
 import LogoLight from 'src/images/icons/logo-light.svg';
+import SpinnerDark from 'src/images/icons/spinner-dark.svg';
+import SpinnerLight from 'src/images/icons/spinner-light.svg';
 import TwitterDark from 'src/images/icons/twitter-dark.svg';
 import TwitterLight from 'src/images/icons/twitter-light.svg';
 import { useThemeContext } from 'src/providers/ThemeProvider';
@@ -25,7 +27,8 @@ type IconName =
   | 'github'
   | 'discord'
   | 'twitter'
-  | 'caret';
+  | 'caret'
+  | 'spinner';
 
 interface ThemedIcons {
   dark: any;
@@ -41,6 +44,7 @@ const icons: Record<IconName, ThemedIcons> = {
   discord: { light: DiscordDark, dark: DiscordLight },
   twitter: { light: TwitterDark, dark: TwitterLight },
   caret: { light: CaretDark, dark: CaretLight },
+  spinner: { light: SpinnerLight, dark: SpinnerDark },
 };
 
 interface ThemedIconProps {

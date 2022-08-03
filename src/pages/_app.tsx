@@ -9,7 +9,6 @@ import { ClientOnly } from 'src/components/ClientOnly';
 import { AppLayout } from 'src/layout/AppLayout';
 import { useAccountContext } from 'src/providers/AccountProvider';
 import { TopProvider } from 'src/providers/TopProvider';
-import 'src/styles/fonts.css';
 import 'src/styles/globals.css';
 
 dayjs.extend(relativeTime);

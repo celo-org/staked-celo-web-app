@@ -2,15 +2,13 @@ import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
-import { FloatingBox } from 'src/components/containers/FloatingBox';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { INPUT_DECIMALS } from 'src/config/consts';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
-import { fromWeiRounded } from 'src/formatters/amount';
 import { useExchangeContext } from 'src/providers/ExchangeProvider';
-import { CeloWei, StCeloWei } from 'src/types/units';
+import { CeloWei, fromWeiRounded, StCeloWei } from 'src/utils/tokens';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
 import { StakeToken } from './types';
@@ -72,11 +70,8 @@ export const SwapForm = ({
   };
 
   return (
-    <form className="w-full justify-center items-center" onSubmit={submit}>
-      <FloatingBox
-        width="w-full"
-        classes="bg-secondary overflow-visible flex flex-col justify-center items-center"
-      >
+    <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
+      <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
         <SwapFormInput
           balance={balance}
           value={amount}
@@ -95,8 +90,8 @@ export const SwapForm = ({
           isValid={isValid}
           token={toToken}
         />
-      </FloatingBox>
-      <div className="flex justify-center mt-5 mb-1">
+      </div>
+      <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
       </div>
       {!!amount && (
@@ -131,14 +126,14 @@ const SwapFormInput = ({ token, balance, value, onChange, error }: FormInputProp
 
   return (
     <TokenCard
-      classes="bg-tertiary w-full"
+      classes="bg-tertiary rounded-t-[16px] pb-[32px]"
       token={token}
       titleChild={getTitle(error, token)}
       inputChild={
         <NumberFormat
-          className={`mr-auto bg-transparent text-left focus:outline-none ${
+          className={`focus:outline-none bg-transparent placeholder-primary ${
             error ? 'text-error' : ''
-          }`}
+          } ${value === undefined ? 'text-secondary' : ''}`}
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
