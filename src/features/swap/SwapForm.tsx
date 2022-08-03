@@ -86,7 +86,6 @@ export const SwapForm = ({
         <ReceiveSummary
           estimateReceiveValue={estimateReceiveValue}
           amount={amount}
-          isValid={isValid}
           token={toToken}
         />
       </div>
