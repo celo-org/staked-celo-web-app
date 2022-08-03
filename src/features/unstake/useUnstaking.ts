@@ -42,7 +42,7 @@ export function useUnstaking() {
       const gasFee = new BigNumber(
         await withdrawTx(stCeloWeiAmount).estimateGas(createTxOptions())
       );
-      const gasFeeInStWei = new StCeloWei(gasFee.multipliedBy(GAS_PRICE).toFixed());
+      const gasFeeInStWei = new StCeloWei(gasFee.multipliedBy(GAS_PRICE));
       return fromStCeloWei(gasFeeInStWei);
     },
     [withdrawTx, createTxOptions]

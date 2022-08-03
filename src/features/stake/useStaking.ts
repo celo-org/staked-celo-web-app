@@ -51,7 +51,7 @@ export function useStaking() {
     async (amount: number): Promise<Celo> => {
       const celoAmount = toCeloWei(new Celo(amount));
       const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions(celoAmount)));
-      const gasFeeInWei = new CeloWei(gasFee.multipliedBy(GAS_PRICE).toFixed());
+      const gasFeeInWei = new CeloWei(gasFee.multipliedBy(GAS_PRICE));
       return fromCeloWei(gasFeeInWei);
     },
     [createTxOptions, depositTx]
