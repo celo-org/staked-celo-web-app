@@ -1,12 +1,19 @@
 import { useCelo } from '@celo/react-celo';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
 import { accountAddress, managerAddress, stCeloAddress } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
 
-export function useContracts() {
+interface TxOptions {
+  from: string;
+  gasPrice: string;
+  gas: string;
+  value?: string;
+}
+
+export function useBlockchain() {
   const { kit } = useCelo();
 
   const managerContract = useMemo(() => {
@@ -24,9 +31,18 @@ export function useContracts() {
     return new eth.Contract(AccountABI as AbiItem[], accountAddress);
   }, [kit.connection]);
 
+  const sendTransaction = useCallback(
+    async (txObject: any, txOptions: TxOptions) => {
+      const tx = await kit.connection.sendTransactionObject(txObject, txOptions);
+      await tx.waitReceipt();
+    },
+    [kit.connection]
+  );
+
   return {
     managerContract,
     stCeloContract,
     accountContract,
+    sendTransaction,
   };
 }

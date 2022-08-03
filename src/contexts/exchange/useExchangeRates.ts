@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useContracts } from 'src/hooks/useContracts';
+import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, CeloWei, StCelo, StCeloWei, toCeloWei, toStCeloWei } from 'src/utils/tokens';
 
 const useCeloExchangeRate = () => {
-  const { managerContract } = useContracts();
+  const { managerContract } = useBlockchain();
 
   const [celoExchangeRate, setCeloExchangeRate] = useState(0);
 
@@ -22,7 +22,7 @@ const useCeloExchangeRate = () => {
 };
 
 const useStCeloExchangeRate = () => {
-  const { managerContract } = useContracts();
+  const { managerContract } = useBlockchain();
 
   const [stCeloExchangeRate, setStCeloExchangeRate] = useState(0);
 

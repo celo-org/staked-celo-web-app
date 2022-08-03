@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
-import { useContracts } from 'src/hooks/useContracts';
+import { useBlockchain } from 'src/hooks/useBlockchain';
 import {
   Celo,
   CeloWei,
@@ -16,12 +16,12 @@ import {
 
 export function useStaking() {
   const { address, loadBalances } = useAccountContext();
-  const { managerContract, stCeloContract } = useContracts();
+  const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
   const { celoExchangeRate } = useExchangeContext();
 
   const createTxOptions = useCallback(
     (amount: CeloWei) => ({
-      from: address,
+      from: address!,
       value: amount.toFixed(),
       gas: GAS_LIMIT,
       gasPrice: GAS_PRICE,
@@ -36,7 +36,7 @@ export function useStaking() {
       const preDepositStWeiBalance = new StCeloWei(
         await stCeloContract.methods.balanceOf(address).call()
       );
-      await depositTx().send(createTxOptions(amount));
+      await sendTransaction(depositTx(), createTxOptions(amount));
       await loadBalances();
       const postDepositStWeiBalance = new StCeloWei(
         await stCeloContract.methods.balanceOf(address).call()
@@ -44,7 +44,7 @@ export function useStaking() {
       const receivedStCeloWei = postDepositStWeiBalance.minus(preDepositStWeiBalance);
       return fromStCeloWei(receivedStCeloWei as StCeloWei);
     },
-    [createTxOptions, depositTx, loadBalances, stCeloContract, address]
+    [createTxOptions, depositTx, loadBalances, stCeloContract, address, sendTransaction]
   );
 
   const estimateStakingFee = useCallback(
