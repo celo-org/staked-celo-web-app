@@ -39,7 +39,7 @@ export const Header = () => {
     <header className="w-screen px-[32px] h-[80px] flex items-center justify-between">
       <Link href="/">
         <a className="flex items-center">
-          <div className="flex scale-90 sm:scale-100">
+          <div className="flex">
             <ThemedIcon
               name="logo"
               alt="Liquid Staking Logo"
