@@ -12,10 +12,13 @@ export const WalletButton = () => {
     return address ? `${address.slice(0, 2)}...${address.slice(-4)}` : '';
   }, [address]);
 
+  const flexClasses = 'inline-flex items-center';
+  const paddingClasses = 'py-[2px] md:py-[8px] px-[9px] md:px-[16px]';
+
   return (
     <>
       <span
-        className="inline-flex items-center py-[2px] px-[9px] rounded-xl bg-secondary text-secondary"
+        className={`${flexClasses} cursor-pointer bg-secondary text-secondary rounded-[100px] ${paddingClasses}`}
         onClick={() => setIsModalOpened(true)}
       >
         <IndicatorIcon classes="pr-[8px]" /> <Label>{addressLabel}</Label>
