@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
@@ -8,6 +7,7 @@ import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
+import { Cost } from 'src/utils/costs';
 import { CeloWei, fromWeiRounded, StCeloWei, Token } from 'src/utils/tokens';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
@@ -15,12 +15,12 @@ import { useFormValidator } from './useFormValidator';
 
 interface SwapFormProps {
   onSubmit: (amount: number | undefined) => void;
+  onChange: (amount: number | undefined) => void;
   balance: CeloWei | StCeloWei;
-  exchangeRate: number;
   fromToken: Token;
   toToken: Token;
   estimateReceiveValue: (num: number) => number;
-  estimateGasFee: (amount: number) => Promise<BigNumber>;
+  costs: Cost[];
 }
 
 const getHref = (toToken: Token) => {
@@ -31,12 +31,12 @@ const getHref = (toToken: Token) => {
 
 export const SwapForm = ({
   onSubmit,
+  onChange,
   balance,
-  exchangeRate,
   fromToken,
   toToken,
   estimateReceiveValue,
-  estimateGasFee,
+  costs,
 }: SwapFormProps) => {
   const [amount, setAmount] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +66,7 @@ export const SwapForm = ({
     setIsTouched(true);
     setError(validateForm(value));
     setAmount(value);
+    onChange(isValid ? value : 0);
   };
 
   return (
@@ -92,13 +93,7 @@ export const SwapForm = ({
       <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
       </div>
-      {!!amount && (
-        <CostsSummary
-          amount={isValid ? amount : 0}
-          exchangeRate={exchangeRate}
-          estimateGasFee={estimateGasFee}
-        />
-      )}
+      {!!amount && <CostsSummary costs={costs} />}
     </form>
   );
 };

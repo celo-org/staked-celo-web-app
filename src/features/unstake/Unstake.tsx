@@ -1,34 +1,37 @@
+import { useCallback, useState } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { SwapForm } from 'src/features/swap/SwapForm';
 import { Switcher } from 'src/features/swap/Switcher';
-import { useUnstaking } from 'src/features/unstake/useUnstaking';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import toast from 'src/services/toast';
 import { StCelo, toStCeloWei } from 'src/utils/tokens';
 import { PendingWithdrawal } from './PendingWithdrawal';
+import { useCosts } from './useCosts';
+import { useUnstaking } from './useUnstaking';
 
 export const Unstake = () => {
   const { stCeloBalance, pendingWithdrawals } = useAccountContext();
-  const { unstake, stCeloExchangeRate, estimateWithdrawalValue, estimateUnstakingFee } =
-    useUnstaking();
+  const [amount, setAmount] = useState<number | undefined>();
+  const { costs } = useCosts(amount);
+  const { unstake, estimateWithdrawalValue } = useUnstaking();
 
-  const onSubmit = async (amount: number | undefined) => {
+  const onSubmit = useCallback(async () => {
     if (!amount) return;
     await unstake(toStCeloWei(new StCelo(amount)));
     toast.unstakingStartedSuccess();
-  };
+  }, [unstake, amount]);
 
   return (
     <CenteredLayout classes="px-[24px]">
       <Switcher />
       <SwapForm
         estimateReceiveValue={estimateWithdrawalValue}
-        estimateGasFee={estimateUnstakingFee}
         onSubmit={onSubmit}
+        onChange={setAmount}
         balance={stCeloBalance}
-        exchangeRate={stCeloExchangeRate}
         fromToken="stCELO"
         toToken="CELO"
+        costs={costs}
       />
       {pendingWithdrawals.length !== 0 ? (
         <span className="font-semibold text-sm mt-12">Currently unstaking</span>

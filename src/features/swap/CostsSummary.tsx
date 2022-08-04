@@ -1,18 +1,13 @@
-import BigNumber from 'bignumber.js';
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { Cost, freeValue, useCosts } from 'src/features/swap/useCosts';
+import { Cost, freeValue } from 'src/utils/costs';
 
 interface CostsSummaryProps {
-  estimateGasFee: (amount: number) => Promise<BigNumber>;
-  exchangeRate: number;
-  amount: number;
+  costs: Cost[];
 }
 
-export const CostsSummary = ({ estimateGasFee, exchangeRate, amount }: CostsSummaryProps) => {
-  const { costs } = useCosts(amount, exchangeRate, estimateGasFee);
-
+export const CostsSummary = ({ costs }: CostsSummaryProps) => {
   return (
     <ul className="text-secondary mx-2 mt-5">
       {costs.map((cost) => (
