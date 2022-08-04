@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Cost, exchangeCost, feeCost, transactionCost } from 'src/utils/costs';
+import { Cost, exchangeCost, feeCost, transactionCost } from 'src/features/swap/utils/costs';
 import { useUnstaking } from './useUnstaking';
 
 export const useCosts = (amount: number | undefined) => {

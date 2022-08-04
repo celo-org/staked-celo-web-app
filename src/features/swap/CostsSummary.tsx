@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { Cost, freeValue } from 'src/utils/costs';
+import { Cost, freeValue } from 'src/features/swap/utils/costs';
 
 interface CostsSummaryProps {
   costs: Cost[];
