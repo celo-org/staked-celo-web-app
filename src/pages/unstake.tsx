@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { Unstake } from 'src/features/unstake/Unstake';
+import { Unstake } from 'src/features/unstake/components/Unstake';
 
 const UnstakePage: NextPage = () => {
   return <Unstake />;

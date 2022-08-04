@@ -4,14 +4,14 @@ import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { INPUT_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
-import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
-import { TokenCard } from 'src/features/swap/TokenCard';
 import { CeloWei, fromWeiRounded, StCeloWei, Token } from 'src/utils/tokens';
+import { useFormValidator } from '../hooks/useFormValidator';
+import { Detail } from '../utils/details';
 import { BalanceTools } from './BalanceTools';
 import { Details } from './Details';
+import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
-import { useFormValidator } from './useFormValidator';
-import { Detail } from './utils/details';
+import { TokenCard } from './TokenCard';
 
 interface SwapFormProps {
   onSubmit: (amount: number | undefined) => void;

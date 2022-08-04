@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { SwapForm } from 'src/features/swap/SwapForm';
-import { Switcher } from 'src/features/swap/Switcher';
+import { SwapForm } from 'src/features/swap/components/SwapForm';
+import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import toast from 'src/services/toast';
 import { StCelo, toStCeloWei } from 'src/utils/tokens';
+import { useDetails } from '../hooks/useDetails';
+import { useUnstaking } from '../hooks/useUnstaking';
 import { PendingWithdrawal } from './PendingWithdrawal';
-import { useDetails } from './useDetails';
-import { useUnstaking } from './useUnstaking';
 
 export const Unstake = () => {
   const { stCeloBalance, pendingWithdrawals } = useAccountContext();

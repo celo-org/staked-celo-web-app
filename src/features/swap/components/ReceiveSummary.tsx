@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { TokenCard } from 'src/features/swap/TokenCard';
 import { Token } from 'src/utils/tokens';
+import { TokenCard } from './TokenCard';
 
 interface ReceiveSummaryProps {
   token: Token;

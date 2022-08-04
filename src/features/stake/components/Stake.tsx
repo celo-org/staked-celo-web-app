@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { SwapForm } from 'src/features/swap/SwapForm';
-import { Switcher } from 'src/features/swap/Switcher';
+import { SwapForm } from 'src/features/swap/components/SwapForm';
+import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import toast from 'src/services/toast';
 import { Celo, toCeloWei } from 'src/utils/tokens';
-import { useDetails } from './useDetails';
-import { useStaking } from './useStaking';
+import { useDetails } from '../hooks/useDetails';
+import { useStaking } from '../hooks/useStaking';
 
 export const Stake = () => {
   const { stake, estimateDepositValue } = useStaking();
