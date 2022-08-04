@@ -79,7 +79,7 @@ export const SwapForm = ({
           error={error}
         />
         <Link href={getHref(toToken)}>
-          <a className="absolute">
+          <a className="absolute inline-flex">
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </a>
         </Link>
