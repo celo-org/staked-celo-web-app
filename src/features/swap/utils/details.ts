@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 
-export interface InfoItem {
+export interface Detail {
   title: string;
   value: string | number;
   tooltip: {
@@ -11,7 +11,7 @@ export interface InfoItem {
 
 export const freePriceValue = 'Free*';
 
-export const exchangeInfo = (exchangeRate?: number): InfoItem => ({
+export const exchangeDetail = (exchangeRate?: number): Detail => ({
   title: 'Exchange Rate',
   value: exchangeRate ? exchangeRate.toFixed(DISPLAY_DECIMALS) : '...',
   tooltip: {
@@ -20,7 +20,7 @@ export const exchangeInfo = (exchangeRate?: number): InfoItem => ({
   },
 });
 
-export const transactionInfo = (gasFee?: BigNumber): InfoItem => {
+export const gasDetail = (gasFee?: BigNumber): Detail => {
   const value =
     gasFee &&
     (gasFee.comparedTo(0.001) === -1 ? '< 0.001' : `~${gasFee.toFixed(DISPLAY_DECIMALS)}`);
@@ -34,7 +34,7 @@ export const transactionInfo = (gasFee?: BigNumber): InfoItem => {
   };
 };
 
-export const feeInfo = (): InfoItem => ({
+export const feeDetail = (): Detail => ({
   title: 'Fees',
   value: freePriceValue,
   tooltip: {

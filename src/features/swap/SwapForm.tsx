@@ -6,12 +6,12 @@ import { INPUT_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
-import { TransactionInfo } from 'src/features/swap/TransactionInfo';
-import { InfoItem } from 'src/features/swap/utils/transactionInfo';
 import { CeloWei, fromWeiRounded, StCeloWei, Token } from 'src/utils/tokens';
 import { BalanceTools } from './BalanceTools';
+import { Details } from './Details';
 import { SubmitButton } from './SubmitButton';
 import { useFormValidator } from './useFormValidator';
+import { Detail } from './utils/details';
 
 interface SwapFormProps {
   onSubmit: (amount: number | undefined) => void;
@@ -20,7 +20,7 @@ interface SwapFormProps {
   fromToken: Token;
   toToken: Token;
   receiveValue: number;
-  info: InfoItem[];
+  details: Detail[];
 }
 
 const getHref = (toToken: Token) => {
@@ -36,7 +36,7 @@ export const SwapForm = ({
   fromToken,
   toToken,
   receiveValue,
-  info,
+  details,
 }: SwapFormProps) => {
   const [amount, setAmount] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +88,7 @@ export const SwapForm = ({
       <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
       </div>
-      {!!amount && !error && <TransactionInfo info={info} />}
+      {!!amount && !error && <Details details={details} />}
     </form>
   );
 };

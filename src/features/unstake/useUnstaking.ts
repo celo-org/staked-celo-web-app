@@ -36,7 +36,7 @@ export function useUnstaking() {
     [withdrawTx, createTxOptions, loadBalances, loadPendingWithdrawals, address, sendTransaction]
   );
 
-  const estimateUnstakingFee = useCallback(
+  const estimateUnstakingGas = useCallback(
     async (amount: number): Promise<StCelo> => {
       const stCeloWeiAmount = toStCeloWei(new StCelo(amount));
       if (stCeloWeiAmount.isGreaterThan(stCeloBalance)) return new StCelo(0);
@@ -57,7 +57,7 @@ export function useUnstaking() {
   return {
     unstake,
     stCeloExchangeRate,
-    estimateUnstakingFee,
+    estimateUnstakingGas,
     estimateWithdrawalValue,
   };
 }

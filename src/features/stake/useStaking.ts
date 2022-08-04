@@ -47,7 +47,7 @@ export function useStaking() {
     [createTxOptions, depositTx, loadBalances, stCeloContract, address, sendTransaction]
   );
 
-  const estimateStakingFee = useCallback(
+  const estimateStakingGas = useCallback(
     async (amount: number): Promise<Celo> => {
       const celoAmount = toCeloWei(new Celo(amount));
       if (celoAmount.isGreaterThan(celoBalance)) return new Celo(0);
@@ -66,7 +66,7 @@ export function useStaking() {
   return {
     stake,
     celoExchangeRate,
-    estimateStakingFee,
+    estimateStakingGas,
     estimateDepositValue,
   };
 }

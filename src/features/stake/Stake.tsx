@@ -5,13 +5,13 @@ import { Switcher } from 'src/features/swap/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import toast from 'src/services/toast';
 import { Celo, toCeloWei } from 'src/utils/tokens';
+import { useDetails } from './useDetails';
 import { useStaking } from './useStaking';
-import { useTransactionInfo } from './useTransactionInfo';
 
 export const Stake = () => {
   const { stake, estimateDepositValue } = useStaking();
   const [amount, setAmount] = useState<number>(0);
-  const { info } = useTransactionInfo(amount);
+  const { details } = useDetails(amount);
   const { celoBalance } = useAccountContext();
 
   const onSubmit = useCallback(async () => {
@@ -32,7 +32,7 @@ export const Stake = () => {
         fromToken="CELO"
         toToken="stCELO"
         receiveValue={receiveValue}
-        info={info}
+        details={details}
       />
     </CenteredLayout>
   );
