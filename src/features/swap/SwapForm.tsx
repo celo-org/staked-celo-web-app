@@ -4,10 +4,10 @@ import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { INPUT_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
-import { CostsSummary } from 'src/features/swap/CostsSummary';
 import { ReceiveSummary } from 'src/features/swap/ReceiveSummary';
 import { TokenCard } from 'src/features/swap/TokenCard';
-import { Cost } from 'src/utils/costs';
+import { TransactionInfo } from 'src/features/swap/TransactionInfo';
+import { InfoItem } from 'src/features/swap/utils/transactionInfo';
 import { CeloWei, fromWeiRounded, StCeloWei, Token } from 'src/utils/tokens';
 import { BalanceTools } from './BalanceTools';
 import { SubmitButton } from './SubmitButton';
@@ -20,7 +20,7 @@ interface SwapFormProps {
   fromToken: Token;
   toToken: Token;
   estimateReceiveValue: (num: number) => number;
-  costs: Cost[];
+  info: InfoItem[];
 }
 
 const getHref = (toToken: Token) => {
@@ -36,7 +36,7 @@ export const SwapForm = ({
   fromToken,
   toToken,
   estimateReceiveValue,
-  costs,
+  info,
 }: SwapFormProps) => {
   const [amount, setAmount] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +93,7 @@ export const SwapForm = ({
       <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
       </div>
-      {!!amount && <CostsSummary costs={costs} />}
+      {!!amount && <TransactionInfo info={info} />}
     </form>
   );
 };

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 
-export interface Cost {
+export interface InfoItem {
   title: string;
   value: string | number;
   tooltip: {
@@ -9,9 +9,9 @@ export interface Cost {
   };
 }
 
-export const freeValue = 'Free*';
+export const freePriceValue = 'Free*';
 
-export const exchangeCost = (exchangeRate?: number): Cost => ({
+export const exchangeInfo = (exchangeRate?: number): InfoItem => ({
   title: 'Exchange Rate',
   value: exchangeRate ? exchangeRate.toFixed(DISPLAY_DECIMALS) : '...',
   tooltip: {
@@ -20,7 +20,7 @@ export const exchangeCost = (exchangeRate?: number): Cost => ({
   },
 });
 
-export const transactionCost = (gasFee?: BigNumber): Cost => {
+export const transactionInfo = (gasFee?: BigNumber): InfoItem => {
   const value =
     gasFee &&
     (gasFee.comparedTo(0.001) === -1 ? '< 0.001' : `~${gasFee.toFixed(DISPLAY_DECIMALS)}`);
@@ -34,9 +34,9 @@ export const transactionCost = (gasFee?: BigNumber): Cost => {
   };
 };
 
-export const feeCost = (): Cost => ({
+export const feeInfo = (): InfoItem => ({
   title: 'Fees',
-  value: freeValue,
+  value: freePriceValue,
   tooltip: {
     content: 'For the launch of the stCELO protocol, fees are free.',
   },

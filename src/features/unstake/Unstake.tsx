@@ -6,13 +6,13 @@ import { CenteredLayout } from 'src/layout/CenteredLayout';
 import toast from 'src/services/toast';
 import { StCelo, toStCeloWei } from 'src/utils/tokens';
 import { PendingWithdrawal } from './PendingWithdrawal';
-import { useCosts } from './useCosts';
+import { useTransactionInfo } from './useTransactionInfo';
 import { useUnstaking } from './useUnstaking';
 
 export const Unstake = () => {
   const { stCeloBalance, pendingWithdrawals } = useAccountContext();
   const [amount, setAmount] = useState<number | undefined>();
-  const { costs } = useCosts(amount);
+  const { info } = useTransactionInfo(amount);
   const { unstake, estimateWithdrawalValue } = useUnstaking();
 
   const onSubmit = useCallback(async () => {
@@ -31,7 +31,7 @@ export const Unstake = () => {
         balance={stCeloBalance}
         fromToken="stCELO"
         toToken="CELO"
-        costs={costs}
+        info={info}
       />
       {pendingWithdrawals.length !== 0 ? (
         <span className="font-semibold text-sm mt-12">Currently unstaking</span>
