@@ -37,14 +37,6 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
       isOpen={changingWallet ? false : isOpen}
       screenReaderLabel="Connect wallet modal"
       close={close}
-      contentStyle={{
-        width: '90%',
-        height: '40%',
-        maxWidth: '350px',
-        minHeight: '400px',
-        maxHeight: '500px',
-        padding: '25px',
-      }}
     >
       <div className="flex flex-col h-full text-modal">
         <div className="flex justify-between">
@@ -57,8 +49,8 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
           </span>
         </div>
         <div className="flex flex-col flex-grow">
-          <section className="flex-grow">
-            <div className="flex mt-8 mb-2">
+          <section className="flex-grow mt-[40px] mb-[80px]">
+            <div className="flex mb-[8px]">
               <h2 className="font-medium text-[20px] leading-[24px] mr-[8px]">Wallet address</h2>
               <button
                 className="underline text-secondary text-[14px] leading-[100%]"

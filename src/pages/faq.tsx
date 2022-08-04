@@ -11,7 +11,7 @@ const FaqPage: NextPage = () => {
 const Faq = () => {
   const faqItems = faq.getFaqItems();
   return (
-    <CenteredLayout>
+    <CenteredLayout classes="px-base">
       <div className="text-3xl font-light leading-normal mt-6 mb-12">
         Frequently asked questions
       </div>

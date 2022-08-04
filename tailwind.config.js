@@ -35,6 +35,9 @@ module.exports = {
         'highlight-primary': 'var(--c-bg-highlight-primary-color)',
         'highlight-secondary': 'var(--c-bg-highlight-secondary-color)',
       },
+      padding: {
+        base: '32px',
+      },
     },
   },
   plugins: [],

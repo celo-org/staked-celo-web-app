@@ -17,7 +17,7 @@ export const Stake = () => {
   };
 
   return (
-    <CenteredLayout>
+    <CenteredLayout classes="px-[24px]">
       <Switcher />
       <SwapForm
         estimateReceiveValue={estimateDepositValue}

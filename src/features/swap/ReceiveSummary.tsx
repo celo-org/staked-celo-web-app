@@ -38,12 +38,16 @@ const UnstakeInfo = () => {
 const getInfoChild = (token: Token) => {
   if (token === 'stCELO') {
     return (
-      <span className="text-primary-info text-[15px] leading-[24px]">4.56% projected APY</span>
+      <span className="text-primary-info font-medium text-[15px] leading-[24px]">
+        4.56% projected APY
+      </span>
     );
   } else if (token === 'CELO') {
     return (
       <div className="flex">
-        <span className="text-secondary-info text-[15px] leading-[24px]">3-day unstake period</span>
+        <span className="text-secondary-info font-medium text-[15px] leading-[24px]">
+          3-day unstake period
+        </span>
         <UnstakeInfo />
       </div>
     );

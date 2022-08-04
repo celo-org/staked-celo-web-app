@@ -1,5 +1,12 @@
 import { PropsWithChildren } from 'react';
 
-export const CenteredLayout = ({ children }: PropsWithChildren) => {
-  return <div className="flex flex-col md:w-96 mx-auto w-full px-4 mb-14">{children}</div>;
+interface CenteredLayoutProps {
+  classes?: string;
+}
+
+export const CenteredLayout = ({
+  children,
+  classes = '',
+}: PropsWithChildren<CenteredLayoutProps>) => {
+  return <div className={`flex flex-col max-w-[480px] mx-auto w-full ${classes}`}>{children}</div>;
 };

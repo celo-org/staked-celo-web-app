@@ -19,7 +19,7 @@ export const Unstake = () => {
   };
 
   return (
-    <CenteredLayout>
+    <CenteredLayout classes="px-[24px]">
       <Switcher />
       <SwapForm
         estimateReceiveValue={estimateWithdrawalValue}
