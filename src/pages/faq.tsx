@@ -33,15 +33,14 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
 
   return (
     <div className="mb-[24px]">
-      <div className="flex flex-row">
+      <div className="flex flex-row cursor-pointer" onClick={() => setOpened(!opened)}>
         <div className="flex-grow mr-[16px] font-normal">{question}</div>
         <ThemedIcon
-          classes={`transition cursor-pointer ${opened ? 'rotate-180' : ''}`}
+          classes={`transition ${opened ? 'rotate-180' : ''}`}
           name="caret"
           alt="Toggle faq item"
           width={24}
           height={24}
-          onClick={() => setOpened(!opened)}
         />
       </div>
       <div
