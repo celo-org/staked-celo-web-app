@@ -1,28 +1,24 @@
 import BigNumber from 'bignumber.js';
-import { MIN_ROUNDED_VALUE, WEI_PER_UNIT } from 'src/config/consts';
+import { DISPLAY_DECIMALS, WEI_PER_UNIT } from 'src/config/consts';
 import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
 
 export type Token = 'CELO' | 'stCELO';
 
-export class Unit extends BigNumber {
+export class Wei extends BigNumber {
   constructor(value: any) {
     super(value instanceof BigNumber ? value.toFixed() : value);
   }
+
+  display(): string {
+    return new BigNumber(fromWei(this)).toFixed(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR);
+  }
 }
 
-export class Celo extends Unit {
-  private __tokenType = 'Celo';
-}
-
-export class CeloWei extends Unit {
+export class CeloWei extends Wei {
   private __tokenType = 'CeloWei';
 }
 
-export class StCelo extends Unit {
-  private __tokenType = 'StCelo';
-}
-
-export class StCeloWei extends Unit {
+export class StCeloWei extends Wei {
   private __tokenType = 'StCeloWei';
 }
 
@@ -32,49 +28,15 @@ function fromWei(value: BigNumber): string {
   return web3FromWei(flooredValue);
 }
 
-export function fromCeloWei(value: CeloWei): Celo {
-  return new Celo(fromWei(value));
-}
-
-export function fromStCeloWei(value: StCeloWei): StCelo {
-  return new StCelo(fromWei(value));
-}
-
-// Similar to fromWei above but rounds to set number of decimals
-// with a minimum floor, configured per token
-export function fromWeiRounded(value: CeloWei | StCeloWei, roundToZeroIfSmall = false): number {
-  if (!value) return 0;
-  const flooredValue = value.toFixed(0, BigNumber.ROUND_FLOOR);
-  const amount = new BigNumber(web3FromWei(flooredValue));
-  if (amount.isZero()) return 0;
-
-  // If amount is less than min value
-  if (amount.lt(MIN_ROUNDED_VALUE)) {
-    if (roundToZeroIfSmall) return 0;
-    else return MIN_ROUNDED_VALUE;
-  }
-
-  return amount.toNumber();
-}
-
-function toWei(value: BigNumber): string {
-  if (!value) return '0';
-  const valueString = value.toFixed();
-  const components = valueString.split('.');
+export function toWei(value: string): Wei {
+  if (!value) return new Wei('0');
+  const components = value.split('.');
   if (components.length === 1) {
-    return web3ToWei(value.toFixed());
+    return new Wei(web3ToWei(value));
   } else if (components.length === 2) {
     const trimmedFraction = components[1].substring(0, WEI_PER_UNIT.length - 1);
-    return web3ToWei(`${components[0]}.${trimmedFraction}`);
+    return new Wei(web3ToWei(`${components[0]}.${trimmedFraction}`));
   } else {
-    throw new Error(`Cannot convert ${valueString} to wei`);
+    throw new Error(`Cannot convert ${value} to wei`);
   }
-}
-
-export function toCeloWei(value: Celo): CeloWei {
-  return new CeloWei(toWei(value));
-}
-
-export function toStCeloWei(value: StCelo): StCeloWei {
-  return new StCeloWei(toWei(value));
 }

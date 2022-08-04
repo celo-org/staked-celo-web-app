@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
+import { Wei } from 'src/utils/tokens';
 
 export interface Detail {
   title: string;
@@ -20,10 +20,9 @@ export const exchangeDetail = (exchangeRate?: number): Detail => ({
   },
 });
 
-export const gasDetail = (gasFee?: BigNumber): Detail => {
+export const gasDetail = (gasFee?: Wei): Detail => {
   const value =
-    gasFee &&
-    (gasFee.comparedTo(0.001) === -1 ? '< 0.001' : `~${gasFee.toFixed(DISPLAY_DECIMALS)}`);
+    gasFee && (gasFee.comparedTo('1000000000000000') === -1 ? '< 0.001' : `~${gasFee.display()}`);
   return {
     title: 'Transaction cost',
     value: value || '...',

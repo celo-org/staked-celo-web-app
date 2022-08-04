@@ -4,21 +4,25 @@ import { SwapForm } from 'src/features/swap/components/SwapForm';
 import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import toast from 'src/services/toast';
-import { Celo, toCeloWei } from 'src/utils/tokens';
+import { CeloWei, Wei } from 'src/utils/tokens';
 import { useDetails } from '../hooks/useDetails';
 import { useStaking } from '../hooks/useStaking';
 
 export const Stake = () => {
   const { stake, estimateDepositValue } = useStaking();
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<CeloWei>(new CeloWei(0));
   const { details } = useDetails(amount);
   const { celoBalance } = useAccountContext();
 
   const onSubmit = useCallback(async () => {
-    if (!amount) return;
-    const receivedAmount = await stake(toCeloWei(new Celo(amount)));
+    if (amount.isEqualTo(0)) return;
+    const receivedAmount = await stake(amount);
     toast.stakingSuccess(receivedAmount);
   }, [stake, amount]);
+
+  const onChange = useCallback((weiAmount?: Wei) => {
+    setAmount(new CeloWei(weiAmount || 0));
+  }, []);
 
   const receiveValue = estimateDepositValue(amount);
 
@@ -27,7 +31,7 @@ export const Stake = () => {
       <Switcher />
       <SwapForm
         onSubmit={onSubmit}
-        onChange={setAmount}
+        onChange={onChange}
         balance={celoBalance}
         fromToken="CELO"
         toToken="stCELO"

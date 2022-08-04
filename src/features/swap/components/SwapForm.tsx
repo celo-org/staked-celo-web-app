@@ -2,9 +2,8 @@ import Link from 'next/link';
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
-import { INPUT_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
-import { CeloWei, fromWeiRounded, StCeloWei, Token } from 'src/utils/tokens';
+import { Token, toWei, Wei } from 'src/utils/tokens';
 import { useFormValidator } from '../hooks/useFormValidator';
 import { Detail } from '../utils/details';
 import { BalanceTools } from './BalanceTools';
@@ -13,13 +12,13 @@ import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
 
-interface SwapFormProps {
-  onSubmit: (amount: number | undefined) => void;
-  onChange: (amount: number) => void;
-  balance: CeloWei | StCeloWei;
+interface SwapFormProps<SourceWei extends Wei, TargetWei extends Wei> {
+  onSubmit: () => void;
+  onChange: (amount?: Wei) => void;
+  balance: SourceWei;
   fromToken: Token;
   toToken: Token;
-  receiveValue: number;
+  receiveValue: TargetWei;
   details: Detail[];
 }
 
@@ -29,7 +28,7 @@ const getHref = (toToken: Token) => {
   return '';
 };
 
-export const SwapForm = ({
+export const SwapForm = <SourceWei extends Wei, TargetWei extends Wei>({
   onSubmit,
   onChange,
   balance,
@@ -37,8 +36,8 @@ export const SwapForm = ({
   toToken,
   receiveValue,
   details,
-}: SwapFormProps) => {
-  const [amount, setAmount] = useState<number | undefined>();
+}: SwapFormProps<SourceWei, TargetWei>) => {
+  const [amount, setAmount] = useState<Wei | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -51,17 +50,17 @@ export const SwapForm = ({
       e.preventDefault();
       setIsLoading(true);
       try {
-        await onSubmit(amount);
+        await onSubmit();
         await reloadExchangeContext();
       } finally {
         setIsLoading(false);
       }
-      setAmount(0);
+      setAmount(new Wei(0));
     },
-    [amount, onSubmit, reloadExchangeContext]
+    [onSubmit, reloadExchangeContext]
   );
 
-  const onInputChange = (value: number) => {
+  const onInputChange = (value: Wei | undefined) => {
     setIsTouched(true);
     setError(validateForm(value));
     setAmount(value);
@@ -93,12 +92,12 @@ export const SwapForm = ({
   );
 };
 
-interface FormInputProps {
-  onChange: (amount: number) => void;
-  balance: CeloWei | StCeloWei;
+interface FormInputProps<SourceWei extends Wei> {
+  onChange: (amount?: Wei) => void;
+  balance: SourceWei;
   token: Token;
   error?: string;
-  value: number | undefined;
+  value: SourceWei | undefined;
 }
 
 const getTitle = (error: string | undefined, fromToken: Token) => {
@@ -108,9 +107,16 @@ const getTitle = (error: string | undefined, fromToken: Token) => {
   return '';
 };
 
-const SwapFormInput = ({ token, balance, value, onChange, error }: FormInputProps) => {
-  const onClickUseMax = () => onChange(fromWeiRounded(balance));
-  const onInputChange = (values: NumberFormatValues) => onChange(values.floatValue || 0);
+const SwapFormInput = <SourceWei extends Wei>({
+  token,
+  balance,
+  value,
+  onChange,
+  error,
+}: FormInputProps<SourceWei>) => {
+  const onClickUseMax = () => (balance.display() !== value?.display() ? onChange(balance) : null);
+  const onInputChange = (values: NumberFormatValues) =>
+    onChange(values.value ? toWei(values.value) : undefined);
 
   return (
     <TokenCard
@@ -125,9 +131,8 @@ const SwapFormInput = ({ token, balance, value, onChange, error }: FormInputProp
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
-          value={value}
+          value={value ? parseFloat(value.display()) : undefined}
           allowNegative={false}
-          decimalScale={INPUT_DECIMALS}
         />
       }
       infoChild={<BalanceTools onClickUseMax={onClickUseMax} balance={balance} />}

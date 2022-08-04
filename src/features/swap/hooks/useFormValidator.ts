@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
-import { Celo, CeloWei, StCeloWei, toCeloWei, Token } from 'src/utils/tokens';
+import { Token, Wei } from 'src/utils/tokens';
 
-export function useFormValidator(balance: CeloWei | StCeloWei, token: Token) {
+export function useFormValidator<SourceWei extends Wei>(balance: SourceWei, token: Token) {
   return useCallback(
-    (amount: number | undefined): string | undefined => {
+    (amount: Wei | undefined): string | undefined => {
       if (!amount) return;
-      if (amount < 0) return 'Amount cannot be negative';
-      if (balance.isLessThan(toCeloWei(new Celo(amount)))) {
+      if (amount.isLessThan(0)) return 'Amount cannot be negative';
+      if (balance.isLessThan(amount)) {
         return `Not enough ${token}`;
       }
       return;

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
+import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/hooks/useBlockchain';
-import { Celo, CeloWei, StCelo, StCeloWei, toCeloWei, toStCeloWei } from 'src/utils/tokens';
+import { CeloWei, StCeloWei } from 'src/utils/tokens';
 
 const useCeloExchangeRate = () => {
   const { managerContract } = useBlockchain();
@@ -8,9 +9,9 @@ const useCeloExchangeRate = () => {
   const [celoExchangeRate, setCeloExchangeRate] = useState(0);
 
   const loadCeloExchangeRate = useCallback(async () => {
-    const oneCeloWei = toCeloWei(new Celo('1')).toFixed();
+    const oneCeloWei = new CeloWei(WEI_PER_UNIT);
     const stCeloAmount = new StCeloWei(
-      await managerContract.methods.toStakedCelo(oneCeloWei).call()
+      await managerContract.methods.toStakedCelo(oneCeloWei.toFixed()).call()
     );
     setCeloExchangeRate(stCeloAmount.dividedBy(oneCeloWei).toNumber());
   }, [managerContract]);
@@ -27,8 +28,10 @@ const useStCeloExchangeRate = () => {
   const [stCeloExchangeRate, setStCeloExchangeRate] = useState(0);
 
   const loadStCeloExchangeRate = useCallback(async () => {
-    const oneStCeloWei = toStCeloWei(new StCelo('1')).toFixed();
-    const celoAmount = new CeloWei(await managerContract.methods.toCelo(oneStCeloWei).call());
+    const oneStCeloWei = new StCeloWei(WEI_PER_UNIT);
+    const celoAmount = new CeloWei(
+      await managerContract.methods.toCelo(oneStCeloWei.toFixed()).call()
+    );
     setStCeloExchangeRate(celoAmount.dividedBy(oneStCeloWei).toNumber());
   }, [managerContract]);
 

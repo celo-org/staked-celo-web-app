@@ -4,22 +4,26 @@ import { SwapForm } from 'src/features/swap/components/SwapForm';
 import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import toast from 'src/services/toast';
-import { StCelo, toStCeloWei } from 'src/utils/tokens';
+import { StCeloWei, Wei } from 'src/utils/tokens';
 import { useDetails } from '../hooks/useDetails';
 import { useUnstaking } from '../hooks/useUnstaking';
 import { PendingWithdrawal } from './PendingWithdrawal';
 
 export const Unstake = () => {
   const { stCeloBalance, pendingWithdrawals } = useAccountContext();
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<StCeloWei>(new StCeloWei(0));
   const { details } = useDetails(amount);
   const { unstake, estimateWithdrawalValue } = useUnstaking();
 
   const onSubmit = useCallback(async () => {
-    if (!amount) return;
-    await unstake(toStCeloWei(new StCelo(amount)));
+    if (amount.isEqualTo(0)) return;
+    await unstake(amount);
     toast.unstakingStartedSuccess();
   }, [unstake, amount]);
+
+  const onChange = useCallback((weiAmount?: Wei) => {
+    setAmount(new StCeloWei(weiAmount || 0));
+  }, []);
 
   const receiveValue = estimateWithdrawalValue(amount);
 
@@ -28,7 +32,7 @@ export const Unstake = () => {
       <Switcher />
       <SwapForm
         onSubmit={onSubmit}
-        onChange={setAmount}
+        onChange={onChange}
         balance={stCeloBalance}
         fromToken="stCELO"
         toToken="CELO"

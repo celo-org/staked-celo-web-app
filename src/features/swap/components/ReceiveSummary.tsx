@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { Token } from 'src/utils/tokens';
+import { Token, Wei } from 'src/utils/tokens';
 import { TokenCard } from './TokenCard';
 
-interface ReceiveSummaryProps {
+interface ReceiveSummaryProps<SourceWei extends Wei> {
   token: Token;
-  value: number;
+  value: SourceWei;
 }
 
 const UnstakeInfo = () => {
@@ -54,8 +53,11 @@ const getInfoChild = (token: Token) => {
   return;
 };
 
-export const ReceiveSummary = ({ token, value }: ReceiveSummaryProps) => {
-  const displayValue = value ? value.toFixed(DISPLAY_DECIMALS) : '0.00';
+export const ReceiveSummary = <SourceWei extends Wei>({
+  token,
+  value,
+}: ReceiveSummaryProps<SourceWei>) => {
+  const displayValue = value.isEqualTo(0) ? '0.00' : value.display();
 
   return (
     <TokenCard
