@@ -42,7 +42,6 @@ export const SwapForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const isValid = !error;
   const validateForm = useFormValidator(balance, fromToken);
   const { reloadExchangeContext } = useExchangeContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
@@ -66,7 +65,7 @@ export const SwapForm = ({
     setIsTouched(true);
     setError(validateForm(value));
     setAmount(value);
-    onChange(isValid ? value : 0);
+    onChange(value);
   };
 
   return (
@@ -89,7 +88,7 @@ export const SwapForm = ({
       <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
       </div>
-      {!!amount && <TransactionInfo info={info} />}
+      {!!amount && !error && <TransactionInfo info={info} />}
     </form>
   );
 };

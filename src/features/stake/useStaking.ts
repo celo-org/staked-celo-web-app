@@ -15,7 +15,7 @@ import {
 } from 'src/utils/tokens';
 
 export function useStaking() {
-  const { address, loadBalances } = useAccountContext();
+  const { address, loadBalances, celoBalance } = useAccountContext();
   const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
   const { celoExchangeRate } = useExchangeContext();
 
@@ -50,11 +50,12 @@ export function useStaking() {
   const estimateStakingFee = useCallback(
     async (amount: number): Promise<Celo> => {
       const celoAmount = toCeloWei(new Celo(amount));
+      if (celoAmount.isGreaterThan(celoBalance)) return new Celo(0);
       const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions(celoAmount)));
       const gasFeeInWei = new CeloWei(gasFee.multipliedBy(GAS_PRICE));
       return fromCeloWei(gasFeeInWei);
     },
-    [createTxOptions, depositTx]
+    [createTxOptions, depositTx, celoBalance]
   );
 
   const estimateDepositValue = useCallback(

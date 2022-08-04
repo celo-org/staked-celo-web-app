@@ -8,7 +8,7 @@ import api from 'src/services/api';
 import { fromStCeloWei, StCelo, StCeloWei, toStCeloWei } from 'src/utils/tokens';
 
 export function useUnstaking() {
-  const { address, loadBalances, loadPendingWithdrawals } = useAccountContext();
+  const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
   const { managerContract, sendTransaction } = useBlockchain();
   const { stCeloExchangeRate } = useExchangeContext();
 
@@ -39,13 +39,14 @@ export function useUnstaking() {
   const estimateUnstakingFee = useCallback(
     async (amount: number): Promise<StCelo> => {
       const stCeloWeiAmount = toStCeloWei(new StCelo(amount));
+      if (stCeloWeiAmount.isGreaterThan(stCeloBalance)) return new StCelo(0);
       const gasFee = new BigNumber(
         await withdrawTx(stCeloWeiAmount).estimateGas(createTxOptions())
       );
       const gasFeeInStWei = new StCeloWei(gasFee.multipliedBy(GAS_PRICE));
       return fromStCeloWei(gasFeeInStWei);
     },
-    [withdrawTx, createTxOptions]
+    [withdrawTx, createTxOptions, stCeloBalance]
   );
 
   const estimateWithdrawalValue = useCallback(
