@@ -23,7 +23,6 @@ class MyDocument extends Document {
 
           <meta name="msapplication-TileColor" content="#ffffff" />
           <meta name="msapplication-config" content="/browserconfig.xml" />
-          <meta name="theme-color" content="#ffffff" />
 
           <meta name="application-name" content={name} />
           <meta name="keywords" content={description} />

@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
+import { useThemeContext } from 'src/contexts/theme/ThemeContext';
 import { Footer } from './Footer';
 import { Header } from './Header';
 
@@ -20,10 +21,14 @@ interface Props {
 }
 
 export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
+  const { theme } = useThemeContext();
+
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* colors are the same as --c-bg-primary-color in styles/globals */}
+        <meta name="theme-color" content={theme === 'dark' ? '#212B2E' : '#FFFDF4'} />
         <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <div className="flex flex-col h-full w-full min-w-screen md:min-h-screen">
