@@ -15,11 +15,11 @@ import { useFormValidator } from './useFormValidator';
 
 interface SwapFormProps {
   onSubmit: (amount: number | undefined) => void;
-  onChange: (amount: number | undefined) => void;
+  onChange: (amount: number) => void;
   balance: CeloWei | StCeloWei;
   fromToken: Token;
   toToken: Token;
-  estimateReceiveValue: (num: number) => number;
+  receiveValue: number;
   info: InfoItem[];
 }
 
@@ -35,7 +35,7 @@ export const SwapForm = ({
   balance,
   fromToken,
   toToken,
-  estimateReceiveValue,
+  receiveValue,
   info,
 }: SwapFormProps) => {
   const [amount, setAmount] = useState<number | undefined>();
@@ -62,7 +62,7 @@ export const SwapForm = ({
     [amount, onSubmit, reloadExchangeContext]
   );
 
-  const onInputChange = (value: number | undefined) => {
+  const onInputChange = (value: number) => {
     setIsTouched(true);
     setError(validateForm(value));
     setAmount(value);
@@ -84,11 +84,7 @@ export const SwapForm = ({
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </a>
         </Link>
-        <ReceiveSummary
-          estimateReceiveValue={estimateReceiveValue}
-          amount={amount}
-          token={toToken}
-        />
+        <ReceiveSummary value={receiveValue} token={toToken} />
       </div>
       <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
@@ -99,7 +95,7 @@ export const SwapForm = ({
 };
 
 interface FormInputProps {
-  onChange: (amount?: number) => void;
+  onChange: (amount: number) => void;
   balance: CeloWei | StCeloWei;
   token: Token;
   error?: string;
@@ -115,7 +111,7 @@ const getTitle = (error: string | undefined, fromToken: Token) => {
 
 const SwapFormInput = ({ token, balance, value, onChange, error }: FormInputProps) => {
   const onClickUseMax = () => onChange(fromWeiRounded(balance));
-  const onInputChange = (values: NumberFormatValues) => onChange(values.floatValue);
+  const onInputChange = (values: NumberFormatValues) => onChange(values.floatValue || 0);
 
   return (
     <TokenCard

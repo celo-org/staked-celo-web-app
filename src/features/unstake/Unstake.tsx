@@ -11,7 +11,7 @@ import { useUnstaking } from './useUnstaking';
 
 export const Unstake = () => {
   const { stCeloBalance, pendingWithdrawals } = useAccountContext();
-  const [amount, setAmount] = useState<number | undefined>();
+  const [amount, setAmount] = useState<number>(0);
   const { info } = useTransactionInfo(amount);
   const { unstake, estimateWithdrawalValue } = useUnstaking();
 
@@ -21,16 +21,18 @@ export const Unstake = () => {
     toast.unstakingStartedSuccess();
   }, [unstake, amount]);
 
+  const receiveValue = estimateWithdrawalValue(amount);
+
   return (
     <CenteredLayout classes="px-[24px]">
       <Switcher />
       <SwapForm
-        estimateReceiveValue={estimateWithdrawalValue}
         onSubmit={onSubmit}
         onChange={setAmount}
         balance={stCeloBalance}
         fromToken="stCELO"
         toToken="CELO"
+        receiveValue={receiveValue}
         info={info}
       />
       {pendingWithdrawals.length !== 0 ? (

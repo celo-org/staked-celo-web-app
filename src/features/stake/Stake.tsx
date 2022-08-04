@@ -10,7 +10,7 @@ import { useTransactionInfo } from './useTransactionInfo';
 
 export const Stake = () => {
   const { stake, estimateDepositValue } = useStaking();
-  const [amount, setAmount] = useState<number | undefined>();
+  const [amount, setAmount] = useState<number>(0);
   const { info } = useTransactionInfo(amount);
   const { celoBalance } = useAccountContext();
 
@@ -20,16 +20,18 @@ export const Stake = () => {
     toast.stakingSuccess(receivedAmount);
   }, [stake, amount]);
 
+  const receiveValue = estimateDepositValue(amount);
+
   return (
     <CenteredLayout classes="px-[24px]">
       <Switcher />
       <SwapForm
-        estimateReceiveValue={estimateDepositValue}
         onSubmit={onSubmit}
         onChange={setAmount}
         balance={celoBalance}
         fromToken="CELO"
         toToken="stCELO"
+        receiveValue={receiveValue}
         info={info}
       />
     </CenteredLayout>

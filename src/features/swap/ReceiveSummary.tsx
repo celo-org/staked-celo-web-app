@@ -6,9 +6,8 @@ import { TokenCard } from 'src/features/swap/TokenCard';
 import { Token } from 'src/utils/tokens';
 
 interface ReceiveSummaryProps {
-  amount: number | undefined;
   token: Token;
-  estimateReceiveValue: (num: number) => number;
+  value: number;
 }
 
 const UnstakeInfo = () => {
@@ -55,9 +54,8 @@ const getInfoChild = (token: Token) => {
   return;
 };
 
-export const ReceiveSummary = ({ amount, token, estimateReceiveValue }: ReceiveSummaryProps) => {
-  const estimatedValue = amount && estimateReceiveValue(amount);
-  const displayValue = estimatedValue ? estimatedValue.toFixed(DISPLAY_DECIMALS) : '0.00';
+export const ReceiveSummary = ({ token, value }: ReceiveSummaryProps) => {
+  const displayValue = value ? value.toFixed(DISPLAY_DECIMALS) : '0.00';
 
   return (
     <TokenCard
