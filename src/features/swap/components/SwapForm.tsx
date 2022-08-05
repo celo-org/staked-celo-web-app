@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
@@ -23,12 +22,6 @@ interface SwapFormProps {
   receiveAmount: Token;
   details: Detail[];
 }
-
-const getHref = (mode: Mode) => {
-  if (mode === 'stake') return '/';
-  if (mode === 'unstake') return '/unstake';
-  return '';
-};
 
 export const SwapForm = ({
   amount,
@@ -76,11 +69,9 @@ export const SwapForm = ({
           mode={mode}
           error={error}
         />
-        <Link href={getHref(mode)}>
-          <a className="absolute inline-flex">
-            <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
-          </a>
-        </Link>
+        <div className="absolute inline-flex">
+          <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
+        </div>
         <ReceiveSummary value={receiveAmount} mode={mode} />
       </div>
       <div className="flex justify-center mt-[16px] mb-[24px]">
