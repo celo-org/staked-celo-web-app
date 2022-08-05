@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Detail, exchangeDetail, feeDetail, gasDetail } from 'src/features/swap/utils/details';
-import { CeloWei } from 'src/utils/tokens';
+import { Wei } from 'src/utils/tokens';
+import { Mode } from '../types';
 import { useStaking } from './useStaking';
+import { useUnstaking } from './useUnstaking';
 
 export const periodDetail: Detail = {
   title: 'Unstake period',
@@ -12,24 +14,22 @@ export const periodDetail: Detail = {
   },
 };
 
-export const useDetails = (amount: CeloWei) => {
+export const useDetails = (mode: Mode, amount: Wei) => {
   const { celoExchangeRate, estimateStakingGas } = useStaking();
+  const { stCeloExchangeRate, estimateUnstakingGas } = useUnstaking();
+
   const [details, setDetails] = useState<Detail[]>([]);
+  const exchangeRate = mode === 'stake' ? celoExchangeRate : stCeloExchangeRate;
+  const estimateGas = mode === 'stake' ? estimateStakingGas : estimateUnstakingGas;
 
   const loadDetails = useCallback(async () => {
     if (amount.isEqualTo(0)) {
       setDetails([]);
       return;
     }
-
-    const stakingGas = await estimateStakingGas(amount);
-    setDetails([
-      exchangeDetail(celoExchangeRate),
-      gasDetail(stakingGas),
-      feeDetail(),
-      periodDetail,
-    ]);
-  }, [amount, estimateStakingGas, celoExchangeRate]);
+    const stakingGas = await estimateGas(amount);
+    setDetails([exchangeDetail(exchangeRate), gasDetail(stakingGas), feeDetail(), periodDetail]);
+  }, [amount, estimateGas, exchangeRate]);
 
   useEffect(() => {
     void loadDetails();

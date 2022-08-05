@@ -5,9 +5,9 @@ import { Wei } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { TokenCard } from './TokenCard';
 
-interface ReceiveSummaryProps<SourceWei extends Wei> {
+interface ReceiveSummaryProps {
   mode: Mode;
-  value: SourceWei;
+  value: Wei;
 }
 
 const UnstakeInfo = () => {
@@ -54,10 +54,7 @@ const getInfoChild = (mode: Mode) => {
   return;
 };
 
-export const ReceiveSummary = <SourceWei extends Wei>({
-  mode,
-  value,
-}: ReceiveSummaryProps<SourceWei>) => {
+export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
   const displayValue = value.isEqualTo(0) ? '0.00' : value.display();
 
   return (

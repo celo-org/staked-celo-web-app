@@ -13,12 +13,12 @@ import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
 
-interface SwapFormProps<SourceWei extends Wei, TargetWei extends Wei> {
+interface SwapFormProps {
   onSubmit: () => void;
   onChange: (amount?: Wei) => void;
-  balance: SourceWei;
+  balance: Wei;
   mode: Mode;
-  receiveValue: TargetWei;
+  receiveValue: Wei;
   details: Detail[];
 }
 
@@ -28,14 +28,14 @@ const getHref = (mode: Mode) => {
   return '';
 };
 
-export const SwapForm = <SourceWei extends Wei, TargetWei extends Wei>({
+export const SwapForm = ({
   onSubmit,
   onChange,
   balance,
   mode,
   receiveValue,
   details,
-}: SwapFormProps<SourceWei, TargetWei>) => {
+}: SwapFormProps) => {
   const [amount, setAmount] = useState<Wei | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -91,12 +91,12 @@ export const SwapForm = <SourceWei extends Wei, TargetWei extends Wei>({
   );
 };
 
-interface FormInputProps<SourceWei extends Wei> {
+interface FormInputProps {
   onChange: (amount?: Wei) => void;
-  balance: SourceWei;
+  balance: Wei;
   mode: Mode;
   error?: string;
-  value: SourceWei | undefined;
+  value: Wei | undefined;
 }
 
 const getTitle = (error: string | undefined, mode: Mode) => {
@@ -106,13 +106,7 @@ const getTitle = (error: string | undefined, mode: Mode) => {
   return '';
 };
 
-const SwapFormInput = <SourceWei extends Wei>({
-  mode,
-  balance,
-  value,
-  onChange,
-  error,
-}: FormInputProps<SourceWei>) => {
+const SwapFormInput = ({ mode, balance, value, onChange, error }: FormInputProps) => {
   const onClickUseMax = () => (balance.display() !== value?.display() ? onChange(balance) : null);
   const onInputChange = (values: NumberFormatValues) =>
     onChange(values.value ? toWei(values.value) : undefined);

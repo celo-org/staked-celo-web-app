@@ -1,14 +1,11 @@
 import { Wei } from 'src/utils/tokens';
 
-interface BalanceToolsProps<SourceWei extends Wei> {
-  balance: SourceWei;
+interface BalanceToolsProps {
+  balance: Wei;
   onClickUseMax: () => void;
 }
 
-export const BalanceTools = <SourceWei extends Wei>({
-  balance,
-  onClickUseMax,
-}: BalanceToolsProps<SourceWei>) => {
+export const BalanceTools = ({ balance, onClickUseMax }: BalanceToolsProps) => {
   return (
     <div className="text-secondary text-[15px] leading-[24px] font-regular">
       <span>{balance.display()} balance</span>
