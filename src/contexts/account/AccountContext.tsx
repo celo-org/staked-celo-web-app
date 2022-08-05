@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { CeloWei, StCeloWei } from 'src/utils/tokens';
+import { Celo, StCelo } from 'src/utils/tokens';
 import { useAccountAddress } from './useAddress';
 import { useAccountBalances } from './useBalances';
 import {
@@ -12,8 +12,8 @@ import {
 interface AccountContext {
   isConnected: boolean;
   address: string | null;
-  celoBalance: CeloWei;
-  stCeloBalance: StCeloWei;
+  celoBalance: Celo;
+  stCeloBalance: StCelo;
   loadBalances: () => Promise<void>;
   pendingWithdrawals: PendingWithdrawal[];
   loadPendingWithdrawals: () => Promise<void>;
@@ -22,8 +22,8 @@ interface AccountContext {
 export const AccountContext = createContext<AccountContext>({
   isConnected: false,
   address: null,
-  celoBalance: new CeloWei(0),
-  stCeloBalance: new StCeloWei(0),
+  celoBalance: new Celo(0),
+  stCeloBalance: new StCelo(0),
   loadBalances: () => Promise.resolve(),
   pendingWithdrawals: [],
   loadPendingWithdrawals: () => Promise.resolve(),

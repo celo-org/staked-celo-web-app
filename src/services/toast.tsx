@@ -2,10 +2,10 @@ import Image from 'next/image';
 import { toast as reactToast } from 'react-toastify';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import Clock from 'src/images/icons/clock.svg';
-import { StCeloWei } from 'src/utils/tokens';
+import { StCelo } from 'src/utils/tokens';
 
 const toast = {
-  stakingSuccess: (amount: StCeloWei) =>
+  stakingSuccess: (amount: StCelo) =>
     reactToast.success(<span>You received {amount.format()} stCELO</span>, {
       icon: () => <TokenIcon token="stCELO" />,
     }),

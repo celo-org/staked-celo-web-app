@@ -1,12 +1,12 @@
 import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { useExchangeRates } from 'src/contexts/exchange/useExchangeRates';
 import { useTokenBalances } from 'src/contexts/exchange/useTokenBalances';
-import { CeloWei } from 'src/utils/tokens';
+import { Celo } from 'src/utils/tokens';
 
 interface ExchangeContext {
   celoExchangeRate: number;
   stCeloExchangeRate: number;
-  totalCeloBalance: CeloWei;
+  totalCeloBalance: Celo;
   loadExchangeRates: () => Promise<void>;
   loadTokenBalances: () => Promise<void>;
 }
@@ -14,7 +14,7 @@ interface ExchangeContext {
 export const ExchangeContext = createContext<ExchangeContext>({
   celoExchangeRate: 0,
   stCeloExchangeRate: 0,
-  totalCeloBalance: new CeloWei(0),
+  totalCeloBalance: new Celo(0),
   loadExchangeRates: () => Promise.resolve(),
   loadTokenBalances: () => Promise.resolve(),
 });

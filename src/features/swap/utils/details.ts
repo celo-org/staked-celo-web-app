@@ -1,5 +1,5 @@
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { Wei } from 'src/utils/tokens';
+import { Token } from 'src/utils/tokens';
 
 export interface Detail {
   title: string;
@@ -20,7 +20,7 @@ export const exchangeDetail = (exchangeRate?: number): Detail => ({
   },
 });
 
-export const gasDetail = (gasFee?: Wei): Detail => {
+export const gasDetail = (gasFee?: Token): Detail => {
   const value =
     gasFee && (gasFee.comparedTo('1000000000000000') === -1 ? '< 0.001' : `~${gasFee.format()}`);
   return {

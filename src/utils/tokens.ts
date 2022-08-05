@@ -1,44 +1,39 @@
 import BigNumber from 'bignumber.js';
 import { DISPLAY_DECIMALS, WEI_PER_UNIT } from 'src/config/consts';
-import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
+import { fromWei as web3FromToken, toWei as web3ToToken } from 'web3-utils';
 
 export type TokenType = 'CELO' | 'stCELO';
 
-export class Wei extends BigNumber {
+export class Token extends BigNumber {
   constructor(value: any) {
     super(value instanceof BigNumber ? value.toFixed() : value);
   }
 
   format(): string {
-    return new BigNumber(fromWei(this))
+    const value = web3FromToken(this.toFixed(0, BigNumber.ROUND_FLOOR));
+    return new BigNumber(value)
       .toFormat(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR)
       .replace(/0*$/, '')
       .replace(/\.$/, '');
   }
 }
 
-export class CeloWei extends Wei {
+export class Celo extends Token {
   private __tokenType: TokenType = 'CELO';
 }
 
-export class StCeloWei extends Wei {
+export class StCelo extends Token {
   private __tokenType: TokenType = 'stCELO';
 }
 
-function fromWei(value: BigNumber): string {
-  if (!value) return '0';
-  const flooredValue = value.toFixed(0, BigNumber.ROUND_FLOOR);
-  return web3FromWei(flooredValue);
-}
-
-export function toWei(value: string): Wei {
-  if (!value) return new Wei('0');
+export function toToken(value: string): Token {
+  if (!value) return new Token('0');
   const components = value.split('.');
   if (components.length === 1) {
-    return new Wei(web3ToWei(value));
+    return new Token(web3ToToken(value));
   } else if (components.length === 2) {
     const trimmedFraction = components[1].substring(0, WEI_PER_UNIT.length - 1);
-    return new Wei(web3ToWei(`${components[0]}.${trimmedFraction}`));
+    return new Token(web3ToToken(`${components[0]}.${trimmedFraction}`));
   } else {
     throw new Error(`Cannot convert ${value} to wei`);
   }

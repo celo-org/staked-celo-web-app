@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Detail, exchangeDetail, feeDetail, gasDetail } from 'src/features/swap/utils/details';
-import { Wei } from 'src/utils/tokens';
+import { Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 
 export const periodDetail: Detail = {
@@ -12,7 +12,7 @@ export const periodDetail: Detail = {
   },
 };
 
-export const useDetails = (mode: Mode, exchangeRate: number, estimateGas: () => Promise<Wei>) => {
+export const useDetails = (mode: Mode, exchangeRate: number, estimateGas: () => Promise<Token>) => {
   const [details, setDetails] = useState<Detail[]>([]);
 
   const loadDetails = useCallback(async () => {

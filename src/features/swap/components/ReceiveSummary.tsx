@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { Wei } from 'src/utils/tokens';
+import { Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { TokenCard } from './TokenCard';
 
 interface ReceiveSummaryProps {
   mode: Mode;
-  value: Wei;
+  value: Token;
 }
 
 const UnstakeInfo = () => {

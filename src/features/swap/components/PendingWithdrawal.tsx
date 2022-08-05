@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
-import { CeloWei } from 'src/utils/tokens';
+import { Celo } from 'src/utils/tokens';
 
 interface PendingWithdrawalProps {
-  amount: CeloWei;
+  amount: Celo;
   timestamp: string;
 }
 

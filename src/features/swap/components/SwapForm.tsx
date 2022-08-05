@@ -4,7 +4,7 @@ import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
-import { toWei, Wei } from 'src/utils/tokens';
+import { Token, toToken } from 'src/utils/tokens';
 import { useFormValidator } from '../hooks/useFormValidator';
 import { Mode } from '../types';
 import { Detail } from '../utils/details';
@@ -15,12 +15,12 @@ import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
 
 interface SwapFormProps {
-  amount: Wei | null;
+  amount: Token | null;
   onSubmit: () => void;
-  onChange: (amount?: Wei) => void;
-  balance: Wei;
+  onChange: (amount?: Token) => void;
+  balance: Token;
   mode: Mode;
-  receiveValue: Wei;
+  receiveValue: Token;
   details: Detail[];
 }
 
@@ -60,7 +60,7 @@ export const SwapForm = ({
     [onSubmit, reloadExchangeContext]
   );
 
-  const onInputChange = (value: Wei | undefined) => {
+  const onInputChange = (value: Token | undefined) => {
     setIsTouched(true);
     setError(validateForm(value));
     onChange(value);
@@ -92,11 +92,11 @@ export const SwapForm = ({
 };
 
 interface FormInputProps {
-  onChange: (amount?: Wei) => void;
-  balance: Wei;
+  onChange: (amount?: Token) => void;
+  balance: Token;
   mode: Mode;
   error?: string;
-  amount: Wei | null;
+  amount: Token | null;
 }
 
 const getTitle = (error: string | undefined, mode: Mode) => {
@@ -109,7 +109,7 @@ const getTitle = (error: string | undefined, mode: Mode) => {
 const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
   const onClickUseMax = () => (balance.format() !== amount?.format() ? onChange(balance) : null);
   const onInputChange = (values: NumberFormatValues) =>
-    onChange(values.value ? toWei(values.value) : undefined);
+    onChange(values.value ? toToken(values.value) : undefined);
 
   return (
     <TokenCard

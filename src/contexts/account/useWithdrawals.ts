@@ -2,10 +2,10 @@ import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import api from 'src/services/api';
-import { CeloWei } from 'src/utils/tokens';
+import { Celo } from 'src/utils/tokens';
 
 export interface PendingWithdrawal {
-  amount: CeloWei;
+  amount: Celo;
   timestamp: string;
 }
 
@@ -83,7 +83,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
     if (parseInt(timestamp) > referenceTimestamp + groupingTimeSpan) {
       referenceTimestamp = parseInt(timestamp);
       pendingWithdrawals.push({
-        amount: new CeloWei(amount),
+        amount: new Celo(amount),
         timestamp,
       });
       continue;
@@ -92,7 +92,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
     /* If next timestamp is within allowed time span merge it with the last pending withdrawal */
     const lastPendingWithdrawal = pendingWithdrawals[pendingWithdrawals.length - 1];
     lastPendingWithdrawal.timestamp = timestamp;
-    lastPendingWithdrawal.amount = new CeloWei(lastPendingWithdrawal.amount.plus(amount));
+    lastPendingWithdrawal.amount = new Celo(lastPendingWithdrawal.amount.plus(amount));
   }
 
   return pendingWithdrawals.reverse();

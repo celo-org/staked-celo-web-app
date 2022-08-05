@@ -1,7 +1,7 @@
-import { Wei } from 'src/utils/tokens';
+import { Token } from 'src/utils/tokens';
 
 interface BalanceToolsProps {
-  balance: Wei;
+  balance: Token;
   onClickUseMax: () => void;
 }
 

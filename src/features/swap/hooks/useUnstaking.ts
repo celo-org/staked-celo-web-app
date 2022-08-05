@@ -5,13 +5,13 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import api from 'src/services/api';
-import { CeloWei, StCeloWei } from 'src/utils/tokens';
+import { Celo, StCelo } from 'src/utils/tokens';
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
   const { managerContract, sendTransaction } = useBlockchain();
   const { stCeloExchangeRate } = useExchangeContext();
-  const [stCeloWeiAmount, setStCeloWeiAmount] = useState<StCeloWei | null>(null);
+  const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
 
   const createTxOptions = useCallback(
     () => ({
@@ -23,16 +23,16 @@ export function useUnstaking() {
   );
 
   const withdrawTx = useCallback(
-    () => stCeloWeiAmount && managerContract.methods.withdraw(stCeloWeiAmount.toFixed()),
-    [managerContract, stCeloWeiAmount]
+    () => stCeloAmount && managerContract.methods.withdraw(stCeloAmount.toFixed()),
+    [managerContract, stCeloAmount]
   );
 
   const unstake = useCallback(async () => {
-    if (!address || !stCeloWeiAmount || stCeloWeiAmount.isEqualTo(0)) return;
+    if (!address || !stCeloAmount || stCeloAmount.isEqualTo(0)) return;
     await sendTransaction(withdrawTx(), createTxOptions());
     await api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
-    setStCeloWeiAmount(null);
+    setStCeloAmount(null);
   }, [
     withdrawTx,
     createTxOptions,
@@ -40,30 +40,24 @@ export function useUnstaking() {
     loadPendingWithdrawals,
     address,
     sendTransaction,
-    stCeloWeiAmount,
+    stCeloAmount,
   ]);
 
-  const estimateUnstakingGas = useCallback(async (): Promise<StCeloWei> => {
-    if (
-      !stCeloWeiAmount ||
-      stCeloWeiAmount.isEqualTo(0) ||
-      stCeloWeiAmount.isGreaterThan(stCeloBalance)
-    )
-      return new StCeloWei(0);
+  const estimateUnstakingGas = useCallback(async (): Promise<StCelo> => {
+    if (!stCeloAmount || stCeloAmount.isEqualTo(0) || stCeloAmount.isGreaterThan(stCeloBalance))
+      return new StCelo(0);
     const gasFee = new BigNumber(await withdrawTx().estimateGas(createTxOptions()));
-    return new StCeloWei(gasFee.multipliedBy(GAS_PRICE));
-  }, [withdrawTx, createTxOptions, stCeloBalance, stCeloWeiAmount]);
+    return new StCelo(gasFee.multipliedBy(GAS_PRICE));
+  }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount]);
 
-  const receivedCeloWei = new CeloWei(
-    stCeloWeiAmount ? stCeloWeiAmount.multipliedBy(stCeloExchangeRate) : 0
-  );
+  const receivedCelo = new Celo(stCeloAmount ? stCeloAmount.multipliedBy(stCeloExchangeRate) : 0);
 
   return {
-    stCeloWeiAmount,
-    setStCeloWeiAmount,
+    stCeloAmount,
+    setStCeloAmount,
     unstake,
     stCeloExchangeRate,
     estimateUnstakingGas,
-    receivedCeloWei,
+    receivedCelo,
   };
 }
