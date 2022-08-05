@@ -15,8 +15,8 @@ export function useSwap(mode: Mode) {
   const amount = mode === 'stake' ? celoWeiAmount : stCeloWeiAmount;
   const setAmount =
     mode === 'stake'
-      ? (amount: Wei) => setCeloWeiAmount(new CeloWei(amount))
-      : (amount: Wei) => setStCeloWeiAmount(new StCeloWei(amount));
+      ? (amount?: Wei) => setCeloWeiAmount(!amount ? null : new CeloWei(amount))
+      : (amount?: Wei) => setStCeloWeiAmount(!amount ? null : new StCeloWei(amount));
 
   return { amount, setAmount, balance, swap, estimateReceiveValue, pendingWithdrawals };
 }

@@ -14,7 +14,7 @@ export const periodDetail: Detail = {
   },
 };
 
-export const useDetails = (mode: Mode, amount: Wei) => {
+export const useDetails = (mode: Mode, amount: Wei | null) => {
   const { celoExchangeRate, estimateStakingGas } = useStaking();
   const { stCeloExchangeRate, estimateUnstakingGas } = useUnstaking();
 
@@ -23,7 +23,7 @@ export const useDetails = (mode: Mode, amount: Wei) => {
   const estimateGas = mode === 'stake' ? estimateStakingGas : estimateUnstakingGas;
 
   const loadDetails = useCallback(async () => {
-    if (amount.isEqualTo(0)) {
+    if (!amount || amount.isEqualTo(0)) {
       setDetails([]);
       return;
     }

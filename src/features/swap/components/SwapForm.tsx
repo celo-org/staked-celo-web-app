@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { toWei, Wei } from 'src/utils/tokens';
 import { useFormValidator } from '../hooks/useFormValidator';
@@ -14,7 +15,7 @@ import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
 
 interface SwapFormProps {
-  amount: Wei;
+  amount: Wei | null;
   onSubmit: () => void;
   onChange: (amount?: Wei) => void;
   balance: Wei;
@@ -70,7 +71,7 @@ export const SwapForm = ({
       <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
         <SwapFormInput
           balance={balance}
-          value={amount}
+          amount={amount}
           onChange={onInputChange}
           mode={mode}
           error={error}
@@ -95,7 +96,7 @@ interface FormInputProps {
   balance: Wei;
   mode: Mode;
   error?: string;
-  value: Wei | undefined;
+  amount: Wei | null;
 }
 
 const getTitle = (error: string | undefined, mode: Mode) => {
@@ -105,8 +106,8 @@ const getTitle = (error: string | undefined, mode: Mode) => {
   return '';
 };
 
-const SwapFormInput = ({ mode, balance, value, onChange, error }: FormInputProps) => {
-  const onClickUseMax = () => (balance.display() !== value?.display() ? onChange(balance) : null);
+const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
+  const onClickUseMax = () => (balance.display() !== amount?.display() ? onChange(balance) : null);
   const onInputChange = (values: NumberFormatValues) =>
     onChange(values.value ? toWei(values.value) : undefined);
 
@@ -119,11 +120,13 @@ const SwapFormInput = ({ mode, balance, value, onChange, error }: FormInputProps
         <NumberFormat
           className={`focus:outline-none bg-transparent placeholder-primary ${
             error ? 'text-error' : ''
-          } ${value === undefined ? 'text-secondary' : ''}`}
+          } ${amount === undefined ? 'text-secondary' : ''}`}
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
-          value={value ? parseFloat(value.display()) : undefined}
+          value={amount ? amount.display() : ''}
+          decimalScale={DISPLAY_DECIMALS}
+          isNumericString
           allowNegative={false}
         />
       }

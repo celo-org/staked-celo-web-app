@@ -1,8 +1,6 @@
-import { useCallback } from 'react';
 import { SwapForm } from 'src/features/swap/components/SwapForm';
 import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
-import { Wei } from 'src/utils/tokens';
 import { useDetails } from '../hooks/useDetails';
 import { useSwap } from '../hooks/useSwap';
 import { Mode } from '../types';
@@ -17,19 +15,6 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
   const { amount, setAmount, swap, balance, estimateReceiveValue, pendingWithdrawals } =
     useSwap(mode);
   const { details } = useDetails(mode, amount);
-
-  const onSubmit = useCallback(async () => {
-    if (amount.isEqualTo(0)) return;
-    await swap(amount);
-  }, [swap, amount]);
-
-  const onChange = useCallback(
-    (weiAmount?: Wei) => {
-      setAmount(weiAmount || new Wei(0));
-    },
-    [setAmount]
-  );
-
   const receiveValue = estimateReceiveValue(amount);
 
   return (
@@ -38,8 +23,8 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
       <SwapForm
         amount={amount}
         mode={mode}
-        onSubmit={onSubmit}
-        onChange={onChange}
+        onSubmit={swap}
+        onChange={setAmount}
         balance={balance}
         receiveValue={receiveValue}
         details={details}

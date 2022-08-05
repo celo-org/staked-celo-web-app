@@ -11,7 +11,7 @@ export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
   const { managerContract, sendTransaction } = useBlockchain();
   const { stCeloExchangeRate } = useExchangeContext();
-  const [stCeloWeiAmount, setStCeloWeiAmount] = useState<StCeloWei>(new StCeloWei(0));
+  const [stCeloWeiAmount, setStCeloWeiAmount] = useState<StCeloWei | null>(null);
 
   const createTxOptions = useCallback(
     () => ({
@@ -27,15 +27,21 @@ export function useUnstaking() {
     [managerContract]
   );
 
-  const unstake = useCallback(
-    async (amount: Wei) => {
-      if (!address) return;
-      await sendTransaction(withdrawTx(new StCeloWei(amount)), createTxOptions());
-      await api.withdraw(address);
-      await Promise.all([loadBalances(), loadPendingWithdrawals()]);
-    },
-    [withdrawTx, createTxOptions, loadBalances, loadPendingWithdrawals, address, sendTransaction]
-  );
+  const unstake = useCallback(async () => {
+    if (!address || !stCeloWeiAmount || stCeloWeiAmount.isEqualTo(0)) return;
+    await sendTransaction(withdrawTx(stCeloWeiAmount), createTxOptions());
+    await api.withdraw(address);
+    await Promise.all([loadBalances(), loadPendingWithdrawals()]);
+    setStCeloWeiAmount(null);
+  }, [
+    withdrawTx,
+    createTxOptions,
+    loadBalances,
+    loadPendingWithdrawals,
+    address,
+    sendTransaction,
+    stCeloWeiAmount,
+  ]);
 
   const estimateUnstakingGas = useCallback(
     async (amount: Wei): Promise<StCeloWei> => {
@@ -49,7 +55,7 @@ export function useUnstaking() {
   );
 
   const estimateWithdrawalValue = useCallback(
-    (amount: Wei) => new CeloWei(amount.multipliedBy(stCeloExchangeRate)),
+    (amount: Wei | null) => new CeloWei(amount ? amount.multipliedBy(stCeloExchangeRate) : 0),
     [stCeloExchangeRate]
   );
 

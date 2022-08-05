@@ -8,10 +8,10 @@ import toast from 'src/services/toast';
 import { CeloWei, StCeloWei, Wei } from 'src/utils/tokens';
 
 export function useStaking() {
-  const [celoWeiAmount, setCeloWeiAmount] = useState<CeloWei>(new CeloWei(0));
   const { address, loadBalances, celoBalance } = useAccountContext();
   const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
   const { celoExchangeRate } = useExchangeContext();
+  const [celoWeiAmount, setCeloWeiAmount] = useState<CeloWei | null>(null);
 
   const createTxOptions = useCallback(
     (amount: CeloWei) => ({
@@ -25,21 +25,28 @@ export function useStaking() {
 
   const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
-  const stake = useCallback(
-    async (amount: Wei) => {
-      const preDepositStWeiBalance = new StCeloWei(
-        await stCeloContract.methods.balanceOf(address).call()
-      );
-      await sendTransaction(depositTx(), createTxOptions(new CeloWei(amount)));
-      await loadBalances();
-      const postDepositStWeiBalance = new StCeloWei(
-        await stCeloContract.methods.balanceOf(address).call()
-      );
-      const receivedStWei = new StCeloWei(postDepositStWeiBalance.minus(preDepositStWeiBalance));
-      toast.stakingSuccess(receivedStWei);
-    },
-    [createTxOptions, depositTx, loadBalances, stCeloContract, address, sendTransaction]
-  );
+  const stake = useCallback(async () => {
+    if (!celoWeiAmount || celoWeiAmount.isEqualTo(0)) return;
+    const preDepositStWeiBalance = new StCeloWei(
+      await stCeloContract.methods.balanceOf(address).call()
+    );
+    await sendTransaction(depositTx(), createTxOptions(celoWeiAmount));
+    await loadBalances();
+    const postDepositStWeiBalance = new StCeloWei(
+      await stCeloContract.methods.balanceOf(address).call()
+    );
+    const receivedStWei = new StCeloWei(postDepositStWeiBalance.minus(preDepositStWeiBalance));
+    toast.stakingSuccess(receivedStWei);
+    setCeloWeiAmount(null);
+  }, [
+    createTxOptions,
+    depositTx,
+    loadBalances,
+    stCeloContract,
+    address,
+    sendTransaction,
+    celoWeiAmount,
+  ]);
 
   const estimateStakingGas = useCallback(
     async (amount: Wei): Promise<CeloWei> => {
@@ -53,7 +60,7 @@ export function useStaking() {
   );
 
   const estimateDepositValue = useCallback(
-    (amount: Wei) => new StCeloWei(amount.multipliedBy(celoExchangeRate)),
+    (amount: Wei | null) => new StCeloWei(amount ? amount.multipliedBy(celoExchangeRate) : 0),
     [celoExchangeRate]
   );
 
