@@ -53,7 +53,6 @@ export function useUnstaking() {
     stCeloAmount,
     setStCeloAmount,
     unstake,
-    stCeloExchangeRate,
     unstakingGasFee,
     receivedCelo,
   };

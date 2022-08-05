@@ -58,7 +58,6 @@ export function useStaking() {
     celoAmount,
     setCeloAmount,
     stake,
-    celoExchangeRate,
     stakingGasFee,
     receivedStCelo,
   };
