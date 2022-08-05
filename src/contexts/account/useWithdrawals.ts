@@ -92,7 +92,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
     /* If next timestamp is within allowed time span merge it with the last pending withdrawal */
     const lastPendingWithdrawal = pendingWithdrawals[pendingWithdrawals.length - 1];
     lastPendingWithdrawal.timestamp = timestamp;
-    lastPendingWithdrawal.amount = new CeloWei(lastPendingWithdrawal.amount.plus(amount).toFixed());
+    lastPendingWithdrawal.amount = new CeloWei(lastPendingWithdrawal.amount.plus(amount));
   }
 
   return pendingWithdrawals.reverse();

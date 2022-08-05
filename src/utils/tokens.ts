@@ -4,19 +4,25 @@ import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
 
 export type Token = 'CELO' | 'stCELO';
 
-export class Celo extends BigNumber {
+export class Unit extends BigNumber {
+  constructor(value: any) {
+    super(value instanceof BigNumber ? value.toFixed() : value);
+  }
+}
+
+export class Celo extends Unit {
   private __tokenType = 'Celo';
 }
 
-export class CeloWei extends BigNumber {
+export class CeloWei extends Unit {
   private __tokenType = 'CeloWei';
 }
 
-export class StCelo extends BigNumber {
+export class StCelo extends Unit {
   private __tokenType = 'StCelo';
 }
 
-export class StCeloWei extends BigNumber {
+export class StCeloWei extends Unit {
   private __tokenType = 'StCeloWei';
 }
 

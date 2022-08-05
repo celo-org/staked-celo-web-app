@@ -12,7 +12,7 @@ const Faq = () => {
   const faqItems = faq.getFaqItems();
   return (
     <CenteredLayout classes="px-base">
-      <div className="text-3xl font-light leading-normal mt-6 mb-12">
+      <div className="font-medium text-[32px] leading-[40px] mt-[48px] mb-[32px]">
         Frequently asked questions
       </div>
       {faqItems.map(({ question, answer }, index) => (
@@ -29,23 +29,24 @@ interface FaqItemProps {
 
 const FaqItem = ({ question, answer }: FaqItemProps) => {
   const [opened, setOpened] = useState(false);
-  const answerStateClasses = opened ? 'mt-4' : 'max-h-0';
+  const answerStateClasses = opened ? 'my-[16px]' : 'max-h-0';
 
   return (
-    <div className="mb-12">
-      <div className="flex flex-row">
-        <div className="flex-grow mr-2 font-light">{question}</div>
+    <div className="mb-[24px]">
+      <div className="flex flex-row cursor-pointer" onClick={() => setOpened(!opened)}>
+        <div className="flex-grow mr-[16px] font-normal">{question}</div>
         <ThemedIcon
-          classes={`transition cursor-pointer ${opened ? 'rotate-180' : ''}`}
+          classes={`transition ${opened ? 'rotate-180' : ''}`}
           name="caret"
           alt="Toggle faq item"
           width={24}
           height={24}
-          onClick={() => setOpened(!opened)}
         />
       </div>
-      <div className={`rounded-md font-light overflow-hidden bg-secondary ${answerStateClasses}`}>
-        <div className="p-4">{answer}</div>
+      <div
+        className={`rounded-[8px] font-light overflow-hidden bg-secondary ${answerStateClasses}`}
+      >
+        <div className="p-[16px]" dangerouslySetInnerHTML={{ __html: answer }} />
       </div>
     </div>
   );

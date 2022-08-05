@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { TokenCard } from 'src/features/swap/TokenCard';
 import { Token } from 'src/utils/tokens';
+import { TokenCard } from './TokenCard';
 
 interface ReceiveSummaryProps {
-  amount: number | undefined;
   token: Token;
-  estimateReceiveValue: (num: number) => number;
-  isValid: boolean;
+  value: number;
 }
 
 const UnstakeInfo = () => {
@@ -56,14 +54,8 @@ const getInfoChild = (token: Token) => {
   return;
 };
 
-export const ReceiveSummary = ({
-  amount,
-  token,
-  estimateReceiveValue,
-  isValid,
-}: ReceiveSummaryProps) => {
-  const estimatedValue = amount && isValid && estimateReceiveValue(amount);
-  const displayValue = estimatedValue ? estimatedValue.toFixed(DISPLAY_DECIMALS) : '0.00';
+export const ReceiveSummary = ({ token, value }: ReceiveSummaryProps) => {
+  const displayValue = value ? value.toFixed(DISPLAY_DECIMALS) : '0.00';
 
   return (
     <TokenCard
