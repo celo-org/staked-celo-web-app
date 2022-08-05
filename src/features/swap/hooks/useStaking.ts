@@ -49,14 +49,14 @@ export function useStaking() {
   ]);
 
   const estimateStakingGas = useCallback(async (): Promise<CeloWei> => {
-    if (!celoWeiAmount || celoWeiAmount.isGreaterThan(celoBalance)) return new CeloWei(0);
+    if (!celoWeiAmount || celoWeiAmount.isEqualTo(0) || celoWeiAmount.isGreaterThan(celoBalance))
+      return new CeloWei(0);
     const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions()));
     return new CeloWei(gasFee.multipliedBy(GAS_PRICE));
   }, [createTxOptions, depositTx, celoBalance, celoWeiAmount]);
 
-  const estimateDepositValue = useCallback(
-    () => new StCeloWei(celoWeiAmount ? celoWeiAmount.multipliedBy(celoExchangeRate) : 0),
-    [celoExchangeRate, celoWeiAmount]
+  const receivedStCeloWei = new StCeloWei(
+    celoWeiAmount ? celoWeiAmount.multipliedBy(celoExchangeRate) : 0
   );
 
   return {
@@ -65,6 +65,6 @@ export function useStaking() {
     stake,
     celoExchangeRate,
     estimateStakingGas,
-    estimateDepositValue,
+    receivedStCeloWei,
   };
 }

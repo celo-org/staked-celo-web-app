@@ -44,14 +44,18 @@ export function useUnstaking() {
   ]);
 
   const estimateUnstakingGas = useCallback(async (): Promise<StCeloWei> => {
-    if (!stCeloWeiAmount || stCeloWeiAmount.isGreaterThan(stCeloBalance)) return new StCeloWei(0);
+    if (
+      !stCeloWeiAmount ||
+      stCeloWeiAmount.isEqualTo(0) ||
+      stCeloWeiAmount.isGreaterThan(stCeloBalance)
+    )
+      return new StCeloWei(0);
     const gasFee = new BigNumber(await withdrawTx().estimateGas(createTxOptions()));
     return new StCeloWei(gasFee.multipliedBy(GAS_PRICE));
   }, [withdrawTx, createTxOptions, stCeloBalance, stCeloWeiAmount]);
 
-  const estimateWithdrawalValue = useCallback(
-    () => new CeloWei(stCeloWeiAmount ? stCeloWeiAmount.multipliedBy(stCeloExchangeRate) : 0),
-    [stCeloExchangeRate, stCeloWeiAmount]
+  const receivedCeloWei = new CeloWei(
+    stCeloWeiAmount ? stCeloWeiAmount.multipliedBy(stCeloExchangeRate) : 0
   );
 
   return {
@@ -60,6 +64,6 @@ export function useUnstaking() {
     unstake,
     stCeloExchangeRate,
     estimateUnstakingGas,
-    estimateWithdrawalValue,
+    receivedCeloWei,
   };
 }

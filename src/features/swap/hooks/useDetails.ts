@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Detail, exchangeDetail, feeDetail, gasDetail } from 'src/features/swap/utils/details';
+import { Wei } from 'src/utils/tokens';
 import { Mode } from '../types';
-import { useStaking } from './useStaking';
-import { useUnstaking } from './useUnstaking';
 
 export const periodDetail: Detail = {
   title: 'Unstake period',
@@ -13,13 +12,8 @@ export const periodDetail: Detail = {
   },
 };
 
-export const useDetails = (mode: Mode) => {
-  const { celoExchangeRate, estimateStakingGas } = useStaking();
-  const { stCeloExchangeRate, estimateUnstakingGas } = useUnstaking();
-
+export const useDetails = (mode: Mode, exchangeRate: number, estimateGas: () => Promise<Wei>) => {
   const [details, setDetails] = useState<Detail[]>([]);
-  const exchangeRate = mode === 'stake' ? celoExchangeRate : stCeloExchangeRate;
-  const estimateGas = mode === 'stake' ? estimateStakingGas : estimateUnstakingGas;
 
   const loadDetails = useCallback(async () => {
     const stakingGas = await estimateGas();
