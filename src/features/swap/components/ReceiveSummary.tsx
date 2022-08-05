@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { Token, Wei } from 'src/utils/tokens';
+import { Wei } from 'src/utils/tokens';
+import { Mode } from '../types';
 import { TokenCard } from './TokenCard';
 
 interface ReceiveSummaryProps<SourceWei extends Wei> {
-  token: Token;
+  mode: Mode;
   value: SourceWei;
 }
 
@@ -32,14 +33,14 @@ const UnstakeInfo = () => {
   );
 };
 
-const getInfoChild = (token: Token) => {
-  if (token === 'stCELO') {
+const getInfoChild = (mode: Mode) => {
+  if (mode === 'stake') {
     return (
       <span className="text-primary-info font-medium text-[15px] leading-[24px]">
         4.56% projected APY
       </span>
     );
-  } else if (token === 'CELO') {
+  } else if (mode === 'unstake') {
     return (
       <div className="flex">
         <span className="text-secondary-info font-medium text-[15px] leading-[24px]">
@@ -54,7 +55,7 @@ const getInfoChild = (token: Token) => {
 };
 
 export const ReceiveSummary = <SourceWei extends Wei>({
-  token,
+  mode,
   value,
 }: ReceiveSummaryProps<SourceWei>) => {
   const displayValue = value.isEqualTo(0) ? '0.00' : value.display();
@@ -62,10 +63,10 @@ export const ReceiveSummary = <SourceWei extends Wei>({
   return (
     <TokenCard
       classes="pt-[32px]"
-      token={token}
+      token={mode === 'stake' ? 'stCELO' : 'CELO'}
       titleChild="Receive"
       inputChild={displayValue}
-      infoChild={getInfoChild(token)}
+      infoChild={getInfoChild(mode)}
     />
   );
 };

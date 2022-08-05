@@ -3,8 +3,9 @@ import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
-import { Token, toWei, Wei } from 'src/utils/tokens';
+import { toWei, Wei } from 'src/utils/tokens';
 import { useFormValidator } from '../hooks/useFormValidator';
+import { Mode } from '../types';
 import { Detail } from '../utils/details';
 import { BalanceTools } from './BalanceTools';
 import { Details } from './Details';
@@ -16,15 +17,14 @@ interface SwapFormProps<SourceWei extends Wei, TargetWei extends Wei> {
   onSubmit: () => void;
   onChange: (amount?: Wei) => void;
   balance: SourceWei;
-  fromToken: Token;
-  toToken: Token;
+  mode: Mode;
   receiveValue: TargetWei;
   details: Detail[];
 }
 
-const getHref = (toToken: Token) => {
-  if (toToken === 'CELO') return '/';
-  if (toToken === 'stCELO') return '/unstake';
+const getHref = (mode: Mode) => {
+  if (mode === 'stake') return '/';
+  if (mode === 'unstake') return '/unstake';
   return '';
 };
 
@@ -32,8 +32,7 @@ export const SwapForm = <SourceWei extends Wei, TargetWei extends Wei>({
   onSubmit,
   onChange,
   balance,
-  fromToken,
-  toToken,
+  mode,
   receiveValue,
   details,
 }: SwapFormProps<SourceWei, TargetWei>) => {
@@ -41,7 +40,7 @@ export const SwapForm = <SourceWei extends Wei, TargetWei extends Wei>({
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const validateForm = useFormValidator(balance, fromToken);
+  const validateForm = useFormValidator(balance, mode);
   const { reloadExchangeContext } = useExchangeContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
@@ -74,18 +73,18 @@ export const SwapForm = <SourceWei extends Wei, TargetWei extends Wei>({
           balance={balance}
           value={amount}
           onChange={onInputChange}
-          token={fromToken}
+          mode={mode}
           error={error}
         />
-        <Link href={getHref(toToken)}>
+        <Link href={getHref(mode)}>
           <a className="absolute inline-flex">
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </a>
         </Link>
-        <ReceiveSummary value={receiveValue} token={toToken} />
+        <ReceiveSummary value={receiveValue} mode={mode} />
       </div>
       <div className="flex justify-center mt-[16px] mb-[24px]">
-        <SubmitButton toToken={toToken} disabled={disabledSubmit} pending={isLoading} />
+        <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
       </div>
       {!!amount && !error && <Details details={details} />}
     </form>
@@ -95,20 +94,20 @@ export const SwapForm = <SourceWei extends Wei, TargetWei extends Wei>({
 interface FormInputProps<SourceWei extends Wei> {
   onChange: (amount?: Wei) => void;
   balance: SourceWei;
-  token: Token;
+  mode: Mode;
   error?: string;
   value: SourceWei | undefined;
 }
 
-const getTitle = (error: string | undefined, fromToken: Token) => {
+const getTitle = (error: string | undefined, mode: Mode) => {
   if (error) return <span className="text-error">{error}</span>;
-  if (fromToken === 'stCELO') return 'Unstake';
-  if (fromToken === 'CELO') return 'Stake';
+  if (mode === 'stake') return 'Stake';
+  if (mode === 'unstake') return 'Unstake';
   return '';
 };
 
 const SwapFormInput = <SourceWei extends Wei>({
-  token,
+  mode,
   balance,
   value,
   onChange,
@@ -121,8 +120,8 @@ const SwapFormInput = <SourceWei extends Wei>({
   return (
     <TokenCard
       classes="bg-tertiary rounded-t-[16px] pb-[32px]"
-      token={token}
-      titleChild={getTitle(error, token)}
+      token={mode === 'stake' ? 'CELO' : 'stCELO'}
+      titleChild={getTitle(error, mode)}
       inputChild={
         <NumberFormat
           className={`focus:outline-none bg-transparent placeholder-primary ${

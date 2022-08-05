@@ -33,8 +33,7 @@ export const Stake = () => {
         onSubmit={onSubmit}
         onChange={onChange}
         balance={celoBalance}
-        fromToken="CELO"
-        toToken="stCELO"
+        mode="stake"
         receiveValue={receiveValue}
         details={details}
       />

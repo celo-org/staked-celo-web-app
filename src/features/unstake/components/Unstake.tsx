@@ -34,8 +34,7 @@ export const Unstake = () => {
         onSubmit={onSubmit}
         onChange={onChange}
         balance={stCeloBalance}
-        fromToken="stCELO"
-        toToken="CELO"
+        mode="unstake"
         receiveValue={receiveValue}
         details={details}
       />
