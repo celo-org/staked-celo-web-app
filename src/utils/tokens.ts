@@ -10,7 +10,10 @@ export class Wei extends BigNumber {
   }
 
   display(): string {
-    return new BigNumber(fromWei(this)).toFixed(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR);
+    return new BigNumber(fromWei(this))
+      .toFormat(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR)
+      .replace(/0*$/, '')
+      .replace(/\.$/, '');
   }
 }
 
