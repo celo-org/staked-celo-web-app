@@ -5,7 +5,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import api from 'src/services/api';
-import { CeloWei, StCeloWei, Wei } from 'src/utils/tokens';
+import { CeloWei, StCeloWei } from 'src/utils/tokens';
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
@@ -23,13 +23,13 @@ export function useUnstaking() {
   );
 
   const withdrawTx = useCallback(
-    (amount: StCeloWei) => managerContract.methods.withdraw(amount.toFixed()),
-    [managerContract]
+    () => stCeloWeiAmount && managerContract.methods.withdraw(stCeloWeiAmount.toFixed()),
+    [managerContract, stCeloWeiAmount]
   );
 
   const unstake = useCallback(async () => {
     if (!address || !stCeloWeiAmount || stCeloWeiAmount.isEqualTo(0)) return;
-    await sendTransaction(withdrawTx(stCeloWeiAmount), createTxOptions());
+    await sendTransaction(withdrawTx(), createTxOptions());
     await api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
     setStCeloWeiAmount(null);
@@ -43,20 +43,15 @@ export function useUnstaking() {
     stCeloWeiAmount,
   ]);
 
-  const estimateUnstakingGas = useCallback(
-    async (amount: Wei): Promise<StCeloWei> => {
-      if (amount.isGreaterThan(stCeloBalance)) return new StCeloWei(0);
-      const gasFee = new BigNumber(
-        await withdrawTx(new StCeloWei(amount)).estimateGas(createTxOptions())
-      );
-      return new StCeloWei(gasFee.multipliedBy(GAS_PRICE));
-    },
-    [withdrawTx, createTxOptions, stCeloBalance]
-  );
+  const estimateUnstakingGas = useCallback(async (): Promise<StCeloWei> => {
+    if (!stCeloWeiAmount || stCeloWeiAmount.isGreaterThan(stCeloBalance)) return new StCeloWei(0);
+    const gasFee = new BigNumber(await withdrawTx().estimateGas(createTxOptions()));
+    return new StCeloWei(gasFee.multipliedBy(GAS_PRICE));
+  }, [withdrawTx, createTxOptions, stCeloBalance, stCeloWeiAmount]);
 
   const estimateWithdrawalValue = useCallback(
-    (amount: Wei | null) => new CeloWei(amount ? amount.multipliedBy(stCeloExchangeRate) : 0),
-    [stCeloExchangeRate]
+    () => new CeloWei(stCeloWeiAmount ? stCeloWeiAmount.multipliedBy(stCeloExchangeRate) : 0),
+    [stCeloExchangeRate, stCeloWeiAmount]
   );
 
   return {

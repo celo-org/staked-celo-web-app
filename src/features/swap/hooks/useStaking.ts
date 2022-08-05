@@ -5,7 +5,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import toast from 'src/services/toast';
-import { CeloWei, StCeloWei, Wei } from 'src/utils/tokens';
+import { CeloWei, StCeloWei } from 'src/utils/tokens';
 
 export function useStaking() {
   const { address, loadBalances, celoBalance } = useAccountContext();
@@ -14,13 +14,13 @@ export function useStaking() {
   const [celoWeiAmount, setCeloWeiAmount] = useState<CeloWei | null>(null);
 
   const createTxOptions = useCallback(
-    (amount: CeloWei) => ({
+    () => ({
       from: address!,
-      value: amount.toFixed(),
+      value: celoWeiAmount?.toFixed(),
       gas: GAS_LIMIT,
       gasPrice: GAS_PRICE,
     }),
-    [address]
+    [address, celoWeiAmount]
   );
 
   const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
@@ -30,7 +30,7 @@ export function useStaking() {
     const preDepositStWeiBalance = new StCeloWei(
       await stCeloContract.methods.balanceOf(address).call()
     );
-    await sendTransaction(depositTx(), createTxOptions(celoWeiAmount));
+    await sendTransaction(depositTx(), createTxOptions());
     await loadBalances();
     const postDepositStWeiBalance = new StCeloWei(
       await stCeloContract.methods.balanceOf(address).call()
@@ -48,20 +48,15 @@ export function useStaking() {
     celoWeiAmount,
   ]);
 
-  const estimateStakingGas = useCallback(
-    async (amount: Wei): Promise<CeloWei> => {
-      if (amount.isGreaterThan(celoBalance)) return new CeloWei(0);
-      const gasFee = new BigNumber(
-        await depositTx().estimateGas(createTxOptions(new CeloWei(amount)))
-      );
-      return new CeloWei(gasFee.multipliedBy(GAS_PRICE));
-    },
-    [createTxOptions, depositTx, celoBalance]
-  );
+  const estimateStakingGas = useCallback(async (): Promise<CeloWei> => {
+    if (!celoWeiAmount || celoWeiAmount.isGreaterThan(celoBalance)) return new CeloWei(0);
+    const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions()));
+    return new CeloWei(gasFee.multipliedBy(GAS_PRICE));
+  }, [createTxOptions, depositTx, celoBalance, celoWeiAmount]);
 
   const estimateDepositValue = useCallback(
-    (amount: Wei | null) => new StCeloWei(amount ? amount.multipliedBy(celoExchangeRate) : 0),
-    [celoExchangeRate]
+    () => new StCeloWei(celoWeiAmount ? celoWeiAmount.multipliedBy(celoExchangeRate) : 0),
+    [celoExchangeRate, celoWeiAmount]
   );
 
   return {

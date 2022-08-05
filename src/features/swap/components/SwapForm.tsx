@@ -86,7 +86,7 @@ export const SwapForm = ({
       <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
       </div>
-      {!!amount && !error && <Details details={details} />}
+      {!error && amount?.isGreaterThan(0) && <Details details={details} />}
     </form>
   );
 };

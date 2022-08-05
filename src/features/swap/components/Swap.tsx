@@ -14,8 +14,8 @@ interface SwapProps {
 export const Swap = ({ mode, onModeChange }: SwapProps) => {
   const { amount, setAmount, swap, balance, estimateReceiveValue, pendingWithdrawals } =
     useSwap(mode);
-  const { details } = useDetails(mode, amount);
-  const receiveValue = estimateReceiveValue(amount);
+  const { details } = useDetails(mode);
+  const receiveValue = estimateReceiveValue();
 
   return (
     <CenteredLayout classes="px-[24px]">
