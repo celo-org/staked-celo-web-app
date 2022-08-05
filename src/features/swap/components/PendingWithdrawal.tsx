@@ -14,7 +14,7 @@ export const PendingWithdrawal = ({ amount, timestamp }: PendingWithdrawalProps)
     <div className="flex flex-row mt-4 items-center">
       <TokenIcon token="CELO" />
       <div className="flex flex-col ml-3">
-        <span className="text-2xl">{amount.display()} CELO</span>
+        <span className="text-2xl">{amount.format()} CELO</span>
         <span className="text-secondary">
           {date.isBefore(dayjs())
             ? 'Claiming...'

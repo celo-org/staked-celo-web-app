@@ -6,7 +6,7 @@ import { StCeloWei } from 'src/utils/tokens';
 
 const toast = {
   stakingSuccess: (amount: StCeloWei) =>
-    reactToast.success(<span>You received {amount.display()} stCELO</span>, {
+    reactToast.success(<span>You received {amount.format()} stCELO</span>, {
       icon: () => <TokenIcon token="stCELO" />,
     }),
   unstakingStartedSuccess: () =>

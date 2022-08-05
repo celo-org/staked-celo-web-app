@@ -26,7 +26,7 @@ export const Footer = () => {
     <footer className={`w-screen ${footerFlexClasses} p-base md:h-[168px] bg-secondary`}>
       <div className="flex flex-col md:order-first mb-[32px] md:mb-0 md:w-1/5">
         <Label classes="mb-[4px]">Total CELO staked</Label>
-        <span className="text-[27px] leading-[40px]">{totalCeloBalance.display()}</span>
+        <span className="text-[27px] leading-[40px]">{totalCeloBalance.format()}</span>
       </div>
 
       <div className="mb-[64px] md:order-last md:hidden">{FAQLinks()}</div>

@@ -107,7 +107,7 @@ const getTitle = (error: string | undefined, mode: Mode) => {
 };
 
 const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
-  const onClickUseMax = () => (balance.display() !== amount?.display() ? onChange(balance) : null);
+  const onClickUseMax = () => (balance.format() !== amount?.format() ? onChange(balance) : null);
   const onInputChange = (values: NumberFormatValues) =>
     onChange(values.value ? toWei(values.value) : undefined);
 
@@ -124,7 +124,7 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
-          value={amount ? amount.display() : ''}
+          value={amount ? amount.format() : ''}
           decimalScale={DISPLAY_DECIMALS}
           isNumericString
           allowNegative={false}

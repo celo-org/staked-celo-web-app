@@ -55,7 +55,7 @@ const getInfoChild = (mode: Mode) => {
 };
 
 export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
-  const displayValue = value.isEqualTo(0) ? '0.00' : value.display();
+  const displayValue = value.isEqualTo(0) ? '0.00' : value.format();
 
   return (
     <TokenCard

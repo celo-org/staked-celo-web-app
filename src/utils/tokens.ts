@@ -9,7 +9,7 @@ export class Wei extends BigNumber {
     super(value instanceof BigNumber ? value.toFixed() : value);
   }
 
-  display(): string {
+  format(): string {
     return new BigNumber(fromWei(this))
       .toFormat(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR)
       .replace(/0*$/, '')

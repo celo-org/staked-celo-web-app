@@ -22,7 +22,7 @@ export const exchangeDetail = (exchangeRate?: number): Detail => ({
 
 export const gasDetail = (gasFee?: Wei): Detail => {
   const value =
-    gasFee && (gasFee.comparedTo('1000000000000000') === -1 ? '< 0.001' : `~${gasFee.display()}`);
+    gasFee && (gasFee.comparedTo('1000000000000000') === -1 ? '< 0.001' : `~${gasFee.format()}`);
   return {
     title: 'Transaction cost',
     value: value || '...',
