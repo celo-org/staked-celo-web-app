@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
@@ -12,6 +12,7 @@ export function useUnstaking() {
   const { managerContract, sendTransaction } = useBlockchain();
   const { stCeloExchangeRate } = useExchangeContext();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
+  const [unstakingGasFee, setUnstakingGasFee] = useState<StCelo>(new StCelo(0));
 
   const createTxOptions = useCallback(
     () => ({
@@ -35,21 +36,25 @@ export function useUnstaking() {
     setStCeloAmount(null);
   };
 
-  const estimateUnstakingGas = useCallback(async (): Promise<StCelo> => {
-    if (!stCeloAmount || stCeloAmount.isEqualTo(0) || stCeloAmount.isGreaterThan(stCeloBalance))
-      return new StCelo(0);
+  const estimateUnstakingGas = useCallback(async () => {
+    if (!stCeloAmount || stCeloAmount.isEqualTo(0) || stCeloAmount.isGreaterThan(stCeloBalance)) {
+      setUnstakingGasFee(new StCelo(0));
+      return;
+    }
     const gasFee = new BigNumber(await withdrawTx().estimateGas(createTxOptions()));
-    return new StCelo(gasFee.multipliedBy(GAS_PRICE));
+    setUnstakingGasFee(new StCelo(gasFee.multipliedBy(GAS_PRICE)));
   }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount]);
 
   const receivedCelo = new Celo(stCeloAmount ? stCeloAmount.multipliedBy(stCeloExchangeRate) : 0);
+
+  useEffect(() => void estimateUnstakingGas(), [estimateUnstakingGas]);
 
   return {
     stCeloAmount,
     setStCeloAmount,
     unstake,
     stCeloExchangeRate,
-    estimateUnstakingGas,
+    unstakingGasFee,
     receivedCelo,
   };
 }

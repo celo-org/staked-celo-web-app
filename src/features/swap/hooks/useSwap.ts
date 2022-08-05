@@ -8,12 +8,11 @@ import { useUnstaking } from './useUnstaking';
 export function useSwap(mode: Mode) {
   const { celoExchangeRate, stCeloExchangeRate } = useExchangeContext();
   const { celoBalance, stCeloBalance } = useAccountContext();
-  const { celoAmount, setCeloAmount, stake, receivedStCelo, estimateStakingGas } = useStaking();
-  const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, estimateUnstakingGas } =
-    useUnstaking();
+  const { celoAmount, setCeloAmount, stake, receivedStCelo, stakingGasFee } = useStaking();
+  const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, unstakingGasFee } = useUnstaking();
 
   const exchangeRate = mode === 'stake' ? celoExchangeRate : stCeloExchangeRate;
-  const estimateGas = mode === 'stake' ? estimateStakingGas : estimateUnstakingGas;
+  const gasFee = mode === 'stake' ? stakingGasFee : unstakingGasFee;
   const balance = mode === 'stake' ? celoBalance : stCeloBalance;
   const swap = mode === 'stake' ? stake : unstake;
   const receiveValue = mode === 'stake' ? receivedStCelo : receivedCelo;
@@ -23,5 +22,5 @@ export function useSwap(mode: Mode) {
       ? (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount))
       : (amount?: Token) => setStCeloAmount(!amount ? null : new StCelo(amount));
 
-  return { amount, setAmount, balance, swap, receiveValue, exchangeRate, estimateGas };
+  return { amount, setAmount, balance, swap, receiveValue, exchangeRate, gasFee };
 }

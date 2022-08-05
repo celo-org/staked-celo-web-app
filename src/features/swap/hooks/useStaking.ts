@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
@@ -12,6 +12,7 @@ export function useStaking() {
   const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
   const { celoExchangeRate } = useExchangeContext();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
+  const [stakingGasFee, setStakingGasFee] = useState<Celo>(new Celo(0));
 
   const createTxOptions = useCallback(
     () => ({
@@ -40,21 +41,25 @@ export function useStaking() {
     setCeloAmount(null);
   };
 
-  const estimateStakingGas = useCallback(async (): Promise<Celo> => {
-    if (!celoAmount || celoAmount.isEqualTo(0) || celoAmount.isGreaterThan(celoBalance))
-      return new Celo(0);
+  const estimateStakingGas = useCallback(async () => {
+    if (!celoAmount || celoAmount.isEqualTo(0) || celoAmount.isGreaterThan(celoBalance)) {
+      setStakingGasFee(new Celo(0));
+      return;
+    }
     const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions()));
-    return new Celo(gasFee.multipliedBy(GAS_PRICE));
+    setStakingGasFee(new Celo(gasFee.multipliedBy(GAS_PRICE)));
   }, [createTxOptions, depositTx, celoBalance, celoAmount]);
 
   const receivedStCelo = new StCelo(celoAmount ? celoAmount.multipliedBy(celoExchangeRate) : 0);
+
+  useEffect(() => void estimateStakingGas(), [estimateStakingGas]);
 
   return {
     celoAmount,
     setCeloAmount,
     stake,
     celoExchangeRate,
-    estimateStakingGas,
+    stakingGasFee,
     receivedStCelo,
   };
 }

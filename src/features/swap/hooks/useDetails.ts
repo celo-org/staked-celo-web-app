@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Detail, exchangeDetail, feeDetail, gasDetail } from 'src/features/swap/utils/details';
 import { Token } from 'src/utils/tokens';
 import { Mode } from '../types';
@@ -12,19 +12,11 @@ export const periodDetail: Detail = {
   },
 };
 
-export const useDetails = (mode: Mode, exchangeRate: number, estimateGas: () => Promise<Token>) => {
-  const [details, setDetails] = useState<Detail[]>([]);
-
-  const loadDetails = useCallback(async () => {
-    const stakingGas = await estimateGas();
-    const loadedDetails = [exchangeDetail(exchangeRate), gasDetail(stakingGas), feeDetail()];
-    if (mode === 'stake') loadedDetails.push(periodDetail);
-    setDetails(loadedDetails);
-  }, [estimateGas, exchangeRate, mode]);
-
-  useEffect(() => {
-    void loadDetails();
-  }, [loadDetails]);
+export const useDetails = (mode: Mode, exchangeRate: number, gasFee: Token) => {
+  const details: Detail[] = useMemo(() => {
+    if (mode === 'unstake') return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail()];
+    return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail(), periodDetail];
+  }, [gasFee, exchangeRate, mode]);
 
   return {
     details,
