@@ -20,7 +20,7 @@ interface SwapFormProps {
   onChange: (amount?: Token) => void;
   balance: Token;
   mode: Mode;
-  receiveValue: Token;
+  receiveAmount: Token;
   details: Detail[];
 }
 
@@ -36,7 +36,7 @@ export const SwapForm = ({
   onChange,
   balance,
   mode,
-  receiveValue,
+  receiveAmount,
   details,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -81,7 +81,7 @@ export const SwapForm = ({
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </a>
         </Link>
-        <ReceiveSummary value={receiveValue} mode={mode} />
+        <ReceiveSummary value={receiveAmount} mode={mode} />
       </div>
       <div className="flex justify-center mt-[16px] mb-[24px]">
         <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />

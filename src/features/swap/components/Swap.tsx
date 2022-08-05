@@ -14,7 +14,7 @@ interface SwapProps {
 
 export const Swap = ({ mode, onModeChange }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
-  const { amount, setAmount, swap, balance, receiveValue, exchangeRate, gasFee } = useSwap(mode);
+  const { amount, setAmount, swap, balance, receiveAmount, exchangeRate, gasFee } = useSwap(mode);
   const { details } = useDetails(mode, exchangeRate, gasFee);
 
   return (
@@ -26,7 +26,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
         onSubmit={swap}
         onChange={setAmount}
         balance={balance}
-        receiveValue={receiveValue}
+        receiveAmount={receiveAmount}
         details={details}
       />
       {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (

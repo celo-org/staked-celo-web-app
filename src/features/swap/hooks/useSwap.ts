@@ -15,12 +15,12 @@ export function useSwap(mode: Mode) {
   const gasFee = mode === 'stake' ? stakingGasFee : unstakingGasFee;
   const balance = mode === 'stake' ? celoBalance : stCeloBalance;
   const swap = mode === 'stake' ? stake : unstake;
-  const receiveValue = mode === 'stake' ? receivedStCelo : receivedCelo;
+  const receiveAmount = mode === 'stake' ? receivedStCelo : receivedCelo;
   const amount = mode === 'stake' ? celoAmount : stCeloAmount;
   const setAmount =
     mode === 'stake'
       ? (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount))
       : (amount?: Token) => setStCeloAmount(!amount ? null : new StCelo(amount));
 
-  return { amount, setAmount, balance, swap, receiveValue, exchangeRate, gasFee };
+  return { amount, setAmount, balance, swap, receiveAmount, exchangeRate, gasFee };
 }
