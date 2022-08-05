@@ -28,8 +28,10 @@ export const useDetails = (mode: Mode, amount: Wei | null) => {
       return;
     }
     const stakingGas = await estimateGas(amount);
-    setDetails([exchangeDetail(exchangeRate), gasDetail(stakingGas), feeDetail(), periodDetail]);
-  }, [amount, estimateGas, exchangeRate]);
+    const loadedDetails = [exchangeDetail(exchangeRate), gasDetail(stakingGas), feeDetail()];
+    if (mode === 'stake') loadedDetails.push(periodDetail);
+    setDetails(loadedDetails);
+  }, [amount, estimateGas, exchangeRate, mode]);
 
   useEffect(() => {
     void loadDetails();
