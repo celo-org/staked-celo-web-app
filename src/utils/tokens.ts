@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { DISPLAY_DECIMALS, WEI_PER_UNIT } from 'src/config/consts';
 import { fromWei as web3FromWei, toWei as web3ToWei } from 'web3-utils';
 
-export type Token = 'CELO' | 'stCELO';
+export type TokenType = 'CELO' | 'stCELO';
 
 export class Wei extends BigNumber {
   constructor(value: any) {
@@ -18,11 +18,11 @@ export class Wei extends BigNumber {
 }
 
 export class CeloWei extends Wei {
-  private __tokenType = 'CeloWei';
+  private __tokenType: TokenType = 'CELO';
 }
 
 export class StCeloWei extends Wei {
-  private __tokenType = 'StCeloWei';
+  private __tokenType: TokenType = 'stCELO';
 }
 
 function fromWei(value: BigNumber): string {

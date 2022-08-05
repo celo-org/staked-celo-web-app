@@ -1,9 +1,9 @@
 import { ReactElement } from 'react';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
-import { Token } from 'src/utils/tokens';
+import { TokenType } from 'src/utils/tokens';
 
 interface TokenCardProps {
-  token: Token;
+  token: TokenType;
   inputChild?: number | string | ReactElement;
   titleChild?: number | string | ReactElement;
   infoChild?: number | string | ReactElement;
