@@ -1,3 +1,4 @@
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { SwapForm } from 'src/features/swap/components/SwapForm';
 import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
@@ -12,8 +13,8 @@ interface SwapProps {
 }
 
 export const Swap = ({ mode, onModeChange }: SwapProps) => {
-  const { amount, setAmount, swap, balance, estimateReceiveValue, pendingWithdrawals } =
-    useSwap(mode);
+  const { pendingWithdrawals } = useAccountContext();
+  const { amount, setAmount, swap, balance, estimateReceiveValue } = useSwap(mode);
   const { details } = useDetails(mode);
   const receiveValue = estimateReceiveValue();
 
