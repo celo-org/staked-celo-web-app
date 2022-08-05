@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { SwapForm } from 'src/features/swap/components/SwapForm';
 import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
@@ -14,8 +14,8 @@ interface SwapProps {
 }
 
 export const Swap = ({ mode, onModeChange }: SwapProps) => {
-  const [amount, setAmount] = useState<Wei>(new Wei(0));
-  const { swap, balance, estimateReceiveValue, pendingWithdrawals } = useSwap(mode);
+  const { amount, setAmount, swap, balance, estimateReceiveValue, pendingWithdrawals } =
+    useSwap(mode);
   const { details } = useDetails(mode, amount);
 
   const onSubmit = useCallback(async () => {
@@ -23,9 +23,12 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
     await swap(amount);
   }, [swap, amount]);
 
-  const onChange = useCallback((weiAmount?: Wei) => {
-    setAmount(weiAmount || new Wei(0));
-  }, []);
+  const onChange = useCallback(
+    (weiAmount?: Wei) => {
+      setAmount(weiAmount || new Wei(0));
+    },
+    [setAmount]
+  );
 
   const receiveValue = estimateReceiveValue(amount);
 
@@ -33,6 +36,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
     <CenteredLayout classes="px-[24px]">
       <Switcher mode={mode} onModeChange={onModeChange} />
       <SwapForm
+        amount={amount}
         mode={mode}
         onSubmit={onSubmit}
         onChange={onChange}

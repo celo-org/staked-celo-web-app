@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
@@ -11,6 +11,7 @@ export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
   const { managerContract, sendTransaction } = useBlockchain();
   const { stCeloExchangeRate } = useExchangeContext();
+  const [stCeloWeiAmount, setStCeloWeiAmount] = useState<StCeloWei>(new StCeloWei(0));
 
   const createTxOptions = useCallback(
     () => ({
@@ -53,6 +54,8 @@ export function useUnstaking() {
   );
 
   return {
+    stCeloWeiAmount,
+    setStCeloWeiAmount,
     unstake,
     stCeloExchangeRate,
     estimateUnstakingGas,

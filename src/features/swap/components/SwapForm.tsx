@@ -14,6 +14,7 @@ import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
 
 interface SwapFormProps {
+  amount: Wei;
   onSubmit: () => void;
   onChange: (amount?: Wei) => void;
   balance: Wei;
@@ -29,6 +30,7 @@ const getHref = (mode: Mode) => {
 };
 
 export const SwapForm = ({
+  amount,
   onSubmit,
   onChange,
   balance,
@@ -36,7 +38,6 @@ export const SwapForm = ({
   receiveValue,
   details,
 }: SwapFormProps) => {
-  const [amount, setAmount] = useState<Wei | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -54,7 +55,6 @@ export const SwapForm = ({
       } finally {
         setIsLoading(false);
       }
-      setAmount(new Wei(0));
     },
     [onSubmit, reloadExchangeContext]
   );
@@ -62,7 +62,6 @@ export const SwapForm = ({
   const onInputChange = (value: Wei | undefined) => {
     setIsTouched(true);
     setError(validateForm(value));
-    setAmount(value);
     onChange(value);
   };
 
