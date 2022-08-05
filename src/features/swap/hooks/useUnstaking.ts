@@ -27,21 +27,13 @@ export function useUnstaking() {
     [managerContract, stCeloAmount]
   );
 
-  const unstake = useCallback(async () => {
+  const unstake = async () => {
     if (!address || !stCeloAmount || stCeloAmount.isEqualTo(0)) return;
     await sendTransaction(withdrawTx(), createTxOptions());
     await api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
     setStCeloAmount(null);
-  }, [
-    withdrawTx,
-    createTxOptions,
-    loadBalances,
-    loadPendingWithdrawals,
-    address,
-    sendTransaction,
-    stCeloAmount,
-  ]);
+  };
 
   const estimateUnstakingGas = useCallback(async (): Promise<StCelo> => {
     if (!stCeloAmount || stCeloAmount.isEqualTo(0) || stCeloAmount.isGreaterThan(stCeloBalance))

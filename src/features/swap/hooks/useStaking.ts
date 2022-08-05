@@ -25,7 +25,7 @@ export function useStaking() {
 
   const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
-  const stake = useCallback(async () => {
+  const stake = async () => {
     if (!celoAmount || celoAmount.isEqualTo(0)) return;
     const preDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()
@@ -38,15 +38,7 @@ export function useStaking() {
     const receivedStToken = new StCelo(postDepositStTokenBalance.minus(preDepositStTokenBalance));
     toast.stakingSuccess(receivedStToken);
     setCeloAmount(null);
-  }, [
-    createTxOptions,
-    depositTx,
-    loadBalances,
-    stCeloContract,
-    address,
-    sendTransaction,
-    celoAmount,
-  ]);
+  };
 
   const estimateStakingGas = useCallback(async (): Promise<Celo> => {
     if (!celoAmount || celoAmount.isEqualTo(0) || celoAmount.isGreaterThan(celoBalance))
