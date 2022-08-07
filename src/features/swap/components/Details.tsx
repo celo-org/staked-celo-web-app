@@ -9,7 +9,7 @@ interface DetailsProps {
 
 export const Details = ({ details }: DetailsProps) => {
   return (
-    <ul className="text-color-secondary mx-2 mt-5">
+    <ul className="text-color-secondary mx-2 mt-5 text-[15px] leading-[24px]">
       {details.map((detail) => (
         <Detail detail={detail} key={detail.title} />
       ))}
