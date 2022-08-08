@@ -49,7 +49,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
         </div>
       </div>
       <div
-        className={`rounded-[8px] font-light overflow-hidden bg-secondary ${answerStateClasses}`}
+        className={`rounded-[8px] font-normal overflow-hidden bg-secondary ${answerStateClasses}`}
       >
         <div className="p-[16px]" dangerouslySetInnerHTML={{ __html: answer }} />
       </div>
