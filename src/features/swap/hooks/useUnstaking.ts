@@ -5,6 +5,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import api from 'src/services/api';
+import toast from 'src/services/toast';
 import { Celo, StCelo } from 'src/utils/tokens';
 
 export function useUnstaking() {
@@ -33,6 +34,7 @@ export function useUnstaking() {
     await sendTransaction(withdrawTx(), createTxOptions());
     await api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
+    toast.unstakingStartedSuccess();
     setStCeloAmount(null);
   };
 
