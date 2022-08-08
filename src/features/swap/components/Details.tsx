@@ -9,7 +9,7 @@ interface DetailsProps {
 
 export const Details = ({ details }: DetailsProps) => {
   return (
-    <ul className="text-color-secondary mx-2 mt-5 text-[15px] leading-[24px]">
+    <ul className="text-color-secondary mt-[24px] text-[15px] leading-[24px]">
       {details.map((detail) => (
         <Detail detail={detail} key={detail.title} />
       ))}
@@ -25,10 +25,10 @@ const Detail = ({ detail }: DetailProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <li key={detail.title} className="flex justify-between my-2 font-light">
+    <li key={detail.title} className="flex justify-between font-light mb-[4px]">
       <span className="flex">
         {detail.title}
-        <span className="flex items-center ml-2">
+        <span className="flex items-center ml-[8px]">
           <ThemedIcon
             classes="cursor-pointer"
             name="info"
