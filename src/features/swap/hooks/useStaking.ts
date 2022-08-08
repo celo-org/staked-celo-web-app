@@ -4,8 +4,8 @@ import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { useBlockchain } from 'src/hooks/useBlockchain';
-import toast from 'src/services/toast';
 import { Celo, StCelo } from 'src/utils/tokens';
+import { showStakingToast } from '../utils/toast';
 
 export function useStaking() {
   const { address, loadBalances, celoBalance } = useAccountContext();
@@ -36,8 +36,8 @@ export function useStaking() {
     const postDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()
     );
-    const receivedStToken = new StCelo(postDepositStTokenBalance.minus(preDepositStTokenBalance));
-    toast.stakingSuccess(receivedStToken);
+    const receivedStCelo = new StCelo(postDepositStTokenBalance.minus(preDepositStTokenBalance));
+    showStakingToast(receivedStCelo);
     setCeloAmount(null);
   };
 
