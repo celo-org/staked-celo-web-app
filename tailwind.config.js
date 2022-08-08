@@ -9,8 +9,8 @@ module.exports = {
         'color-secondary': 'var(--c-text-secondary-color)',
         'color-contrast': 'var(--c-text-contrast-color)',
         'color-error': 'var(--c-text-error-color)',
-        'color-primary-info': 'var(--c-text-primary-info-color)',
-        'color-secondary-info': 'var(--c-text-secondary-info-color)',
+        'color-primary-callout': 'var(--c-text-primary-callout-color)',
+        'color-secondary-callout': 'var(--c-text-secondary-callout-color)',
         'color-modal': 'var(--c-text-modal)',
         'color-green': {
           DEFAULT: '#55A803',

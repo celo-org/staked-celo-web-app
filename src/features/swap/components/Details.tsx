@@ -40,7 +40,7 @@ const Detail = ({ detail }: DetailProps) => {
         </span>
       </span>
       <span
-        className={detail.value === freePriceValue ? 'text-color-primary-info font-medium' : ''}
+        className={detail.value === freePriceValue ? 'text-color-primary-callout font-medium' : ''}
       >
         {detail.value}
       </span>
