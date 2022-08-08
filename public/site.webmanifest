@@ -1,6 +1,5 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Liquid Staking",
     "icons": [
         {
             "src": "/public/android-chrome-192x192.png",
@@ -13,7 +12,5 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
     "display": "standalone"
 }
