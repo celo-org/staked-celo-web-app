@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useThemeContext } from 'src/contexts/theme/ThemeContext';
 import ArrowDark from 'src/images/icons/arrow-dark.svg';
 import ArrowLight from 'src/images/icons/arrow-light.svg';
@@ -68,14 +69,18 @@ export const ThemedIcon = ({
 }: ThemedIconProps) => {
   const { theme } = useThemeContext();
   return (
-    <Image
-      src={icons?.[name]?.[theme]}
-      alt={alt}
-      className={classes}
-      quality={quality}
-      width={width}
-      height={height}
-      onClick={onClick}
-    />
+    <OpacityTransition id={theme} classes="inline-flex">
+      <span className="inline-flex items-center">
+        <Image
+          src={icons?.[name]?.[theme]}
+          alt={alt}
+          className={classes}
+          quality={quality}
+          width={width}
+          height={height}
+          onClick={onClick}
+        />
+      </span>
+    </OpacityTransition>
   );
 };
