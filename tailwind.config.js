@@ -11,6 +11,7 @@ module.exports = {
         'color-error': 'var(--c-text-error-color)',
         'color-primary-callout': 'var(--c-text-primary-callout-color)',
         'color-secondary-callout': 'var(--c-text-secondary-callout-color)',
+        'color-tertiary-callout': 'var(--c-text-tertiary-callout-color)',
         'color-modal': 'var(--c-text-modal)',
         'color-green': {
           DEFAULT: '#55A803',
