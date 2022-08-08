@@ -5,7 +5,7 @@ import { useSwap } from '../hooks/useSwap';
 import { Mode } from '../types';
 import { validateAmount } from '../utils/validation';
 import { Details } from './Details';
-import { PendingWithdrawal } from './PendingWithdrawal';
+import { PendingWithdrawals } from './PendingWithdrawals';
 import { SwapForm } from './SwapForm';
 import { Switcher } from './Switcher';
 
@@ -36,12 +36,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
       <div className="w-full mx-[8px]">
         {!error && amount?.isGreaterThan(0) && <Details details={details} />}
         {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
-          <>
-            <span className="font-semibold text-sm mt-[48px]">Currently unstaking</span>
-            {pendingWithdrawals.map(({ amount, timestamp }) => (
-              <PendingWithdrawal key={timestamp} amount={amount} timestamp={timestamp} />
-            ))}
-          </>
+          <PendingWithdrawals pendingWithdrawals={pendingWithdrawals} />
         ) : null}
       </div>
     </CenteredLayout>
