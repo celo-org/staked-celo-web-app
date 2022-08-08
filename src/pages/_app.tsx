@@ -13,6 +13,7 @@ import { ExchangeProvider } from 'src/contexts/exchange/ExchangeContext';
 import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
 import { AppLayout } from 'src/layout/AppLayout';
 import 'src/styles/globals.css';
+import 'src/styles/transitions.scss';
 
 dayjs.extend(relativeTime);
 

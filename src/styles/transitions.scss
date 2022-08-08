@@ -1,0 +1,37 @@
+@import './transitions.module.scss';
+
+$backgroud-transition: background-color $transition-duration $transition-timing-function;
+$color-transition: color $transition-duration $transition-timing-function;
+
+[class*='bg-'] {
+  transition: $backgroud-transition;
+}
+
+[class*='text-color-'] {
+  transition: $color-transition;
+}
+
+[class*='bg-'][class*='text-color-'] {
+  transition: $color-transition, $backgroud-transition;
+}
+
+.opacity-enter {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.opacity-enter-active {
+  opacity: 1;
+  transition: opacity $transition-duration $transition-timing-function;
+}
+
+.opacity-exit {
+  opacity: 1;
+}
+
+.opacity-exit-active {
+  opacity: 0;
+  transition: opacity $transition-duration $transition-timing-function;
+}

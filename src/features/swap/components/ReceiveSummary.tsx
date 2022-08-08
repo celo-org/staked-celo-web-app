@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
+import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { TokenCard } from './TokenCard';
@@ -15,7 +16,7 @@ const UnstakeInfo = () => {
 
   return (
     <>
-      <span className="flex ml-[6px]">
+      <span className="flex items-center ml-[6px]">
         <ThemedIcon
           name="receive_info"
           classes="cursor-pointer"
@@ -36,16 +37,14 @@ const UnstakeInfo = () => {
 const getInfoChild = (mode: Mode) => {
   if (mode === 'stake') {
     return (
-      <span className="text-primary-info font-medium text-[15px] leading-[24px]">
+      <span className="text-color-primary-info font-medium text-[15px] leading-[20px]">
         4.56% projected APY
       </span>
     );
   } else if (mode === 'unstake') {
     return (
-      <div className="flex">
-        <span className="text-secondary-info font-medium text-[15px] leading-[24px]">
-          3-day unstake period
-        </span>
+      <div className="inline-flex items-center text-color-secondary-info">
+        <span className="font-medium text-[15px] leading-[20px]">3-day unstake period</span>
         <UnstakeInfo />
       </div>
     );
@@ -63,7 +62,11 @@ export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
       token={mode === 'stake' ? 'stCELO' : 'CELO'}
       titleChild="Receive"
       inputChild={displayValue}
-      infoChild={getInfoChild(mode)}
+      infoChild={
+        <OpacityTransition id={mode} classes="w-full">
+          <span>{getInfoChild(mode)}</span>
+        </OpacityTransition>
+      }
     />
   );
 };

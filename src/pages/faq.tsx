@@ -33,15 +33,20 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
 
   return (
     <div className="mb-[24px]">
-      <div className="flex flex-row cursor-pointer" onClick={() => setOpened(!opened)}>
-        <div className="flex-grow mr-[16px] font-normal">{question}</div>
-        <ThemedIcon
-          classes={`transition ${opened ? 'rotate-180' : ''}`}
-          name="caret"
-          alt="Toggle faq item"
-          width={24}
-          height={24}
-        />
+      <div
+        className="inline-flex flex-row w-full cursor-pointer"
+        onClick={() => setOpened(!opened)}
+      >
+        <div className="inline-flex w-[calc(100%-24px)] font-normal mr-[16px]">{question}</div>
+        <div className="inline-flex items-center">
+          <ThemedIcon
+            classes={`transition ${opened ? 'rotate-180' : ''}`}
+            name="caret"
+            alt="Toggle faq item"
+            width={24}
+            height={24}
+          />
+        </div>
       </div>
       <div
         className={`rounded-[8px] font-light overflow-hidden bg-secondary ${answerStateClasses}`}

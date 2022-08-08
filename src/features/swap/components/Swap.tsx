@@ -1,11 +1,14 @@
+import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { SwapForm } from 'src/features/swap/components/SwapForm';
-import { Switcher } from 'src/features/swap/components/Switcher';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { useDetails } from '../hooks/useDetails';
 import { useSwap } from '../hooks/useSwap';
 import { Mode } from '../types';
-import { PendingWithdrawal } from './PendingWithdrawal';
+import { validateAmount } from '../utils/validation';
+import { Details } from './Details';
+import { PendingWithdrawals } from './PendingWithdrawals';
+import { SwapForm } from './SwapForm';
+import { Switcher } from './Switcher';
 
 interface SwapProps {
   mode: Mode;
@@ -16,12 +19,14 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
   const { amount, setAmount, swap, balance, receiveAmount, exchangeRate, gasFee } = useSwap(mode);
   const { details } = useDetails(mode, exchangeRate, gasFee);
+  const error = validateAmount(amount, balance, mode);
 
   return (
     <CenteredLayout classes="px-[24px]">
       <Switcher mode={mode} onModeChange={onModeChange} />
       <SwapForm
         amount={amount}
+        error={error}
         mode={mode}
         onSubmit={swap}
         onChange={setAmount}
@@ -29,13 +34,14 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
         receiveAmount={receiveAmount}
         details={details}
       />
-      {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
-        <span className="font-semibold text-sm mt-12">Currently unstaking</span>
-      ) : null}
-      {mode === 'unstake' &&
-        pendingWithdrawals.map(({ amount, timestamp }) => (
-          <PendingWithdrawal key={timestamp} amount={amount} timestamp={timestamp} />
-        ))}
+      <OpacityTransition id={mode}>
+        <div className="w-full mx-[8px]">
+          {!error && amount?.isGreaterThan(0) && <Details details={details} />}
+          {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
+            <PendingWithdrawals pendingWithdrawals={pendingWithdrawals} />
+          ) : null}
+        </div>
+      </OpacityTransition>
     </CenteredLayout>
   );
 };

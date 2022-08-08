@@ -5,17 +5,17 @@ module.exports = {
   theme: {
     extend: {
       textColor: {
-        primary: 'var(--c-text-primary-color)',
-        secondary: 'var(--c-text-secondary-color)',
-        contrast: 'var(--c-text-contrast-color)',
-        error: 'var(--c-text-error-color)',
-        'primary-info': 'var(--c-text-primary-info-color)',
-        'secondary-info': 'var(--c-text-secondary-info-color)',
-        modal: 'var(--c-text-modal)',
-        green: {
+        'color-primary': 'var(--c-text-primary-color)',
+        'color-secondary': 'var(--c-text-secondary-color)',
+        'color-contrast': 'var(--c-text-contrast-color)',
+        'color-error': 'var(--c-text-error-color)',
+        'color-primary-info': 'var(--c-text-primary-info-color)',
+        'color-secondary-info': 'var(--c-text-secondary-info-color)',
+        'color-modal': 'var(--c-text-modal)',
+        'color-green': {
           DEFAULT: '#55A803',
         },
-        purple: {
+        'color-purple': {
           DEFAULT: '#6A38F6',
         },
       },

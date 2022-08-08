@@ -38,11 +38,11 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
       screenReaderLabel="Connect wallet modal"
       close={close}
     >
-      <div className="flex flex-col h-full text-modal">
+      <div className="flex flex-col h-full text-color-modal">
         <div className="flex justify-between">
           <div className="flex items-center">
             <IndicatorIcon classes="mr-[8px]" />
-            <Label classes="text-green">Connected</Label>
+            <Label classes="text-color-green">Connected</Label>
           </div>
           <span className="cursor-pointer" onClick={close}>
             <Image src={Close} alt="Close button" width={24} height={24} />
@@ -53,7 +53,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
             <div className="flex mb-[8px]">
               <h2 className="font-medium text-[20px] leading-[24px] mr-[8px]">Wallet address</h2>
               <button
-                className="underline text-secondary text-[14px] leading-[100%]"
+                className="underline text-color-secondary text-[14px] leading-[100%]"
                 onClick={() => navigator.clipboard.writeText(address || '')}
               >
                 Copy

@@ -1,20 +1,20 @@
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { Token, toToken } from 'src/utils/tokens';
-import { useFormValidator } from '../hooks/useFormValidator';
 import { Mode } from '../types';
 import { Detail } from '../utils/details';
 import { BalanceTools } from './BalanceTools';
-import { Details } from './Details';
 import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
 
 interface SwapFormProps {
   amount: Token | null;
+  error: string | null;
   onSubmit: () => void;
   onChange: (amount?: Token) => void;
   balance: Token;
@@ -25,17 +25,15 @@ interface SwapFormProps {
 
 export const SwapForm = ({
   amount,
+  error,
   onSubmit,
   onChange,
   balance,
   mode,
   receiveAmount,
-  details,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
-  const [error, setError] = useState<string | undefined>();
-  const validateForm = useFormValidator(balance, mode);
   const { reloadExchangeContext } = useExchangeContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
@@ -55,7 +53,6 @@ export const SwapForm = ({
 
   const onInputChange = (value: Token | undefined) => {
     setIsTouched(true);
-    setError(validateForm(value));
     onChange(value);
   };
 
@@ -74,10 +71,9 @@ export const SwapForm = ({
         </div>
         <ReceiveSummary value={receiveAmount} mode={mode} />
       </div>
-      <div className="flex justify-center mt-[16px] mb-[24px]">
+      <div className="flex justify-center mt-[16px]">
         <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
       </div>
-      {!error && amount?.isGreaterThan(0) && <Details details={details} />}
     </form>
   );
 };
@@ -86,12 +82,12 @@ interface FormInputProps {
   onChange: (amount?: Token) => void;
   balance: Token;
   mode: Mode;
-  error?: string;
+  error: string | null;
   amount: Token | null;
 }
 
-const getTitle = (error: string | undefined, mode: Mode) => {
-  if (error) return <span className="text-error">{error}</span>;
+const getTitle = (error: string | null, mode: Mode) => {
+  if (error) return <span className="text-color-error">{error}</span>;
   if (mode === 'stake') return 'Stake';
   if (mode === 'unstake') return 'Unstake';
   return '';
@@ -106,12 +102,16 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
     <TokenCard
       classes="bg-tertiary rounded-t-[16px] pb-[32px]"
       token={mode === 'stake' ? 'CELO' : 'stCELO'}
-      titleChild={getTitle(error, mode)}
+      titleChild={
+        <OpacityTransition id={mode}>
+          <span>{getTitle(error, mode)}</span>
+        </OpacityTransition>
+      }
       inputChild={
         <NumberFormat
           className={`focus:outline-none bg-transparent placeholder-primary ${
-            error ? 'text-error' : ''
-          } ${amount === undefined ? 'text-secondary' : ''}`}
+            error ? 'text-color-error' : ''
+          } ${amount === undefined ? 'text-color-secondary' : ''}`}
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
@@ -121,7 +121,7 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
           allowNegative={false}
         />
       }
-      infoChild={<BalanceTools onClickUseMax={onClickUseMax} balance={balance} />}
+      infoChild={<BalanceTools mode={mode} onClickUseMax={onClickUseMax} balance={balance} />}
     />
   );
 };
