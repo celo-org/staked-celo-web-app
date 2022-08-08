@@ -37,13 +37,13 @@ const UnstakeInfo = () => {
 const getInfoChild = (mode: Mode) => {
   if (mode === 'stake') {
     return (
-      <span className="text-primary-info font-medium text-[15px] leading-[20px]">
+      <span className="text-color-primary-info font-medium text-[15px] leading-[20px]">
         4.56% projected APY
       </span>
     );
   } else if (mode === 'unstake') {
     return (
-      <div className="inline-flex items-center text-secondary-info">
+      <div className="inline-flex items-center text-color-secondary-info">
         <span className="font-medium text-[15px] leading-[20px]">3-day unstake period</span>
         <UnstakeInfo />
       </div>

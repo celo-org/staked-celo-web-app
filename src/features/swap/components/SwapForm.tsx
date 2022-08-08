@@ -87,7 +87,7 @@ interface FormInputProps {
 }
 
 const getTitle = (error: string | null, mode: Mode) => {
-  if (error) return <span className="text-error">{error}</span>;
+  if (error) return <span className="text-color-error">{error}</span>;
   if (mode === 'stake') return 'Stake';
   if (mode === 'unstake') return 'Unstake';
   return '';
@@ -110,8 +110,8 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
       inputChild={
         <NumberFormat
           className={`focus:outline-none bg-transparent placeholder-primary ${
-            error ? 'text-error' : ''
-          } ${amount === undefined ? 'text-secondary' : ''}`}
+            error ? 'text-color-error' : ''
+          } ${amount === undefined ? 'text-color-secondary' : ''}`}
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}

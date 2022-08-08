@@ -31,7 +31,7 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
         <meta name="theme-color" content={theme === 'dark' ? '#212B2E' : '#FFFDF4'} />
         <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
       </Head>
-      <div className="flex flex-col h-full w-full min-w-screen md:min-h-screen">
+      <div className="flex flex-col h-full w-full min-w-screen md:min-h-screen text-color-primary">
         <div className="min-h-screen md:min-h-full md:flex-grow">
           <Header />
           <main className="w-full flex-1 flex">{children}</main>

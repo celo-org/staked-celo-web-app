@@ -40,7 +40,7 @@ class MyDocument extends Document {
           <meta name="twitter:description" content="" />
           <meta name="twitter:image" content={`${url}/celo-hero.jpg`} />
         </Head>
-        <body className="text-primary bg-primary overflow-x-hidden">
+        <body className="bg-primary overflow-x-hidden">
           <Main />
           <NextScript />
         </body>

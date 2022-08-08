@@ -9,7 +9,7 @@ interface DetailsProps {
 
 export const Details = ({ details }: DetailsProps) => {
   return (
-    <ul className="text-secondary mx-2 mt-5">
+    <ul className="text-color-secondary mx-2 mt-5">
       {details.map((detail) => (
         <Detail detail={detail} key={detail.title} />
       ))}
@@ -39,7 +39,9 @@ const Detail = ({ detail }: DetailProps) => {
           />
         </span>
       </span>
-      <span className={detail.value === freePriceValue ? 'text-primary-info font-medium' : ''}>
+      <span
+        className={detail.value === freePriceValue ? 'text-color-primary-info font-medium' : ''}
+      >
         {detail.value}
       </span>
       <InfoModal title={detail.title} isOpen={isOpen} close={() => setIsOpen(false)}>

@@ -10,11 +10,11 @@ interface ModalProps {
 export const InfoModal = ({ isOpen, close, children, title }: PropsWithChildren<ModalProps>) => {
   return (
     <Modal isOpen={isOpen} screenReaderLabel={title} close={close}>
-      <div className="flex flex-col text-modal">
+      <div className="flex flex-col text-color-modal">
         <div className="flex justify-between text-[20px] leading-[24px] mb-[16px]">{title}</div>
         <div className="font-light mb-[24px] text-[16px] leading-[24px]">{children}</div>
         <div
-          className="cursor-pointer py-[8px] text-[18px] leading-[24px] text-purple text-center"
+          className="cursor-pointer py-[8px] text-[18px] leading-[24px] text-color-purple text-center"
           onClick={close}
         >
           Dismiss

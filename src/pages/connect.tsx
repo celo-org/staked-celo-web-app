@@ -21,7 +21,7 @@ const Connect = () => {
         <Button
           classes={`
             w-full
-            text-contrast
+            text-color-contrast
             bg-action-primary-regular hover:bg-action-primary-dark active:bg-action-primary-light disabled:bg-action-primary-light
           `}
           onClick={connectWallet}

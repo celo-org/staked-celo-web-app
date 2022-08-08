@@ -25,7 +25,9 @@ export const SubmitButton = ({ mode, pending, disabled }: ButtonProps) => {
   return (
     <Button
       type="submit"
-      classes={`${mode === 'stake' ? stakeClasses : unstakeClasses} text-contrast w-full h-14`}
+      classes={`${
+        mode === 'stake' ? stakeClasses : unstakeClasses
+      } text-color-contrast w-full h-14`}
       disabled={disabled || pending}
     >
       {pending ? (

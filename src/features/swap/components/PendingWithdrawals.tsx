@@ -28,7 +28,7 @@ export const PendingWithdrawal = ({ amount, timestamp }: PendingWithdrawalProps)
       <TokenIcon token="CELO" />
       <div className="flex flex-col ml-[12px]">
         <span className="text-[21px] leading-[24px]">{amount.format()} CELO</span>
-        <span className="text-secondary text-[14px] leading-[16px] mt-[4px]">
+        <span className="text-color-secondary text-[14px] leading-[16px] mt-[4px]">
           {date.isBefore(dayjs())
             ? 'Claiming...'
             : `Available in ${dayjs.unix(parseInt(timestamp)).fromNow(true)}`}

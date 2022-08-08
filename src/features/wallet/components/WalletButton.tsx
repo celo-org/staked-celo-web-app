@@ -18,7 +18,7 @@ export const WalletButton = () => {
   return (
     <>
       <span
-        className={`${flexClasses} cursor-pointer bg-secondary text-secondary rounded-[100px] ${paddingClasses}`}
+        className={`${flexClasses} cursor-pointer bg-secondary text-color-secondary rounded-[100px] ${paddingClasses}`}
         onClick={() => setIsModalOpened(true)}
       >
         <IndicatorIcon classes="pr-[8px]" /> <Label>{addressLabel}</Label>
