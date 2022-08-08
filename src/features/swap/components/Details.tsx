@@ -28,7 +28,7 @@ const Detail = ({ detail }: DetailProps) => {
     <li key={detail.title} className="flex justify-between my-2 font-light">
       <span className="flex">
         {detail.title}
-        <span className="flex align-middle ml-2">
+        <span className="flex items-center ml-2">
           <ThemedIcon
             classes="cursor-pointer"
             name="info"

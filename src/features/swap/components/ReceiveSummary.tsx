@@ -15,7 +15,7 @@ const UnstakeInfo = () => {
 
   return (
     <>
-      <span className="flex ml-[6px]">
+      <span className="flex items-center ml-[6px]">
         <ThemedIcon
           name="receive_info"
           classes="cursor-pointer"
