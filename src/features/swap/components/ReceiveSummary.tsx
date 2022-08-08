@@ -21,8 +21,8 @@ const UnstakeInfo = () => {
           name="receive_info"
           classes="cursor-pointer"
           alt="Unstaking period info"
-          height={20}
-          width={20}
+          height={16}
+          width={16}
           onClick={() => setIsOpen(true)}
         />
       </span>

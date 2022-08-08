@@ -33,8 +33,8 @@ const Detail = ({ detail }: DetailProps) => {
             classes="cursor-pointer"
             name="info"
             alt={`${detail.title} cost info`}
-            height={20}
-            width={20}
+            height={16}
+            width={16}
             onClick={() => setIsOpen(true)}
           />
         </span>
