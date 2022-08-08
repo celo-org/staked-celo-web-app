@@ -19,7 +19,7 @@ class MyDocument extends Document {
           <meta name="keywords" content={description} />
           <meta name="description" content={description} />
         </Head>
-        <body className="bg-primary overflow-x-hidden">
+        <body className="bg-primary">
           <Main />
           <NextScript />
         </body>

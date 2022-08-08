@@ -6,7 +6,7 @@ import styles from './connect.module.css';
 const Connect = () => {
   const { connectWallet } = useWallet();
   return (
-    <div className="inline-flex w-full sm:pt-[0] sm:pb-[80px]">
+    <div className="inline-flex w-full sm:pt-[0] sm:pb-[80px] mt-[-80px] sm:mt-0">
       <div className="w-full sm:max-w-[480px] mx-auto self-center sm:rounded-[16px] overflow-hidden">
         <div className={styles.connectHeader}>
           <TokenIcon token="stCELO" quality={100} width={136} height={136} />

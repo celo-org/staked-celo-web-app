@@ -23,7 +23,7 @@ export const Footer = () => {
 
   const footerFlexClasses = 'flex flex-col sm:flex-row sm:items-center sm:justify-between';
   return (
-    <footer className={`w-screen ${footerFlexClasses} p-base sm:h-[168px] bg-secondary`}>
+    <footer className={`w-full ${footerFlexClasses} p-base sm:h-[168px] bg-secondary`}>
       <div className="flex flex-col sm:order-first mb-[32px] sm:mb-0 sm:w-1/3">
         <Label classes="mb-[4px]">Total CELO staked</Label>
         <span className="text-[27px] leading-[40px]">{totalCeloBalance.format()}</span>
