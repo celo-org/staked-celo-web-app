@@ -1,14 +1,24 @@
 import Image from 'next/image';
+import { PropsWithChildren } from 'react';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import Clock from 'src/images/icons/clock.svg';
 import { showToast } from 'src/utils/toast';
 import { StCelo } from 'src/utils/tokens';
 
+const ToastContent = ({ children }: PropsWithChildren) => (
+  <span className="text-[16px] leading-[24px] font-medium text-color-modal">{children}</span>
+);
+
 export const showStakingToast = (amount: StCelo) =>
-  showToast(<TokenIcon token="stCELO" />, <span>You received {amount.format()} stCELO</span>);
+  showToast(
+    <TokenIcon token="stCELO" width={32} height={32} />,
+    <ToastContent>
+      You received <br /> {amount.format()} stCELO
+    </ToastContent>
+  );
 
 export const showUnstakingToast = () =>
   showToast(
     <Image src={Clock} alt="Clock" quality={100} width={32} height={32} />,
-    <span>You started unstaking, funds available in 3 days.</span>
+    <ToastContent>You started unstaking, funds available in 3 days.</ToastContent>
   );
