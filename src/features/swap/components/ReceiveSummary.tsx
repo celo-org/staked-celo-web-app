@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { Token } from 'src/utils/tokens';
+import { Mode } from '../types';
 import { TokenCard } from './TokenCard';
 
 interface ReceiveSummaryProps {
-  token: Token;
-  value: number;
+  mode: Mode;
+  value: Token;
 }
 
 const UnstakeInfo = () => {
@@ -33,14 +33,14 @@ const UnstakeInfo = () => {
   );
 };
 
-const getInfoChild = (token: Token) => {
-  if (token === 'stCELO') {
+const getInfoChild = (mode: Mode) => {
+  if (mode === 'stake') {
     return (
       <span className="text-primary-info font-medium text-[15px] leading-[24px]">
         4.56% projected APY
       </span>
     );
-  } else if (token === 'CELO') {
+  } else if (mode === 'unstake') {
     return (
       <div className="flex">
         <span className="text-secondary-info font-medium text-[15px] leading-[24px]">
@@ -54,16 +54,16 @@ const getInfoChild = (token: Token) => {
   return;
 };
 
-export const ReceiveSummary = ({ token, value }: ReceiveSummaryProps) => {
-  const displayValue = value ? value.toFixed(DISPLAY_DECIMALS) : '0.00';
+export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
+  const displayValue = value.isEqualTo(0) ? '0.00' : value.format();
 
   return (
     <TokenCard
       classes="pt-[32px]"
-      token={token}
+      token={mode === 'stake' ? 'stCELO' : 'CELO'}
       titleChild="Receive"
       inputChild={displayValue}
-      infoChild={getInfoChild(token)}
+      infoChild={getInfoChild(mode)}
     />
   );
 };

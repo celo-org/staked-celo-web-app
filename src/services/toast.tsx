@@ -1,13 +1,12 @@
 import Image from 'next/image';
 import { toast as reactToast } from 'react-toastify';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
-import { DISPLAY_DECIMALS } from 'src/config/consts';
 import Clock from 'src/images/icons/clock.svg';
 import { StCelo } from 'src/utils/tokens';
 
 const toast = {
   stakingSuccess: (amount: StCelo) =>
-    reactToast.success(<span>You received {amount.toFixed(DISPLAY_DECIMALS)} stCELO</span>, {
+    reactToast.success(<span>You received {amount.format()} stCELO</span>, {
       icon: () => <TokenIcon token="stCELO" />,
     }),
   unstakingStartedSuccess: () =>

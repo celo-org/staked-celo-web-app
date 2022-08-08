@@ -1,15 +1,15 @@
 import Image from 'next/image';
 import CeloIcon from 'src/images/icons/token-celo.svg';
 import stCeloIcon from 'src/images/icons/token-stcelo.svg';
-import { Token } from 'src/utils/tokens';
+import { TokenType } from 'src/utils/tokens';
 
-const tokenIcon: { [key in Token]: any } = {
+const tokenIcon: { [key in TokenType]: any } = {
   CELO: CeloIcon,
   stCELO: stCeloIcon,
 };
 
 interface TokenIconProps {
-  token: Token;
+  token: TokenType;
   quality?: number;
   width?: number;
   height?: number;

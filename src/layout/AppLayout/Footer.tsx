@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Label } from 'src/components/text/Label';
-import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { discordUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 
@@ -27,9 +26,7 @@ export const Footer = () => {
     <footer className={`w-screen ${footerFlexClasses} p-base md:h-[168px] bg-secondary`}>
       <div className="flex flex-col md:order-first mb-[32px] md:mb-0 md:w-1/5">
         <Label classes="mb-[4px]">Total CELO staked</Label>
-        <span className="text-[27px] leading-[40px]">
-          {totalCeloBalance.toFixed(DISPLAY_DECIMALS)}
-        </span>
+        <span className="text-[27px] leading-[40px]">{totalCeloBalance.format()}</span>
       </div>
 
       <div className="mb-[64px] md:order-last md:hidden">{FAQLinks()}</div>
