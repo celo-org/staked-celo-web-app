@@ -95,8 +95,11 @@ const getTitle = (error: string | null, mode: Mode) => {
 
 const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
   const onClickUseMax = () => (balance.format() !== amount?.format() ? onChange(balance) : null);
-  const onInputChange = (values: NumberFormatValues) =>
-    onChange(values.value ? toToken(values.value) : undefined);
+  const onInputChange = (values: NumberFormatValues) => {
+    const { value } = values;
+    if (value === '.') return;
+    onChange(value ? toToken(value) : undefined);
+  };
 
   return (
     <TokenCard
