@@ -1,6 +1,7 @@
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { Token, toToken } from 'src/utils/tokens';
@@ -101,7 +102,11 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
     <TokenCard
       classes="bg-tertiary rounded-t-[16px] pb-[32px]"
       token={mode === 'stake' ? 'CELO' : 'stCELO'}
-      titleChild={getTitle(error, mode)}
+      titleChild={
+        <OpacityTransition id={mode}>
+          <span>{getTitle(error, mode)}</span>
+        </OpacityTransition>
+      }
       inputChild={
         <NumberFormat
           className={`focus:outline-none bg-transparent placeholder-primary ${
@@ -116,7 +121,7 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
           allowNegative={false}
         />
       }
-      infoChild={<BalanceTools onClickUseMax={onClickUseMax} balance={balance} />}
+      infoChild={<BalanceTools mode={mode} onClickUseMax={onClickUseMax} balance={balance} />}
     />
   );
 };

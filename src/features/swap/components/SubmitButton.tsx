@@ -1,5 +1,6 @@
 import { Button } from 'src/components/buttons/Button';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { Mode } from '../types';
 
 interface ButtonProps {
@@ -30,7 +31,9 @@ export const SubmitButton = ({ mode, pending, disabled }: ButtonProps) => {
       {pending ? (
         <ThemedIcon classes="animate-spin" name="spinner" alt="Spinner" width={40} height={40} />
       ) : (
-        getText(mode)
+        <OpacityTransition id={mode}>
+          <div className="w-full inline-flex justify-center">{getText(mode)}</div>
+        </OpacityTransition>
       )}
     </Button>
   );

@@ -1,3 +1,4 @@
+import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { useDetails } from '../hooks/useDetails';
@@ -33,12 +34,14 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
         receiveAmount={receiveAmount}
         details={details}
       />
-      <div className="w-full mx-[8px]">
-        {!error && amount?.isGreaterThan(0) && <Details details={details} />}
-        {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
-          <PendingWithdrawals pendingWithdrawals={pendingWithdrawals} />
-        ) : null}
-      </div>
+      <OpacityTransition id={mode}>
+        <div className="w-full mx-[8px]">
+          {!error && amount?.isGreaterThan(0) && <Details details={details} />}
+          {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
+            <PendingWithdrawals pendingWithdrawals={pendingWithdrawals} />
+          ) : null}
+        </div>
+      </OpacityTransition>
     </CenteredLayout>
   );
 };
