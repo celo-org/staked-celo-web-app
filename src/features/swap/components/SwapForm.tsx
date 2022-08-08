@@ -4,17 +4,16 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { Token, toToken } from 'src/utils/tokens';
-import { useFormValidator } from '../hooks/useFormValidator';
 import { Mode } from '../types';
 import { Detail } from '../utils/details';
 import { BalanceTools } from './BalanceTools';
-import { Details } from './Details';
 import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
 
 interface SwapFormProps {
   amount: Token | null;
+  error: string | null;
   onSubmit: () => void;
   onChange: (amount?: Token) => void;
   balance: Token;
@@ -25,17 +24,15 @@ interface SwapFormProps {
 
 export const SwapForm = ({
   amount,
+  error,
   onSubmit,
   onChange,
   balance,
   mode,
   receiveAmount,
-  details,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
-  const [error, setError] = useState<string | undefined>();
-  const validateForm = useFormValidator(balance, mode);
   const { reloadExchangeContext } = useExchangeContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
@@ -55,7 +52,6 @@ export const SwapForm = ({
 
   const onInputChange = (value: Token | undefined) => {
     setIsTouched(true);
-    setError(validateForm(value));
     onChange(value);
   };
 
@@ -74,10 +70,9 @@ export const SwapForm = ({
         </div>
         <ReceiveSummary value={receiveAmount} mode={mode} />
       </div>
-      <div className="flex justify-center mt-[16px] mb-[24px]">
+      <div className="flex justify-center mt-[16px]">
         <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
       </div>
-      {!error && amount?.isGreaterThan(0) && <Details details={details} />}
     </form>
   );
 };
@@ -86,11 +81,11 @@ interface FormInputProps {
   onChange: (amount?: Token) => void;
   balance: Token;
   mode: Mode;
-  error?: string;
+  error: string | null;
   amount: Token | null;
 }
 
-const getTitle = (error: string | undefined, mode: Mode) => {
+const getTitle = (error: string | null, mode: Mode) => {
   if (error) return <span className="text-error">{error}</span>;
   if (mode === 'stake') return 'Stake';
   if (mode === 'unstake') return 'Unstake';
