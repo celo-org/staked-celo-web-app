@@ -26,9 +26,9 @@ const Detail = ({ detail }: DetailProps) => {
 
   return (
     <li key={detail.title} className="flex justify-between font-light mb-[4px]">
-      <span className="flex">
-        {detail.title}
-        <span className="flex items-center ml-[8px]">
+      <span className="inline-flex items-center">
+        <span className="text-[15px] leading-[24px]">{detail.title}</span>
+        <span className="inline flex items-center ml-[8px]">
           <ThemedIcon
             classes="cursor-pointer"
             name="info"
