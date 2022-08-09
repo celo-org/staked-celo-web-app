@@ -4,6 +4,7 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Token, toToken } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { Detail } from '../utils/details';
@@ -37,6 +38,7 @@ export const SwapForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const { reloadExchangeContext } = useExchangeContext();
+  const { reloadProtocolContext } = useProtocolContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
@@ -45,7 +47,7 @@ export const SwapForm = ({
       setIsLoading(true);
       try {
         await onSubmit();
-        await reloadExchangeContext();
+        await Promise.all([reloadExchangeContext(), reloadProtocolContext()]);
       } finally {
         setIsLoading(false);
       }

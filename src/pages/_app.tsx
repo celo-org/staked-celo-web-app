@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { networkConfig } from 'src/config/celo';
 import { AccountProvider, useAccountContext } from 'src/contexts/account/AccountContext';
 import { ExchangeProvider } from 'src/contexts/exchange/ExchangeContext';
+import { ProtocolProvider } from 'src/contexts/protocol/ProtocolContext';
 import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
 import { AppLayout } from 'src/layout/AppLayout';
 import 'src/styles/globals.css';
@@ -50,9 +51,11 @@ const TopProvider = (props: PropsWithChildren) => {
   return (
     <CeloProvider>
       <ThemeProvider>
-        <AccountProvider>
-          <ExchangeProvider>{props.children}</ExchangeProvider>
-        </AccountProvider>
+        <ProtocolProvider>
+          <AccountProvider>
+            <ExchangeProvider>{props.children}</ExchangeProvider>
+          </AccountProvider>
+        </ProtocolProvider>
       </ThemeProvider>
     </CeloProvider>
   );
