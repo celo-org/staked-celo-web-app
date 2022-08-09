@@ -97,6 +97,10 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
   const onClickUseMax = () => (balance.format() !== amount?.format() ? onChange(balance) : null);
   const onInputChange = (values: NumberFormatValues) => {
     const { value } = values;
+    // Returning in case of '.' makes it possible to input number starting with decimal separator
+    // If we wanted to convert decimal separator to Token we would need to use 0 as value
+    // That would result in separator being replaced with '0' by 'react-number-format'
+    // In case input is /.[0-9]+/ 'react-number-format' doesn't prepend 0
     if (value === '.') return;
     onChange(value ? toToken(value) : undefined);
   };
