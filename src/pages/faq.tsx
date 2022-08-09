@@ -12,7 +12,7 @@ const Faq = () => {
   const faqItems = faq.getFaqItems();
   return (
     <CenteredLayout classes="px-base">
-      <div className="font-medium text-[32px] leading-[40px] mt-[48px] mb-[32px]">
+      <div className="font-medium text-[32px] leading-[40px] mb-[32px]">
         Frequently asked questions
       </div>
       {faqItems.map(({ question, answer }, index) => (
@@ -32,7 +32,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
   const answerStateClasses = opened ? 'my-[16px]' : 'max-h-0';
 
   return (
-    <div className="mb-[24px]">
+    <div className="mb-[24px] last:mb-0">
       <div
         className="inline-flex flex-row w-full cursor-pointer"
         onClick={() => setOpened(!opened)}
@@ -49,7 +49,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
         </div>
       </div>
       <div
-        className={`rounded-[8px] font-light overflow-hidden bg-secondary ${answerStateClasses}`}
+        className={`rounded-[8px] font-normal overflow-hidden bg-secondary ${answerStateClasses}`}
       >
         <div className="p-[16px]" dangerouslySetInnerHTML={{ __html: answer }} />
       </div>

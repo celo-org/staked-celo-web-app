@@ -31,7 +31,7 @@ const faqItems: FaqItem[] = [
   {
     question: 'How is StakedCelo secure?',
     answer:
-      'StakedCelo has been audited and the reports are published <a class="underline" href="https://github.com/celo-org/staked-celo/tree/master/audit">here</a>.',
+      'StakedCelo has been audited and the reports are published <a class="underline" target="_blank" href="https://github.com/celo-org/staked-celo/tree/master/audit">here</a>.',
   },
   {
     question: 'How long is stCelo locked?',

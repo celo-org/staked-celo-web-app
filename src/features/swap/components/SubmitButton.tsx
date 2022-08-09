@@ -17,17 +17,15 @@ const getText = (mode: Mode) => {
 
 export const SubmitButton = ({ mode, pending, disabled }: ButtonProps) => {
   /* It has to be defined like this, otherwise Tailwind will not build CSS classes */
-  const unstakeClasses =
-    'bg-action-primary-regular disabled:bg-action-primary-light hover:bg-action-primary-dark active:bg-action-primary-light';
   const stakeClasses =
+    'bg-action-primary-regular disabled:bg-action-primary-light hover:bg-action-primary-dark active:bg-action-primary-light';
+  const unstakeClasses =
     'bg-action-secondary-regular disabled:bg-action-secondary-light hover:bg-action-secondary-dark active:bg-action-secondary-light';
 
   return (
     <Button
       type="submit"
-      classes={`${
-        mode === 'stake' ? stakeClasses : unstakeClasses
-      } text-color-contrast w-full h-14`}
+      classes={`${mode === 'stake' ? stakeClasses : unstakeClasses} text-color-contrast w-full`}
       disabled={disabled || pending}
     >
       {pending ? (

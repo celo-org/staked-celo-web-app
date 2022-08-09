@@ -21,8 +21,8 @@ const UnstakeInfo = () => {
           name="receive_info"
           classes="cursor-pointer"
           alt="Unstaking period info"
-          height={20}
-          width={20}
+          height={16}
+          width={16}
           onClick={() => setIsOpen(true)}
         />
       </span>
@@ -37,13 +37,13 @@ const UnstakeInfo = () => {
 const getInfoChild = (mode: Mode) => {
   if (mode === 'stake') {
     return (
-      <span className="text-color-primary-info font-medium text-[15px] leading-[20px]">
+      <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
         4.56% projected APY
       </span>
     );
   } else if (mode === 'unstake') {
     return (
-      <div className="inline-flex items-center text-color-secondary-info">
+      <div className="inline-flex items-center text-color-secondary-callout">
         <span className="font-medium text-[15px] leading-[20px]">3-day unstake period</span>
         <UnstakeInfo />
       </div>

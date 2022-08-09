@@ -25,7 +25,7 @@ export const Switcher = ({ mode, onModeChange }: SwitcherProps) => {
   const [activeLinkNode, setActiveLinkNode] = useState<HTMLElement | null>(null);
 
   return (
-    <div className="flex justify-center mt-[16px] mb-[8px] ml-[8px]">
+    <div className="flex justify-center mb-[8px] ml-[8px]">
       <nav className="w-full">
         <div className="flex items-center justify-start relative opacity-90">
           {links.map((link) => {
