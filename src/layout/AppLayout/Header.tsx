@@ -1,57 +1,56 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { Theme, useThemeContext } from 'src/contexts/theme/ThemeContext';
+import { useThemeContext } from 'src/contexts/theme/ThemeContext';
 import { WalletButton } from 'src/features/wallet/components/WalletButton';
-import DarkThemeIcon from 'src/images/icons/theme-dark.svg';
-import LightThemeIcon from 'src/images/icons/theme-light.svg';
 
-const themeIcons: Record<Theme, any> = {
-  light: LightThemeIcon,
-  dark: DarkThemeIcon,
-};
+interface ThemeToggleProps {
+  isConnectPage: boolean;
+}
 
-export const ThemeToggle = () => {
+export const ThemeToggle = ({ isConnectPage }: ThemeToggleProps) => {
   const { theme, setTheme } = useThemeContext();
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+  const iconProps = {
+    alt: 'Toggle theme',
+    quality: 100,
+    width: 40,
+    height: 40,
+    onClick: toggleTheme,
+    classes: 'cursor-pointer',
   };
 
+  if (!isConnectPage) return <ThemedIcon name="theme" {...iconProps} />;
+
   return (
-    <Image
-      src={themeIcons[theme]}
-      alt="Toggle theme"
-      quality={100}
-      width={40}
-      height={40}
-      onClick={toggleTheme}
-      className="cursor-pointer"
-    />
+    <>
+      <span className="sm:hidden inline-flex">
+        <ThemedIcon name="theme-oposite" {...iconProps} />
+      </span>
+      <span className="hidden sm:inline-flex">
+        <ThemedIcon name="theme" {...iconProps} />
+      </span>
+    </>
   );
 };
 
-export const Header = () => {
+interface HeaderProps {
+  isConnectPage: boolean;
+}
+
+export const Header = ({ isConnectPage = true }: HeaderProps) => {
   const { isConnected } = useAccountContext();
 
   return (
     <header className="px-base w-full h-[80px] flex items-center justify-between">
       <Link href="/">
-        <a className="flex items-center">
-          <div className="flex">
-            <ThemedIcon
-              name="logo"
-              alt="Liquid Staking Logo"
-              quality={100}
-              width={40}
-              height={40}
-            />
-          </div>
+        <a className={`flex items-center ${isConnectPage ? 'invisible' : ''}`}>
+          <ThemedIcon name="logo" alt="Liquid Staking Logo" quality={100} width={40} height={40} />
         </a>
       </Link>
       {isConnected && <WalletButton />}
-      <ThemeToggle />
+      <ThemeToggle isConnectPage={isConnectPage} />
     </header>
   );
 };

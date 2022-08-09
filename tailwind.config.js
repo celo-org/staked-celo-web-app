@@ -27,6 +27,7 @@ module.exports = {
         primary: 'var(--c-bg-primary-color)',
         secondary: 'var(--c-bg-secondary-color)',
         tertiary: 'var(--c-bg-tertiary-color)',
+        'secondary-oposite': 'var(--c-bg-secondary-oposite-color)',
         'action-primary-light': 'var(--c-bg-action-primary-light-color)',
         'action-primary-regular': 'var(--c-bg-action-primary-regular-color)',
         'action-primary-dark': 'var(--c-bg-action-primary-dark-color)',
