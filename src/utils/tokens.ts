@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { DISPLAY_DECIMALS, WEI_PER_UNIT } from 'src/config/consts';
 import { fromWei, toWei } from 'web3-utils';
 
-export type TokenType = 'CELO' | 'stCELO';
+export type TokenType = 'CELO' | 'stCELO' | 'cUSD';
 
 export class Token extends BigNumber {
   constructor(value: any) {
@@ -24,6 +24,10 @@ export class Celo extends Token {
 
 export class StCelo extends Token {
   private __tokenType: TokenType = 'stCELO';
+}
+
+export class CeloUSD extends Token {
+  private __tokenType: TokenType = 'cUSD';
 }
 
 export function toToken(value: string): Token {
