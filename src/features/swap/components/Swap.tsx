@@ -33,6 +33,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
         balance={balance}
         receiveAmount={receiveAmount}
         details={details}
+        onModeChange={onModeChange}
       />
       <OpacityTransition id={mode}>
         <div className="w-full px-[8px]">

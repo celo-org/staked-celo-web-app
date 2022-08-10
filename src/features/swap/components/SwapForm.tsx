@@ -21,6 +21,7 @@ interface SwapFormProps {
   mode: Mode;
   receiveAmount: Token;
   details: Detail[];
+  onModeChange: (mode: Mode) => void;
 }
 
 export const SwapForm = ({
@@ -31,6 +32,7 @@ export const SwapForm = ({
   balance,
   mode,
   receiveAmount,
+  onModeChange,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -56,6 +58,10 @@ export const SwapForm = ({
     onChange(value);
   };
 
+  const switchModes = () => {
+    onModeChange(mode === 'stake' ? 'unstake' : 'stake');
+  };
+
   return (
     <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
       <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
@@ -66,7 +72,7 @@ export const SwapForm = ({
           mode={mode}
           error={error}
         />
-        <div className="absolute inline-flex">
+        <div className="absolute inline-flex cursor-pointer" onClick={switchModes}>
           <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
         </div>
         <ReceiveSummary value={receiveAmount} mode={mode} />
