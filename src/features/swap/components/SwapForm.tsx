@@ -52,7 +52,7 @@ export const SwapForm = ({
         setIsLoading(false);
       }
     },
-    [onSubmit, reloadExchangeContext]
+    [onSubmit, reloadExchangeContext, reloadProtocolContext]
   );
 
   const onInputChange = (value: Token | undefined) => {
