@@ -9,7 +9,7 @@ export class Token extends BigNumber {
     super(value instanceof BigNumber ? value.toFixed() : value);
   }
 
-  format(): string {
+  displayAsBase(): string {
     const value = fromWei(this.toFixed(0, BigNumber.ROUND_FLOOR));
     return new BigNumber(value)
       .toFormat(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR)

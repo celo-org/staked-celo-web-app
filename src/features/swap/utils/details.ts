@@ -22,7 +22,8 @@ export const exchangeDetail = (exchangeRate?: number): Detail => ({
 
 export const gasDetail = (gasFee?: Token): Detail => {
   const value =
-    gasFee && (gasFee.comparedTo('1000000000000000') === -1 ? '< 0.001' : `~${gasFee.format()}`);
+    gasFee &&
+    (gasFee.comparedTo('1000000000000000') === -1 ? '< 0.001' : `~${gasFee.displayAsBase()}`);
   return {
     title: 'Transaction cost',
     value: value || '...',

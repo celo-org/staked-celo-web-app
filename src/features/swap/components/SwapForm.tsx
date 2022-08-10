@@ -103,7 +103,8 @@ const getTitle = (error: string | null, mode: Mode) => {
 };
 
 const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
-  const onClickUseMax = () => (balance.format() !== amount?.format() ? onChange(balance) : null);
+  const onClickUseMax = () =>
+    balance.displayAsBase() !== amount?.displayAsBase() ? onChange(balance) : null;
   const onInputChange = (values: NumberFormatValues) => {
     const { value } = values;
     // Returning in case of '.' makes it possible to input number starting with decimal separator
@@ -131,7 +132,7 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
-          value={amount ? amount.format() : ''}
+          value={amount ? amount.displayAsBase() : ''}
           decimalScale={DISPLAY_DECIMALS}
           isNumericString
           allowNegative={false}
