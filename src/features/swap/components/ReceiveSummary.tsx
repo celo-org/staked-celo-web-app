@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { TokenCard } from './TokenCard';
@@ -36,11 +37,13 @@ interface ReceiveInfoProps {
 }
 
 const ReceiveInfo = ({ mode }: ReceiveInfoProps) => {
+  const { annualProjectedYield } = useProtocolContext();
+
   switch (mode) {
     case 'stake':
       return (
         <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
-          4.56% projected APY
+          {annualProjectedYield ? `${annualProjectedYield}%` : '-'} projected APY
         </span>
       );
     case 'unstake':
