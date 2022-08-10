@@ -3,6 +3,25 @@ import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, StCelo } from 'src/utils/tokens';
 
+export const useExchangeRates = () => {
+  const { celoExchangeRate, loadCeloExchangeRate } = useCeloExchangeRate();
+  const { stCeloExchangeRate, loadStCeloExchangeRate } = useStCeloExchangeRate();
+
+  const loadExchangeRates = useCallback(async () => {
+    await Promise.all([loadCeloExchangeRate(), loadStCeloExchangeRate()]);
+  }, [loadCeloExchangeRate, loadStCeloExchangeRate]);
+
+  useEffect(() => {
+    void loadExchangeRates();
+  }, [loadExchangeRates]);
+
+  return {
+    celoExchangeRate,
+    stCeloExchangeRate,
+    loadExchangeRates,
+  };
+};
+
 const useCeloExchangeRate = () => {
   const { managerContract } = useBlockchain();
 
@@ -36,24 +55,5 @@ const useStCeloExchangeRate = () => {
   return {
     stCeloExchangeRate,
     loadStCeloExchangeRate,
-  };
-};
-
-export const useExchangeRates = () => {
-  const { celoExchangeRate, loadCeloExchangeRate } = useCeloExchangeRate();
-  const { stCeloExchangeRate, loadStCeloExchangeRate } = useStCeloExchangeRate();
-
-  const loadExchangeRates = useCallback(async () => {
-    await Promise.all([loadCeloExchangeRate(), loadStCeloExchangeRate()]);
-  }, [loadCeloExchangeRate, loadStCeloExchangeRate]);
-
-  useEffect(() => {
-    void loadExchangeRates();
-  }, [loadExchangeRates]);
-
-  return {
-    celoExchangeRate,
-    stCeloExchangeRate,
-    loadExchangeRates,
   };
 };
