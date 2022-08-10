@@ -13,7 +13,7 @@ export function useSwap(mode: Mode) {
   const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, unstakingGasFee } = useUnstaking();
 
   let exchangeRate: number;
-  let gasFee: Token;
+  let gasFee: Celo;
   let balance: Token;
   let swap: () => void;
   let receiveAmount: Token;
