@@ -25,7 +25,7 @@ export const gasDetail = (gasFee?: Token): Detail => {
     gasFee &&
     (gasFee.comparedTo('1000000000000000') === -1 ? '< 0.001' : `~${gasFee.displayAsBase()}`);
   return {
-    title: 'Transaction cost',
+    title: 'Transaction Cost',
     value: value || '...',
     tooltip: {
       content:
