@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
@@ -47,7 +47,10 @@ export function useUnstaking() {
     setUnstakingGasFee(new StCelo(gasFee.multipliedBy(GAS_PRICE)));
   }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount]);
 
-  const receivedCelo = new Celo(stCeloAmount ? stCeloAmount.multipliedBy(stCeloExchangeRate) : 0);
+  const receivedCelo = useMemo(
+    () => new Celo(stCeloAmount ? stCeloAmount.multipliedBy(stCeloExchangeRate).dp(0) : 0),
+    [stCeloAmount, stCeloExchangeRate]
+  );
 
   useEffect(() => void estimateUnstakingGas(), [estimateUnstakingGas]);
 
