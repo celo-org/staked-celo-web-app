@@ -1,25 +1,30 @@
 import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { Celo } from 'src/utils/tokens';
+import { useAnnualProjectedYield } from './useAnnualProjectedYield';
 import { useTokenBalances } from './useTokenBalances';
 
 interface ProtocolContext {
   totalCeloBalance: Celo;
   loadTokenBalances: () => Promise<void>;
+  annualProjectedYield: string | null;
 }
 
 export const ProtocolContext = createContext<ProtocolContext>({
   totalCeloBalance: new Celo(0),
   loadTokenBalances: () => Promise.resolve(),
+  annualProjectedYield: null,
 });
 
 export const ProtocolProvider = ({ children }: PropsWithChildren) => {
   const { totalCeloBalance, loadTokenBalances } = useTokenBalances();
+  const { annualProjectedYield } = useAnnualProjectedYield();
 
   return (
     <ProtocolContext.Provider
       value={{
         totalCeloBalance,
         loadTokenBalances,
+        annualProjectedYield,
       }}
     >
       {children}
@@ -28,7 +33,7 @@ export const ProtocolProvider = ({ children }: PropsWithChildren) => {
 };
 
 export function useProtocolContext() {
-  const { totalCeloBalance, loadTokenBalances } = useContext(ProtocolContext);
+  const { totalCeloBalance, loadTokenBalances, annualProjectedYield } = useContext(ProtocolContext);
 
   const reloadProtocolContext = useCallback(async () => {
     await Promise.all([loadTokenBalances()]);
@@ -37,5 +42,6 @@ export function useProtocolContext() {
   return {
     totalCeloBalance,
     reloadProtocolContext,
+    annualProjectedYield,
   };
 }
