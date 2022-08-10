@@ -96,9 +96,12 @@ interface FormInputProps {
 
 const getTitle = (error: string | null, mode: Mode) => {
   if (error) return <span className="text-color-error whitespace-nowrap">{error}</span>;
-  if (mode === 'stake') return 'Stake';
-  if (mode === 'unstake') return 'Unstake';
-  return '';
+  switch (mode) {
+    case 'stake':
+      return 'Stake';
+    case 'unstake':
+      return 'Unstake';
+  }
 };
 
 const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {

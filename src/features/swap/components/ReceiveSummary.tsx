@@ -11,6 +11,48 @@ interface ReceiveSummaryProps {
   value: Token;
 }
 
+export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
+  const displayValue = value.isEqualTo(0) ? '0.00' : value.format();
+
+  return (
+    <TokenCard
+      classes="pt-[32px]"
+      token={mode === 'stake' ? 'stCELO' : 'CELO'}
+      titleChild="Receive"
+      inputChild={displayValue}
+      infoChild={
+        <OpacityTransition id={mode} classes="w-full">
+          <span>
+            <ReceiveInfo mode={mode} />
+          </span>
+        </OpacityTransition>
+      }
+    />
+  );
+};
+
+interface ReceiveInfoProps {
+  mode: Mode;
+}
+
+const ReceiveInfo = ({ mode }: ReceiveInfoProps) => {
+  switch (mode) {
+    case 'stake':
+      return (
+        <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
+          4.56% projected APY
+        </span>
+      );
+    case 'unstake':
+      return (
+        <div className="inline-flex items-center text-color-secondary-callout">
+          <span className="font-medium text-[15px] leading-[20px]">3-day unstake period</span>
+          <UnstakeInfo />
+        </div>
+      );
+  }
+};
+
 const UnstakeInfo = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -31,42 +73,5 @@ const UnstakeInfo = () => {
         the Celo protocol.
       </InfoModal>
     </>
-  );
-};
-
-const getInfoChild = (mode: Mode) => {
-  if (mode === 'stake') {
-    return (
-      <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
-        4.56% projected APY
-      </span>
-    );
-  } else if (mode === 'unstake') {
-    return (
-      <div className="inline-flex items-center text-color-secondary-callout">
-        <span className="font-medium text-[15px] leading-[20px]">3-day unstake period</span>
-        <UnstakeInfo />
-      </div>
-    );
-  }
-
-  return;
-};
-
-export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
-  const displayValue = value.isEqualTo(0) ? '0.00' : value.format();
-
-  return (
-    <TokenCard
-      classes="pt-[32px]"
-      token={mode === 'stake' ? 'stCELO' : 'CELO'}
-      titleChild="Receive"
-      inputChild={displayValue}
-      infoChild={
-        <OpacityTransition id={mode} classes="w-full">
-          <span>{getInfoChild(mode)}</span>
-        </OpacityTransition>
-      }
-    />
   );
 };

@@ -3,19 +3,13 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { Mode } from '../types';
 
-interface ButtonProps {
+interface SubmitButtonProps {
   mode: Mode;
   pending: boolean;
   disabled?: boolean;
 }
 
-const getText = (mode: Mode) => {
-  if (mode === 'stake') return 'Stake';
-  if (mode === 'unstake') return 'Unstake';
-  return '';
-};
-
-export const SubmitButton = ({ mode, pending, disabled }: ButtonProps) => {
+export const SubmitButton = ({ mode, pending, disabled }: SubmitButtonProps) => {
   /* It has to be defined like this, otherwise Tailwind will not build CSS classes */
   const stakeClasses =
     'bg-action-primary-regular disabled:bg-action-primary-light hover:bg-action-primary-dark active:bg-action-primary-light';
@@ -37,4 +31,13 @@ export const SubmitButton = ({ mode, pending, disabled }: ButtonProps) => {
       )}
     </Button>
   );
+};
+
+const getText = (mode: Mode) => {
+  switch (mode) {
+    case 'stake':
+      return 'Stake';
+    case 'unstake':
+      return 'Unstake';
+  }
 };
