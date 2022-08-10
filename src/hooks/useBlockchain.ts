@@ -1,4 +1,4 @@
-import { ContractKit, newKit } from '@celo/contractkit';
+import { ContractKit, newKit, StableToken } from '@celo/contractkit';
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
@@ -15,6 +15,7 @@ interface TxOptions {
 }
 
 type EpochRewardsContract = Awaited<ReturnType<ContractKit['_web3Contracts']['getEpochRewards']>>;
+type ExchangeContract = Awaited<ReturnType<ContractKit['contracts']['getExchange']>>;
 
 export function useBlockchain() {
   const { kit } = useCelo();
@@ -49,8 +50,15 @@ export function useBlockchain() {
     [contractKit]
   );
 
+  const [cUSDExchangeContract, setcUSDExchangeContract] = useState<ExchangeContract>();
+  useEffect(
+    () => void contractKit.contracts.getExchange(StableToken.cUSD).then(setcUSDExchangeContract),
+    [contractKit]
+  );
+
   return {
     epochRewardsContract,
+    cUSDExchangeContract,
     managerContract,
     stCeloContract,
     accountContract,
