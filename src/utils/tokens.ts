@@ -10,11 +10,15 @@ export class Token extends BigNumber {
   }
 
   displayAsBase(): string {
-    const value = fromWei(this.toFixed(0, BigNumber.ROUND_FLOOR));
-    return new BigNumber(value)
+    return this.convertToBase()
       .toFormat(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR)
       .replace(/0*$/, '')
       .replace(/\.$/, '');
+  }
+
+  convertToBase(): BigNumber {
+    const baseValue = fromWei(this.toFixed(0, BigNumber.ROUND_FLOOR));
+    return new BigNumber(baseValue);
   }
 }
 
