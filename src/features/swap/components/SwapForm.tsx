@@ -93,7 +93,7 @@ interface FormInputProps {
 }
 
 const getTitle = (error: string | null, mode: Mode) => {
-  if (error) return <span className="text-color-error">{error}</span>;
+  if (error) return <span className="text-color-error whitespace-nowrap">{error}</span>;
   if (mode === 'stake') return 'Stake';
   if (mode === 'unstake') return 'Unstake';
   return '';
