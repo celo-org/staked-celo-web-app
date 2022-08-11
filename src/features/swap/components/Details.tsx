@@ -2,17 +2,17 @@ import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { Token } from 'src/utils/tokens';
+import { CeloUSD } from 'src/utils/tokens';
 import { Mode } from '../types';
 
 interface DetailsProps {
   mode: Mode;
   exchangeRate: number;
-  gasFee: Token;
+  gasFeeInUSD: CeloUSD;
 }
 
-export const Details = ({ mode, exchangeRate, gasFee }: DetailsProps) => {
-  const details = getDetails(mode, exchangeRate, gasFee);
+export const Details = ({ mode, exchangeRate, gasFeeInUSD }: DetailsProps) => {
+  const details = getDetails(mode, exchangeRate, gasFeeInUSD);
 
   return (
     <ul className="text-color-secondary mt-[24px] text-[15px] leading-[24px]">
@@ -23,12 +23,12 @@ export const Details = ({ mode, exchangeRate, gasFee }: DetailsProps) => {
   );
 };
 
-const getDetails = (mode: Mode, exchangeRate: number, gasFee: Token) => {
+const getDetails = (mode: Mode, exchangeRate: number, gasFeeInUSD: CeloUSD) => {
   switch (mode) {
     case 'unstake':
-      return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail];
+      return [exchangeDetail(exchangeRate), gasDetail(gasFeeInUSD), feeDetail];
     case 'stake':
-      return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail, periodDetail];
+      return [exchangeDetail(exchangeRate), gasDetail(gasFeeInUSD), feeDetail, periodDetail];
   }
 };
 
@@ -75,8 +75,10 @@ const exchangeDetail = (exchangeRate: number): DetailProps => ({
     'stCELO’s exchange rate continuously accrues value vs CELO. As you receive rewards, your amount of stCELO will not change but when you unstake it will be worth more CELO than what you paid.',
 });
 
-const gasDetail = (gasFee: Token): DetailProps => {
-  const value = gasFee.convertToBase().isLessThan(0.001) ? '< 0.001' : `~${gasFee.toFixed()}`;
+const gasDetail = (gasFeeInUSD: CeloUSD): DetailProps => {
+  const value = gasFeeInUSD.convertToBase().isLessThan(0.001)
+    ? '< $0.001'
+    : `~$${gasFeeInUSD.toFixed()}`;
   return {
     title: 'Transaction Cost',
     value: value || '...',

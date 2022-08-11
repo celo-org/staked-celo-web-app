@@ -16,7 +16,8 @@ interface SwapProps {
 
 export const Swap = ({ mode, onModeChange }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
-  const { amount, setAmount, swap, balance, receiveAmount, exchangeRate, gasFee } = useSwap(mode);
+  const { amount, setAmount, swap, balance, receiveAmount, exchangeRate, gasFeeInUSD } =
+    useSwap(mode);
   const error = validateAmount(amount, balance, mode);
 
   return (
@@ -35,7 +36,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
       <OpacityTransition id={mode}>
         <div className="w-full px-[8px]">
           {!error && amount?.isGreaterThan(0) && (
-            <Details mode={mode} exchangeRate={exchangeRate} gasFee={gasFee} />
+            <Details mode={mode} exchangeRate={exchangeRate} gasFeeInUSD={gasFeeInUSD} />
           )}
           {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
             <PendingWithdrawals pendingWithdrawals={pendingWithdrawals} />
