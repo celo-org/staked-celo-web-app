@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Label } from 'src/components/text/Label';
-import { discordUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
+import { discordUrl, docsUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 
 const FAQLinks = () => {
@@ -12,7 +12,9 @@ const FAQLinks = () => {
         <Link href="/faq">FAQ</Link>
       </div>
       <div className={textClasses}>
-        <Link href="/docs">Docs</Link>
+        <a href={docsUrl} target="_blank" rel="noreferrer">
+          Docs
+        </a>
       </div>
     </>
   );
