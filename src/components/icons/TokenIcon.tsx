@@ -4,7 +4,7 @@ import CeloIcon from 'src/images/icons/token-celo.svg';
 import stCeloIcon from 'src/images/icons/token-stcelo.svg';
 import { TokenType } from 'src/utils/tokens';
 
-const tokenIcon: { [key in TokenType]: any } = {
+const tokenIcon: { [key in TokenType]?: any } = {
   CELO: CeloIcon,
   stCELO: stCeloIcon,
 };
