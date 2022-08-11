@@ -8,11 +8,11 @@ import { Mode } from '../types';
 interface DetailsProps {
   mode: Mode;
   swapRate: number;
-  gasFeeInUSD: CeloUSD;
+  gasFee: CeloUSD;
 }
 
-export const Details = ({ mode, swapRate, gasFeeInUSD }: DetailsProps) => {
-  const details = getDetails(mode, swapRate, gasFeeInUSD);
+export const Details = ({ mode, swapRate, gasFee }: DetailsProps) => {
+  const details = getDetails(mode, swapRate, gasFee);
 
   return (
     <ul className="text-color-secondary mt-[24px] text-[15px] leading-[24px]">
@@ -23,12 +23,12 @@ export const Details = ({ mode, swapRate, gasFeeInUSD }: DetailsProps) => {
   );
 };
 
-const getDetails = (mode: Mode, swapRate: number, gasFeeInUSD: CeloUSD) => {
+const getDetails = (mode: Mode, swapRate: number, gasFee: CeloUSD) => {
   switch (mode) {
     case 'unstake':
-      return [exchangeDetail(swapRate), gasDetail(gasFeeInUSD), feeDetail];
+      return [exchangeDetail(swapRate), gasDetail(gasFee), feeDetail];
     case 'stake':
-      return [exchangeDetail(swapRate), gasDetail(gasFeeInUSD), feeDetail, periodDetail];
+      return [exchangeDetail(swapRate), gasDetail(gasFee), feeDetail, periodDetail];
   }
 };
 
@@ -75,10 +75,10 @@ const exchangeDetail = (swapRate: number): DetailProps => ({
     'stCELO’s exchange rate continuously accrues value vs CELO. As you receive rewards, your amount of stCELO will not change but when you unstake it will be worth more CELO than what you paid.',
 });
 
-const gasDetail = (gasFeeInUSD: CeloUSD): DetailProps => {
-  const value = gasFeeInUSD.convertToBase().isLessThan(0.001)
+const gasDetail = (gasFee: CeloUSD): DetailProps => {
+  const value = gasFee.convertToBase().isLessThan(0.001)
     ? '< $0.001'
-    : `~$${gasFeeInUSD.toFixed()}`;
+    : `~$${gasFee.convertToBase().toFixed()}`;
   return {
     title: 'Transaction Cost',
     value: value || '...',

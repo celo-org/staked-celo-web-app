@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { useStaking } from './useStaking';
@@ -12,10 +11,9 @@ export function useSwap(mode: Mode) {
   const { celoBalance, stCeloBalance } = useAccountContext();
   const { celoAmount, setCeloAmount, stake, receivedStCelo, stakingGasFee } = useStaking();
   const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, unstakingGasFee } = useUnstaking();
-  const { cUSDExchangeContract } = useBlockchain();
 
   let swapRate: number;
-  let gasFee: Celo;
+  let gasFee: CeloUSD;
   let balance: Token;
   let swap: () => void;
   let receiveAmount: Token;
@@ -54,13 +52,5 @@ export function useSwap(mode: Mode) {
     }
   }, [mode, receiveAmount, setCeloAmount, setStCeloAmount]);
 
-  const [gasFeeInUSD, setGasFeeInUSD] = useState<CeloUSD>(new CeloUSD(0));
-  useEffect(() => {
-    if (!cUSDExchangeContract || gasFee.isEqualTo(0)) return;
-    void cUSDExchangeContract
-      .quoteGoldSell(gasFee.toFixed())
-      .then((cUSDValue) => setGasFeeInUSD(new CeloUSD(cUSDValue)));
-  }, [cUSDExchangeContract, gasFee]);
-
-  return { amount, setAmount, balance, swap, receiveAmount, swapRate, gasFeeInUSD };
+  return { amount, setAmount, balance, swap, receiveAmount, swapRate, gasFee };
 }

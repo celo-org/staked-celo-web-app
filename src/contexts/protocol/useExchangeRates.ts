@@ -6,10 +6,11 @@ import { Celo, StCelo } from 'src/utils/tokens';
 export const useExchangeRates = () => {
   const { stakingRate, loadStakingRate } = useStakingRate();
   const { unstakingRate, loadUnstakingRate } = useUnstakingRate();
+  const { celoToUSDRate, loadCeloToUSDRate } = useCeloToUSDRate();
 
   const loadExchangeRates = useCallback(async () => {
-    await Promise.all([loadStakingRate(), loadUnstakingRate()]);
-  }, [loadStakingRate, loadUnstakingRate]);
+    await Promise.all([loadStakingRate(), loadUnstakingRate(), loadCeloToUSDRate()]);
+  }, [loadStakingRate, loadUnstakingRate, loadCeloToUSDRate]);
 
   useEffect(() => {
     void loadExchangeRates();
@@ -18,6 +19,7 @@ export const useExchangeRates = () => {
   return {
     stakingRate,
     unstakingRate,
+    celoToUSDRate,
     loadExchangeRates,
   };
 };
@@ -55,5 +57,21 @@ const useUnstakingRate = () => {
   return {
     unstakingRate,
     loadUnstakingRate,
+  };
+};
+
+const useCeloToUSDRate = () => {
+  const { sortedOraclesContract, stableTokenContract } = useBlockchain();
+  const [celoToUSDRate, setCeloToUSDRate] = useState(0);
+
+  const loadCeloToUSDRate = useCallback(async () => {
+    if (!sortedOraclesContract || !stableTokenContract) return;
+    const { rate } = await sortedOraclesContract.medianRate(stableTokenContract.address);
+    setCeloToUSDRate(parseFloat(rate.toFixed(2)));
+  }, [sortedOraclesContract, stableTokenContract]);
+
+  return {
+    celoToUSDRate,
+    loadCeloToUSDRate,
   };
 };
