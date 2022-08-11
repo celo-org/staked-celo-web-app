@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Celo, StCelo, Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { useStaking } from './useStaking';
 import { useUnstaking } from './useUnstaking';
 
 export function useSwap(mode: Mode) {
-  const { celoExchangeRate, stCeloExchangeRate } = useExchangeContext();
+  const { celoExchangeRate, stCeloExchangeRate } = useProtocolContext();
   const { celoBalance, stCeloBalance } = useAccountContext();
   const { celoAmount, setCeloAmount, stake, receivedStCelo, stakingGasFee } = useStaking();
   const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, unstakingGasFee } = useUnstaking();

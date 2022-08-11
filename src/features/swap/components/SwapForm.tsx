@@ -3,7 +3,6 @@ import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Token, toToken } from 'src/utils/tokens';
 import { Mode } from '../types';
@@ -37,7 +36,6 @@ export const SwapForm = ({
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
-  const { reloadExchangeContext } = useExchangeContext();
   const { reloadProtocolContext } = useProtocolContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
@@ -47,12 +45,12 @@ export const SwapForm = ({
       setIsLoading(true);
       try {
         await onSubmit();
-        await Promise.all([reloadExchangeContext(), reloadProtocolContext()]);
+        await reloadProtocolContext();
       } finally {
         setIsLoading(false);
       }
     },
-    [onSubmit, reloadExchangeContext, reloadProtocolContext]
+    [onSubmit, reloadProtocolContext]
   );
 
   const onInputChange = (value: Token | undefined) => {

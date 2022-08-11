@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, StCelo } from 'src/utils/tokens';
 import { showStakingToast } from '../utils/toast';
@@ -10,7 +10,7 @@ import { showStakingToast } from '../utils/toast';
 export function useStaking() {
   const { address, loadBalances, celoBalance } = useAccountContext();
   const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
-  const { celoExchangeRate } = useExchangeContext();
+  const { celoExchangeRate } = useProtocolContext();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
   const [stakingGasFee, setStakingGasFee] = useState<Celo>(new Celo(0));
 
