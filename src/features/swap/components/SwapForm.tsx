@@ -3,7 +3,7 @@ import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
-import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Token, toToken } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { Detail } from '../utils/details';
@@ -36,7 +36,7 @@ export const SwapForm = ({
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
-  const { reloadExchangeContext } = useExchangeContext();
+  const { reloadProtocolContext } = useProtocolContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
@@ -45,12 +45,12 @@ export const SwapForm = ({
       setIsLoading(true);
       try {
         await onSubmit();
-        await reloadExchangeContext();
+        await reloadProtocolContext();
       } finally {
         setIsLoading(false);
       }
     },
-    [onSubmit, reloadExchangeContext]
+    [onSubmit, reloadProtocolContext]
   );
 
   const onInputChange = (value: Token | undefined) => {
@@ -94,9 +94,12 @@ interface FormInputProps {
 
 const getTitle = (error: string | null, mode: Mode) => {
   if (error) return <span className="text-color-error whitespace-nowrap">{error}</span>;
-  if (mode === 'stake') return 'Stake';
-  if (mode === 'unstake') return 'Unstake';
-  return '';
+  switch (mode) {
+    case 'stake':
+      return 'Stake';
+    case 'unstake':
+      return 'Unstake';
+  }
 };
 
 const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {

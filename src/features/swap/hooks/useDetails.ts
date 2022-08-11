@@ -14,8 +14,12 @@ export const periodDetail: Detail = {
 
 export const useDetails = (mode: Mode, exchangeRate: number, gasFee: Token) => {
   const details: Detail[] = useMemo(() => {
-    if (mode === 'unstake') return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail()];
-    return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail(), periodDetail];
+    switch (mode) {
+      case 'unstake':
+        return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail()];
+      case 'stake':
+        return [exchangeDetail(exchangeRate), gasDetail(gasFee), feeDetail(), periodDetail];
+    }
   }, [gasFee, exchangeRate, mode]);
 
   return {

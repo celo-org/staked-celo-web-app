@@ -7,6 +7,7 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback.net = false;
+      config.resolve.fallback.fs = false;
     }
     config.plugins.push(
       new webpack.BannerPlugin({

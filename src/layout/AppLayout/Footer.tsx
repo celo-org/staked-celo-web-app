@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Label } from 'src/components/text/Label';
 import { discordUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
-import { useExchangeContext } from 'src/contexts/exchange/ExchangeContext';
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 
 const FAQLinks = () => {
   const textClasses = 'text-[18px] leading-[32px] font-medium underline';
@@ -19,7 +19,7 @@ const FAQLinks = () => {
 };
 
 export const Footer = () => {
-  const { totalCeloBalance } = useExchangeContext();
+  const { totalCeloBalance } = useProtocolContext();
 
   const footerFlexClasses = 'flex flex-col sm:flex-row sm:items-center sm:justify-between';
   return (

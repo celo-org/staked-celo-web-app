@@ -1,11 +1,12 @@
+import { ContractKit, newKit } from '@celo/contractkit';
 import { useCelo } from '@celo/react-celo';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
+import { networkConfig } from 'src/config/celo';
 import { accountAddress, managerAddress, stCeloAddress } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
-
 interface TxOptions {
   from: string;
   gasPrice: string;
@@ -13,8 +14,11 @@ interface TxOptions {
   value?: string;
 }
 
+type EpochRewardsContract = Awaited<ReturnType<ContractKit['_web3Contracts']['getEpochRewards']>>;
+
 export function useBlockchain() {
   const { kit } = useCelo();
+  const contractKit = useMemo(() => newKit(networkConfig.rpcUrl), []);
 
   const managerContract = useMemo(() => {
     const { eth } = kit.connection.web3;
@@ -39,7 +43,14 @@ export function useBlockchain() {
     [kit.connection]
   );
 
+  const [epochRewardsContract, setEpochRewardsContract] = useState<EpochRewardsContract>();
+  useEffect(
+    () => void contractKit._web3Contracts.getEpochRewards().then(setEpochRewardsContract),
+    [contractKit]
+  );
+
   return {
+    epochRewardsContract,
     managerContract,
     stCeloContract,
     accountContract,
