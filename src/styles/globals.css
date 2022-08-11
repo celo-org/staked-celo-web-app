@@ -19,6 +19,7 @@ body:not(.dark-mode) {
   --c-bg-primary-color: #FFFDF4;
   --c-bg-secondary-color: #EBE7DD;
   --c-bg-tertiary-color: #F4FDF6;
+  --c-bg-secondary-oposite-color: #324142;
   --c-bg-action-primary-light-color: #6F61D7;
   --c-bg-action-primary-regular-color: #6759CC;
   --c-bg-action-primary-dark-color: #6051CD;
@@ -42,6 +43,7 @@ body.dark-mode {
   --c-bg-primary-color: #212B2E;
   --c-bg-secondary-color: #324142;
   --c-bg-tertiary-color: #212B2E;
+  --c-bg-secondary-oposite-color: #EBE7DD;
   --c-bg-action-primary-light-color: #9477F5;
   --c-bg-action-primary-regular-color: #9781EE;
   --c-bg-action-primary-dark-color: #8C62FF;

@@ -16,6 +16,10 @@ function getHeadTitle(pathName: string) {
   else return toTitleCase(segments[1]);
 }
 
+function isConnectPage(pathName: string) {
+  return pathName === '/connect';
+}
+
 interface Props {
   pathName: string;
 }
@@ -33,7 +37,7 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
       </Head>
       <div className="flex flex-col h-full min-w-screen min-w-[320px] sm:min-h-screen text-color-primary overflow-x-hidden">
         <div className="flex flex-col min-h-screen sm:min-h-full sm:flex-grow">
-          <Header />
+          <Header isConnectPage={isConnectPage(pathName)} />
           <main className="flex sm:flex-grow sm:justify-center">{children}</main>
         </div>
         <Footer />

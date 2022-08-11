@@ -17,6 +17,10 @@ import LogoDark from 'src/images/icons/logo-dark.svg';
 import LogoLight from 'src/images/icons/logo-light.svg';
 import SpinnerDark from 'src/images/icons/spinner-dark.svg';
 import SpinnerLight from 'src/images/icons/spinner-light.svg';
+import ThemeDark from 'src/images/icons/theme-dark.svg';
+import ThemeLight from 'src/images/icons/theme-light.svg';
+import ThemeOpositeDark from 'src/images/icons/theme-oposite-dark.svg';
+import ThemeOpositeLight from 'src/images/icons/theme-oposite-light.svg';
 import TwitterDark from 'src/images/icons/twitter-dark.svg';
 import TwitterLight from 'src/images/icons/twitter-light.svg';
 
@@ -29,7 +33,9 @@ type IconName =
   | 'discord'
   | 'twitter'
   | 'caret'
-  | 'spinner';
+  | 'spinner'
+  | 'theme'
+  | 'theme-oposite';
 
 interface ThemedIcons {
   dark: any;
@@ -46,6 +52,8 @@ const icons: Record<IconName, ThemedIcons> = {
   twitter: { light: TwitterDark, dark: TwitterLight },
   caret: { light: CaretDark, dark: CaretLight },
   spinner: { light: SpinnerLight, dark: SpinnerDark },
+  theme: { light: ThemeDark, dark: ThemeLight },
+  'theme-oposite': { light: ThemeOpositeDark, dark: ThemeOpositeLight },
 };
 
 interface ThemedIconProps {

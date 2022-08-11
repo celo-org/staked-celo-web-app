@@ -25,7 +25,7 @@ const Detail = ({ detail }: DetailProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <li key={detail.title} className="flex justify-between font-light mb-[4px]">
+    <li key={detail.title} className="flex justify-between font-normal mb-[4px]">
       <span className="inline-flex items-center">
         <span className="text-[15px] leading-[24px]">{detail.title}</span>
         <span className="inline flex items-center ml-[8px]">
