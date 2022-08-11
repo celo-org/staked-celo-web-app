@@ -18,7 +18,7 @@ interface SwapFormProps {
   onChange: (amount?: Token) => void;
   balance: Token;
   mode: Mode;
-  receiveAmount: Token;
+  receiveAmount: Token | null;
   onModeChange: (mode: Mode) => void;
 }
 

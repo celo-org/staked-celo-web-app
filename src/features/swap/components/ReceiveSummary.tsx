@@ -9,11 +9,11 @@ import { TokenCard } from './TokenCard';
 
 interface ReceiveSummaryProps {
   mode: Mode;
-  value: Token;
+  value: Token | null;
 }
 
 export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
-  const displayValue = value.isEqualTo(0) ? '0.00' : value.displayAsBase();
+  const displayValue = !value || value.isEqualTo(0) ? '0.00' : value.displayAsBase();
 
   return (
     <TokenCard
