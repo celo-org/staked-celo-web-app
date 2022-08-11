@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import { networkConfig } from 'src/config/celo';
 import { accountAddress, managerAddress, stCeloAddress } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
 interface TxOptions {
@@ -19,8 +18,8 @@ type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSor
 type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
 
 export function useBlockchain() {
-  const { kit } = useCelo();
-  const contractKit = useMemo(() => newKit(networkConfig.rpcUrl), []);
+  const { kit, network } = useCelo();
+  const contractKit = useMemo(() => newKit(network.rpcUrl), [network]);
 
   const managerContract = useMemo(() => {
     const { eth } = kit.connection.web3;
