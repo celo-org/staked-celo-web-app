@@ -6,7 +6,6 @@ import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Token, toToken } from 'src/utils/tokens';
 import { Mode } from '../types';
-import { Detail } from '../utils/details';
 import { BalanceTools } from './BalanceTools';
 import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
@@ -20,7 +19,6 @@ interface SwapFormProps {
   balance: Token;
   mode: Mode;
   receiveAmount: Token;
-  details: Detail[];
   onModeChange: (mode: Mode) => void;
 }
 

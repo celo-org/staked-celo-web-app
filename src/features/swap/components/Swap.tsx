@@ -1,7 +1,6 @@
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
-import { useDetails } from '../hooks/useDetails';
 import { useSwap } from '../hooks/useSwap';
 import { Mode } from '../types';
 import { validateAmount } from '../utils/validation';
@@ -18,7 +17,6 @@ interface SwapProps {
 export const Swap = ({ mode, onModeChange }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
   const { amount, setAmount, swap, balance, receiveAmount, exchangeRate, gasFee } = useSwap(mode);
-  const { details } = useDetails(mode, exchangeRate, gasFee);
   const error = validateAmount(amount, balance, mode);
 
   return (
@@ -32,12 +30,13 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
         onChange={setAmount}
         balance={balance}
         receiveAmount={receiveAmount}
-        details={details}
         onModeChange={onModeChange}
       />
       <OpacityTransition id={mode}>
         <div className="w-full px-[8px]">
-          {!error && amount?.isGreaterThan(0) && <Details details={details} />}
+          {!error && amount?.isGreaterThan(0) && (
+            <Details mode={mode} exchangeRate={exchangeRate} gasFee={gasFee} />
+          )}
           {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
             <PendingWithdrawals pendingWithdrawals={pendingWithdrawals} />
           ) : null}
