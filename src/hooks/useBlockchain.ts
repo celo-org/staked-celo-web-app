@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import { accountAddress, managerAddress, stCeloAddress } from 'src/config/contracts';
+import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
 interface TxOptions {
   from: string;
@@ -21,20 +21,25 @@ export function useBlockchain() {
   const { kit, network } = useCelo();
   const contractKit = useMemo(() => newKit(network.rpcUrl), [network]);
 
+  const addresses = useMemo(() => {
+    if (network.name === 'Mainnet') return mainnetAddresses;
+    return testnetAddresses;
+  }, [network]);
+
   const managerContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(ManagerABI as AbiItem[], managerAddress);
-  }, [kit.connection]);
+    return new eth.Contract(ManagerABI as AbiItem[], addresses.manager);
+  }, [kit.connection, addresses]);
 
   const stCeloContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(StCeloABI as AbiItem[], stCeloAddress);
-  }, [kit.connection]);
+    return new eth.Contract(StCeloABI as AbiItem[], addresses.stakedCelo);
+  }, [kit.connection, addresses]);
 
   const accountContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(AccountABI as AbiItem[], accountAddress);
-  }, [kit.connection]);
+    return new eth.Contract(AccountABI as AbiItem[], addresses.account);
+  }, [kit.connection, addresses]);
 
   const sendTransaction = useCallback(
     async (txObject: any, txOptions: TxOptions) => {

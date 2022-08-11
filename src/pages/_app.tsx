@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { networkConfig } from 'src/config/celo';
 import { AccountProvider, useAccountContext } from 'src/contexts/account/AccountContext';
 import { ProtocolProvider } from 'src/contexts/protocol/ProtocolContext';
 import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
@@ -67,7 +66,6 @@ const CeloProvider = (props: PropsWithChildren) => {
         description: 'Celo staking application',
         url: '',
       }}
-      network={networkConfig}
       connectModal={{
         title: <span>Connect Wallet</span>,
         providersOptions: {
