@@ -4,30 +4,30 @@ import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, StCelo } from 'src/utils/tokens';
 
 export const useExchangeRates = () => {
-  const { celoExchangeRate, loadCeloExchangeRate } = useCeloExchangeRate();
-  const { stCeloExchangeRate, loadStCeloExchangeRate } = useStCeloExchangeRate();
+  const { stakingRate, loadStakingRate } = useStakingRate();
+  const { unstakingRate, loadUnstakingRate } = useUnstakingRate();
 
   const loadExchangeRates = useCallback(async () => {
-    await Promise.all([loadCeloExchangeRate(), loadStCeloExchangeRate()]);
-  }, [loadCeloExchangeRate, loadStCeloExchangeRate]);
+    await Promise.all([loadStakingRate(), loadUnstakingRate()]);
+  }, [loadStakingRate, loadUnstakingRate]);
 
   useEffect(() => {
     void loadExchangeRates();
   }, [loadExchangeRates]);
 
   return {
-    celoExchangeRate,
-    stCeloExchangeRate,
+    stakingRate,
+    unstakingRate,
     loadExchangeRates,
   };
 };
 
-const useCeloExchangeRate = () => {
+const useStakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const [celoExchangeRate, setCeloExchangeRate] = useState(0);
+  const [stakingRate, setCeloExchangeRate] = useState(0);
 
-  const loadCeloExchangeRate = useCallback(async () => {
+  const loadStakingRate = useCallback(async () => {
     const oneCelo = new Celo(WEI_PER_UNIT);
     const stCeloAmount = new StCelo(
       await managerContract.methods.toStakedCelo(oneCelo.toFixed()).call()
@@ -36,24 +36,24 @@ const useCeloExchangeRate = () => {
   }, [managerContract]);
 
   return {
-    celoExchangeRate,
-    loadCeloExchangeRate,
+    stakingRate,
+    loadStakingRate,
   };
 };
 
-const useStCeloExchangeRate = () => {
+const useUnstakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const [stCeloExchangeRate, setStCeloExchangeRate] = useState(0);
+  const [unstakingRate, setStCeloExchangeRate] = useState(0);
 
-  const loadStCeloExchangeRate = useCallback(async () => {
+  const loadUnstakingRate = useCallback(async () => {
     const oneStCelo = new StCelo(WEI_PER_UNIT);
     const celoAmount = new Celo(await managerContract.methods.toCelo(oneStCelo.toFixed()).call());
     setStCeloExchangeRate(celoAmount.dividedBy(oneStCelo).toNumber());
   }, [managerContract]);
 
   return {
-    stCeloExchangeRate,
-    loadStCeloExchangeRate,
+    unstakingRate,
+    loadUnstakingRate,
   };
 };

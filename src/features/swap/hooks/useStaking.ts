@@ -10,7 +10,7 @@ import { showStakingToast } from '../utils/toast';
 export function useStaking() {
   const { address, loadBalances, celoBalance } = useAccountContext();
   const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
-  const { celoExchangeRate } = useProtocolContext();
+  const { stakingRate } = useProtocolContext();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
   const [stakingGasFee, setStakingGasFee] = useState<Celo>(new Celo(0));
 
@@ -51,8 +51,8 @@ export function useStaking() {
   }, [createTxOptions, depositTx, celoBalance, celoAmount]);
 
   const receivedStCelo = useMemo(
-    () => new StCelo(celoAmount ? celoAmount.multipliedBy(celoExchangeRate).dp(0) : 0),
-    [celoAmount, celoExchangeRate]
+    () => new StCelo(celoAmount ? celoAmount.multipliedBy(stakingRate).dp(0) : 0),
+    [celoAmount, stakingRate]
   );
 
   useEffect(() => void estimateStakingGas(), [estimateStakingGas]);

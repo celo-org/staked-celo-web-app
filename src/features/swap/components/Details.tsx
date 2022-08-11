@@ -7,12 +7,12 @@ import { Mode } from '../types';
 
 interface DetailsProps {
   mode: Mode;
-  exchangeRate: number;
+  swapRate: number;
   gasFeeInUSD: CeloUSD;
 }
 
-export const Details = ({ mode, exchangeRate, gasFeeInUSD }: DetailsProps) => {
-  const details = getDetails(mode, exchangeRate, gasFeeInUSD);
+export const Details = ({ mode, swapRate, gasFeeInUSD }: DetailsProps) => {
+  const details = getDetails(mode, swapRate, gasFeeInUSD);
 
   return (
     <ul className="text-color-secondary mt-[24px] text-[15px] leading-[24px]">
@@ -23,12 +23,12 @@ export const Details = ({ mode, exchangeRate, gasFeeInUSD }: DetailsProps) => {
   );
 };
 
-const getDetails = (mode: Mode, exchangeRate: number, gasFeeInUSD: CeloUSD) => {
+const getDetails = (mode: Mode, swapRate: number, gasFeeInUSD: CeloUSD) => {
   switch (mode) {
     case 'unstake':
-      return [exchangeDetail(exchangeRate), gasDetail(gasFeeInUSD), feeDetail];
+      return [exchangeDetail(swapRate), gasDetail(gasFeeInUSD), feeDetail];
     case 'stake':
-      return [exchangeDetail(exchangeRate), gasDetail(gasFeeInUSD), feeDetail, periodDetail];
+      return [exchangeDetail(swapRate), gasDetail(gasFeeInUSD), feeDetail, periodDetail];
   }
 };
 
@@ -68,9 +68,9 @@ const Detail = ({ title, value, tooltip }: DetailProps) => {
 
 const freePriceValue = 'Free*';
 
-const exchangeDetail = (exchangeRate: number): DetailProps => ({
+const exchangeDetail = (swapRate: number): DetailProps => ({
   title: 'Exchange Rate',
-  value: exchangeRate ? exchangeRate.toFixed(DISPLAY_DECIMALS) : '...',
+  value: swapRate ? swapRate.toFixed(DISPLAY_DECIMALS) : '...',
   tooltip:
     'stCELO’s exchange rate continuously accrues value vs CELO. As you receive rewards, your amount of stCELO will not change but when you unstake it will be worth more CELO than what you paid.',
 });

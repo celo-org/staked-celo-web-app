@@ -5,8 +5,8 @@ import { useExchangeRates } from './useExchangeRates';
 import { useTokenBalances } from './useTokenBalances';
 
 interface ProtocolContext {
-  celoExchangeRate: number;
-  stCeloExchangeRate: number;
+  stakingRate: number;
+  unstakingRate: number;
   loadExchangeRates: () => Promise<void>;
   totalCeloBalance: Celo;
   loadTokenBalances: () => Promise<void>;
@@ -14,8 +14,8 @@ interface ProtocolContext {
 }
 
 export const ProtocolContext = createContext<ProtocolContext>({
-  celoExchangeRate: 0,
-  stCeloExchangeRate: 0,
+  stakingRate: 0,
+  unstakingRate: 0,
   loadExchangeRates: () => Promise.resolve(),
   totalCeloBalance: new Celo(0),
   loadTokenBalances: () => Promise.resolve(),
@@ -23,15 +23,15 @@ export const ProtocolContext = createContext<ProtocolContext>({
 });
 
 export const ProtocolProvider = ({ children }: PropsWithChildren) => {
-  const { celoExchangeRate, stCeloExchangeRate, loadExchangeRates } = useExchangeRates();
+  const { stakingRate, unstakingRate, loadExchangeRates } = useExchangeRates();
   const { totalCeloBalance, loadTokenBalances } = useTokenBalances();
   const { annualProjectedYield } = useAnnualProjectedYield();
 
   return (
     <ProtocolContext.Provider
       value={{
-        celoExchangeRate,
-        stCeloExchangeRate,
+        stakingRate,
+        unstakingRate,
         loadExchangeRates,
         totalCeloBalance,
         loadTokenBalances,
@@ -45,8 +45,8 @@ export const ProtocolProvider = ({ children }: PropsWithChildren) => {
 
 export function useProtocolContext() {
   const {
-    celoExchangeRate,
-    stCeloExchangeRate,
+    stakingRate,
+    unstakingRate,
     loadExchangeRates,
     totalCeloBalance,
     loadTokenBalances,
@@ -58,8 +58,8 @@ export function useProtocolContext() {
   }, [loadTokenBalances, loadExchangeRates]);
 
   return {
-    celoExchangeRate,
-    stCeloExchangeRate,
+    stakingRate,
+    unstakingRate,
     totalCeloBalance,
     annualProjectedYield,
     reloadProtocolContext,

@@ -11,7 +11,7 @@ import { showUnstakingToast } from '../utils/toast';
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
   const { managerContract, sendTransaction } = useBlockchain();
-  const { stCeloExchangeRate } = useProtocolContext();
+  const { unstakingRate } = useProtocolContext();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
   const [unstakingGasFee, setUnstakingGasFee] = useState<Celo>(new Celo(0));
 
@@ -48,8 +48,8 @@ export function useUnstaking() {
   }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount]);
 
   const receivedCelo = useMemo(
-    () => new Celo(stCeloAmount ? stCeloAmount.multipliedBy(stCeloExchangeRate).dp(0) : 0),
-    [stCeloAmount, stCeloExchangeRate]
+    () => new Celo(stCeloAmount ? stCeloAmount.multipliedBy(unstakingRate).dp(0) : 0),
+    [stCeloAmount, unstakingRate]
   );
 
   useEffect(() => void estimateUnstakingGas(), [estimateUnstakingGas]);
