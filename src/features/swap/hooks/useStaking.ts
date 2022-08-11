@@ -53,7 +53,7 @@ export function useStaking() {
   }, [createTxOptions, depositTx, celoBalance, celoAmount, celoToUSDRate]);
 
   const receivedStCelo = useMemo(
-    () => new StCelo(celoAmount ? celoAmount.multipliedBy(stakingRate).dp(0) : 0),
+    () => (celoAmount ? new StCelo(celoAmount.multipliedBy(stakingRate).dp(0)) : null),
     [celoAmount, stakingRate]
   );
 

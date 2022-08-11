@@ -50,7 +50,7 @@ export function useUnstaking() {
   }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount, celoToUSDRate]);
 
   const receivedCelo = useMemo(
-    () => new Celo(stCeloAmount ? stCeloAmount.multipliedBy(unstakingRate).dp(0) : 0),
+    () => (stCeloAmount ? new Celo(stCeloAmount.multipliedBy(unstakingRate).dp(0)) : null),
     [stCeloAmount, unstakingRate]
   );
 

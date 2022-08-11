@@ -16,7 +16,7 @@ export function useSwap(mode: Mode) {
   let gasFee: CeloUSD;
   let balance: Token;
   let swap: () => void;
-  let receiveAmount: Token;
+  let receiveAmount: Token | null;
   let amount: Token | null;
   let setAmount: () => void;
 
@@ -44,10 +44,9 @@ export function useSwap(mode: Mode) {
   // When switching modes expected received amount should be set as provided amount
   // Because receiveAmount is updated after mode is changed we need to perform instance type check
   useEffect(() => {
-    if (receiveAmount.isEqualTo(0)) return;
-    if (mode === 'stake' && receiveAmount instanceof StCelo) {
+    if (mode === 'stake' && (!receiveAmount || receiveAmount instanceof StCelo)) {
       setStCeloAmount(receiveAmount);
-    } else if (mode === 'unstake' && receiveAmount instanceof Celo) {
+    } else if (mode === 'unstake' && (!receiveAmount || receiveAmount instanceof Celo)) {
       setCeloAmount(receiveAmount);
     }
   }, [mode, receiveAmount, setCeloAmount, setStCeloAmount]);
