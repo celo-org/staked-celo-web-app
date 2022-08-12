@@ -3,12 +3,33 @@ import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, StCelo } from 'src/utils/tokens';
 
-const useCeloExchangeRate = () => {
+export const useExchangeRates = () => {
+  const { stakingRate, loadStakingRate } = useStakingRate();
+  const { unstakingRate, loadUnstakingRate } = useUnstakingRate();
+  const { celoToUSDRate, loadCeloToUSDRate } = useCeloToUSDRate();
+
+  const loadExchangeRates = useCallback(async () => {
+    await Promise.all([loadStakingRate(), loadUnstakingRate(), loadCeloToUSDRate()]);
+  }, [loadStakingRate, loadUnstakingRate, loadCeloToUSDRate]);
+
+  useEffect(() => {
+    void loadExchangeRates();
+  }, [loadExchangeRates]);
+
+  return {
+    stakingRate,
+    unstakingRate,
+    celoToUSDRate,
+    loadExchangeRates,
+  };
+};
+
+const useStakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const [celoExchangeRate, setCeloExchangeRate] = useState(0);
+  const [stakingRate, setCeloExchangeRate] = useState(0);
 
-  const loadCeloExchangeRate = useCallback(async () => {
+  const loadStakingRate = useCallback(async () => {
     const oneCelo = new Celo(WEI_PER_UNIT);
     const stCeloAmount = new StCelo(
       await managerContract.methods.toStakedCelo(oneCelo.toFixed()).call()
@@ -17,43 +38,40 @@ const useCeloExchangeRate = () => {
   }, [managerContract]);
 
   return {
-    celoExchangeRate,
-    loadCeloExchangeRate,
+    stakingRate,
+    loadStakingRate,
   };
 };
 
-const useStCeloExchangeRate = () => {
+const useUnstakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const [stCeloExchangeRate, setStCeloExchangeRate] = useState(0);
+  const [unstakingRate, setStCeloExchangeRate] = useState(0);
 
-  const loadStCeloExchangeRate = useCallback(async () => {
+  const loadUnstakingRate = useCallback(async () => {
     const oneStCelo = new StCelo(WEI_PER_UNIT);
     const celoAmount = new Celo(await managerContract.methods.toCelo(oneStCelo.toFixed()).call());
     setStCeloExchangeRate(celoAmount.dividedBy(oneStCelo).toNumber());
   }, [managerContract]);
 
   return {
-    stCeloExchangeRate,
-    loadStCeloExchangeRate,
+    unstakingRate,
+    loadUnstakingRate,
   };
 };
 
-export const useExchangeRates = () => {
-  const { celoExchangeRate, loadCeloExchangeRate } = useCeloExchangeRate();
-  const { stCeloExchangeRate, loadStCeloExchangeRate } = useStCeloExchangeRate();
+const useCeloToUSDRate = () => {
+  const { sortedOraclesContract, stableTokenContract } = useBlockchain();
+  const [celoToUSDRate, setCeloToUSDRate] = useState(0);
 
-  const loadExchangeRates = useCallback(async () => {
-    await Promise.all([loadCeloExchangeRate(), loadStCeloExchangeRate()]);
-  }, [loadCeloExchangeRate, loadStCeloExchangeRate]);
-
-  useEffect(() => {
-    void loadExchangeRates();
-  }, [loadExchangeRates]);
+  const loadCeloToUSDRate = useCallback(async () => {
+    if (!sortedOraclesContract || !stableTokenContract) return;
+    const { rate } = await sortedOraclesContract.medianRate(stableTokenContract.address);
+    setCeloToUSDRate(parseFloat(rate.toFixed(2)));
+  }, [sortedOraclesContract, stableTokenContract]);
 
   return {
-    celoExchangeRate,
-    stCeloExchangeRate,
-    loadExchangeRates,
+    celoToUSDRate,
+    loadCeloToUSDRate,
   };
 };

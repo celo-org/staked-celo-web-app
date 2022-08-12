@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { Celo, StCelo, Token } from 'src/utils/tokens';
+import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { useStaking } from './useStaking';
 import { useUnstaking } from './useUnstaking';
 
 export function useSwap(mode: Mode) {
-  const { celoExchangeRate, stCeloExchangeRate } = useProtocolContext();
+  const { stakingRate, unstakingRate } = useProtocolContext();
   const { celoBalance, stCeloBalance } = useAccountContext();
   const { celoAmount, setCeloAmount, stake, receivedStCelo, stakingGasFee } = useStaking();
   const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, unstakingGasFee } = useUnstaking();
 
-  let exchangeRate: number;
-  let gasFee: Token;
+  let swapRate: number;
+  let gasFee: CeloUSD;
   let balance: Token;
   let swap: () => void;
   let receiveAmount: Token;
@@ -22,7 +22,7 @@ export function useSwap(mode: Mode) {
 
   switch (mode) {
     case 'stake':
-      exchangeRate = celoExchangeRate;
+      swapRate = stakingRate;
       gasFee = stakingGasFee;
       balance = celoBalance;
       swap = stake;
@@ -31,7 +31,7 @@ export function useSwap(mode: Mode) {
       setAmount = (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount));
       break;
     case 'unstake':
-      exchangeRate = stCeloExchangeRate;
+      swapRate = unstakingRate;
       gasFee = unstakingGasFee;
       balance = stCeloBalance;
       swap = unstake;
@@ -52,5 +52,5 @@ export function useSwap(mode: Mode) {
     }
   }, [mode, receiveAmount, setCeloAmount, setStCeloAmount]);
 
-  return { amount, setAmount, balance, swap, receiveAmount, exchangeRate, gasFee };
+  return { amount, setAmount, balance, swap, receiveAmount, swapRate, gasFee };
 }

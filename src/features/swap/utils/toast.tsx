@@ -13,7 +13,7 @@ export const showStakingToast = (amount: StCelo) =>
   showToast(
     <TokenIcon token="stCELO" width={32} height={32} />,
     <ToastContent>
-      You received <br /> {amount.format()} stCELO
+      You received <br /> {amount.displayAsBase()} stCELO
     </ToastContent>
   );
 

@@ -6,7 +6,6 @@ import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Token, toToken } from 'src/utils/tokens';
 import { Mode } from '../types';
-import { Detail } from '../utils/details';
 import { BalanceTools } from './BalanceTools';
 import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
@@ -20,7 +19,6 @@ interface SwapFormProps {
   balance: Token;
   mode: Mode;
   receiveAmount: Token;
-  details: Detail[];
   onModeChange: (mode: Mode) => void;
 }
 
@@ -103,7 +101,8 @@ const getTitle = (error: string | null, mode: Mode) => {
 };
 
 const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
-  const onClickUseMax = () => (balance.format() !== amount?.format() ? onChange(balance) : null);
+  const onClickUseMax = () =>
+    balance.displayAsBase() !== amount?.displayAsBase() ? onChange(balance) : null;
   const onInputChange = (values: NumberFormatValues) => {
     const { value } = values;
     // Returning in case of '.' makes it possible to input number starting with decimal separator
@@ -131,7 +130,7 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
-          value={amount ? amount.format() : ''}
+          value={amount ? amount.displayAsBase() : ''}
           decimalScale={DISPLAY_DECIMALS}
           isNumericString
           allowNegative={false}

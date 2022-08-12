@@ -15,6 +15,8 @@ interface TxOptions {
 }
 
 type EpochRewardsContract = Awaited<ReturnType<ContractKit['_web3Contracts']['getEpochRewards']>>;
+type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSortedOracles']>>;
+type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
 
 export function useBlockchain() {
   const { kit } = useCelo();
@@ -49,8 +51,22 @@ export function useBlockchain() {
     [contractKit]
   );
 
+  const [sortedOraclesContract, setSortedOraclesContract] = useState<SortedOraclesContract>();
+  useEffect(
+    () => void contractKit.contracts.getSortedOracles().then(setSortedOraclesContract),
+    [contractKit]
+  );
+
+  const [stableTokenContract, setStableTokenContract] = useState<StableTokenContract>();
+  useEffect(
+    () => void contractKit.contracts.getStableToken().then(setStableTokenContract),
+    [contractKit]
+  );
+
   return {
     epochRewardsContract,
+    sortedOraclesContract,
+    stableTokenContract,
     managerContract,
     stCeloContract,
     accountContract,

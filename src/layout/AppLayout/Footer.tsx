@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Label } from 'src/components/text/Label';
-import { discordUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
+import { discordUrl, docsUrl, githubUrl, twitterUrl } from 'src/config/externalUrls';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 
 const FAQLinks = () => {
@@ -12,7 +12,9 @@ const FAQLinks = () => {
         <Link href="/faq">FAQ</Link>
       </div>
       <div className={textClasses}>
-        <Link href="/docs">Docs</Link>
+        <a href={docsUrl} target="_blank" rel="noreferrer">
+          Docs
+        </a>
       </div>
     </>
   );
@@ -26,7 +28,7 @@ export const Footer = () => {
     <footer className={`w-full ${footerFlexClasses} p-base sm:h-[168px] bg-secondary`}>
       <div className="flex flex-col sm:order-first mb-[32px] sm:mb-0 sm:w-1/3">
         <Label classes="mb-[4px]">Total CELO staked</Label>
-        <span className="text-[27px] leading-[40px]">{totalCeloBalance.format()}</span>
+        <span className="text-[27px] leading-[40px]">{totalCeloBalance.displayAsBase()}</span>
       </div>
 
       <div className="mb-[64px] sm:order-last sm:hidden">{FAQLinks()}</div>
