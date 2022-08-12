@@ -38,7 +38,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
       screenReaderLabel="Connect wallet modal"
       close={close}
     >
-      <div className="flex flex-col h-full text-color-modal">
+      <div className="flex flex-col h-full bg-white text-color-modal p-[24px]">
         <div className="flex justify-between">
           <div className="flex items-center">
             <IndicatorIcon classes="mr-[8px]" />
