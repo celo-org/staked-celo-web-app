@@ -36,10 +36,9 @@ export const SwapForm = ({
   onModeChange,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
   const [isCalloutModalOpened, setIsCalloutModalOpened] = useState(false);
   const { reloadProtocolContext } = useProtocolContext();
-  const disabledSubmit = !amount || isLoading || !!error || !isTouched;
+  const disabledSubmit = !amount || isLoading || !!error;
 
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
@@ -57,11 +56,6 @@ export const SwapForm = ({
     [onSubmit, reloadProtocolContext]
   );
 
-  const onInputChange = (value: Token | undefined) => {
-    setIsTouched(true);
-    onChange(value);
-  };
-
   return (
     <>
       <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
@@ -72,7 +66,7 @@ export const SwapForm = ({
             balance={balance}
             error={error}
             swapMax={swapMax}
-            onChange={onInputChange}
+            onChange={onChange}
           />
           <div
             className="absolute inline-flex cursor-pointer"
