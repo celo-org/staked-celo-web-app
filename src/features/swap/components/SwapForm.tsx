@@ -10,6 +10,7 @@ import { BalanceTools } from './BalanceTools';
 import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
+import { TransactionCalloutModal } from './TransactionCalloutModal';
 
 interface SwapFormProps {
   amount: Token | null;
@@ -34,18 +35,21 @@ export const SwapForm = ({
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
+  const [isCalloutModalOpened, setIsCalloutModalOpened] = useState(false);
   const { reloadProtocolContext } = useProtocolContext();
   const disabledSubmit = !amount || isLoading || !!error || !isTouched;
 
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
+      setIsCalloutModalOpened(true);
       setIsLoading(true);
       try {
         await onSubmit();
         await reloadProtocolContext();
       } finally {
         setIsLoading(false);
+        setIsCalloutModalOpened(false);
       }
     },
     [onSubmit, reloadProtocolContext]
@@ -61,24 +65,30 @@ export const SwapForm = ({
   };
 
   return (
-    <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
-      <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
-        <SwapFormInput
-          balance={balance}
-          amount={amount}
-          onChange={onInputChange}
-          mode={mode}
-          error={error}
-        />
-        <div className="absolute inline-flex cursor-pointer" onClick={switchModes}>
-          <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
+    <>
+      <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
+        <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
+          <SwapFormInput
+            balance={balance}
+            amount={amount}
+            onChange={onInputChange}
+            mode={mode}
+            error={error}
+          />
+          <div className="absolute inline-flex cursor-pointer" onClick={switchModes}>
+            <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
+          </div>
+          <ReceiveSummary value={receiveAmount} mode={mode} />
         </div>
-        <ReceiveSummary value={receiveAmount} mode={mode} />
-      </div>
-      <div className="flex justify-center mt-[16px]">
-        <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
-      </div>
-    </form>
+        <div className="flex justify-center mt-[16px]">
+          <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
+        </div>
+      </form>
+      <TransactionCalloutModal
+        isOpened={isCalloutModalOpened}
+        close={() => setIsCalloutModalOpened(false)}
+      />
+    </>
   );
 };
 

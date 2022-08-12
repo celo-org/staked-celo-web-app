@@ -15,6 +15,8 @@ import InfoLight from 'src/images/icons/info-light.svg';
 import InfoOrange from 'src/images/icons/info-orange.svg';
 import LogoDark from 'src/images/icons/logo-dark.svg';
 import LogoLight from 'src/images/icons/logo-light.svg';
+import SpinnerBigDark from 'src/images/icons/spinner-big-dark.svg';
+import SpinnerBigLight from 'src/images/icons/spinner-big-light.svg';
 import SpinnerDark from 'src/images/icons/spinner-dark.svg';
 import SpinnerLight from 'src/images/icons/spinner-light.svg';
 import ThemeDark from 'src/images/icons/theme-dark.svg';
@@ -34,6 +36,7 @@ type IconName =
   | 'twitter'
   | 'caret'
   | 'spinner'
+  | 'spinner-big'
   | 'theme'
   | 'theme-oposite';
 
@@ -52,6 +55,7 @@ const icons: Record<IconName, ThemedIcons> = {
   twitter: { light: TwitterDark, dark: TwitterLight },
   caret: { light: CaretDark, dark: CaretLight },
   spinner: { light: SpinnerLight, dark: SpinnerDark },
+  'spinner-big': { light: SpinnerBigLight, dark: SpinnerBigDark },
   theme: { light: ThemeDark, dark: ThemeLight },
   'theme-oposite': { light: ThemeOpositeDark, dark: ThemeOpositeLight },
 };
