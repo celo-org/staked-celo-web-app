@@ -21,6 +21,7 @@ interface SwapFormProps {
   mode: Mode;
   receiveAmount: Token | null;
   onModeChange: (mode: Mode) => void;
+  swapMax: () => void;
 }
 
 export const SwapForm = ({
@@ -32,6 +33,7 @@ export const SwapForm = ({
   mode,
   receiveAmount,
   onModeChange,
+  swapMax,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -74,6 +76,7 @@ export const SwapForm = ({
             onChange={onInputChange}
             mode={mode}
             error={error}
+            onClickUseMax={swapMax}
           />
           <div className="absolute inline-flex cursor-pointer" onClick={switchModes}>
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
@@ -98,6 +101,7 @@ interface FormInputProps {
   mode: Mode;
   error: string | null;
   amount: Token | null;
+  onClickUseMax: () => void;
 }
 
 const getTitle = (error: string | null, mode: Mode) => {
@@ -110,9 +114,14 @@ const getTitle = (error: string | null, mode: Mode) => {
   }
 };
 
-const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
-  const onClickUseMax = () =>
-    balance.displayAsBase() !== amount?.displayAsBase() ? onChange(balance) : null;
+const SwapFormInput = ({
+  mode,
+  balance,
+  amount,
+  onChange,
+  error,
+  onClickUseMax,
+}: FormInputProps) => {
   const onInputChange = (values: NumberFormatValues) => {
     const { value } = values;
     // Returning in case of '.' makes it possible to input number starting with decimal separator
