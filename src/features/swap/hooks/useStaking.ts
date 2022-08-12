@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
+import { GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useBlockchain } from 'src/hooks/useBlockchain';
@@ -18,8 +18,6 @@ export function useStaking() {
     () => ({
       from: address!,
       value: celoAmount?.toFixed(),
-      gas: GAS_LIMIT,
-      gasPrice: GAS_PRICE,
     }),
     [address, celoAmount]
   );

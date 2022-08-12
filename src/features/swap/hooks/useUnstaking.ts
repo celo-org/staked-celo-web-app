@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
+import { GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
@@ -16,14 +16,7 @@ export function useUnstaking() {
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
   const [unstakingGasFee, setUnstakingGasFee] = useState<CeloUSD>(new CeloUSD(0));
 
-  const createTxOptions = useCallback(
-    () => ({
-      from: address!,
-      gas: GAS_LIMIT,
-      gasPrice: GAS_PRICE,
-    }),
-    [address]
-  );
+  const createTxOptions = useCallback(() => ({ from: address! }), [address]);
 
   const withdrawTx = useCallback(
     () => stCeloAmount && managerContract.methods.withdraw(stCeloAmount.toFixed()),
