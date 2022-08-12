@@ -4,4 +4,4 @@ export const INPUT_DECIMALS = 4;
 export const MIN_ROUNDED_VALUE = 0.001;
 
 export const GAS_LIMIT = process.env.NEXT_PUBLIC_GAS_LIMIT || '10000000';
-export const GAS_PRICE = process.env.NEXT_PUBLIC_GAS_PRICE || '100000000';
+export const GAS_PRICE = process.env.NEXT_PUBLIC_GAS_PRICE || '500000000';
