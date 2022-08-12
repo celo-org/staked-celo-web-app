@@ -3,14 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { useAPI } from 'src/hooks/useAPI';
 import { useBlockchain } from 'src/hooks/useBlockchain';
-import api from 'src/services/api';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
 import { showUnstakingToast } from '../utils/toast';
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
   const { managerContract, sendTransaction } = useBlockchain();
+  const { api } = useAPI();
   const { unstakingRate, celoToUSDRate } = useProtocolContext();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
   const [unstakingGasFee, setUnstakingGasFee] = useState<CeloUSD>(new CeloUSD(0));
