@@ -3,6 +3,7 @@ import '@celo/react-celo/lib/styles.css';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
@@ -20,18 +21,33 @@ const App = ({ Component, pageProps, router }: AppProps) => {
   const pathName = router.pathname;
 
   return (
-    <ClientOnly>
-      <TopProvider>
-        <CeloConnectRedirect>
-          <AppLayout pathName={pathName}>
-            <Component {...pageProps} />
-            <ToastContainer transition={Zoom} position={toast.POSITION.TOP_CENTER} icon={false} />
-          </AppLayout>
-        </CeloConnectRedirect>
-      </TopProvider>
-    </ClientOnly>
+    <>
+      <Head>
+        <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
+      </Head>
+      <ClientOnly>
+        <TopProvider>
+          <CeloConnectRedirect>
+            <AppLayout pathName={pathName}>
+              <Component {...pageProps} />
+              <ToastContainer transition={Zoom} position={toast.POSITION.TOP_CENTER} icon={false} />
+            </AppLayout>
+          </CeloConnectRedirect>
+        </TopProvider>
+      </ClientOnly>
+    </>
   );
 };
+
+function getHeadTitle(pathName: string) {
+  const segments = pathName.split('/');
+  if (segments.length <= 1 || !segments[1]) return 'Home';
+
+  return segments[1].replace(
+    /\w\S*/g,
+    (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
 
 // https://github.com/vercel/next.js/issues/2473#issuecomment-587551234
 const ClientOnly = ({ children }: PropsWithChildren) => {
