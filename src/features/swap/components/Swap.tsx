@@ -24,15 +24,15 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
     <CenteredLayout classes="px-[24px]">
       <Switcher mode={mode} onModeChange={onModeChange} />
       <SwapForm
-        amount={amount}
-        error={error}
         mode={mode}
+        amount={amount}
+        receiveAmount={receiveAmount}
+        balance={balance}
+        error={error}
+        swapMax={swapMax}
         onSubmit={swap}
         onChange={setAmount}
-        balance={balance}
-        receiveAmount={receiveAmount}
         onModeChange={onModeChange}
-        swapMax={swapMax}
       />
       <OpacityTransition id={mode}>
         <div className="w-full px-[8px]">

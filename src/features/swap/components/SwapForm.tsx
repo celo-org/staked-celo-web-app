@@ -13,27 +13,27 @@ import { TokenCard } from './TokenCard';
 import { TransactionCalloutModal } from './TransactionCalloutModal';
 
 interface SwapFormProps {
+  mode: Mode;
   amount: Token | null;
+  receiveAmount: Token | null;
+  balance: Token;
   error: string | null;
+  swapMax: () => void;
   onSubmit: () => void;
   onChange: (amount?: Token) => void;
-  balance: Token;
-  mode: Mode;
-  receiveAmount: Token | null;
   onModeChange: (mode: Mode) => void;
-  swapMax: () => void;
 }
 
 export const SwapForm = ({
+  mode,
   amount,
+  receiveAmount,
+  balance,
   error,
+  swapMax,
   onSubmit,
   onChange,
-  balance,
-  mode,
-  receiveAmount,
   onModeChange,
-  swapMax,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -62,23 +62,22 @@ export const SwapForm = ({
     onChange(value);
   };
 
-  const switchModes = () => {
-    onModeChange(mode === 'stake' ? 'unstake' : 'stake');
-  };
-
   return (
     <>
       <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
         <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
           <SwapFormInput
-            balance={balance}
-            amount={amount}
-            onChange={onInputChange}
             mode={mode}
+            amount={amount}
+            balance={balance}
             error={error}
-            onClickUseMax={swapMax}
+            swapMax={swapMax}
+            onChange={onInputChange}
           />
-          <div className="absolute inline-flex cursor-pointer" onClick={switchModes}>
+          <div
+            className="absolute inline-flex cursor-pointer"
+            onClick={() => onModeChange(mode === 'stake' ? 'unstake' : 'stake')}
+          >
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </div>
           <ReceiveSummary value={receiveAmount} mode={mode} />
@@ -96,12 +95,12 @@ export const SwapForm = ({
 };
 
 interface FormInputProps {
-  onChange: (amount?: Token) => void;
-  balance: Token;
   mode: Mode;
-  error: string | null;
   amount: Token | null;
-  onClickUseMax: () => void;
+  balance: Token;
+  error: string | null;
+  swapMax: () => void;
+  onChange: (amount?: Token) => void;
 }
 
 const getTitle = (error: string | null, mode: Mode) => {
@@ -114,14 +113,7 @@ const getTitle = (error: string | null, mode: Mode) => {
   }
 };
 
-const SwapFormInput = ({
-  mode,
-  balance,
-  amount,
-  onChange,
-  error,
-  onClickUseMax,
-}: FormInputProps) => {
+const SwapFormInput = ({ mode, amount, balance, error, swapMax, onChange }: FormInputProps) => {
   const onInputChange = (values: NumberFormatValues) => {
     const { value } = values;
     // Returning in case of '.' makes it possible to input number starting with decimal separator
@@ -156,7 +148,7 @@ const SwapFormInput = ({
           inputMode="decimal"
         />
       }
-      infoChild={<BalanceTools mode={mode} onClickUseMax={onClickUseMax} balance={balance} />}
+      infoChild={<BalanceTools mode={mode} onClickUseMax={swapMax} balance={balance} />}
     />
   );
 };
