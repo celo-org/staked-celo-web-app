@@ -144,6 +144,7 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
           decimalScale={DISPLAY_DECIMALS}
           isNumericString
           allowNegative={false}
+          inputMode="decimal"
         />
       }
       infoChild={<BalanceTools mode={mode} onClickUseMax={onClickUseMax} balance={balance} />}
