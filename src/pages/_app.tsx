@@ -23,7 +23,7 @@ const App = ({ Component, pageProps, router }: AppProps) => {
   return (
     <>
       <Head>
-        <title>{`Liquid Staking | ${getHeadTitle(pathName)}`}</title>
+        <title>{`StakedCelo - Liquid staking on Celo | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <ClientOnly>
         <TopProvider>
