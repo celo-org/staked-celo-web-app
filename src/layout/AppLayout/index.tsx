@@ -1,3 +1,4 @@
+import { useCelo } from '@celo/react-celo';
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
 import { useThemeContext } from 'src/contexts/theme/ThemeContext';
@@ -24,6 +25,7 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
       </Head>
       <div className="flex flex-col h-full min-w-screen min-w-[320px] sm:min-h-screen text-color-primary overflow-x-hidden">
         <div className="flex flex-col min-h-screen sm:min-h-full sm:flex-grow">
+          <DeveloperMode />
           <Header isConnectPage={isConnectPage(pathName)} />
           <main className="flex sm:flex-grow sm:justify-center">{children}</main>
         </div>
@@ -31,4 +33,20 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
       </div>
     </>
   );
+};
+
+const DeveloperMode = () => {
+  const { network } = useCelo();
+
+  if (network?.name === 'Alfajores') {
+    return (
+      <div className="flex items-center justify-center px-[24px] py-[8px] bg-green-light">
+        <span className="font-semibold text-[16px] leading-[16px] text-color-black-light">
+          Developer network: Alfajores
+        </span>
+      </div>
+    );
+  }
+
+  return null;
 };

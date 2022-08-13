@@ -20,6 +20,9 @@ module.exports = {
         'color-purple': {
           DEFAULT: '#6A38F6',
         },
+        'color-black': {
+          light: '#212B2E',
+        },
       },
       placeholderColor: {
         primary: 'var(--c-placeholder-primary)',
@@ -38,6 +41,9 @@ module.exports = {
         'highlight-primary': 'var(--c-bg-highlight-primary-color)',
         'highlight-secondary': 'var(--c-bg-highlight-secondary-color)',
         'callout-modal': 'var(--c-bg-callout-modal-color)',
+        green: {
+          light: '#7ED8C2',
+        },
       },
       padding: {
         base: '32px',
