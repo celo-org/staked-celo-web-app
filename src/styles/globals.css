@@ -15,6 +15,7 @@ body:not(.dark-mode) {
   --c-text-secondary-callout-color: #AF5F14;
   --c-text-tertiary-callout-color: #06B595;
   --c-text-modal: #1C3D42;
+  --c-text-callout-modal-color: #6759CC;
   --c-placeholder-primary: rgba(126, 155, 157, 0.3);
   --c-bg-primary-color: #FFFDF4;
   --c-bg-secondary-color: #EBE7DD;
@@ -28,6 +29,7 @@ body:not(.dark-mode) {
   --c-bg-action-secondary-dark-color: #E3AD49;
   --c-bg-highlight-primary-color: #6759CC;
   --c-bg-highlight-secondary-color: #E5B253;
+  --c-bg-callout-modal-color: #FFFDF4;
 }
 
 body.dark-mode {
@@ -39,6 +41,7 @@ body.dark-mode {
   --c-text-secondary-callout-color: #7ED8C2;
   --c-text-tertiary-callout-color: #7ED8C2;
   --c-text-modal: #212B2E;
+  --c-text-callout-modal-color: #9781EE;
   --c-placeholder-primary: rgb(123, 151, 153, 0.3);
   --c-bg-primary-color: #212B2E;
   --c-bg-secondary-color: #324142;
@@ -52,4 +55,5 @@ body.dark-mode {
   --c-bg-action-secondary-dark-color: #DFA849;
   --c-bg-highlight-primary-color: #A654E7;
   --c-bg-highlight-secondary-color: #E7B65D;
+  --c-bg-callout-modal-color: #324142;
 }

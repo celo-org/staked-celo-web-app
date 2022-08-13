@@ -16,20 +16,22 @@ interface SwapProps {
 
 export const Swap = ({ mode, onModeChange }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
-  const { amount, setAmount, swap, balance, receiveAmount, swapRate, gasFee } = useSwap(mode);
+  const { amount, setAmount, swap, balance, receiveAmount, swapRate, gasFee, swapMax } =
+    useSwap(mode);
   const error = validateAmount(amount, balance, mode);
 
   return (
     <CenteredLayout classes="px-[24px]">
       <Switcher mode={mode} onModeChange={onModeChange} />
       <SwapForm
-        amount={amount}
-        error={error}
         mode={mode}
+        amount={amount}
+        receiveAmount={receiveAmount}
+        balance={balance}
+        error={error}
+        swapMax={swapMax}
         onSubmit={swap}
         onChange={setAmount}
-        balance={balance}
-        receiveAmount={receiveAmount}
         onModeChange={onModeChange}
       />
       <OpacityTransition id={mode}>

@@ -4,13 +4,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import { networkConfig } from 'src/config/celo';
-import { accountAddress, managerAddress, stCeloAddress } from 'src/config/contracts';
+import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
+import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
+
 interface TxOptions {
   from: string;
-  gasPrice: string;
-  gas: string;
   value?: string;
 }
 
@@ -19,27 +18,48 @@ type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSor
 type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
 
 export function useBlockchain() {
-  const { kit } = useCelo();
-  const contractKit = useMemo(() => newKit(networkConfig.rpcUrl), []);
+  const { kit, network } = useCelo();
+  const contractKit = useMemo(() => newKit(network.rpcUrl), [network]);
+
+  // react-celo doesn't update network when it's changed second time
+  // Hence we need to reload application after the first change
+  const [currentNetwork, setCurrentNetwork] = useState<string | null>(null);
+  useEffect(() => {
+    if (!network.name) return;
+    if (!currentNetwork) {
+      setCurrentNetwork(network.name);
+      return;
+    }
+    if (currentNetwork !== network.name) location.reload();
+  }, [network, currentNetwork]);
+
+  const addresses = useMemo(() => {
+    if (network.name === 'Mainnet') return mainnetAddresses;
+    return testnetAddresses;
+  }, [network]);
 
   const managerContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(ManagerABI as AbiItem[], managerAddress);
-  }, [kit.connection]);
+    return new eth.Contract(ManagerABI as AbiItem[], addresses.manager);
+  }, [kit.connection, addresses]);
 
   const stCeloContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(StCeloABI as AbiItem[], stCeloAddress);
-  }, [kit.connection]);
+    return new eth.Contract(StCeloABI as AbiItem[], addresses.stakedCelo);
+  }, [kit.connection, addresses]);
 
   const accountContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(AccountABI as AbiItem[], accountAddress);
-  }, [kit.connection]);
+    return new eth.Contract(AccountABI as AbiItem[], addresses.account);
+  }, [kit.connection, addresses]);
 
   const sendTransaction = useCallback(
     async (txObject: any, txOptions: TxOptions) => {
-      const tx = await kit.connection.sendTransactionObject(txObject, txOptions);
+      const tx = await kit.connection.sendTransactionObject(txObject, {
+        ...txOptions,
+        gas: GAS_LIMIT,
+        gasPrice: GAS_PRICE,
+      });
       await tx.waitReceipt();
     },
     [kit.connection]

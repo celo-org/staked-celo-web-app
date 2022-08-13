@@ -10,84 +10,91 @@ import { BalanceTools } from './BalanceTools';
 import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
+import { TransactionCalloutModal } from './TransactionCalloutModal';
 
 interface SwapFormProps {
+  mode: Mode;
   amount: Token | null;
+  receiveAmount: Token | null;
+  balance: Token;
   error: string | null;
+  swapMax: () => void;
   onSubmit: () => void;
   onChange: (amount?: Token) => void;
-  balance: Token;
-  mode: Mode;
-  receiveAmount: Token;
   onModeChange: (mode: Mode) => void;
 }
 
 export const SwapForm = ({
+  mode,
   amount,
+  receiveAmount,
+  balance,
   error,
+  swapMax,
   onSubmit,
   onChange,
-  balance,
-  mode,
-  receiveAmount,
   onModeChange,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
+  const [isCalloutModalOpened, setIsCalloutModalOpened] = useState(false);
   const { reloadProtocolContext } = useProtocolContext();
-  const disabledSubmit = !amount || isLoading || !!error || !isTouched;
+  const disabledSubmit = !amount || isLoading || !!error;
 
   const submit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
+      setIsCalloutModalOpened(true);
       setIsLoading(true);
       try {
         await onSubmit();
         await reloadProtocolContext();
       } finally {
         setIsLoading(false);
+        setIsCalloutModalOpened(false);
       }
     },
     [onSubmit, reloadProtocolContext]
   );
 
-  const onInputChange = (value: Token | undefined) => {
-    setIsTouched(true);
-    onChange(value);
-  };
-
-  const switchModes = () => {
-    onModeChange(mode === 'stake' ? 'unstake' : 'stake');
-  };
-
   return (
-    <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
-      <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
-        <SwapFormInput
-          balance={balance}
-          amount={amount}
-          onChange={onInputChange}
-          mode={mode}
-          error={error}
-        />
-        <div className="absolute inline-flex cursor-pointer" onClick={switchModes}>
-          <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
+    <>
+      <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
+        <div className="flex flex-col justify-center items-center w-full bg-secondary p-[8px] rounded-[16px]">
+          <SwapFormInput
+            mode={mode}
+            amount={amount}
+            balance={balance}
+            error={error}
+            swapMax={swapMax}
+            onChange={onChange}
+          />
+          <div
+            className="absolute inline-flex cursor-pointer"
+            onClick={() => onModeChange(mode === 'stake' ? 'unstake' : 'stake')}
+          >
+            <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
+          </div>
+          <ReceiveSummary value={receiveAmount} mode={mode} />
         </div>
-        <ReceiveSummary value={receiveAmount} mode={mode} />
-      </div>
-      <div className="flex justify-center mt-[16px]">
-        <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
-      </div>
-    </form>
+        <div className="flex justify-center mt-[16px]">
+          <SubmitButton mode={mode} disabled={disabledSubmit} pending={isLoading} />
+        </div>
+      </form>
+      <TransactionCalloutModal
+        isOpened={isCalloutModalOpened}
+        close={() => setIsCalloutModalOpened(false)}
+      />
+    </>
   );
 };
 
 interface FormInputProps {
-  onChange: (amount?: Token) => void;
-  balance: Token;
   mode: Mode;
-  error: string | null;
   amount: Token | null;
+  balance: Token;
+  error: string | null;
+  swapMax: () => void;
+  onChange: (amount?: Token) => void;
 }
 
 const getTitle = (error: string | null, mode: Mode) => {
@@ -100,9 +107,7 @@ const getTitle = (error: string | null, mode: Mode) => {
   }
 };
 
-const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProps) => {
-  const onClickUseMax = () =>
-    balance.displayAsBase() !== amount?.displayAsBase() ? onChange(balance) : null;
+const SwapFormInput = ({ mode, amount, balance, error, swapMax, onChange }: FormInputProps) => {
   const onInputChange = (values: NumberFormatValues) => {
     const { value } = values;
     // Returning in case of '.' makes it possible to input number starting with decimal separator
@@ -130,13 +135,14 @@ const SwapFormInput = ({ mode, balance, amount, onChange, error }: FormInputProp
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
-          value={amount ? amount.displayAsBase() : ''}
+          value={amount ? amount.displayAsBase(true) : ''}
           decimalScale={DISPLAY_DECIMALS}
           isNumericString
           allowNegative={false}
+          inputMode="decimal"
         />
       }
-      infoChild={<BalanceTools mode={mode} onClickUseMax={onClickUseMax} balance={balance} />}
+      infoChild={<BalanceTools mode={mode} onClickUseMax={swapMax} balance={balance} />}
     />
   );
 };

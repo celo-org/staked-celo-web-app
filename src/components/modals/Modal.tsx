@@ -33,10 +33,11 @@ export const Modal = ({
           position: 'static',
           display: 'inline-block',
           borderRadius: '8px',
-          padding: '24px',
+          padding: '0',
           border: 'none',
           maxWidth: '520px',
           width: '100%',
+          background: 'none',
         },
       }}
     >

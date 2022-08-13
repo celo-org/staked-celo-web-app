@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
@@ -16,9 +17,9 @@ export function useSwap(mode: Mode) {
   let gasFee: CeloUSD;
   let balance: Token;
   let swap: () => void;
-  let receiveAmount: Token;
+  let receiveAmount: Token | null;
   let amount: Token | null;
-  let setAmount: () => void;
+  let setAmount: (amount?: Token) => void;
 
   switch (mode) {
     case 'stake':
@@ -41,16 +42,20 @@ export function useSwap(mode: Mode) {
       break;
   }
 
+  const swapMax = useCallback(() => {
+    const maxAmount = new Token(balance.minus(MAX_AMOUNT_THRESHOLD));
+    setAmount(maxAmount);
+  }, [setAmount, balance]);
+
   // When switching modes expected received amount should be set as provided amount
   // Because receiveAmount is updated after mode is changed we need to perform instance type check
   useEffect(() => {
-    if (receiveAmount.isEqualTo(0)) return;
-    if (mode === 'stake' && receiveAmount instanceof StCelo) {
+    if (mode === 'stake' && (!receiveAmount || receiveAmount instanceof StCelo)) {
       setStCeloAmount(receiveAmount);
-    } else if (mode === 'unstake' && receiveAmount instanceof Celo) {
+    } else if (mode === 'unstake' && (!receiveAmount || receiveAmount instanceof Celo)) {
       setCeloAmount(receiveAmount);
     }
   }, [mode, receiveAmount, setCeloAmount, setStCeloAmount]);
 
-  return { amount, setAmount, balance, swap, receiveAmount, swapRate, gasFee };
+  return { amount, setAmount, balance, swap, receiveAmount, swapRate, gasFee, swapMax };
 }

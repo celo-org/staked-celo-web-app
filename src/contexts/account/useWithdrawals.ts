@@ -1,7 +1,7 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
+import { useAPI } from 'src/hooks/useAPI';
 import { useBlockchain } from 'src/hooks/useBlockchain';
-import api from 'src/services/api';
 import { Celo } from 'src/utils/tokens';
 
 export interface PendingWithdrawal {
@@ -12,6 +12,7 @@ export interface PendingWithdrawal {
 const botActionDelay = 120 * 1000;
 
 export const useWithdrawalBot = (address: string | null) => {
+  const { api } = useAPI();
   const { managerContract, accountContract } = useBlockchain();
 
   const finalizeWithdrawal = useCallback(async () => {
@@ -27,7 +28,7 @@ export const useWithdrawalBot = (address: string | null) => {
         .call();
       if (scheduledWithdrawals !== '0') return api.withdraw(address);
     }
-  }, [address, managerContract, accountContract]);
+  }, [address, managerContract, accountContract, api]);
 
   useEffect(() => {
     const intervalId = setInterval(finalizeWithdrawal, botActionDelay);
@@ -39,6 +40,7 @@ export const useWithdrawalBot = (address: string | null) => {
 
 export const useClaimingBot = (address: string | null) => {
   const { kit } = useCelo();
+  const { api } = useAPI();
   const { accountContract } = useBlockchain();
 
   const claim = useCallback(async () => {
@@ -56,7 +58,7 @@ export const useClaimingBot = (address: string | null) => {
     );
 
     if (availableToClaim) await api.claim(address);
-  }, [address, accountContract, kit.connection]);
+  }, [address, accountContract, kit.connection, api]);
 
   useEffect(() => {
     const intervalId = setInterval(claim, botActionDelay);

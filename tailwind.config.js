@@ -13,11 +13,15 @@ module.exports = {
         'color-secondary-callout': 'var(--c-text-secondary-callout-color)',
         'color-tertiary-callout': 'var(--c-text-tertiary-callout-color)',
         'color-modal': 'var(--c-text-modal)',
+        'color-callout-modal': 'var(--c-text-callout-modal-color)',
         'color-green': {
           DEFAULT: '#55A803',
         },
         'color-purple': {
           DEFAULT: '#6A38F6',
+        },
+        'color-black': {
+          light: '#212B2E',
         },
       },
       placeholderColor: {
@@ -36,6 +40,10 @@ module.exports = {
         'action-secondary-dark': 'var(--c-bg-action-secondary-dark-color)',
         'highlight-primary': 'var(--c-bg-highlight-primary-color)',
         'highlight-secondary': 'var(--c-bg-highlight-secondary-color)',
+        'callout-modal': 'var(--c-bg-callout-modal-color)',
+        green: {
+          light: '#7ED8C2',
+        },
       },
       padding: {
         base: '32px',
