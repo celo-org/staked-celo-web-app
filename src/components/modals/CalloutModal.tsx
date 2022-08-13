@@ -21,7 +21,7 @@ export const CalloutModal = ({
           boxShadow: '0px 0px 16px 0px #39444840',
         }}
       >
-        <div className="font-light text-center text-color-primary my-[24px] text-[20px] leading-[24px]">
+        <div className="font-normal text-center text-color-primary my-[24px] text-[20px] leading-[24px]">
           {children}
         </div>
         <div

@@ -59,7 +59,7 @@ export const WalletModal = ({ isOpen, close }: WalletModalProps) => {
                 Copy
               </button>
             </div>
-            <h2 className="text-base text-[16px] leading-[24px]">{displayAddress}</h2>
+            <h2 className="font-normal text-base text-[16px] leading-[24px]">{displayAddress}</h2>
           </section>
           <WalletModalAction action={changeWalletWithClose}>Change Wallet</WalletModalAction>
           <WalletModalAction action={disconnectWalletWithClose}>Disconnect</WalletModalAction>
