@@ -15,7 +15,7 @@ export const TransactionCalloutModal = ({ isOpened, close }: TransactionCalloutM
     >
       <div className="flex flex-col items-center mb-[24px]">
         <ThemedIcon
-          name="spinner-big"
+          name="spinner-purple"
           width={120}
           height={120}
           alt="Loading"
