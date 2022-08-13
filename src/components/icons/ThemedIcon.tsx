@@ -36,6 +36,7 @@ type IconName =
   | 'twitter'
   | 'caret'
   | 'spinner'
+  | 'spinner-contrast'
   | 'spinner-purple'
   | 'theme'
   | 'theme-oposite';
@@ -55,6 +56,7 @@ const icons: Record<IconName, ThemedIcons> = {
   twitter: { light: TwitterDark, dark: TwitterLight },
   caret: { light: CaretDark, dark: CaretLight },
   spinner: { light: SpinnerLight, dark: SpinnerDark },
+  'spinner-contrast': { light: SpinnerDark, dark: SpinnerLight },
   'spinner-purple': { light: SpinnerPurpleDark, dark: SpinnerPurpleLight },
   theme: { light: ThemeDark, dark: ThemeLight },
   'theme-oposite': { light: ThemeOpositeDark, dark: ThemeOpositeLight },
