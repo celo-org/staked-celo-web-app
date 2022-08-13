@@ -13,7 +13,7 @@ interface ReceiveSummaryProps {
 }
 
 export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
-  const displayValue = !value || value.isEqualTo(0) ? '0.00' : value.displayAsBase();
+  const displayValue = !value || value.isEqualTo(0) ? '0.00' : value.displayAsBase(true);
 
   return (
     <TokenCard

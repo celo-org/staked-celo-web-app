@@ -135,7 +135,7 @@ const SwapFormInput = ({ mode, amount, balance, error, swapMax, onChange }: Form
           placeholder="0.00"
           thousandSeparator
           onValueChange={onInputChange}
-          value={amount ? amount.displayAsBase() : ''}
+          value={amount ? amount.displayAsBase(true) : ''}
           decimalScale={DISPLAY_DECIMALS}
           isNumericString
           allowNegative={false}

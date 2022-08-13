@@ -9,11 +9,10 @@ export class Token extends BigNumber {
     super(value instanceof BigNumber ? value.toFixed() : value);
   }
 
-  displayAsBase(): string {
-    return this.convertToBase()
-      .toFormat(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR)
-      .replace(/0*$/, '')
-      .replace(/\.$/, '');
+  displayAsBase(skipTrailingZeroes = false): string {
+    const base = this.convertToBase().toFormat(DISPLAY_DECIMALS, BigNumber.ROUND_FLOOR);
+    if (!skipTrailingZeroes) return base;
+    return base.replace(/0*$/, '').replace(/\.$/, '');
   }
 
   convertToBase(): BigNumber {
