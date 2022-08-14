@@ -36,9 +36,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
       />
       <OpacityTransition id={mode}>
         <div className="w-full px-[8px]">
-          {!error && amount?.isGreaterThan(0) && (
-            <Details mode={mode} swapRate={swapRate} gasFee={gasFee} />
-          )}
+          {!error && gasFee && <Details mode={mode} swapRate={swapRate} gasFee={gasFee} />}
           {mode === 'unstake' && pendingWithdrawals.length !== 0 ? (
             <PendingWithdrawals pendingWithdrawals={pendingWithdrawals} />
           ) : null}

@@ -8,7 +8,7 @@ import { Mode } from '../types';
 interface DetailsProps {
   mode: Mode;
   swapRate: number;
-  gasFee: CeloUSD | null;
+  gasFee: CeloUSD;
 }
 
 export const Details = ({ mode, swapRate, gasFee }: DetailsProps) => {
@@ -23,7 +23,7 @@ export const Details = ({ mode, swapRate, gasFee }: DetailsProps) => {
   );
 };
 
-const getDetails = (mode: Mode, swapRate: number, gasFee: CeloUSD | null) => {
+const getDetails = (mode: Mode, swapRate: number, gasFee: CeloUSD) => {
   switch (mode) {
     case 'unstake':
       return [exchangeDetail(swapRate), gasDetail(gasFee), feeDetail];
@@ -75,10 +75,8 @@ const exchangeDetail = (swapRate: number): DetailProps => ({
     'stCELO’s exchange rate continuously accrues value vs CELO. As you receive rewards, your amount of stCELO will not change but when you unstake it will be worth more CELO than what you paid.',
 });
 
-const gasDetail = (gasFee: CeloUSD | null): DetailProps => {
-  const value = !gasFee
-    ? null
-    : gasFee.convertToBase().isLessThan(0.001)
+const gasDetail = (gasFee: CeloUSD): DetailProps => {
+  const value = gasFee.convertToBase().isLessThan(0.001)
     ? '< $0.001'
     : `~$${gasFee.convertToBase().toFixed()}`;
   return {
