@@ -13,6 +13,10 @@ interface TxOptions {
   value?: string;
 }
 
+export interface TxCallbacks {
+  onSent?: () => void;
+}
+
 type EpochRewardsContract = Awaited<ReturnType<ContractKit['_web3Contracts']['getEpochRewards']>>;
 type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSortedOracles']>>;
 type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
@@ -54,12 +58,14 @@ export function useBlockchain() {
   }, [kit.connection, addresses]);
 
   const sendTransaction = useCallback(
-    async (txObject: any, txOptions: TxOptions) => {
+    async (txObject: any, txOptions: TxOptions, callbacks?: TxCallbacks) => {
       const tx = await kit.connection.sendTransactionObject(txObject, {
         ...txOptions,
         gas: GAS_LIMIT,
         gasPrice: GAS_PRICE,
       });
+      await tx.getHash();
+      if (callbacks?.onSent) callbacks.onSent();
       await tx.waitReceipt();
     },
     [kit.connection]

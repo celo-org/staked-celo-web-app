@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import { TxCallbacks, useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
 import { showStakingToast } from '../utils/toast';
 
@@ -24,12 +24,12 @@ export function useStaking() {
 
   const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
-  const stake = async () => {
+  const stake = async (callbacks?: TxCallbacks) => {
     if (!celoAmount || celoAmount.isEqualTo(0)) return;
     const preDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()
     );
-    await sendTransaction(depositTx(), createTxOptions());
+    await sendTransaction(depositTx(), createTxOptions(), callbacks);
     await loadBalances();
     const postDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()

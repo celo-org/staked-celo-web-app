@@ -4,7 +4,7 @@ import { GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import { TxCallbacks, useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
 import { showUnstakingToast } from '../utils/toast';
 
@@ -23,9 +23,9 @@ export function useUnstaking() {
     [managerContract, stCeloAmount]
   );
 
-  const unstake = async () => {
+  const unstake = async (callbacks?: TxCallbacks) => {
     if (!address || !stCeloAmount || stCeloAmount.isEqualTo(0)) return;
-    await sendTransaction(withdrawTx(), createTxOptions());
+    await sendTransaction(withdrawTx(), createTxOptions(), callbacks);
     await api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
     showUnstakingToast();

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { TxCallbacks } from 'src/hooks/useBlockchain';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { useStaking } from './useStaking';
@@ -16,7 +17,7 @@ export function useSwap(mode: Mode) {
   let swapRate: number;
   let gasFee: CeloUSD;
   let balance: Token;
-  let swap: () => void;
+  let swap: (callbacks?: TxCallbacks) => void;
   let receiveAmount: Token | null;
   let amount: Token | null;
   let setAmount: (amount?: Token) => void;
