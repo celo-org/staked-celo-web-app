@@ -14,31 +14,31 @@ export function useSwap(mode: Mode) {
   const { celoAmount, setCeloAmount, stake, receivedStCelo, stakingGasFee } = useStaking();
   const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, unstakingGasFee } = useUnstaking();
 
+  let balance: Token;
+  let amount: Token | null;
+  let receiveAmount: Token | null;
   let swapRate: number;
   let gasFee: CeloUSD;
-  let balance: Token;
   let swap: (callbacks?: TxCallbacks) => void;
-  let receiveAmount: Token | null;
-  let amount: Token | null;
   let setAmount: (amount?: Token) => void;
 
   switch (mode) {
     case 'stake':
+      balance = celoBalance;
+      amount = celoAmount;
+      receiveAmount = receivedStCelo;
       swapRate = stakingRate;
       gasFee = stakingGasFee;
-      balance = celoBalance;
       swap = stake;
-      receiveAmount = receivedStCelo;
-      amount = celoAmount;
       setAmount = (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount));
       break;
     case 'unstake':
+      balance = stCeloBalance;
+      amount = stCeloAmount;
+      receiveAmount = receivedCelo;
       swapRate = unstakingRate;
       gasFee = unstakingGasFee;
-      balance = stCeloBalance;
       swap = unstake;
-      receiveAmount = receivedCelo;
-      amount = stCeloAmount;
       setAmount = (amount?: Token) => setStCeloAmount(!amount ? null : new StCelo(amount));
       break;
   }
