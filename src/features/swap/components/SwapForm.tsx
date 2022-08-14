@@ -4,6 +4,7 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { TxCallbacks } from 'src/hooks/useBlockchain';
 import { Token, toToken } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { BalanceTools } from './BalanceTools';
@@ -19,7 +20,7 @@ interface SwapFormProps {
   balance: Token;
   error: string | null;
   swapMax: () => void;
-  onSubmit: () => void;
+  onSubmit: (callbacks: TxCallbacks) => void;
   onChange: (amount?: Token) => void;
   onModeChange: (mode: Mode) => void;
 }
@@ -46,7 +47,7 @@ export const SwapForm = ({
       setIsCalloutModalOpened(true);
       setIsLoading(true);
       try {
-        await onSubmit();
+        await onSubmit({ onSent: () => setIsCalloutModalOpened(false) });
         await reloadProtocolContext();
       } finally {
         setIsLoading(false);
