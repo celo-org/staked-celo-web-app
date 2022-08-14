@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
@@ -11,14 +11,15 @@ import { useUnstaking } from './useUnstaking';
 export function useSwap(mode: Mode) {
   const { stakingRate, unstakingRate } = useProtocolContext();
   const { celoBalance, stCeloBalance } = useAccountContext();
-  const { celoAmount, setCeloAmount, stake, receivedStCelo, stakingGasFee } = useStaking();
-  const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, unstakingGasFee } = useUnstaking();
+  const { celoAmount, setCeloAmount, stake, receivedStCelo, estimateStakingGas } = useStaking();
+  const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, estimateUnstakingGas } =
+    useUnstaking();
 
   let balance: Token;
   let amount: Token | null;
   let receiveAmount: Token | null;
   let swapRate: number;
-  let gasFee: CeloUSD | null;
+  let estimateGas: () => Promise<CeloUSD | null>;
   let swap: (callbacks?: TxCallbacks) => void;
   let setAmount: (amount?: Token) => void;
 
@@ -28,7 +29,7 @@ export function useSwap(mode: Mode) {
       amount = celoAmount;
       receiveAmount = receivedStCelo;
       swapRate = stakingRate;
-      gasFee = stakingGasFee;
+      estimateGas = estimateStakingGas;
       swap = stake;
       setAmount = (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount));
       break;
@@ -37,7 +38,7 @@ export function useSwap(mode: Mode) {
       amount = stCeloAmount;
       receiveAmount = receivedCelo;
       swapRate = unstakingRate;
-      gasFee = unstakingGasFee;
+      estimateGas = estimateUnstakingGas;
       swap = unstake;
       setAmount = (amount?: Token) => setStCeloAmount(!amount ? null : new StCelo(amount));
       break;
@@ -47,6 +48,16 @@ export function useSwap(mode: Mode) {
     const maxAmount = new Token(balance.minus(MAX_AMOUNT_THRESHOLD));
     setAmount(maxAmount);
   }, [setAmount, balance]);
+
+  // Don't override gasFee when estimateGas function is not the latest one
+  const [gasFee, setGasFee] = useState<CeloUSD | null>(null);
+  useEffect(() => {
+    let aborted = false;
+    void estimateGas().then((estimatedGas) => !aborted && setGasFee(estimatedGas));
+    return () => {
+      aborted = true;
+    };
+  }, [estimateGas]);
 
   // When switching modes expected received amount should be set as provided amount
   // Because receiveAmount is updated after mode is changed we need to perform instance type check

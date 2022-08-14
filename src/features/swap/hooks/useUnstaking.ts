@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
@@ -14,7 +14,6 @@ export function useUnstaking() {
   const { api } = useAPI();
   const { unstakingRate, celoToUSDRate } = useProtocolContext();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
-  const [unstakingGasFee, setUnstakingGasFee] = useState<CeloUSD | null>(null);
 
   const createTxOptions = useCallback(() => ({ from: address! }), [address]);
 
@@ -34,13 +33,12 @@ export function useUnstaking() {
 
   const estimateUnstakingGas = useCallback(async () => {
     if (!stCeloAmount || stCeloAmount.isEqualTo(0) || stCeloAmount.isGreaterThan(stCeloBalance)) {
-      setUnstakingGasFee(null);
-      return;
+      return null;
     }
     const gasFee = new BigNumber(await withdrawTx().estimateGas(createTxOptions()));
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(GAS_PRICE));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
-    setUnstakingGasFee(gasFeeInUSD);
+    return gasFeeInUSD;
   }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount, celoToUSDRate]);
 
   const receivedCelo = useMemo(
@@ -48,13 +46,11 @@ export function useUnstaking() {
     [stCeloAmount, unstakingRate]
   );
 
-  useEffect(() => void estimateUnstakingGas(), [estimateUnstakingGas]);
-
   return {
     stCeloAmount,
     setStCeloAmount,
     unstake,
-    unstakingGasFee,
+    estimateUnstakingGas,
     receivedCelo,
   };
 }
