@@ -12,7 +12,7 @@ export function useStaking() {
   const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
   const { stakingRate, celoToUSDRate } = useProtocolContext();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
-  const [stakingGasFee, setStakingGasFee] = useState<CeloUSD>(new CeloUSD(0));
+  const [stakingGasFee, setStakingGasFee] = useState<CeloUSD | null>(null);
 
   const createTxOptions = useCallback(
     () => ({
@@ -41,7 +41,7 @@ export function useStaking() {
 
   const estimateStakingGas = useCallback(async () => {
     if (!celoAmount || celoAmount.isEqualTo(0) || celoAmount.isGreaterThan(celoBalance)) {
-      setStakingGasFee(new CeloUSD(0));
+      setStakingGasFee(null);
       return;
     }
     const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions()));

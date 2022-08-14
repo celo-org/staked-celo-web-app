@@ -18,7 +18,7 @@ export function useSwap(mode: Mode) {
   let amount: Token | null;
   let receiveAmount: Token | null;
   let swapRate: number;
-  let gasFee: CeloUSD;
+  let gasFee: CeloUSD | null;
   let swap: (callbacks?: TxCallbacks) => void;
   let setAmount: (amount?: Token) => void;
 

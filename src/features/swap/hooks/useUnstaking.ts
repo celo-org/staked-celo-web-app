@@ -14,7 +14,7 @@ export function useUnstaking() {
   const { api } = useAPI();
   const { unstakingRate, celoToUSDRate } = useProtocolContext();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
-  const [unstakingGasFee, setUnstakingGasFee] = useState<CeloUSD>(new CeloUSD(0));
+  const [unstakingGasFee, setUnstakingGasFee] = useState<CeloUSD | null>(null);
 
   const createTxOptions = useCallback(() => ({ from: address! }), [address]);
 
@@ -34,7 +34,7 @@ export function useUnstaking() {
 
   const estimateUnstakingGas = useCallback(async () => {
     if (!stCeloAmount || stCeloAmount.isEqualTo(0) || stCeloAmount.isGreaterThan(stCeloBalance)) {
-      setUnstakingGasFee(new CeloUSD(0));
+      setUnstakingGasFee(null);
       return;
     }
     const gasFee = new BigNumber(await withdrawTx().estimateGas(createTxOptions()));
