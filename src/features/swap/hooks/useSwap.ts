@@ -43,7 +43,7 @@ export function useSwap(mode: Mode) {
       break;
   }
 
-  const swapMax = useCallback(() => {
+  const setMaxAmount = useCallback(() => {
     const maxAmount = new Token(balance.minus(MAX_AMOUNT_THRESHOLD));
     setAmount(maxAmount);
   }, [setAmount, balance]);
@@ -58,5 +58,5 @@ export function useSwap(mode: Mode) {
     }
   }, [mode, receiveAmount, setCeloAmount, setStCeloAmount]);
 
-  return { amount, setAmount, balance, swap, receiveAmount, swapRate, gasFee, swapMax };
+  return { amount, setAmount, setMaxAmount, balance, swap, receiveAmount, swapRate, gasFee };
 }
