@@ -4,6 +4,7 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { TxCallbacks } from 'src/hooks/useBlockchain';
 import { Token, toToken } from 'src/utils/tokens';
 import { Mode } from '../types';
 import { BalanceTools } from './BalanceTools';
@@ -18,8 +19,8 @@ interface SwapFormProps {
   receiveAmount: Token | null;
   balance: Token;
   error: string | null;
-  swapMax: () => void;
-  onSubmit: () => void;
+  setMaxAmount: () => void;
+  onSubmit: (callbacks: TxCallbacks) => void;
   onChange: (amount?: Token) => void;
   onModeChange: (mode: Mode) => void;
 }
@@ -30,7 +31,7 @@ export const SwapForm = ({
   receiveAmount,
   balance,
   error,
-  swapMax,
+  setMaxAmount,
   onSubmit,
   onChange,
   onModeChange,
@@ -46,7 +47,7 @@ export const SwapForm = ({
       setIsCalloutModalOpened(true);
       setIsLoading(true);
       try {
-        await onSubmit();
+        await onSubmit({ onSent: () => setIsCalloutModalOpened(false) });
         await reloadProtocolContext();
       } finally {
         setIsLoading(false);
@@ -65,7 +66,7 @@ export const SwapForm = ({
             amount={amount}
             balance={balance}
             error={error}
-            swapMax={swapMax}
+            setMaxAmount={setMaxAmount}
             onChange={onChange}
           />
           <div
@@ -93,7 +94,7 @@ interface FormInputProps {
   amount: Token | null;
   balance: Token;
   error: string | null;
-  swapMax: () => void;
+  setMaxAmount: () => void;
   onChange: (amount?: Token) => void;
 }
 
@@ -107,7 +108,14 @@ const getTitle = (error: string | null, mode: Mode) => {
   }
 };
 
-const SwapFormInput = ({ mode, amount, balance, error, swapMax, onChange }: FormInputProps) => {
+const SwapFormInput = ({
+  mode,
+  amount,
+  balance,
+  error,
+  setMaxAmount,
+  onChange,
+}: FormInputProps) => {
   const onInputChange = (values: NumberFormatValues) => {
     const { value } = values;
     // Returning in case of '.' makes it possible to input number starting with decimal separator
@@ -142,7 +150,7 @@ const SwapFormInput = ({ mode, amount, balance, error, swapMax, onChange }: Form
           inputMode="decimal"
         />
       }
-      infoChild={<BalanceTools mode={mode} onClickUseMax={swapMax} balance={balance} />}
+      infoChild={<BalanceTools mode={mode} onClickUseMax={setMaxAmount} balance={balance} />}
     />
   );
 };
