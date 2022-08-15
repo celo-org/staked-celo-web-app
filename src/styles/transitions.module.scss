@@ -1,0 +1,7 @@
+$transition-duration: 500ms;
+$transition-timing-function: ease-in-out;
+
+:export {
+  transitionDuration: $transition-duration;
+  transitionTimingFunction: $transition-timing-function;
+}

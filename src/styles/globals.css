@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: 'Inter', ui-sans-serif, system-ui;
+}
+
+body:not(.dark-mode) {
+  --c-text-primary-color: #1C3D42;
+  --c-text-secondary-color: #999187;
+  --c-text-contrast-color: #FFFDF4;
+  --c-text-error-color: #CB5733;
+  --c-text-primary-callout-color: #06B595;
+  --c-text-secondary-callout-color: #AF5F14;
+  --c-text-tertiary-callout-color: #06B595;
+  --c-text-modal: #1C3D42;
+  --c-text-callout-modal-color: #6759CC;
+  --c-placeholder-primary: rgba(126, 155, 157, 0.3);
+  --c-bg-primary-color: #FFFDF4;
+  --c-bg-secondary-color: #EBE7DD;
+  --c-bg-tertiary-color: #F4FDF6;
+  --c-bg-secondary-oposite-color: #324142;
+  --c-bg-action-primary-light-color: #6F61D7;
+  --c-bg-action-primary-regular-color: #6759CC;
+  --c-bg-action-primary-dark-color: #6051CD;
+  --c-bg-action-secondary-light-color: #E8AB43;
+  --c-bg-action-secondary-regular-color: #E5B253;
+  --c-bg-action-secondary-dark-color: #E3AD49;
+  --c-bg-highlight-primary-color: #6759CC;
+  --c-bg-highlight-secondary-color: #E5B253;
+  --c-bg-callout-modal-color: #FFFDF4;
+}
+
+body.dark-mode {
+  --c-text-primary-color: #E5EAEE;
+  --c-text-secondary-color: #7B9799;
+  --c-text-contrast-color: #212B2E;
+  --c-text-error-color: #F48A72;
+  --c-text-primary-callout-color: #C8D72B;
+  --c-text-secondary-callout-color: #7ED8C2;
+  --c-text-tertiary-callout-color: #7ED8C2;
+  --c-text-modal: #212B2E;
+  --c-text-callout-modal-color: #9781EE;
+  --c-placeholder-primary: rgb(123, 151, 153, 0.3);
+  --c-bg-primary-color: #212B2E;
+  --c-bg-secondary-color: #324142;
+  --c-bg-tertiary-color: #212B2E;
+  --c-bg-secondary-oposite-color: #EBE7DD;
+  --c-bg-action-primary-light-color: #9477F5;
+  --c-bg-action-primary-regular-color: #9781EE;
+  --c-bg-action-primary-dark-color: #8C62FF;
+  --c-bg-action-secondary-light-color: #EEAF43;
+  --c-bg-action-secondary-regular-color: #E7B65D;
+  --c-bg-action-secondary-dark-color: #DFA849;
+  --c-bg-highlight-primary-color: #A654E7;
+  --c-bg-highlight-secondary-color: #E7B65D;
+  --c-bg-callout-modal-color: #324142;
+}
