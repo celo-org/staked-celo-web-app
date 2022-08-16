@@ -6,7 +6,7 @@ import styles from './connect.module.css';
 
 const Connect = () => {
   const { connectWallet } = useWallet();
-  const { annualProjectedYield } = useProtocolContext();
+  const { annualProjectedRate } = useProtocolContext();
 
   return (
     <div className="inline-flex w-full sm:pt-[0] sm:pb-[80px] mt-[-80px] sm:mt-0">
@@ -18,7 +18,7 @@ const Connect = () => {
           <h1 className="text-[27px] leading-[40px] font-medium mb-[16px]">Introducing stCELO</h1>
           <ul className="text-[18px] leading-[28px] mb-[32px]">
             <li className="mb-[4px]">
-              Earn a projected {annualProjectedYield ? annualProjectedYield : '-'}% APY
+              Earn a projected {annualProjectedRate ? annualProjectedRate : '-'}% APR
             </li>
             <li className="mb-[4px]">Stake without locking</li>
             <li>No fees for launch</li>

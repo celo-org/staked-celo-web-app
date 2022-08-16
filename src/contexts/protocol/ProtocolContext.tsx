@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { Celo } from 'src/utils/tokens';
-import { useAnnualProjectedYield } from './useAnnualProjectedYield';
+import { useAnnualProjectedRate } from './useAnnualProjectedRate';
 import { useExchangeRates } from './useExchangeRates';
 import { useTokenBalances } from './useTokenBalances';
 
@@ -11,7 +11,7 @@ interface ProtocolContext {
   loadExchangeRates: () => Promise<void>;
   totalCeloBalance: Celo;
   loadTokenBalances: () => Promise<void>;
-  annualProjectedYield: string | null;
+  annualProjectedRate: string | null;
 }
 
 export const ProtocolContext = createContext<ProtocolContext>({
@@ -21,13 +21,13 @@ export const ProtocolContext = createContext<ProtocolContext>({
   loadExchangeRates: () => Promise.resolve(),
   totalCeloBalance: new Celo(0),
   loadTokenBalances: () => Promise.resolve(),
-  annualProjectedYield: null,
+  annualProjectedRate: null,
 });
 
 export const ProtocolProvider = ({ children }: PropsWithChildren) => {
   const { stakingRate, unstakingRate, celoToUSDRate, loadExchangeRates } = useExchangeRates();
   const { totalCeloBalance, loadTokenBalances } = useTokenBalances();
-  const { annualProjectedYield } = useAnnualProjectedYield();
+  const { annualProjectedRate } = useAnnualProjectedRate();
 
   return (
     <ProtocolContext.Provider
@@ -38,7 +38,7 @@ export const ProtocolProvider = ({ children }: PropsWithChildren) => {
         loadExchangeRates,
         totalCeloBalance,
         loadTokenBalances,
-        annualProjectedYield,
+        annualProjectedRate,
       }}
     >
       {children}
@@ -54,7 +54,7 @@ export function useProtocolContext() {
     loadExchangeRates,
     totalCeloBalance,
     loadTokenBalances,
-    annualProjectedYield,
+    annualProjectedRate,
   } = useContext(ProtocolContext);
 
   const reloadProtocolContext = useCallback(async () => {
@@ -66,7 +66,7 @@ export function useProtocolContext() {
     unstakingRate,
     celoToUSDRate,
     totalCeloBalance,
-    annualProjectedYield,
+    annualProjectedRate,
     reloadProtocolContext,
   };
 }

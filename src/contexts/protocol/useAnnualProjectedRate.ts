@@ -2,11 +2,11 @@ import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useBlockchain } from 'src/hooks/useBlockchain';
 
-export const useAnnualProjectedYield = () => {
+export const useAnnualProjectedRate = () => {
   const { epochRewardsContract } = useBlockchain();
-  const [annualProjectedYield, setAnnualProjectedYield] = useState<string | null>(null);
+  const [annualProjectedRate, setAnnualProjectedRate] = useState<string | null>(null);
 
-  const loadAnnualProjectedYield = useCallback(async () => {
+  const loadAnnualProjectedRate = useCallback(async () => {
     if (!epochRewardsContract) return;
     const [rewardsMultiplierFraction, { 0: targetVotingYieldFraction }] = await Promise.all([
       epochRewardsContract.methods.getRewardsMultiplier().call(),
@@ -20,22 +20,21 @@ export const useAnnualProjectedYield = () => {
     const rewardsMultiplier = new BigNumber(rewardsMultiplierFraction).div(fixidityDecimalSize);
 
     // Target voting yield is for a single day only, so we have to calculate this for entire year
-    // Check formula definition here: https://en.wikipedia.org/wiki/Annual_percentage_yield#Equation
-    const unadjustedAPY = targetVotingYield.plus(1).pow(365).minus(1);
+    const unadjustedAPR = targetVotingYield.times(365);
 
     // According to the protocol it has to be adjusted by rewards multiplier
-    const adjustedApy = unadjustedAPY.times(rewardsMultiplier);
+    const adjustedAPR = unadjustedAPR.times(rewardsMultiplier);
 
-    const percentageAPY = adjustedApy.times(100);
+    const percentageAPR = adjustedAPR.times(100);
 
-    setAnnualProjectedYield(percentageAPY.toFixed(2));
+    setAnnualProjectedRate(percentageAPR.toFixed(2));
   }, [epochRewardsContract]);
 
   useEffect(() => {
-    void loadAnnualProjectedYield();
-  }, [loadAnnualProjectedYield]);
+    void loadAnnualProjectedRate();
+  }, [loadAnnualProjectedRate]);
 
   return {
-    annualProjectedYield,
+    annualProjectedRate,
   };
 };
