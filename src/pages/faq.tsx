@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
-import { CenteredLayout } from 'src/layout/CenteredLayout';
+import { TextLayout } from 'src/layout/TextLayout';
 import * as faq from 'src/services/faq';
 
 const FaqPage: NextPage = () => {
@@ -11,14 +11,11 @@ const FaqPage: NextPage = () => {
 const Faq = () => {
   const faqItems = faq.getFaqItems();
   return (
-    <CenteredLayout classes="px-base">
-      <div className="font-medium text-[32px] leading-[40px] mb-[32px]">
-        Frequently asked questions
-      </div>
+    <TextLayout header="Frequently asked questions">
       {faqItems.map(({ question, answer }, index) => (
         <FaqItem key={index} question={question} answer={answer} />
       ))}
-    </CenteredLayout>
+    </TextLayout>
   );
 };
 
