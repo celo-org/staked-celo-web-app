@@ -15,7 +15,10 @@ export function useUnstaking() {
   const { unstakingRate, celoToUSDRate } = useProtocolContext();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
 
-  const createTxOptions = useCallback(() => ({ from: address! }), [address]);
+  const createTxOptions = useCallback(() => {
+    if (!address) throw new Error('Cannot create tx options without an address');
+    return { from: address };
+  }, [address]);
 
   const withdrawTx = useCallback(
     () => stCeloAmount && managerContract.methods.withdraw(stCeloAmount.toFixed()),
