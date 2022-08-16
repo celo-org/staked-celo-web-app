@@ -1,4 +1,4 @@
-import { CeloProvider as ReactCeloProvider } from '@celo/react-celo';
+import { CeloProvider } from '@celo/react-celo';
 import '@celo/react-celo/lib/styles.css';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -63,34 +63,21 @@ const ClientOnly = ({ children }: PropsWithChildren) => {
 
 const TopProvider = (props: PropsWithChildren) => {
   return (
-    <CeloProvider>
-      <ThemeProvider>
-        <ProtocolProvider>
-          <AccountProvider>{props.children}</AccountProvider>
-        </ProtocolProvider>
-      </ThemeProvider>
-    </CeloProvider>
-  );
-};
-
-const CeloProvider = (props: PropsWithChildren) => {
-  return (
-    <ReactCeloProvider
+    <CeloProvider
       dapp={{
         icon: '/logo.svg',
         name: 'Celo Staking',
         description: 'Celo staking application',
         url: '',
       }}
-      connectModal={{
-        title: <span>Connect Wallet</span>,
-        providersOptions: {
-          searchable: false,
-        },
-      }}
+      connectModal={{ title: <span>Connect Wallet</span>, providersOptions: { searchable: false } }}
     >
-      {props.children}
-    </ReactCeloProvider>
+      <ThemeProvider>
+        <ProtocolProvider>
+          <AccountProvider>{props.children}</AccountProvider>
+        </ProtocolProvider>
+      </ThemeProvider>
+    </CeloProvider>
   );
 };
 
