@@ -7,7 +7,7 @@ const faqItems: FaqItem[] = [
   {
     question: 'What is StakedCelo?',
     answer:
-      'StakedCelo is Celo’s native liquid staking protocol. It allows anyone to stake CELO and receive epoch rewards with a single  transaction. This is possible  through StakedCelo smart contracts or the StakedCelo WebApp. Alternatively, users can buy stCELO on decentralized exchanges.',
+      'StakedCelo is Celo’s native liquid staking protocol. It allows anyone to stake CELO and receive epoch rewards with a single transaction. This is possible through StakedCelo smart contracts or the StakedCelo WebApp. Alternatively, users can buy stCELO on decentralized exchanges.',
   },
   {
     question: 'How does StakedCelo work?',
