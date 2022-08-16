@@ -94,12 +94,12 @@ const CeloProvider = (props: PropsWithChildren) => {
   );
 };
 
-const routingsWithoutConnection = ['/connect', '/faq'];
+const routingsWithConnection = ['/'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
   const { isConnected } = useAccountContext();
 
-  if (!isConnected && !routingsWithoutConnection.includes(router.pathname)) {
+  if (!isConnected && routingsWithConnection.includes(router.pathname)) {
     void router.push('/connect');
 
     // Router is async. Show empty screen before redirect.
