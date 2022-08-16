@@ -35,17 +35,17 @@ export const Footer = () => {
 
       <ul className="flex mb-[16px] sm:mb-0 sm:order-2">
         <li className="mr-[16px]">
-          <a href={twitterUrl}>
+          <a href={twitterUrl} target="_blank" rel="noreferrer">
             <ThemedIcon name="twitter" alt="Twitter logo" quality={100} width={40} height={40} />
           </a>
         </li>
         <li className="mr-[16px]">
-          <a href={discordUrl}>
+          <a href={discordUrl} target="_blank" rel="noreferrer">
             <ThemedIcon name="discord" alt="Discord logo" quality={100} width={40} height={40} />
           </a>
         </li>
         <li>
-          <a href={githubUrl}>
+          <a href={githubUrl} target="_blank" rel="noreferrer">
             <ThemedIcon name="github" alt="Github logo" quality={100} width={40} height={40} />
           </a>
         </li>
