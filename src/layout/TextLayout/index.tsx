@@ -8,7 +8,7 @@ interface TextLayoutProps {
 export const TextLayout = ({ header, children }: PropsWithChildren<TextLayoutProps>) => {
   return (
     <CenteredLayout classes="px-base">
-      <div className="font-medium text-[32px] leading-[40px] mb-[32px]">{header}</div>
+      <h1 className="font-medium text-[32px] leading-[40px] mb-[32px]">{header}</h1>
       {children}
     </CenteredLayout>
   );
