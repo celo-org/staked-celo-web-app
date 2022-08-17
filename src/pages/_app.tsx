@@ -1,4 +1,4 @@
-import { CeloProvider } from '@celo/react-celo';
+import { CeloProvider, useCelo } from '@celo/react-celo';
 import '@celo/react-celo/lib/styles.css';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -26,14 +26,31 @@ const App = ({ Component, pageProps, router }: AppProps) => {
         <title>{`StakedCelo - Liquid staking on Celo | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <ClientOnly>
-        <TopProvider>
-          <CeloConnectRedirect>
-            <AppLayout pathName={pathName}>
-              <Component {...pageProps} />
-              <ToastContainer transition={Zoom} position={toast.POSITION.TOP_CENTER} icon={false} />
-            </AppLayout>
-          </CeloConnectRedirect>
-        </TopProvider>
+        <CeloProvider
+          dapp={{
+            icon: '/logo.svg',
+            name: 'Celo Staking',
+            description: 'Celo staking application',
+            url: '',
+          }}
+          connectModal={{
+            title: <span>Connect Wallet</span>,
+            providersOptions: { searchable: false },
+          }}
+        >
+          <TopProvider>
+            <CeloConnectRedirect>
+              <AppLayout pathName={pathName}>
+                <Component {...pageProps} />
+                <ToastContainer
+                  transition={Zoom}
+                  position={toast.POSITION.TOP_CENTER}
+                  icon={false}
+                />
+              </AppLayout>
+            </CeloConnectRedirect>
+          </TopProvider>
+        </CeloProvider>
       </ClientOnly>
     </>
   );
@@ -62,22 +79,15 @@ const ClientOnly = ({ children }: PropsWithChildren) => {
 };
 
 const TopProvider = (props: PropsWithChildren) => {
+  const { initialised } = useCelo();
+  if (!initialised) return null;
+
   return (
-    <CeloProvider
-      dapp={{
-        icon: '/logo.svg',
-        name: 'Celo Staking',
-        description: 'Celo staking application',
-        url: '',
-      }}
-      connectModal={{ title: <span>Connect Wallet</span>, providersOptions: { searchable: false } }}
-    >
-      <ThemeProvider>
-        <ProtocolProvider>
-          <AccountProvider>{props.children}</AccountProvider>
-        </ProtocolProvider>
-      </ThemeProvider>
-    </CeloProvider>
+    <ThemeProvider>
+      <ProtocolProvider>
+        <AccountProvider>{props.children}</AccountProvider>
+      </ProtocolProvider>
+    </ThemeProvider>
   );
 };
 
