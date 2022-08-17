@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
+import { GAS_PRICE } from 'src/config/consts';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
 
@@ -61,7 +61,6 @@ export function useBlockchain() {
     async (txObject: any, txOptions: TxOptions, callbacks?: TxCallbacks) => {
       const tx = await kit.connection.sendTransactionObject(txObject, {
         ...txOptions,
-        gas: GAS_LIMIT,
         gasPrice: GAS_PRICE,
       });
       await tx.getHash();
