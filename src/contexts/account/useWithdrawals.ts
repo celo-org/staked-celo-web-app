@@ -9,7 +9,7 @@ export interface PendingWithdrawal {
   timestamp: string;
 }
 
-const botActionInterval = 120 * 1000;
+const botActionInterval = 180 * 1000;
 
 export const useWithdrawalBot = (address: string | null) => {
   const { api } = useAPI();
