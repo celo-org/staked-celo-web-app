@@ -9,7 +9,7 @@ export interface PendingWithdrawal {
   timestamp: string;
 }
 
-const botActionDelay = 120 * 1000;
+const botActionInterval = 120 * 1000;
 
 export const useWithdrawalBot = (address: string | null) => {
   const { api } = useAPI();
@@ -31,7 +31,7 @@ export const useWithdrawalBot = (address: string | null) => {
   }, [address, managerContract, accountContract, api]);
 
   useEffect(() => {
-    const intervalId = setInterval(finalizeWithdrawal, botActionDelay);
+    const intervalId = setInterval(finalizeWithdrawal, botActionInterval);
     return () => {
       clearInterval(intervalId);
     };
@@ -61,7 +61,7 @@ export const useClaimingBot = (address: string | null) => {
   }, [address, accountContract, kit.connection, api]);
 
   useEffect(() => {
-    const intervalId = setInterval(claim, botActionDelay);
+    const intervalId = setInterval(claim, botActionInterval);
     return () => {
       clearInterval(intervalId);
     };
