@@ -9,7 +9,7 @@ export interface PendingWithdrawal {
   timestamp: string;
 }
 
-const botActionDelay = 120 * 1000;
+const botActionInterval = 180 * 1000;
 
 export const useWithdrawalBot = (address: string | null) => {
   const { api } = useAPI();
@@ -31,7 +31,8 @@ export const useWithdrawalBot = (address: string | null) => {
   }, [address, managerContract, accountContract, api]);
 
   useEffect(() => {
-    const intervalId = setInterval(finalizeWithdrawal, botActionDelay);
+    void finalizeWithdrawal();
+    const intervalId = setInterval(finalizeWithdrawal, botActionInterval);
     return () => {
       clearInterval(intervalId);
     };
@@ -61,7 +62,8 @@ export const useClaimingBot = (address: string | null) => {
   }, [address, accountContract, kit.connection, api]);
 
   useEffect(() => {
-    const intervalId = setInterval(claim, botActionDelay);
+    void claim();
+    const intervalId = setInterval(claim, botActionInterval);
     return () => {
       clearInterval(intervalId);
     };
@@ -100,6 +102,8 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
   return pendingWithdrawals.reverse();
 };
 
+const pendingWithdrawalsLoadInterval = 60 * 1000;
+
 export const useWithdrawals = (address: string | null) => {
   const { accountContract } = useBlockchain();
 
@@ -114,7 +118,7 @@ export const useWithdrawals = (address: string | null) => {
   useEffect(() => {
     if (!address) return;
     void loadPendingWithdrawals();
-    const intervalId = setInterval(loadPendingWithdrawals, 60 * 1000);
+    const intervalId = setInterval(loadPendingWithdrawals, pendingWithdrawalsLoadInterval);
     return () => {
       clearInterval(intervalId);
     };

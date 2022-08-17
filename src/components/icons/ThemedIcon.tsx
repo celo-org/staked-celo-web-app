@@ -69,6 +69,7 @@ interface ThemedIconProps {
   width?: number;
   height?: number;
   classes?: string;
+  fill?: boolean;
   onClick?: () => void;
 }
 
@@ -79,12 +80,14 @@ export const ThemedIcon = ({
   width = 32,
   height = 32,
   classes = '',
+  fill = false,
   onClick,
 }: ThemedIconProps) => {
   const { theme } = useThemeContext();
+  const sizeClasses = fill ? 'w-full h-full' : '';
   return (
-    <OpacityTransition id={theme} classes="inline-flex">
-      <span className="inline-flex items-center">
+    <OpacityTransition id={theme} classes={`inline-flex ${sizeClasses}`}>
+      <span className={`inline-flex items-center ${sizeClasses}`}>
         <Image
           src={icons?.[name]?.[theme]}
           alt={alt}
@@ -93,6 +96,7 @@ export const ThemedIcon = ({
           width={width}
           height={height}
           onClick={onClick}
+          layout={fill ? 'fill' : 'intrinsic'}
         />
       </span>
     </OpacityTransition>

@@ -13,18 +13,15 @@ export function useStaking() {
   const { stakingRate, celoToUSDRate } = useProtocolContext();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
 
-  const createTxOptions = useCallback(
-    () => ({
-      from: address!,
-      value: celoAmount?.toFixed(),
-    }),
-    [address, celoAmount]
-  );
+  const createTxOptions = useCallback(() => {
+    if (!address) throw new Error('Cannot create tx options without an address');
+    return { from: address, value: celoAmount?.toFixed() };
+  }, [address, celoAmount]);
 
   const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
 
   const stake = async (callbacks?: TxCallbacks) => {
-    if (!celoAmount || celoAmount.isEqualTo(0)) return;
+    if (!address || !celoAmount || celoAmount.isEqualTo(0)) return;
     const preDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()
     );

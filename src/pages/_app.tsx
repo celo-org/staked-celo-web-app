@@ -1,4 +1,4 @@
-import { CeloProvider as ReactCeloProvider } from '@celo/react-celo';
+import { CeloProvider, useCelo } from '@celo/react-celo';
 import '@celo/react-celo/lib/styles.css';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -26,14 +26,31 @@ const App = ({ Component, pageProps, router }: AppProps) => {
         <title>{`StakedCelo - Liquid staking on Celo | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <ClientOnly>
-        <TopProvider>
-          <CeloConnectRedirect>
-            <AppLayout pathName={pathName}>
-              <Component {...pageProps} />
-              <ToastContainer transition={Zoom} position={toast.POSITION.TOP_CENTER} icon={false} />
-            </AppLayout>
-          </CeloConnectRedirect>
-        </TopProvider>
+        <CeloProvider
+          dapp={{
+            icon: '/logo.svg',
+            name: 'Celo Staking',
+            description: 'Celo staking application',
+            url: '',
+          }}
+          connectModal={{
+            title: <span>Connect Wallet</span>,
+            providersOptions: { searchable: false },
+          }}
+        >
+          <TopProvider>
+            <CeloConnectRedirect>
+              <AppLayout pathName={pathName}>
+                <Component {...pageProps} />
+                <ToastContainer
+                  transition={Zoom}
+                  position={toast.POSITION.TOP_CENTER}
+                  icon={false}
+                />
+              </AppLayout>
+            </CeloConnectRedirect>
+          </TopProvider>
+        </CeloProvider>
       </ClientOnly>
     </>
   );
@@ -62,44 +79,24 @@ const ClientOnly = ({ children }: PropsWithChildren) => {
 };
 
 const TopProvider = (props: PropsWithChildren) => {
+  const { initialised } = useCelo();
+  if (!initialised) return null;
+
   return (
-    <CeloProvider>
-      <ThemeProvider>
-        <ProtocolProvider>
-          <AccountProvider>{props.children}</AccountProvider>
-        </ProtocolProvider>
-      </ThemeProvider>
-    </CeloProvider>
+    <ThemeProvider>
+      <ProtocolProvider>
+        <AccountProvider>{props.children}</AccountProvider>
+      </ProtocolProvider>
+    </ThemeProvider>
   );
 };
 
-const CeloProvider = (props: PropsWithChildren) => {
-  return (
-    <ReactCeloProvider
-      dapp={{
-        icon: '/logo.svg',
-        name: 'Celo Staking',
-        description: 'Celo staking application',
-        url: '',
-      }}
-      connectModal={{
-        title: <span>Connect Wallet</span>,
-        providersOptions: {
-          searchable: false,
-        },
-      }}
-    >
-      {props.children}
-    </ReactCeloProvider>
-  );
-};
-
-const routingsWithoutConnection = ['/connect', '/faq'];
+const routingsWithConnection = ['/'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
   const { isConnected } = useAccountContext();
 
-  if (!isConnected && !routingsWithoutConnection.includes(router.pathname)) {
+  if (!isConnected && routingsWithConnection.includes(router.pathname)) {
     void router.push('/connect');
 
     // Router is async. Show empty screen before redirect.

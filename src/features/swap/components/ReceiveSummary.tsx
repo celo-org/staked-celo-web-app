@@ -37,13 +37,13 @@ interface ReceiveInfoProps {
 }
 
 const ReceiveInfo = ({ mode }: ReceiveInfoProps) => {
-  const { annualProjectedYield } = useProtocolContext();
+  const { annualProjectedRate } = useProtocolContext();
 
   switch (mode) {
     case 'stake':
       return (
         <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
-          {annualProjectedYield ? `${annualProjectedYield}%` : '-'} projected APY
+          {annualProjectedRate ? `${annualProjectedRate}%` : '-'} projected APR
         </span>
       );
     case 'unstake':
