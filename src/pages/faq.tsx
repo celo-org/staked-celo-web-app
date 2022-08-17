@@ -86,10 +86,7 @@ const Faq = () => {
       </FaqItem>
       <FaqItem question="How is StakedCelo secure?">
         StakedCelo has been audited and the reports are published{' '}
-        <Link url="https://github.com/celo-org/staked-celo/tree/soloseng/add-audit-report">
-          here
-        </Link>
-        .
+        <Link url="https://github.com/celo-org/staked-celo/tree/master/audit">here</Link>.
       </FaqItem>
       <FaqItem question="How long is stCELO locked?">
         To withdraw stCELO from the protocol and transfer it into unlocked CELO a waiting period of
