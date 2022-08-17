@@ -100,6 +100,8 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
   return pendingWithdrawals.reverse();
 };
 
+const pendingWithdrawalsLoadInterval = 60 * 1000;
+
 export const useWithdrawals = (address: string | null) => {
   const { accountContract } = useBlockchain();
 
@@ -114,7 +116,7 @@ export const useWithdrawals = (address: string | null) => {
   useEffect(() => {
     if (!address) return;
     void loadPendingWithdrawals();
-    const intervalId = setInterval(loadPendingWithdrawals, 60 * 1000);
+    const intervalId = setInterval(loadPendingWithdrawals, pendingWithdrawalsLoadInterval);
     return () => {
       clearInterval(intervalId);
     };
