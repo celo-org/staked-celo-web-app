@@ -7,6 +7,7 @@ import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
 import { GAS_LIMIT, GAS_PRICE } from 'src/config/consts';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { AbiItem } from 'web3-utils';
+import { isSanctionedAddress } from 'src/utils/sanctioned';
 
 interface TxOptions {
   from: string;
@@ -59,6 +60,9 @@ export function useBlockchain() {
 
   const sendTransaction = useCallback(
     async (txObject: any, txOptions: TxOptions, callbacks?: TxCallbacks) => {
+      if (isSanctionedAddress(txOptions.from)) {
+        throw new Error('Cannot transact from an OFAC sanctioned address');
+      }
       const tx = await kit.connection.sendTransactionObject(txObject, {
         ...txOptions,
         gas: GAS_LIMIT,
