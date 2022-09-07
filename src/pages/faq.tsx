@@ -111,6 +111,14 @@ const Faq = () => {
       <FaqItem question="Why do I see “Still claiming…” after unstaking stCELO and waiting for three days?">
         See the FAQ “How does unstaking work?”.
       </FaqItem>
+      <FaqItem question="What validator groups does StakedCelo vote for?">
+        StakedCelo votes for a group of randomly selected validator groups, adhering to the principles 
+        of increasing decentralization and on-chain verifiable neutrality. The details of the selection 
+        process are described {' '}
+        <Link url="https://docs.stcelo.xyz/voting-for-validator-groups">
+          here
+        </Link>.
+      </FaqItem>
       <FaqItem question="What are the risks of staking with StakedCelo?">
         There exist a number of potential risks when staking with StakedCelo, in particular smart
         contract security, which we discuss in more detail below. There is an inherent risk that
