@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-type ActionType = 'withdraw' | 'claim';
+type ActionType =  'activate' | 'withdraw' | 'claim';
 
 export const createAPI = (baseURL: string) => {
   const apiService = axios.create({ baseURL });
 
-  const sendRequest = async (address: string, action: ActionType) => {
+  const sendRequest = async (action: ActionType, address?: string) => {
     if (!baseURL) return;
     await apiService.post('/', {
       beneficiary: address,
@@ -13,10 +13,12 @@ export const createAPI = (baseURL: string) => {
     });
   };
 
-  const withdraw = (address: string) => sendRequest(address, 'withdraw');
-  const claim = (address: string) => sendRequest(address, 'claim');
+  const activate = () => sendRequest('activate');
+  const withdraw = (address: string) => sendRequest('withdraw', address);
+  const claim = (address: string) => sendRequest('claim', address);
 
   return {
+    activate,
     withdraw,
     claim,
   };
