@@ -19,6 +19,12 @@ class MyDocument extends Document {
           <meta name="application-name" content={name} />
           <meta name="keywords" content={description} />
           <meta name="description" content={description} />
+
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="app.stcelo.xyz" />
+          <meta name="twitter:title" content={name} />
+          <meta name="twitter:description" content={description} />
+          <meta name="twitter:image:src" content="/card-image.png" />
         </Head>
         <body className="bg-primary">
           <Main />
