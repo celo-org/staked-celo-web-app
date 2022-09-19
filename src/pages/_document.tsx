@@ -24,7 +24,7 @@ class MyDocument extends Document {
           <meta name="twitter:site" content="app.stcelo.xyz" />
           <meta name="twitter:title" content={name} />
           <meta name="twitter:description" content={description} />
-          <meta name="twitter:image:src" content="/card-image.png" />
+          <meta name="twitter:image:src" content="https://app.stcelo.xyz/card-image.png" />
         </Head>
         <body className="bg-primary">
           <Main />
