@@ -36,3 +36,6 @@ yarn-error.log*
 
 # disclaimer
 public/THIRD_PARTY_LICENSES.txt
+
+# env
+.env
