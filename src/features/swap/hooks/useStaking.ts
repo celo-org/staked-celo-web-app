@@ -6,6 +6,7 @@ import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
 import { TxCallbacks, useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
+import { transactionEvent } from '../../../utils/ga';
 import { showStakingToast } from '../utils/toast';
 
 export function useStaking() {
@@ -27,7 +28,17 @@ export function useStaking() {
     const preDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()
     );
+    transactionEvent({
+      action: 'stake',
+      status: 'initiated_transaction',
+      value: celoAmount.toNumber(),
+    });
     await sendTransaction(depositTx(), createTxOptions(), callbacks);
+    transactionEvent({
+      action: 'stake',
+      status: 'signed_transaction',
+      value: celoAmount.toNumber(),
+    });
     await api.activate();
     await loadBalances();
     const postDepositStTokenBalance = new StCelo(

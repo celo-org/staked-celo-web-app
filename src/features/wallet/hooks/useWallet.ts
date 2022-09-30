@@ -1,13 +1,25 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useState } from 'react';
 import logger from 'src/services/logger';
+import { walletEvent } from '../../../utils/ga';
 
 export function useWallet() {
-  const { connect, destroy } = useCelo();
+  const { connect, destroy, walletType } = useCelo();
 
   const connectWallet = useCallback(async () => {
     try {
-      await connect();
+      walletEvent({
+        action: 'connect-wallet',
+        status: 'initiated',
+        label: 'N/A',
+      });
+      const connection = await connect();
+
+      walletEvent({
+        action: 'connect-wallet',
+        status: 'completed',
+        label: connection.type.toString(),
+      });
       return true;
     } catch (error: any) {
       logger.error(error?.message);
@@ -17,7 +29,18 @@ export function useWallet() {
 
   const disconnectWallet = useCallback(async () => {
     try {
+      walletEvent({
+        action: 'disconnect-wallet',
+        status: 'initiated',
+        label: walletType.toString(),
+      });
       await destroy();
+
+      walletEvent({
+        action: 'disconnect-wallet',
+        status: 'completed',
+        label: 'N/A',
+      });
       return true;
     } catch (error: any) {
       logger.error(error?.message);

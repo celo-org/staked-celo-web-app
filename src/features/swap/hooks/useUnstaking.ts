@@ -6,6 +6,7 @@ import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
 import { TxCallbacks, useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
+import { transactionEvent } from '../../../utils/ga';
 import { showUnstakingToast } from '../utils/toast';
 
 export function useUnstaking() {
@@ -27,7 +28,17 @@ export function useUnstaking() {
 
   const unstake = async (callbacks?: TxCallbacks) => {
     if (!address || !stCeloAmount || stCeloAmount.isEqualTo(0)) return;
+    transactionEvent({
+      action: 'unstake',
+      status: 'initiated_transaction',
+      value: stCeloAmount.toNumber(),
+    });
     await sendTransaction(withdrawTx(), createTxOptions(), callbacks);
+    transactionEvent({
+      action: 'unstake',
+      status: 'signed_transaction',
+      value: stCeloAmount.toNumber(),
+    });
     await api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
     showUnstakingToast();
