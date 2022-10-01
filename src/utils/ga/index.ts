@@ -1,4 +1,4 @@
-export const GA_TRACKING_ID: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS!;
+export const GA_TRACKING_ID: string = process.env.NEXT_PRIVATE_GOOGLE_ANALYTICS!;
 
 // log the pageview with their URL
 export const pageview = (url: URL) => {
