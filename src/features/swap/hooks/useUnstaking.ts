@@ -31,13 +31,13 @@ export function useUnstaking() {
     transactionEvent({
       action: 'unstake',
       status: 'initiated_transaction',
-      value: stCeloAmount.toNumber(),
+      value: stCeloAmount.convertToBase().toString(),
     });
     await sendTransaction(withdrawTx(), createTxOptions(), callbacks);
     transactionEvent({
       action: 'unstake',
       status: 'signed_transaction',
-      value: stCeloAmount.toNumber(),
+      value: stCeloAmount.convertToBase().toString(),
     });
     await api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);

@@ -36,5 +36,5 @@ export type GTagEvent = {
   action: string;
   status: string;
   label?: string;
-  value?: number;
+  value?: string;
 };

@@ -31,13 +31,13 @@ export function useStaking() {
     transactionEvent({
       action: 'stake',
       status: 'initiated_transaction',
-      value: celoAmount.toNumber(),
+      value: celoAmount.convertToBase().toString(),
     });
     await sendTransaction(depositTx(), createTxOptions(), callbacks);
     transactionEvent({
       action: 'stake',
       status: 'signed_transaction',
-      value: celoAmount.toNumber(),
+      value: celoAmount.convertToBase().toString(),
     });
     await api.activate();
     await loadBalances();
