@@ -14,6 +14,7 @@ import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
 import { AppLayout } from 'src/layout/AppLayout';
 import 'src/styles/globals.css';
 import 'src/styles/transitions.scss';
+import { pageview } from '../utils/ga';
 
 dayjs.extend(relativeTime);
 
@@ -99,11 +100,19 @@ const CeloConnectRedirect = (props: PropsWithChildren) => {
   if (!isConnected && routingsWithConnection.includes(router.pathname)) {
     void router.push('/connect');
 
+    const handleRouteChange = (url: URL) => {
+      pageview(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+
     // Router is async. Show empty screen before redirect.
     return null;
   } else if (isConnected && router.pathname == '/connect') {
     void router.push('/');
-
+    const handleRouteChange = (url: URL) => {
+      pageview(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
     return null;
   }
 
