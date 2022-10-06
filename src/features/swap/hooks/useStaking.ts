@@ -39,7 +39,7 @@ export function useStaking() {
       status: 'signed_transaction',
       value: celoAmount.displayAsBase(),
     });
-    await api.activate();
+    api.activate();
     await loadBalances();
     const postDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()
