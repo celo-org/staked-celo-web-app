@@ -39,7 +39,7 @@ export function useUnstaking() {
       status: 'signed_transaction',
       value: stCeloAmount.displayAsBase(),
     });
-    await api.withdraw(address);
+    api.withdraw(address);
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
     showUnstakingToast();
     setStCeloAmount(null);
