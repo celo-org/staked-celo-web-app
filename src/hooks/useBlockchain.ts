@@ -6,8 +6,8 @@ import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
 import { GAS_PRICE } from 'src/config/consts';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
-import { AbiItem } from 'web3-utils';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
+import { AbiItem } from 'web3-utils';
 
 interface TxOptions {
   from: string;
@@ -61,7 +61,9 @@ export function useBlockchain() {
   const sendTransaction = useCallback(
     async (txObject: any, txOptions: TxOptions, callbacks?: TxCallbacks) => {
       if (isSanctionedAddress(txOptions.from)) {
-        throw new Error('Cannot transact from an OFAC sanctioned address');
+        throw new Error(
+          'The wallet address has been sanctioned by the U.S. Department of the Treasury. All U.S. persons are prohibited from accessing, receiving, accepting, or facilitating any property and interests in property (including use of any technology, software or software patch(es)) of these designated digital wallet addresses.  These prohibitions include the making of any contribution or provision of funds, goods, or services by, to, or for the benefit of any blocked person and the receipt of any contribution or provision of funds, goods, or services from any such person and all designated digital asset wallets.'
+        );
       }
       const tx = await kit.connection.sendTransactionObject(txObject, {
         ...txOptions,
