@@ -121,6 +121,7 @@ const SANCTIONED_ADDRESSES = [
   '0x5cab7692d4e94096462119ab7bf57319726eed2a',
   '0x756c4628e57f7e7f8a459ec2752968360cf4d1aa',
   '0xd82ed8786d7c69dc7e052f7a542ab047971e73d2',
+  '0x39d908dac893cbcb53cc86e0ecc369aa4def1a29',
   // Non-sanctioned test address to verify blacklist works
   '0x48cf2a44466e1426a71cfc1390435800489255b1',
 ];
