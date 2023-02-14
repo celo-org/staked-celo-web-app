@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import { GAS_PRICE } from 'src/config/consts';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
 import { AbiItem } from 'web3-utils';
@@ -21,6 +20,7 @@ export interface TxCallbacks {
 type EpochRewardsContract = Awaited<ReturnType<ContractKit['_web3Contracts']['getEpochRewards']>>;
 type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSortedOracles']>>;
 type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
+type GasPriceMinimumContract = Awaited<ReturnType<ContractKit['contracts']['getGasPriceMinimum']>>;
 
 export function useBlockchain() {
   const { kit, network } = useCelo();
@@ -67,7 +67,6 @@ export function useBlockchain() {
       }
       const tx = await kit.connection.sendTransactionObject(txObject, {
         ...txOptions,
-        gasPrice: GAS_PRICE,
       });
       await tx.getHash();
       if (callbacks?.onSent) callbacks.onSent();
@@ -93,11 +92,17 @@ export function useBlockchain() {
     () => void contractKit.contracts.getStableToken().then(setStableTokenContract),
     [contractKit]
   );
+  const [gasPriceMinimumContract, setGasPriceMinimumContract] = useState<GasPriceMinimumContract>();
+  useEffect(
+    () => void contractKit.contracts.getGasPriceMinimum().then(setGasPriceMinimumContract),
+    [contractKit]
+  );
 
   return {
     epochRewardsContract,
     sortedOraclesContract,
     stableTokenContract,
+    gasPriceMinimumContract,
     managerContract,
     stCeloContract,
     accountContract,
