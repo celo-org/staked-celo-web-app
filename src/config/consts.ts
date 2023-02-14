@@ -3,7 +3,7 @@ export const DISPLAY_DECIMALS = 4;
 export const INPUT_DECIMALS = 4;
 export const MIN_ROUNDED_VALUE = 0.001;
 
-export const GAS_PRICE = process.env.NEXT_PUBLIC_GAS_PRICE || '500000000';
+export const GAS_PRICE = process.env.NEXT_PUBLIC_GAS_PRICE || '6000000000';
 export const MAX_AMOUNT_THRESHOLD = '1000000000000000';
 
 export const NEXT_PUBLIC_MANAGER_TESTNET_ADDRESS = '0xFfe124dde2b29fA848aD8caAEBE85651F0b5c406';
