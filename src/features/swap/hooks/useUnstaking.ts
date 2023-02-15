@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { useCallback, useMemo, useState } from 'react';
-import { GAS_PRICE } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
@@ -13,13 +12,13 @@ export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
   const { managerContract, sendTransaction } = useBlockchain();
   const { api } = useAPI();
-  const { unstakingRate, celoToUSDRate } = useProtocolContext();
+  const { unstakingRate, celoToUSDRate, suggestedGasPrice } = useProtocolContext();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
 
   const createTxOptions = useCallback(() => {
     if (!address) throw new Error('Cannot create tx options without an address');
-    return { from: address };
-  }, [address]);
+    return { from: address, gasPrice: suggestedGasPrice };
+  }, [address, suggestedGasPrice]);
 
   const withdrawTx = useCallback(
     () => stCeloAmount && managerContract.methods.withdraw(stCeloAmount.toFixed()),
@@ -50,10 +49,10 @@ export function useUnstaking() {
       return null;
     }
     const gasFee = new BigNumber(await withdrawTx().estimateGas(createTxOptions()));
-    const gasFeeInCelo = new Celo(gasFee.multipliedBy(GAS_PRICE));
+    const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;
-  }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount, celoToUSDRate]);
+  }, [withdrawTx, createTxOptions, stCeloBalance, stCeloAmount, celoToUSDRate, suggestedGasPrice]);
 
   const receivedCelo = useMemo(
     () => (stCeloAmount ? new Celo(stCeloAmount.multipliedBy(unstakingRate).dp(0)) : null),
