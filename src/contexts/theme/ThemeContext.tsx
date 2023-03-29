@@ -23,8 +23,15 @@ export const ThemeContext = createContext<ThemeContext>({
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [theme, setTheme] = useState<Theme>('dark');
   useEffect(() => {
-    if (theme === 'dark') document.body.classList.add('dark-mode');
-    else document.body.classList.remove('dark-mode');
+    if (theme === 'dark') {
+      // add "dark" so react-celo modal also goes into dark mode
+      document.body.classList.add('dark-mode');
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark-mode');
+      document.body.classList.remove('dark');
+    }
+
   }, [theme]);
 
   return (
