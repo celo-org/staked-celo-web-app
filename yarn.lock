@@ -1797,6 +1797,11 @@ commander@^2.20.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
+compliance-sdk@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/compliance-sdk/-/compliance-sdk-1.0.5.tgz#42c5a8d82ec9bf25512bb448d7c6bf2138dd8ced"
+  integrity sha512-SygUeVHyVcboyPQzf0jtEWEGFlVaDqyM9ZUnlDWRgogcF15ypGdLmRx9Ej1BLASxkL00H8k8Acq+JvWjun+kAA==
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"

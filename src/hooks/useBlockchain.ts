@@ -1,5 +1,6 @@
 import { ContractKit, newKit } from '@celo/contractkit';
 import { useCelo } from '@celo/react-celo';
+import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
@@ -60,10 +61,8 @@ export function useBlockchain() {
 
   const sendTransaction = useCallback(
     async (txObject: any, txOptions: TxOptions, callbacks?: TxCallbacks) => {
-      if (isSanctionedAddress(txOptions.from)) {
-        throw new Error(
-          'The wallet address has been sanctioned by the U.S. Department of the Treasury. All U.S. persons are prohibited from accessing, receiving, accepting, or facilitating any property and interests in property (including use of any technology, software or software patch(es)) of these designated digital wallet addresses.  These prohibitions include the making of any contribution or provision of funds, goods, or services by, to, or for the benefit of any blocked person and the receipt of any contribution or provision of funds, goods, or services from any such person and all designated digital asset wallets.'
-        );
+      if (await isSanctionedAddress(txOptions.from)) {
+        throw new Error(COMPLIANT_ERROR_RESPONSE);
       }
       const tx = await kit.connection.sendTransactionObject(txObject, {
         ...txOptions,
