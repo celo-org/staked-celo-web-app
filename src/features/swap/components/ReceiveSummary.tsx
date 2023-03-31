@@ -3,8 +3,8 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { Mode } from 'src/types';
 import { Token } from 'src/utils/tokens';
-import { Mode } from '../types';
 import { TokenCard } from './TokenCard';
 
 interface ReceiveSummaryProps {
@@ -18,7 +18,7 @@ export const ReceiveSummary = ({ mode, value }: ReceiveSummaryProps) => {
   return (
     <TokenCard
       classes="pt-[32px]"
-      token={mode === 'stake' ? 'stCELO' : 'CELO'}
+      token={mode === Mode.stake ? 'stCELO' : 'CELO'}
       titleChild="Receive"
       inputChild={displayValue}
       infoChild={
@@ -40,18 +40,19 @@ const ReceiveInfo = ({ mode }: ReceiveInfoProps) => {
   const { annualProjectedRate } = useProtocolContext();
 
   switch (mode) {
-    case 'stake':
-      return (
-        <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
-          {annualProjectedRate ? `${annualProjectedRate}%` : '-'} projected APR
-        </span>
-      );
-    case 'unstake':
+    case Mode.unstake:
       return (
         <div className="inline-flex items-center text-color-secondary-callout">
           <span className="font-medium text-[15px] leading-[20px]">3-day unstake period</span>
           <UnstakeInfo />
         </div>
+      );
+    default:
+    case Mode.stake:
+      return (
+        <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
+          {annualProjectedRate ? `${annualProjectedRate}%` : '-'} projected APR
+        </span>
       );
   }
 };

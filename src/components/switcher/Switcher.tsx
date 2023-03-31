@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import scssTransitions from 'src/styles/transitions.module.scss';
-import { Mode } from '../types';
+import { Mode } from 'src/types';
 
 const { transitionDuration, transitionTimingFunction } = scssTransitions;
 
@@ -11,8 +11,10 @@ interface Link {
 }
 
 const links: Link[] = [
-  { label: 'Stake', mode: 'stake', activeBgClass: 'bg-highlight-primary' },
-  { label: 'Unstake', mode: 'unstake', activeBgClass: 'bg-highlight-secondary' },
+  { label: 'Stake', mode: Mode.stake, activeBgClass: 'bg-highlight-primary' },
+  { label: 'Unstake', mode: Mode.unstake, activeBgClass: 'bg-highlight-secondary' },
+  { label: 'Govern', mode: Mode.governance, activeBgClass: 'color-error' },
+  { label: 'Vote', mode: Mode.validators, activeBgClass: 'color-error' },
 ];
 
 interface SwitcherProps {

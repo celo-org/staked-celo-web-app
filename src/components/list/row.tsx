@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { PropsWithChildren } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 
@@ -22,13 +23,13 @@ export const Row = (props: PropsWithChildren<Props>) => {
       <span className="truncate">{props.name}</span>
       <span className={`flex flex-initial flex-shrink-0 flex-row items-center gap-2`}>
         {props.children}
-        <a
+        <Link
           href={props.href}
           target={props.href?.startsWith('http') ? '_blank' : '_self'}
           rel="noreferrer"
         >
           <ThemedIcon name="arrow" alt="open" classes="rotate-[270deg]" />
-        </a>
+        </Link>
       </span>
     </li>
   );

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
+import { Mode } from 'src/types';
 import { CeloUSD } from 'src/utils/tokens';
-import { Mode } from '../types';
 
 interface DetailsProps {
   mode: Mode;
@@ -25,9 +25,10 @@ export const Details = ({ mode, swapRate, gasFee }: DetailsProps) => {
 
 const getDetails = (mode: Mode, swapRate: number, gasFee: CeloUSD) => {
   switch (mode) {
-    case 'unstake':
+    case Mode.unstake:
       return [exchangeDetail(swapRate), gasDetail(gasFee), feeDetail];
-    case 'stake':
+    default:
+    case Mode.stake:
       return [exchangeDetail(swapRate), gasDetail(gasFee), feeDetail, periodDetail];
   }
 };
