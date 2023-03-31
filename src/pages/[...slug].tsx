@@ -6,9 +6,8 @@ import * as ga from '../utils/ga';
 
 const SwapPage: NextPage = () => {
   const router = useRouter();
-  const {
-    slug: [mode = Mode.stake],
-  } = router.query as { slug: string[] };
+  const { slug } = router.query as { slug?: string[] };
+  const mode = slug ? slug[0] : Mode.stake;
 
   const onModeChange = (mode: Mode) => {
     void router.push({
