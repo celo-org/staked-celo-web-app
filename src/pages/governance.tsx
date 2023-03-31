@@ -1,15 +1,11 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Swap } from 'src/features/swap/components/Swap';
+import { Governance } from 'src/features/governance/components/Governance';
 import { Mode } from 'src/types';
 import * as ga from '../utils/ga';
 
-const SwapPage: NextPage = () => {
+const GovernancePage: NextPage = () => {
   const router = useRouter();
-  const {
-    slug: [mode = Mode.stake],
-  } = router.query as { slug: string[] };
-
   const onModeChange = (mode: Mode) => {
     void router.push({
       pathname: `/${mode}`,
@@ -19,8 +15,7 @@ const SwapPage: NextPage = () => {
     };
     router.events.on('routeChangeComplete', handleRouteChange);
   };
-  if (typeof mode !== 'string' || !Object.values(Mode).includes(mode as Mode)) return null;
-  return <Swap mode={mode as Mode} onModeChange={onModeChange} />;
+  return <Governance onModeChange={onModeChange} />;
 };
 
-export default SwapPage;
+export default GovernancePage;

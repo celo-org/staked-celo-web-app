@@ -1,10 +1,10 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Swap } from 'src/features/swap/components/Swap';
+import { Validators } from 'src/features/validators/components/Validators';
 import { Mode } from 'src/types';
 import * as ga from '../utils/ga';
 
-const SwapPage: NextPage = () => {
+const ValidatorsPage: NextPage = () => {
   const router = useRouter();
   const onModeChange = (mode: Mode) => {
     void router.push({
@@ -15,8 +15,7 @@ const SwapPage: NextPage = () => {
     };
     router.events.on('routeChangeComplete', handleRouteChange);
   };
-
-  return <Swap mode={Mode.stake} onModeChange={onModeChange} />;
+  return <Validators onModeChange={onModeChange} />;
 };
 
-export default SwapPage;
+export default ValidatorsPage;
