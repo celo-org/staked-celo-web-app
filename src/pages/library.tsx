@@ -1,6 +1,7 @@
 import { Row } from 'src/components/list/row';
 import { Pill } from 'src/components/pills/Pill';
 import { LinkOut } from 'src/components/text/LinkOut';
+import { ValidatorGroupRow } from 'src/features/validators/ValidatorGroupRow';
 
 const page = () => {
   return (
@@ -23,6 +24,11 @@ const page = () => {
       >
         Child Here
       </Row>
+      <ValidatorGroupRow
+        name="PolyCentric"
+        groupAddress="0x43d72Ff17701B2DA814620735C39C620Ce0ea4A1"
+      />
+      <ValidatorGroupRow name="" groupAddress="0x43d72Ff17701B2DA814620735C39C620Ce0ea4A1" />
     </div>
   );
 };
