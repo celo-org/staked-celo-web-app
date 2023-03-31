@@ -1,6 +1,6 @@
 import { WidthTransition } from 'src/components/transitions/WidthTransition';
 import { Token } from 'src/utils/tokens';
-import { Mode } from '../types';
+import { Mode } from 'src/types';
 
 interface BalanceToolsProps {
   mode: Mode;

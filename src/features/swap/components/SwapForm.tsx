@@ -5,8 +5,8 @@ import { OpacityTransition } from 'src/components/transitions/OpacityTransition'
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { TxCallbacks } from 'src/hooks/useBlockchain';
+import { Mode } from 'src/types';
 import { Token, toToken } from 'src/utils/tokens';
-import { Mode } from '../types';
 import { BalanceTools } from './BalanceTools';
 import { ReceiveSummary } from './ReceiveSummary';
 import { SubmitButton } from './SubmitButton';
@@ -71,7 +71,7 @@ export const SwapForm = ({
           />
           <div
             className="absolute inline-flex cursor-pointer"
-            onClick={() => onModeChange(mode === 'stake' ? 'unstake' : 'stake')}
+            onClick={() => onModeChange(mode === Mode.stake ? Mode.unstake : Mode.stake)}
           >
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </div>
@@ -101,10 +101,11 @@ interface FormInputProps {
 const getTitle = (error: string | null, mode: Mode) => {
   if (error) return <span className="text-color-error whitespace-nowrap">{error}</span>;
   switch (mode) {
-    case 'stake':
-      return 'Stake';
-    case 'unstake':
+    case Mode.unstake:
       return 'Unstake';
+    default:
+    case Mode.stake:
+      return 'Stake';
   }
 };
 
@@ -129,7 +130,7 @@ const SwapFormInput = ({
   return (
     <TokenCard
       classes="bg-tertiary rounded-t-[16px] pb-[32px]"
-      token={mode === 'stake' ? 'CELO' : 'stCELO'}
+      token={mode === Mode.stake ? 'CELO' : 'stCELO'}
       titleChild={
         <OpacityTransition id={mode}>
           <span>{getTitle(error, mode)}</span>

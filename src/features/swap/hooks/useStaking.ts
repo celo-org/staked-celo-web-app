@@ -4,6 +4,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
 import { TxCallbacks, useBlockchain } from 'src/hooks/useBlockchain';
+import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
 import { transactionEvent } from '../../../utils/ga';
 import { showStakingToast } from '../utils/toast';
@@ -28,17 +29,17 @@ export function useStaking() {
       await stCeloContract.methods.balanceOf(address).call()
     );
     transactionEvent({
-      action: 'stake',
+      action: Mode.stake,
       status: 'initiated_transaction',
       value: celoAmount.displayAsBase(),
     });
     await sendTransaction(depositTx(), createTxOptions(), callbacks);
     transactionEvent({
-      action: 'stake',
+      action: Mode.stake,
       status: 'signed_transaction',
       value: celoAmount.displayAsBase(),
     });
-    api.activate();
+    void api.activate(); // TODO: should this be awaited? added void to shut linter.
     await loadBalances();
     const postDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()

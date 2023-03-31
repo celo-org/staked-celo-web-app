@@ -4,6 +4,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
 import { TxCallbacks, useBlockchain } from 'src/hooks/useBlockchain';
+import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
 import { transactionEvent } from '../../../utils/ga';
 import { showUnstakingToast } from '../utils/toast';
@@ -28,17 +29,17 @@ export function useUnstaking() {
   const unstake = async (callbacks?: TxCallbacks) => {
     if (!address || !stCeloAmount || stCeloAmount.isEqualTo(0)) return;
     transactionEvent({
-      action: 'unstake',
+      action: Mode.unstake,
       status: 'initiated_transaction',
       value: stCeloAmount.displayAsBase(),
     });
     await sendTransaction(withdrawTx(), createTxOptions(), callbacks);
     transactionEvent({
-      action: 'unstake',
+      action: Mode.unstake,
       status: 'signed_transaction',
       value: stCeloAmount.displayAsBase(),
     });
-    api.withdraw(address);
+    void api.withdraw(address); // TODO: should this be awaited? added void to shut linter.
     await Promise.all([loadBalances(), loadPendingWithdrawals()]);
     showUnstakingToast();
     setStCeloAmount(null);

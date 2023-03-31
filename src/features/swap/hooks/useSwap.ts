@@ -4,7 +4,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { TxCallbacks } from 'src/hooks/useBlockchain';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { Mode } from '../types';
+import { Mode } from 'src/types';
 import { useStaking } from './useStaking';
 import { useUnstaking } from './useUnstaking';
 
@@ -24,16 +24,7 @@ export function useSwap(mode: Mode) {
   let setAmount: (amount?: Token) => void;
 
   switch (mode) {
-    case 'stake':
-      balance = celoBalance;
-      amount = celoAmount;
-      receiveAmount = receivedStCelo;
-      swapRate = stakingRate;
-      estimateGas = estimateStakingGas;
-      swap = stake;
-      setAmount = (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount));
-      break;
-    case 'unstake':
+    case Mode.unstake:
       balance = stCeloBalance;
       amount = stCeloAmount;
       receiveAmount = receivedCelo;
@@ -41,6 +32,16 @@ export function useSwap(mode: Mode) {
       estimateGas = estimateUnstakingGas;
       swap = unstake;
       setAmount = (amount?: Token) => setStCeloAmount(!amount ? null : new StCelo(amount));
+      break;
+    default:
+    case Mode.stake:
+      balance = celoBalance;
+      amount = celoAmount;
+      receiveAmount = receivedStCelo;
+      swapRate = stakingRate;
+      estimateGas = estimateStakingGas;
+      swap = stake;
+      setAmount = (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount));
       break;
   }
 
@@ -62,9 +63,9 @@ export function useSwap(mode: Mode) {
   // When switching modes expected received amount should be set as provided amount
   // Because receiveAmount is updated after mode is changed we need to perform instance type check
   useEffect(() => {
-    if (mode === 'stake' && (!receiveAmount || receiveAmount instanceof StCelo)) {
+    if (mode === Mode.stake && (!receiveAmount || receiveAmount instanceof StCelo)) {
       setStCeloAmount(receiveAmount);
-    } else if (mode === 'unstake' && (!receiveAmount || receiveAmount instanceof Celo)) {
+    } else if (mode === Mode.unstake && (!receiveAmount || receiveAmount instanceof Celo)) {
       setCeloAmount(receiveAmount);
     }
   }, [mode, receiveAmount, setCeloAmount, setStCeloAmount]);
