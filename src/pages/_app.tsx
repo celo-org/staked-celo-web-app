@@ -30,7 +30,7 @@ const App = ({ Component, pageProps, router }: AppProps) => {
         <CeloProvider
           dapp={{
             icon: '/logo.svg',
-            name: 'Celo Staking',
+            name: 'StakedCelo',
             description: 'Celo staking application',
             url: '',
             walletConnectProjectId: '3bcdb6756cdd7179c359c03ae1e8aca2',
