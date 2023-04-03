@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useState } from 'react';
 import scssTransitions from 'src/styles/transitions.module.scss';
 import { Mode } from 'src/types';
-
 const { transitionDuration, transitionTimingFunction } = scssTransitions;
 
 interface Link {
@@ -19,13 +19,12 @@ const links: Link[] = [
 
 interface SwitcherProps {
   mode: Mode;
-  onModeChange: (mode: Mode) => void;
 }
 
-export const Switcher = ({ mode, onModeChange }: SwitcherProps) => {
+export const Switcher = ({ mode }: SwitcherProps) => {
   const [activeLink, setActiveLink] = useState<Link | null>(null);
   const [activeLinkNode, setActiveLinkNode] = useState<HTMLElement | null>(null);
-
+  const onModeChange = useModeChange();
   return (
     <div className="flex justify-center mb-[8px] ml-[8px]">
       <nav className="w-full">
@@ -63,3 +62,17 @@ export const Switcher = ({ mode, onModeChange }: SwitcherProps) => {
     </div>
   );
 };
+
+export default function useModeChange() {
+  const router = useRouter();
+  const onModeChange = useCallback(
+    (mode: Mode) => {
+      void router.push({
+        pathname: `/${mode}`,
+      });
+    },
+    [router]
+  );
+
+  return onModeChange;
+}

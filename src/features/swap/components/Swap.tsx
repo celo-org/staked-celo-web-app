@@ -22,7 +22,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
 
   return (
     <CenteredLayout classes="px-[24px]">
-      <Switcher mode={mode} onModeChange={onModeChange} />
+      <Switcher mode={mode} />
       <SwapForm
         mode={mode}
         amount={amount}
