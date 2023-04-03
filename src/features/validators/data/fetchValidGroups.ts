@@ -13,7 +13,9 @@ export default async function fetchValidGroups(): Promise<ValidatorGroup[]> {
 
   const allPossibleGroups = await validatorsWrapper.getRegisteredValidatorGroups();
 
-  // TODO Filter by attributes staked celo requires.
+  // TODO Filter way block groups and groups with bad health per
+  // https://github.com/celo-org/staked-celo/blob/master/contracts/Manager.sol#L348
+
   return allPossibleGroups.map((validatorGroup) => {
     return {
       name: validatorGroup.name,
