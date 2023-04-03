@@ -1,7 +1,7 @@
 import { Row } from 'src/components/list/row';
 import { Pill } from 'src/components/pills/Pill';
 import { LinkOut } from 'src/components/text/LinkOut';
-import { ValidatorGroupRow } from 'src/features/validators/ValidatorGroupRow';
+import { ValidatorGroupRow } from 'src/features/validators/components/ValidatorGroupRow';
 
 const page = () => {
   return (

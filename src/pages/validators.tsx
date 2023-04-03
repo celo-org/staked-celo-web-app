@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Validators } from 'src/features/validators/components/Validators';
+import { Validators } from 'src/features/validators/components/List';
 import { Mode } from 'src/types';
 
 const ValidatorsPage: NextPage = () => {

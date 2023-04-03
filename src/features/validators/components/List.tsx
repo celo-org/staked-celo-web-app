@@ -1,6 +1,6 @@
 import { Switcher } from 'src/components/switcher/Switcher';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { ValidatorGroupRow } from 'src/features/validators/ValidatorGroupRow';
+import { ValidatorGroupRow } from 'src/features/validators/components/ValidatorGroupRow';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
