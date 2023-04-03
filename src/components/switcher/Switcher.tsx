@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import scssTransitions from 'src/styles/transitions.module.scss';
 import { Mode } from 'src/types';
+import useModeChange from '../../hooks/useModeChange';
 const { transitionDuration, transitionTimingFunction } = scssTransitions;
 
 interface Link {
@@ -62,17 +62,3 @@ export const Switcher = ({ mode }: SwitcherProps) => {
     </div>
   );
 };
-
-export default function useModeChange() {
-  const router = useRouter();
-  const onModeChange = useCallback(
-    (mode: Mode) => {
-      void router.push({
-        pathname: `/${mode}`,
-      });
-    },
-    [router]
-  );
-
-  return onModeChange;
-}

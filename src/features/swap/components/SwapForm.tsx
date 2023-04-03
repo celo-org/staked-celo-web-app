@@ -5,6 +5,7 @@ import { OpacityTransition } from 'src/components/transitions/OpacityTransition'
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { TxCallbacks } from 'src/hooks/useBlockchain';
+import useModeChange from 'src/hooks/useModeChange';
 import { Mode } from 'src/types';
 import { Token, toToken } from 'src/utils/tokens';
 import { BalanceTools } from './BalanceTools';
@@ -22,7 +23,6 @@ interface SwapFormProps {
   setMaxAmount: () => void;
   onSubmit: (callbacks: TxCallbacks) => void;
   onChange: (amount?: Token) => void;
-  onModeChange: (mode: Mode) => void;
 }
 
 export const SwapForm = ({
@@ -34,7 +34,6 @@ export const SwapForm = ({
   setMaxAmount,
   onSubmit,
   onChange,
-  onModeChange,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCalloutModalOpened, setIsCalloutModalOpened] = useState(false);
@@ -57,6 +56,7 @@ export const SwapForm = ({
     [onSubmit, reloadProtocolContext]
   );
 
+  const onModeChange = useModeChange();
   return (
     <>
       <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
