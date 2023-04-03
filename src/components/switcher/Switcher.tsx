@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import scssTransitions from 'src/styles/transitions.module.scss';
 import { Mode } from 'src/types';
-import useModeChange from '../../hooks/useModeChange';
+import useModeChange from 'src/hooks/useModeChange';
 const { transitionDuration, transitionTimingFunction } = scssTransitions;
 
 interface Link {
