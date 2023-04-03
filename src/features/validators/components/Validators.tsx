@@ -1,80 +1,16 @@
 import { Switcher } from 'src/components/switcher/Switcher';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { ValidatorGroupRow } from 'src/features/validators/ValidatorGroupRow';
+import { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups'
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
 interface ValidatorsProps {
   onModeChange: (mode: Mode) => void;
+  list: ValidatorGroup[]
 }
 
-const groups = [
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-  {
-    name: 'Figment',
-    address: '0x01b2b83fDf26aFC3Ca7062C35Bc68c8DdE56dB04',
-  },
-];
-export const Validators = ({ onModeChange }: ValidatorsProps) => {
+export const Validators = ({ onModeChange, list }: ValidatorsProps) => {
   const _ctx = useAccountContext();
 
   return (
@@ -86,7 +22,7 @@ export const Validators = ({ onModeChange }: ValidatorsProps) => {
           groupAddress="0x0000000000000000000000000000000000000000"
           isCurrentStrategy={true}
         />
-        {groups.map((vg) => (
+        {list.map((vg) => (
           <ValidatorGroupRow key={vg.address} name={vg.name} groupAddress={vg.address} />
         ))}
       </ul>
