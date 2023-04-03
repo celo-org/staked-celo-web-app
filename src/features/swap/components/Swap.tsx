@@ -9,7 +9,9 @@ import { Details } from './Details';
 import { PendingWithdrawals } from './PendingWithdrawals';
 import { SwapForm } from './SwapForm';
 
-
+interface SwapProps {
+  mode: Mode
+}
 
 export const Swap = ({ mode }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
