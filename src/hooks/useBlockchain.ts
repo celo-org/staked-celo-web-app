@@ -29,15 +29,15 @@ export function useBlockchain() {
 
   // react-celo doesn't update network when it's changed second time
   // Hence we need to reload application after the first change
-  const [currentNetwork, setCurrentNetwork] = useState<string | null>(null);
-  useEffect(() => {
-    if (!network.name) return;
-    if (!currentNetwork) {
-      setCurrentNetwork(network.name);
-      return;
-    }
-    if (currentNetwork !== network.name) location.reload();
-  }, [network, currentNetwork]);
+  // const [currentNetwork, setCurrentNetwork] = useState<string | null>(null);
+  // useEffect(() => {
+  //   if (!network.name) return;
+  //   if (!currentNetwork) {
+  //     setCurrentNetwork(network.name);
+  //     return;
+  //   }
+  //   if (currentNetwork !== network.name) location.reload();
+  // }, [network, currentNetwork]);
 
   const addresses = useMemo(() => {
     if (network.name === 'Mainnet') return mainnetAddresses;
