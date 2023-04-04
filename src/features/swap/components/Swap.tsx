@@ -10,11 +10,10 @@ import { PendingWithdrawals } from './PendingWithdrawals';
 import { SwapForm } from './SwapForm';
 
 interface SwapProps {
-  mode: Mode;
-  onModeChange: (mode: Mode) => void;
+  mode: Mode
 }
 
-export const Swap = ({ mode, onModeChange }: SwapProps) => {
+export const Swap = ({ mode }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
   const { amount, setAmount, swap, balance, receiveAmount, swapRate, gasFee, setMaxAmount } =
     useSwap(mode);
@@ -22,7 +21,7 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
 
   return (
     <CenteredLayout classes="px-[24px]">
-      <Switcher mode={mode} onModeChange={onModeChange} />
+      <Switcher mode={mode} />
       <SwapForm
         mode={mode}
         amount={amount}
@@ -32,7 +31,6 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
         setMaxAmount={setMaxAmount}
         onSubmit={swap}
         onChange={setAmount}
-        onModeChange={onModeChange}
       />
       <OpacityTransition id={mode}>
         <div className="w-full px-[8px]">
