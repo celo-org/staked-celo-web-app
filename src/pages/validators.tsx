@@ -26,7 +26,11 @@ const ValidatorsPage: NextPage<Props> = (props) => {
 
   useLayoutEffect(() => {
     if (network.chainId !== chainValidatorSetIsFor) {
-      void router.push(`/validators?chainId=${network.chainId}`);
+      void router.push(
+        network.chainId === ChainId.Mainnet
+          ? `/validators`
+          : `/validators?chainId=${network.chainId}`
+      );
     }
   }, [chainValidatorSetIsFor, network, router]);
 
