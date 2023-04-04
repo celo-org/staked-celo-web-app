@@ -1,13 +1,13 @@
 import { Switcher } from 'src/components/switcher/Switcher';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { ValidatorGroupRow } from 'src/features/validators/ValidatorGroupRow';
-import { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups'
+import { ValidatorGroupRow } from 'src/features/validators/components/ValidatorGroupRow';
+import { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
 interface ValidatorsProps {
   onModeChange: (mode: Mode) => void;
-  list: ValidatorGroup[]
+  list: ValidatorGroup[];
 }
 
 export const Validators = ({ onModeChange, list }: ValidatorsProps) => {
