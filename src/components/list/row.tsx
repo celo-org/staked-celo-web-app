@@ -9,7 +9,8 @@ interface Props {
 }
 
 export const Row = (props: PropsWithChildren<Props>) => {
-  const layoutStyles = 'list-none flex flex-initial flex-row justify-between items-center';
+  const layoutStyles =
+    'list-none flex flex-initial flex-row justify-between items-center max-w-full';
   const spacingStyles = 'gap-5 py-1 px-2';
   const styleStyles = 'bg-primary rounded-lg';
   const highLightedStyles = 'border border-solid border-emerald-200 color-emerald-200';

@@ -17,6 +17,7 @@
     "axios": "^0.27.2",
     "bignumber.js": "^9.0.2",
     "compliance-sdk": "^1.0.5",
+    "date-fns": "^2.29.3",
     "dayjs": "^1.11.4",
     "next": "12.2.1",
     "react": "18.2.0",
