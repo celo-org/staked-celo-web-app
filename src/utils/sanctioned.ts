@@ -15,7 +15,7 @@ const DAY = 24 * 60 * 60 * 1000;
 
 export async function isSanctionedAddress(address: string): Promise<boolean> {
   const cache = readFromCache(OFAC_SANCTIONS_LIST_URL);
-  if (cache && cache.ts + DAY < Date.now()) {
+  if (cache && cache.ts + DAY > Date.now()) {
     return cache.data.includes(address.toLowerCase());
   }
 
