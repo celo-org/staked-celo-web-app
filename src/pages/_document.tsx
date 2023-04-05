@@ -1,6 +1,6 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
-const name = 'Liquid Staking';
+const name = 'StakedCelo';
 const description = 'A simple DApp for Celo liquid staking.';
 
 class MyDocument extends Document {
