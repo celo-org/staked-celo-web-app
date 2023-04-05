@@ -20,9 +20,9 @@ export const Governance = () => {
   return (
     <CenteredLayout classes="px-[24px]">
       <Switcher mode={Mode.governance} />
-      <form className="w-full justify-center items-center mt-[24px]">
+      <form className="w-full flex justify-center items-center mt-[24px] bg-secondary p-[8px] rounded-[16px]">
         {proposals.length ? (
-          <ul className="flex flex-col justify-center items-stretch w-full bg-secondary p-[8px] rounded-[16px] gap-4">
+          <ul className="flex flex-col gap-4 w-full">
             {proposals.map((proposal) => (
               <Row
                 key={proposal.proposalID.toString()}

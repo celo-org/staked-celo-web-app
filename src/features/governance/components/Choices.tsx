@@ -1,23 +1,21 @@
 import { RadioButton } from 'src/components/buttons/RadioButton';
+import { VoteType } from 'src/types';
 
-export enum VoteType {
-  yes = 'yes',
-  no = 'no',
-  abstain = 'abstain',
-}
-export type VoteProps = {
+export type ChoiceProps = {
   voteType: VoteType | undefined;
+  disabled?: boolean;
   onChange: (voteType: VoteType) => void;
 };
 
-export const Vote = ({ voteType, onChange }: VoteProps) => {
+export const Choices = ({ voteType, disabled, onChange }: ChoiceProps) => {
   return (
     <div className="flex flex-col bg-primary p-[8px] rounded-[16px] gap-4 w-full">
-      <span className="font-medium text-[16px] text-color-secondary">vote</span>
+      <span className="font-medium text-[14px] text-color-secondary">vote</span>
       <div className="flex flex-row justify-evenly">
         {Object.values(VoteType).map((value) => (
           <RadioButton
             key={value}
+            disabled={!!disabled}
             checked={voteType === value}
             onChange={() => onChange(value as VoteType)}
           >

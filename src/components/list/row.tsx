@@ -29,7 +29,7 @@ export const Row = (props: PropsWithChildren<Props>) => {
           target={props.href?.startsWith('http') ? '_blank' : '_self'}
           rel="noreferrer"
         >
-          <ThemedIcon name="arrow" alt="open" classes="rotate-[270deg]" />
+          <ThemedIcon name="arrow" alt="open" classes="rotate-[270deg] cursor-pointer" />
         </Link>
       </span>
     </li>
