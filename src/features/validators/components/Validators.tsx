@@ -1,6 +1,6 @@
-import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { ValidatorGroupRow } from 'src/features/validators/components/ValidatorGroupRow';
-import { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
+import { useAccountContext } from 'src/contexts/account/AccountContext'
+import { ValidatorGroupRow } from 'src/features/validators/components/ValidatorGroupRow'
+import { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups'
 
 interface ValidatorsProps {
   list: ValidatorGroup[];
@@ -20,5 +20,5 @@ export const Validators = ({ list }: ValidatorsProps) => {
         <ValidatorGroupRow key={vg.address} name={vg.name} groupAddress={vg.address} />
       ))}
     </ul>
-  );
-};
+  )
+}

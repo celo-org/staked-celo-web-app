@@ -1,10 +1,9 @@
-import { ChainId, useCelo } from '@celo/react-celo';
-import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useLayoutEffect } from 'react';
-import { Validators } from 'src/features/validators/components/Validators';
-import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
-import { Mode } from 'src/types';
+import { ChainId, useCelo } from '@celo/react-celo'
+import type { GetServerSideProps, NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { useLayoutEffect } from 'react'
+import { Validators } from 'src/features/validators/components/Validators'
+import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups'
 
 interface Props {
   validatorGroups: {
@@ -15,13 +14,7 @@ interface Props {
 
 const ValidatorsPage: NextPage<Props> = (props) => {
   const router = useRouter();
-  const onModeChange = (mode: Mode) => {
-    void router.push({
-      pathname: `/${mode}`,
-    });
-  };
   const { network } = useCelo();
-
   const chainValidatorSetIsFor = props.validatorGroups.chainId;
 
   useLayoutEffect(() => {
@@ -35,7 +28,8 @@ const ValidatorsPage: NextPage<Props> = (props) => {
   }, [chainValidatorSetIsFor, network, router]);
 
   return <Validators list={props.validatorGroups.groups} />;
-};
+}
+
 
 export default ValidatorsPage;
 
