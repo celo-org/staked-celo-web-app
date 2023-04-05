@@ -1,7 +1,5 @@
-import { Switcher } from 'src/components/switcher/Switcher';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 import { useSwap } from '../hooks/useSwap';
 import { validateAmount } from '../utils/validation';
@@ -10,7 +8,7 @@ import { PendingWithdrawals } from './PendingWithdrawals';
 import { SwapForm } from './SwapForm';
 
 interface SwapProps {
-  mode: Mode
+  mode: Mode;
 }
 
 export const Swap = ({ mode }: SwapProps) => {
@@ -20,8 +18,7 @@ export const Swap = ({ mode }: SwapProps) => {
   const error = validateAmount(amount, balance, mode);
 
   return (
-    <CenteredLayout classes="px-[24px]">
-      <Switcher mode={mode} />
+    <>
       <SwapForm
         mode={mode}
         amount={amount}
@@ -40,6 +37,6 @@ export const Swap = ({ mode }: SwapProps) => {
           ) : null}
         </div>
       </OpacityTransition>
-    </CenteredLayout>
+    </>
   );
 };

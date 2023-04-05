@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import useModeChange from 'src/hooks/useModeChange';
 import scssTransitions from 'src/styles/transitions.module.scss';
 import { Mode } from 'src/types';
-import useModeChange from 'src/hooks/useModeChange';
 const { transitionDuration, transitionTimingFunction } = scssTransitions;
 
 interface Link {
@@ -13,8 +13,8 @@ interface Link {
 const links: Link[] = [
   { label: 'Stake', mode: Mode.stake, activeBgClass: 'bg-highlight-primary' },
   { label: 'Unstake', mode: Mode.unstake, activeBgClass: 'bg-highlight-secondary' },
-  { label: 'Govern', mode: Mode.governance, activeBgClass: 'color-error' },
-  { label: 'Vote', mode: Mode.validators, activeBgClass: 'color-error' },
+  { label: 'Govern', mode: Mode.governance, activeBgClass: 'bg-action-secondary-callout' },
+  { label: 'Vote', mode: Mode.validators, activeBgClass: 'bg-action-secondary-callout' },
 ];
 
 interface SwitcherProps {
@@ -25,6 +25,7 @@ export const Switcher = ({ mode }: SwitcherProps) => {
   const [activeLink, setActiveLink] = useState<Link | null>(null);
   const [activeLinkNode, setActiveLinkNode] = useState<HTMLElement | null>(null);
   const onModeChange = useModeChange();
+
   return (
     <div className="flex justify-center mb-[8px] ml-[8px]">
       <nav className="w-full">
