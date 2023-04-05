@@ -24,7 +24,7 @@ const MultiModePage: NextPage = (props: Props) => {
   const validatorPageProps = props.validatorGroups;
   const chainValidatorSetIsFor = validatorPageProps?.chainId;
 
-  useQueryStringForChain(chainValidatorSetIsFor);
+  useQueryStringForChain(chainValidatorSetIsFor, mode);
 
   const page = useMemo(() => {
     switch (mode) {
@@ -94,20 +94,15 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
   }
 };
 
-function useQueryStringForChain(chainValidatorSetIsFor: ChainId | undefined) {
+function useQueryStringForChain(chainValidatorSetIsFor: ChainId | undefined, mode: MOde) {
   const router = useRouter();
   const { network } = useCelo();
   useLayoutEffect(() => {
-    if (!router.asPath.startsWith('/validators')) {
-      // only run when on the validators page
-      return;
-    }
     if (network.chainId !== chainValidatorSetIsFor) {
-      void router.push(
-        network.chainId === ChainId.Mainnet
-          ? `/validators`
-          : `/validators?chainId=${network.chainId}`
-      );
+      void router.push({
+        pathname: mode,
+        query: network.chainId === ChainId.Mainnet ? {} : { chainId: network.chainId },
+      });
     }
-  }, [chainValidatorSetIsFor, network, router]);
+  }, [chainValidatorSetIsFor, network, router, mode]);
 }
