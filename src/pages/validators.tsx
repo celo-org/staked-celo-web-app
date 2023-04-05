@@ -34,7 +34,7 @@ const ValidatorsPage: NextPage<Props> = (props) => {
     }
   }, [chainValidatorSetIsFor, network, router]);
 
-  return <Validators onModeChange={onModeChange} list={props.validatorGroups.groups} />;
+  return <Validators list={props.validatorGroups.groups} />;
 };
 
 export default ValidatorsPage;
