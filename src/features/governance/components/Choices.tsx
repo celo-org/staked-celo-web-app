@@ -12,16 +12,18 @@ export const Choices = ({ voteType, disabled, onChange }: ChoiceProps) => {
     <div className="flex flex-col bg-primary p-[8px] rounded-[16px] gap-4 w-full">
       <span className="font-medium text-[14px] text-color-secondary">vote</span>
       <div className="flex flex-row justify-evenly">
-        {Object.values(VoteType).map((value) => (
-          <RadioButton
-            key={value}
-            disabled={!!disabled}
-            checked={voteType === value}
-            onChange={() => onChange(value as VoteType)}
-          >
-            {<span className="capitalize">{value}</span>}
-          </RadioButton>
-        ))}
+        {Object.values(VoteType)
+          .filter((x) => x !== VoteType.upvote)
+          .map((value) => (
+            <RadioButton
+              key={value}
+              disabled={!!disabled}
+              checked={voteType === value}
+              onChange={() => onChange(value as VoteType)}
+            >
+              {<span className="capitalize">{value}</span>}
+            </RadioButton>
+          ))}
       </div>
     </div>
   );

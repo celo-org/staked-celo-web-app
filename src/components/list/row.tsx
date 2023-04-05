@@ -4,6 +4,7 @@ import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 
 interface Props {
   name: string;
+  nameClasses?: string;
   highlighted?: boolean;
   href: string;
 }
@@ -21,7 +22,7 @@ export const Row = (props: PropsWithChildren<Props>) => {
         props.highlighted ? highLightedStyles : ''
       }`}
     >
-      <span className="truncate">{props.name}</span>
+      <span className={`truncate ${props.nameClasses || ''}`}>{props.name}</span>
       <span className={`flex flex-initial flex-shrink-0 flex-row items-center gap-2`}>
         {props.children}
         <Link

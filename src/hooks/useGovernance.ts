@@ -25,7 +25,10 @@ export function useGovernance() {
   const [execution, setExecution] = useState<null | Proposal[]>(null);
   const [expiration, setExpiration] = useState<null | Proposal[]>(null);
   const allProposals = useMemo(
-    () => [queue, execution, expiration, approval, referendum].flat().filter(Boolean) as Proposal[],
+    () =>
+      (
+        [queue, execution, expiration, approval, referendum].flat().filter(Boolean) as Proposal[]
+      ).sort((a, b) => b.metadata.timestamp.minus(a.metadata.timestamp).toNumber()),
     [queue, execution, expiration, approval, referendum]
   );
   const [error, setError] = useState<null | Error>(null);
@@ -37,7 +40,9 @@ export function useGovernance() {
       if (!governance) return null;
 
       const proposal = await governance.getProposalRecord(proposalID);
-      const md = await fetch(getRawGithubUrl(proposal)).then((x) => x.text());
+      const md = await fetch(getRawGithubUrl(proposal))
+        .then((x) => x.text())
+        .catch(() => "Failed to fetch proposals' markdown");
 
       return {
         proposalID,

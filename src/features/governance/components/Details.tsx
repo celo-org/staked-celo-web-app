@@ -41,7 +41,8 @@ export const Details = () => {
     if (!proposal) void loadSpecificProposal(id);
   }, [id, loadSpecificProposal, proposal]);
 
-  const loaded = Boolean(proposal?.parsedYAML);
+  const loaded = Boolean(proposal);
+  const fetchError = Boolean(loaded && !proposal?.parsedYAML);
 
   return (
     <CenteredLayout classes="px-[24px]">
@@ -64,7 +65,9 @@ export const Details = () => {
                 </span>
               </div>
               <div className="text-[18px] text-color-primary">
-                #{proposal!.parsedYAML!.cgp} {proposal!.parsedYAML!.title}
+                {fetchError
+                  ? 'Failed to fetch proposal title'
+                  : `#${proposal!.parsedYAML!.cgp} ${proposal!.parsedYAML!.title}`}
               </div>
               <a
                 className="text-[16px] leading-[32px] text-color-callout-modal"

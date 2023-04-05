@@ -44,5 +44,5 @@ export function parsedYAMLFromMarkdown(markdown: string): ParsedYAML | null {
 export function getRawGithubUrl(proposal: ProposalRecord) {
   return proposal.metadata.descriptionURL
     .replace('github.com', 'raw.githubusercontent.com')
-    .replace('blob/', '');
+    .replace('/blob/', '/');
 }
