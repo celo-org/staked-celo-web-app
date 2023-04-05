@@ -6,11 +6,7 @@ import { useGovernance } from 'src/hooks/useGovernance';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
-interface GovernanceProps {
-  onModeChange: (mode: Mode) => void;
-}
-
-export const Governance = ({ onModeChange }: GovernanceProps) => {
+export const Governance = () => {
   const { loadDequeue, approval, referendum, error } = useGovernance();
   useEffect(() => {
     void loadDequeue();
