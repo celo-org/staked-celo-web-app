@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const ValidatorGroupRow = React.memo(({ name, groupAddress, isCurrentStrategy }: Props) => {
-  const displayName = name && name.length != 0 ? name : removeAddressMiddle(groupAddress);
+  const displayName = name || removeAddressMiddle(groupAddress);
   const href = `validators/${groupAddress}`;
 
   const truncatedAddress = groupAddress.slice(ADDRESS_SLICE_POINT_LAST_PART);
