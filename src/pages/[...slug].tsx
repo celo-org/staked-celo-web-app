@@ -20,7 +20,7 @@ interface Props {
 const MultiModePage: NextPage = (props: Props) => {
   const router = useRouter();
   const { slug } = router.query as { slug?: string[] };
-  const mode = slug ? slug[0] : Mode.stake;
+  const mode = (slug ? slug[0] : Mode.stake) as Mode;
   const validatorPageProps = props.validatorGroups;
   const chainValidatorSetIsFor = validatorPageProps?.chainId;
 
@@ -94,11 +94,12 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
   }
 };
 
-function useQueryStringForChain(chainValidatorSetIsFor: ChainId | undefined, mode: MOde) {
+function useQueryStringForChain(chainValidatorSetIsFor: ChainId | undefined, mode: Mode) {
   const router = useRouter();
   const { network } = useCelo();
   useLayoutEffect(() => {
-    if (network.chainId !== chainValidatorSetIsFor) {
+    const serverSideChainId = chainValidatorSetIsFor ?? router.query.chainId ?? ChainId.Mainnet;
+    if (network.chainId !== serverSideChainId) {
       void router.push({
         pathname: mode,
         query: network.chainId === ChainId.Mainnet ? {} : { chainId: network.chainId },
