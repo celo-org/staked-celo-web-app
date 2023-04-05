@@ -14,7 +14,7 @@ export type Proposal = ProposalRecord & {
   parsedYAML: ParsedYAML | null;
 };
 
-export function useGovernance() {
+export function useCeloGovernance() {
   const { network } = useCelo();
   const contractKit = useMemo(() => newKit(network.rpcUrl), [network]);
   const [governance, setGovernance] = useState<GovernanceWrapper>();

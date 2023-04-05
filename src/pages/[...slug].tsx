@@ -8,7 +8,7 @@ import { Validators } from 'src/features/validators/components/Validators';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
-const SwapPage: NextPage = () => {
+const CatchAllPage: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query as { slug?: string[] };
   const mode = slug ? slug[0] : Mode.stake;
@@ -37,4 +37,4 @@ const SwapPage: NextPage = () => {
   );
 };
 
-export default SwapPage;
+export default CatchAllPage;

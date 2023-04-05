@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { useAccountAddress } from 'src/contexts/account/useAddress';
+import { useAccountBalances } from 'src/contexts/account/useBalances';
 import { Choices } from 'src/features/governance/components/Choices';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
-import { useGovernance } from 'src/hooks/useGovernance';
+import { useCeloGovernance } from 'src/hooks/useCeloGovernance';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { VoteType } from 'src/types';
 
@@ -14,8 +16,14 @@ export const Details = () => {
   const {
     slug: [id],
   } = router.query as { slug: string[] };
+  const { address } = useAccountAddress();
+  const { stCeloBalance, loadBalances } = useAccountBalances(address);
 
-  const { loadSpecificProposal, allProposals, error } = useGovernance();
+  useEffect(() => {
+    void loadBalances();
+  }, [loadBalances]);
+
+  const { loadSpecificProposal, allProposals, error } = useCeloGovernance();
   const [currentVote, setCurrentVote] = useState<VoteType>();
 
   // maybe that's less efficient but much easier to understand.
@@ -104,7 +112,8 @@ export const Details = () => {
             <Choices disabled={!loaded || !!error} onChange={onVoteChange} voteType={currentVote} />
             {currentVote !== undefined && (
               <span className="text-[18px] text-color-tertiary-callout">
-                XXX stCELO will vote {currentVote} for Proposal #{proposal.parsedYAML?.cgp}
+                {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
+                {proposal.parsedYAML?.cgp}
               </span>
             )}
             <div className="w-full px-4 py-2">

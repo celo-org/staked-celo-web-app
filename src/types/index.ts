@@ -9,5 +9,4 @@ export enum VoteType {
   yes = 'yes',
   no = 'no',
   abstain = 'abstain',
-  upvote = 'upvote',
 }

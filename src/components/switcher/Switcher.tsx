@@ -26,7 +26,6 @@ export const Switcher = ({ mode }: SwitcherProps) => {
   const [activeLinkNode, setActiveLinkNode] = useState<HTMLElement | null>(null);
   const onModeChange = useModeChange();
 
-  console.log({ left: activeLinkNode?.offsetLeft, width: activeLinkNode?.offsetWidth });
   return (
     <div className="flex justify-center mb-[8px] ml-[8px]">
       <nav className="w-full">

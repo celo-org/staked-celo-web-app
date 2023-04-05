@@ -3,26 +3,22 @@ import { useEffect, useMemo } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Row } from 'src/components/list/row';
 import { StagePill } from 'src/features/governance/components/StagePill';
-import { useGovernance } from 'src/hooks/useGovernance';
+import { useCeloGovernance } from 'src/hooks/useCeloGovernance';
 
+const runningProposalStages = new Set([ProposalStage.Queued, ProposalStage.Referendum]);
+const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
 export const Governance = () => {
-  const { loadDequeue, allProposals, error } = useGovernance();
+  const { loadDequeue, allProposals, error } = useCeloGovernance();
   useEffect(() => {
     void loadDequeue();
   }, [loadDequeue]);
 
   const proposals = useMemo(
-    () =>
-      allProposals.filter((x) =>
-        [ProposalStage.Queued, ProposalStage.Referendum].includes(x.stage)
-      ),
+    () => allProposals.filter((x) => runningProposalStages.has(x.stage)),
     [allProposals]
   );
   const pastProposals = useMemo(
-    () =>
-      allProposals
-        .filter((x) => [ProposalStage.Expiration, ProposalStage.Execution].includes(x.stage))
-        .slice(0, 5),
+    () => allProposals.filter((x) => pastProposalStages.has(x.stage)).slice(0, 5),
     [allProposals]
   );
 
