@@ -19,6 +19,8 @@
     "compliance-sdk": "^1.0.5",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.4",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.2.0",
     "next": "12.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
