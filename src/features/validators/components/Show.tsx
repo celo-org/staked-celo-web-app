@@ -37,9 +37,10 @@ export const Show = ({ groupAddress, name }: Props) => {
     return;
   }, []);
 
-  const infoLink = ADDRESS_ZERO
-    ? 'https://docs.stcelo.xyz/voting-for-validator-groups'
-    : `https://thecelo.com/groupDetail/${groupAddress}`;
+  const infoLink =
+    groupAddress === ADDRESS_ZERO
+      ? 'https://docs.stcelo.xyz/voting-for-validator-groups'
+      : `https://thecelo.com/groupDetail/${groupAddress}`;
 
   return (
     <form id={`group-${groupAddress}`} className="w-full flex" onSubmit={onSubmit}>

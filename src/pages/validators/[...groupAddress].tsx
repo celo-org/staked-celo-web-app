@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-import { isAddress } from 'web3-utils';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
@@ -7,6 +6,7 @@ import { Show } from 'src/features/validators/components/Show';
 import getGroupName from 'src/features/validators/data/getGroupName';
 import { getChainIdFromQuery, useQueryStringForChain } from 'src/hooks/useQueryStringForChain';
 import logger from 'src/services/logger';
+import { isAddress } from 'web3-utils';
 
 interface Props {
   name?: string;
@@ -21,7 +21,6 @@ const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }:
   const router = useRouter();
   const { groupAddress } = router.query;
   const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
-
   useQueryStringForChain(serverChainId, `/validators/${address}`);
 
   return <Show groupAddress={address!} name={name} />;
