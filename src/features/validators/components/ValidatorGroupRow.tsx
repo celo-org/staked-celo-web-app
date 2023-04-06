@@ -1,7 +1,9 @@
-import { ChainId, useCelo } from '@celo/react-celo';
+import { useCelo } from '@celo/react-celo';
 import React from 'react';
 import { Row } from 'src/components/list/row';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
+import { appendChainIdToLink } from 'src/utils/appendChainIdToLink';
+
 const ADDRESS_SLICE_POINT_LAST_PART = 37;
 
 interface Props {
@@ -14,8 +16,7 @@ export const ValidatorGroupRow = React.memo(({ name, groupAddress, isCurrentStra
   const { network } = useCelo();
   const displayName = name || removeAddressMiddle(groupAddress);
   const baseHref = `validators/${groupAddress}`;
-  const href =
-    network.chainId === ChainId.Mainnet ? baseHref : `${baseHref}?chainId=${network.chainId}`;
+  const href = appendChainIdToLink(baseHref, network.chainId);
 
   const truncatedAddress = groupAddress.slice(ADDRESS_SLICE_POINT_LAST_PART);
 
