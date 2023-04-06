@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row } from 'src/components/list/row';
-const ADDRESS_SLICE_POINT_A = 5;
-const ADDRESS_SLICE_POINT_B = 38;
+import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
 const ADDRESS_SLICE_POINT_LAST_PART = 37;
 
 interface Props {
@@ -22,9 +21,5 @@ export const ValidatorGroupRow = React.memo(({ name, groupAddress, isCurrentStra
     </Row>
   );
 });
-
-function removeAddressMiddle(addr: string) {
-  return `${addr.slice(0, ADDRESS_SLICE_POINT_A)}…${addr.slice(ADDRESS_SLICE_POINT_B)}`;
-}
 
 ValidatorGroupRow.displayName = 'ValidatorGroupRow';

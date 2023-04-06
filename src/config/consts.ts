@@ -28,3 +28,5 @@ export const NEXT_PUBLIC_DISCORD_URL = 'https://discord.com/invite/E9AqUQnWQE';
 export const NEXT_PUBLIC_GITHUB_URL = 'https://github.com/celo-org/staked-celo-web-app';
 export const NEXT_PUBLIC_DOCS_URL = 'https://docs.stcelo.xyz/';
 export const NEXT_PUBLIC_PRIVACY_URL = 'https://clabs.co/privacy';
+
+export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';

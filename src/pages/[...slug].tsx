@@ -1,30 +1,26 @@
-import { ChainId, useCelo } from '@celo/react-celo';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useLayoutEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Switcher } from 'src/components/switcher/Switcher';
 import { Governance } from 'src/features/governance/components/Governance';
 import { Swap } from 'src/features/swap/components/Swap';
-import { Validators } from 'src/features/validators/components/Validators';
+import { Validators } from 'src/features/validators/components/List';
 import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
+import { getChainIdFromQuery, useQueryStringForChain } from 'src/hooks/useQueryStringForChain';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
 interface Props {
-  validatorGroups?: {
-    chainId: number;
-    groups: ValidatorGroup[];
-  };
+  serverSideChainId: number;
+  validatorGroups?: ValidatorGroup[];
 }
 
-const MultiModePage: NextPage = (props: Props) => {
+const MultiModePage: NextPage<Props> = ({ serverSideChainId, validatorGroups }) => {
   const router = useRouter();
   const { slug } = router.query as { slug?: string[] };
   const mode = (slug ? slug[0] : Mode.stake) as Mode;
-  const validatorPageProps = props.validatorGroups;
-  const chainValidatorSetIsFor = validatorPageProps?.chainId;
 
-  useQueryStringForChain(chainValidatorSetIsFor, mode);
+  useQueryStringForChain(serverSideChainId, mode);
 
   const page = useMemo(() => {
     switch (mode) {
@@ -34,11 +30,11 @@ const MultiModePage: NextPage = (props: Props) => {
       case Mode.governance:
         return <Governance />;
       case Mode.validators:
-        return <Validators list={validatorPageProps!.groups} key={chainValidatorSetIsFor} />;
+        return <Validators list={validatorGroups || []} key={serverSideChainId} />;
       default:
         return null;
     }
-  }, [mode, validatorPageProps, chainValidatorSetIsFor]);
+  }, [mode, validatorGroups, serverSideChainId]);
 
   if (!page) return page;
 
@@ -66,17 +62,16 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
   );
 
   const slug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
+  const chainId = getChainIdFromQuery(query);
 
   switch (slug) {
     case Mode.validators: {
-      const chainId = Array.isArray(query.chainId)
-        ? Number(query.chainId[0])
-        : Number(query.chainId) ?? ChainId.Mainnet;
       const groups = await fetchValidGroups(chainId);
 
       return {
         props: {
-          validatorGroups: groups,
+          serverSideChainId: chainId,
+          validatorGroups: groups.groups,
         },
       };
     }
@@ -84,7 +79,7 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     case Mode.stake:
     case Mode.unstake:
       return {
-        props: {},
+        props: { serverSideChainId: chainId },
       };
     default: {
       return {
@@ -93,17 +88,3 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     }
   }
 };
-
-function useQueryStringForChain(chainValidatorSetIsFor: ChainId | undefined, mode: Mode) {
-  const router = useRouter();
-  const { network } = useCelo();
-  useLayoutEffect(() => {
-    const serverSideChainId = chainValidatorSetIsFor ?? router.query.chainId ?? ChainId.Mainnet;
-    if (network.chainId !== serverSideChainId) {
-      void router.push({
-        pathname: mode,
-        query: network.chainId === ChainId.Mainnet ? {} : { chainId: network.chainId },
-      });
-    }
-  }, [chainValidatorSetIsFor, network, router, mode]);
-}
