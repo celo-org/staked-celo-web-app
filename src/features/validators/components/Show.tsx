@@ -47,7 +47,7 @@ export const Show = ({ groupAddress, name }: Props) => {
       <CenteredLayout classes="px-[24px]">
         <ContainerSecondaryBG>
           <div className="flex bg-primary p-[8px] rounded-[16px] w-full">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 w-full">
               <BackToListButton mode={Mode.validators} />
               <label className={`${nameSize(displayName)} truncate`}>{displayName}</label>
               <span className="text-sm">{groupAddress}</span>
@@ -59,7 +59,7 @@ export const Show = ({ groupAddress, name }: Props) => {
           <TertiaryCallout>
             {isConnected && (
               <>
-                {stCeloBalance.displayAsBase()} will vote for {displayName}
+                {stCeloBalance.displayAsBase(true)} will vote for {truncateIfLong(displayName)}
               </>
             )}
           </TertiaryCallout>
@@ -84,4 +84,12 @@ function nameSize(name: string) {
   } else {
     return 'text-base';
   }
+}
+
+function truncateIfLong(word: string) {
+  const maxLength = 26;
+  if (word.length < maxLength) {
+    return word;
+  }
+  return word.slice(0, maxLength - 2) + '…';
 }
