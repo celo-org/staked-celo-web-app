@@ -5,13 +5,13 @@ const ADDRESS_SLICE_POINT_B = 38;
 const ADDRESS_SLICE_POINT_LAST_PART = 37;
 
 interface Props {
-  name: string;
+  name?: string;
   groupAddress: string;
-  isCurrentStrategy?: boolean
+  isCurrentStrategy?: boolean;
 }
 
 export const ValidatorGroupRow = React.memo(({ name, groupAddress, isCurrentStrategy }: Props) => {
-  const displayName = name.length === 0 ? removeAddressMiddle(groupAddress) : name;
+  const displayName = name || removeAddressMiddle(groupAddress);
   const href = `validators/${groupAddress}`;
 
   const truncatedAddress = groupAddress.slice(ADDRESS_SLICE_POINT_LAST_PART);
@@ -28,6 +28,3 @@ function removeAddressMiddle(addr: string) {
 }
 
 ValidatorGroupRow.displayName = 'ValidatorGroupRow';
-
-
-

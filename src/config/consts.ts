@@ -20,6 +20,9 @@ export const NEXT_PUBLIC_TESTNET_API_URL =
 export const NEXT_PUBLIC_MAINNET_API_URL =
   'https://us-central1-staked-celo-bot.cloudfunctions.net/mainnet-functions';
 
+export const EXPLORER_GRAPH_MAINNET_URL = 'https://explorer.celo.org/mainnet/graphiql';
+export const EXPLORER_GRAPH_ALFAJORES_URL = 'https://explorer.celo.org/alfajores/graphiql';
+
 export const NEXT_PUBLIC_TWITTER_URL = 'https://twitter.com/CeloOrg';
 export const NEXT_PUBLIC_DISCORD_URL = 'https://discord.com/invite/E9AqUQnWQE';
 export const NEXT_PUBLIC_GITHUB_URL = 'https://github.com/celo-org/staked-celo-web-app';

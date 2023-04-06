@@ -1,7 +1,5 @@
-import { Switcher } from 'src/components/switcher/Switcher';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 import { useSwap } from '../hooks/useSwap';
 import { validateAmount } from '../utils/validation';
@@ -11,18 +9,16 @@ import { SwapForm } from './SwapForm';
 
 interface SwapProps {
   mode: Mode;
-  onModeChange: (mode: Mode) => void;
 }
 
-export const Swap = ({ mode, onModeChange }: SwapProps) => {
+export const Swap = ({ mode }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
   const { amount, setAmount, swap, balance, receiveAmount, swapRate, gasFee, setMaxAmount } =
     useSwap(mode);
   const error = validateAmount(amount, balance, mode);
 
   return (
-    <CenteredLayout classes="px-[24px]">
-      <Switcher mode={mode} onModeChange={onModeChange} />
+    <>
       <SwapForm
         mode={mode}
         amount={amount}
@@ -32,7 +28,6 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
         setMaxAmount={setMaxAmount}
         onSubmit={swap}
         onChange={setAmount}
-        onModeChange={onModeChange}
       />
       <OpacityTransition id={mode}>
         <div className="w-full px-[8px]">
@@ -42,6 +37,6 @@ export const Swap = ({ mode, onModeChange }: SwapProps) => {
           ) : null}
         </div>
       </OpacityTransition>
-    </CenteredLayout>
+    </>
   );
 };

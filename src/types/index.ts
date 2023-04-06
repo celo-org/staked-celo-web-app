@@ -4,3 +4,9 @@ export enum Mode {
   governance = 'governance',
   validators = 'validators',
 }
+
+export enum VoteType {
+  yes = 'yes',
+  no = 'no',
+  abstain = 'abstain',
+}
