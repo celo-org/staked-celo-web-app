@@ -22,6 +22,8 @@ export const NEXT_PUBLIC_MAINNET_API_URL =
 
 export const EXPLORER_GRAPH_MAINNET_URL = 'https://explorer.celo.org/mainnet/graphiql';
 export const EXPLORER_GRAPH_ALFAJORES_URL = 'https://explorer.celo.org/alfajores/graphiql';
+export const EXPLORER_MAINNET_URL = 'https://explorer.celo.org/mainnet';
+export const EXPLORER_ALFAJORES_URL = 'https://explorer.celo.org/alfajores';
 
 export const NEXT_PUBLIC_TWITTER_URL = 'https://twitter.com/CeloOrg';
 export const NEXT_PUBLIC_DISCORD_URL = 'https://discord.com/invite/E9AqUQnWQE';

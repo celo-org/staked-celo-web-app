@@ -4,6 +4,9 @@ module.exports = {
   content: ['src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      borderColor: {
+        'color-tertiary-callout': 'var(--c-text-tertiary-callout-color)',
+      },
       textColor: {
         'color-primary': 'var(--c-text-primary-color)',
         'color-secondary': 'var(--c-text-secondary-color)',

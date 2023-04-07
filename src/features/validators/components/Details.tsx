@@ -1,3 +1,4 @@
+import { ChainId, useCelo } from '@celo/react-celo';
 import { FormEvent, useEffect, useState } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
@@ -7,7 +8,7 @@ import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { LinkOut } from 'src/components/text/LinkOut';
 import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
-import { ADDRESS_ZERO } from 'src/config/consts';
+import { ADDRESS_ZERO, EXPLORER_ALFAJORES_URL, EXPLORER_MAINNET_URL } from 'src/config/consts';
 import { useAccountAddress } from 'src/contexts/account/useAddress';
 import { useAccountBalances } from 'src/contexts/account/useBalances';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
@@ -22,6 +23,7 @@ interface Props {
 
 export const Details = ({ groupAddress, name }: Props) => {
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
+  const { network } = useCelo();
   const { address: myAddress, isConnected } = useAccountAddress();
   const { stCeloBalance, loadBalances } = useAccountBalances(myAddress);
   const displayName = name || removeAddressMiddle(groupAddress);
@@ -40,6 +42,8 @@ export const Details = ({ groupAddress, name }: Props) => {
     return;
   }, []);
 
+  const explorerLink =
+    network.chainId === ChainId.Alfajores ? EXPLORER_ALFAJORES_URL : EXPLORER_MAINNET_URL;
   const infoLink =
     groupAddress === ADDRESS_ZERO
       ? 'https://docs.stcelo.xyz/voting-for-validator-groups'
@@ -53,7 +57,14 @@ export const Details = ({ groupAddress, name }: Props) => {
             <div className="flex flex-col gap-4 w-full">
               <BackToListButton mode={Mode.validators} />
               <label className={`${nameSize(displayName)} truncate`}>{displayName}</label>
-              <span className="text-sm">{groupAddress}</span>
+              <a
+                href={`${explorerLink}/address/${groupAddress}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm"
+              >
+                {groupAddress}
+              </a>
               <LinkOut classes="m-2" href={infoLink}>
                 view info
               </LinkOut>
