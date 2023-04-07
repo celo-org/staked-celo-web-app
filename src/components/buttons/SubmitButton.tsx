@@ -42,7 +42,6 @@ const getText = (mode: Mode) => {
     case Mode.stake:
       return 'Stake';
     case Mode.validators:
-      '';
       return 'Delegate';
     default:
       return 'Submit';

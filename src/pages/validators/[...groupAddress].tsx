@@ -4,7 +4,10 @@ import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { Details } from 'src/features/validators/components/Details';
 import getGroupName from 'src/features/validators/data/getGroupName';
-import { getChainIdFromQuery, useQueryStringForChain } from 'src/hooks/useQueryStringForChain';
+import {
+  getChainIdFromQuery,
+  useRedirectToConnectedChainIfNeeded,
+} from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import logger from 'src/services/logger';
 import { isAddress } from 'web3-utils';
 
@@ -21,7 +24,7 @@ const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }:
   const router = useRouter();
   const { groupAddress } = router.query;
   const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
-  useQueryStringForChain(serverChainId, `/validators/${address}`);
+  useRedirectToConnectedChainIfNeeded(serverChainId, `/validators/${address}`);
 
   return <Details groupAddress={address!} name={name} />;
 };

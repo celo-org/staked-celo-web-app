@@ -4,7 +4,10 @@ import { ParsedUrlQuery } from 'querystring';
 import { useLayoutEffect } from 'react';
 
 // only use on page components
-export function useQueryStringForChain(chainServerKnowsAbout: ChainId | undefined, path: string) {
+export function useRedirectToConnectedChainIfNeeded(
+  chainServerKnowsAbout: ChainId | undefined,
+  path: string
+) {
   const router = useRouter();
   const { network } = useCelo();
   useLayoutEffect(() => {

@@ -6,7 +6,10 @@ import { Governance } from 'src/features/governance/components/Governance';
 import { Swap } from 'src/features/swap/components/Swap';
 import { Validators } from 'src/features/validators/components/List';
 import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
-import { getChainIdFromQuery, useQueryStringForChain } from 'src/hooks/useQueryStringForChain';
+import {
+  getChainIdFromQuery,
+  useRedirectToConnectedChainIfNeeded,
+} from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
@@ -20,7 +23,7 @@ const MultiModePage: NextPage<Props> = ({ serverSideChainId, validatorGroups }) 
   const { slug } = router.query as { slug?: string[] };
   const mode = (slug ? slug[0] : Mode.stake) as Mode;
 
-  useQueryStringForChain(serverSideChainId, mode);
+  useRedirectToConnectedChainIfNeeded(serverSideChainId, mode);
 
   const page = useMemo(() => {
     switch (mode) {
