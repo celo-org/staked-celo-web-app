@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
-import { Show } from 'src/features/validators/components/Show';
+import { Details } from 'src/features/validators/components/Details';
 import getGroupName from 'src/features/validators/data/getGroupName';
 import { getChainIdFromQuery, useQueryStringForChain } from 'src/hooks/useQueryStringForChain';
 import logger from 'src/services/logger';
@@ -23,7 +23,7 @@ const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }:
   const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
   useQueryStringForChain(serverChainId, `/validators/${address}`);
 
-  return <Show groupAddress={address!} name={name} />;
+  return <Details groupAddress={address!} name={name} />;
 };
 
 export default ValidatorGroupShowPage;

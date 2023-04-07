@@ -1,6 +1,7 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ConnectButton } from 'src/components/buttons/ConnectButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -19,12 +20,12 @@ export const Details = () => {
   const {
     slug: [id],
   } = router.query as { slug: string[] };
-  const { address } = useAccountAddress();
+  const { address, isConnected } = useAccountAddress();
   const { stCeloBalance, loadBalances } = useAccountBalances(address);
 
   useEffect(() => {
-    void loadBalances();
-  }, [loadBalances]);
+    if (isConnected) void loadBalances();
+  }, [loadBalances, isConnected]);
 
   const { loadSpecificProposal, allProposals, error } = useCeloGovernance();
   const [currentVote, setCurrentVote] = useState<VoteType>();
@@ -75,22 +76,31 @@ export const Details = () => {
             )}
           </div>
         </div>
-        {ProposalStage.Referendum === proposal?.stage && (
-          <>
-            <Choices disabled={!loaded || !!error} onChange={onVoteChange} voteType={currentVote} />
-            {currentVote !== undefined && (
-              <TertiaryCallout>
-                {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
-                {proposal.parsedYAML?.cgp}
-              </TertiaryCallout>
-            )}
-            <div className="w-full px-4 py-2">
-              <VoteButton
-                disabled={!loaded || !!error || currentVote === undefined}
-                pending={false}
+
+        {!isConnected ? (
+          <ConnectButton />
+        ) : (
+          ProposalStage.Referendum === proposal?.stage && (
+            <>
+              <Choices
+                disabled={!loaded || !!error}
+                onChange={onVoteChange}
+                voteType={currentVote}
               />
-            </div>
-          </>
+              {currentVote !== undefined && (
+                <TertiaryCallout>
+                  {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
+                  {proposal.parsedYAML?.cgp}
+                </TertiaryCallout>
+              )}
+              <div className="w-full px-4 py-2">
+                <VoteButton
+                  disabled={!loaded || !!error || currentVote === undefined}
+                  pending={false}
+                />
+              </div>
+            </>
+          )
         )}
       </ContainerSecondaryBG>
     </CenteredLayout>

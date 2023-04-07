@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { BackToListButton } from 'src/components/buttons/BackToListButton';
+import { ConnectButton } from 'src/components/buttons/ConnectButton';
 import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -19,15 +20,17 @@ interface Props {
   name?: string;
 }
 
-export const Show = ({ groupAddress, name }: Props) => {
+export const Details = ({ groupAddress, name }: Props) => {
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
   const { address: myAddress, isConnected } = useAccountAddress();
   const { stCeloBalance, loadBalances } = useAccountBalances(myAddress);
   const displayName = name || removeAddressMiddle(groupAddress);
 
   useEffect(() => {
-    void loadBalances();
-  }, [loadBalances]);
+    if (isConnected) {
+      void loadBalances();
+    }
+  }, [loadBalances, isConnected]);
 
   const [onSubmit, { isExecuting }] = useAsyncCallback(async (event: FormEvent) => {
     event.preventDefault();
@@ -65,7 +68,11 @@ export const Show = ({ groupAddress, name }: Props) => {
           </TertiaryCallout>
         </ContainerSecondaryBG>
         <div className="flex justify-center mt-[16px]">
-          <SubmitButton mode={Mode.validators} pending={isExecuting} />
+          {isConnected ? (
+            <SubmitButton mode={Mode.validators} pending={isExecuting} />
+          ) : (
+            <ConnectButton />
+          )}
         </div>
       </CenteredLayout>
       <TransactionCalloutModal

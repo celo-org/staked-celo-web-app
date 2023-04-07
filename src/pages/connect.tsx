@@ -1,11 +1,9 @@
-import { Button } from 'src/components/buttons/Button';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { useWallet } from 'src/features/wallet/hooks/useWallet';
+import { ConnectButton } from '../components/buttons/ConnectButton';
 import styles from './connect.module.css';
 
 const Connect = () => {
-  const { connectWallet } = useWallet();
   const { annualProjectedRate } = useProtocolContext();
 
   return (
@@ -23,16 +21,7 @@ const Connect = () => {
             <li className="mb-[4px]">Stake without locking</li>
             <li>No fees for launch</li>
           </ul>
-          <Button
-            classes={`
-              w-full
-              text-color-contrast
-              bg-action-primary-regular hover:bg-action-primary-dark active:bg-action-primary-light disabled:bg-action-primary-light
-            `}
-            onClick={connectWallet}
-          >
-            Connect Wallet
-          </Button>
+          <ConnectButton />
         </div>
       </div>
     </div>
