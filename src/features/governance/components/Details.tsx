@@ -64,7 +64,7 @@ export const Details = () => {
                 </LinkOut>
               </>
             ) : error ? (
-              <div>Couldnt get proposal information from github: {error.message}</div>
+              <div>Could not get proposal information from github: {error.message}</div>
             ) : (
               <ThemedIcon
                 classes="animate-spin justify-centerr"
