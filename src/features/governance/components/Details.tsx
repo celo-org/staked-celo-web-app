@@ -48,30 +48,32 @@ export const Details = () => {
   return (
     <CenteredLayout classes="px-[24px]">
       <ContainerSecondaryBG>
-        <div className="flex justify-center bg-primary p-[8px] rounded-[16px] w-full">
-          {loaded ? (
-            <div className="flex flex-col justify-center gap-4">
-              <BackToListButton mode={Mode.governance} />
-              <div className="text-[18px] text-color-primary">
-                {fetchError
-                  ? 'Failed to fetch proposal title'
-                  : `#${proposal!.parsedYAML!.cgp} ${proposal!.parsedYAML!.title}`}
-              </div>
-              <LinkOut classes="m-2" href={proposal!.metadata.descriptionURL}>
-                view info
-              </LinkOut>
-            </div>
-          ) : error ? (
-            <div>Couldnt get proposal information from github: {error.message}</div>
-          ) : (
-            <ThemedIcon
-              classes="animate-spin"
-              name="spinner-contrast"
-              alt="Spinner"
-              width={40}
-              height={40}
-            />
-          )}
+        <div className="flex bg-primary p-[8px] rounded-[16px] w-full">
+          <div className="flex flex-col gap-4 w-full">
+            <BackToListButton mode={Mode.governance} />
+            {loaded ? (
+              <>
+                <div className="text-[18px] text-color-primary">
+                  {fetchError
+                    ? 'Failed to fetch proposal title'
+                    : `#${proposal!.parsedYAML!.cgp} ${proposal!.parsedYAML!.title}`}
+                </div>
+                <LinkOut classes="m-2" href={proposal!.metadata.descriptionURL}>
+                  view info
+                </LinkOut>
+              </>
+            ) : error ? (
+              <div>Couldnt get proposal information from github: {error.message}</div>
+            ) : (
+              <ThemedIcon
+                classes="animate-spin justify-centerr"
+                name="spinner-contrast"
+                alt="Spinner"
+                width={40}
+                height={40}
+              />
+            )}
+          </div>
         </div>
         {ProposalStage.Referendum === proposal?.stage && (
           <>
