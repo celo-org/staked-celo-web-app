@@ -5818,6 +5818,11 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+react-use-async-callback@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-use-async-callback/-/react-use-async-callback-2.1.2.tgz#0aedc3242f50605bfb726921dd7c055a772ff5ae"
+  integrity sha512-0BFrqKmVPiMBYYr0xJhuyTK3cUaChs/Bz2or3FaPxntPkP7LVjDTFy1NY8bS77Ho8fYQddQWHCq/KMD/9s0ffw==
+
 react@18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"

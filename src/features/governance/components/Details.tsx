@@ -1,40 +1,34 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ConnectButton } from 'src/components/buttons/ConnectButton';
+import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { LinkOut } from 'src/components/text/LinkOut';
+import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
 import { useAccountAddress } from 'src/contexts/account/useAddress';
 import { useAccountBalances } from 'src/contexts/account/useBalances';
 import { Choices } from 'src/features/governance/components/Choices';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
 import { useCeloGovernance } from 'src/hooks/useCeloGovernance';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
-import { VoteType } from 'src/types';
+import { Mode, VoteType } from 'src/types';
+import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
 export const Details = () => {
   const router = useRouter();
   const {
     slug: [id],
   } = router.query as { slug: string[] };
-  const { address } = useAccountAddress();
+  const { address, isConnected } = useAccountAddress();
   const { stCeloBalance, loadBalances } = useAccountBalances(address);
 
   useEffect(() => {
-    void loadBalances();
-  }, [loadBalances]);
+    if (isConnected) void loadBalances();
+  }, [loadBalances, isConnected]);
 
   const { loadSpecificProposal, allProposals, error } = useCeloGovernance();
   const [currentVote, setCurrentVote] = useState<VoteType>();
-
-  // maybe that's less efficient but much easier to understand.
-  // const [proposal, setProposal] = useState<Proposal>();
-  // const [error, setError] = useState<Error>();
-
-  // useEffect(() => {
-  //   void getProposalRecord(id)
-  //     .then((proposal) => setProposal(proposal!))
-  //     .catch(setError);
-  // }, [getProposalRecord, id]);
 
   const proposal = useMemo(
     () => allProposals.find((x) => x.proposalID.toString() === id),
@@ -54,77 +48,61 @@ export const Details = () => {
 
   return (
     <CenteredLayout classes="px-[24px]">
-      <div className="w-full flex flex-col justify-center items-center mt-[24px] bg-secondary p-[8px] rounded-[16px] gap-4">
-        <div className="flex justify-center bg-primary p-[8px] rounded-[16px] w-full">
-          {loaded ? (
-            <div className="flex flex-col justify-center gap-4">
-              <div className="flex flex-row items-center bg-primary rounded-[16px] gap-2">
-                <Link href="/governance">
-                  <ThemedIcon
-                    name="arrow"
-                    alt="open"
-                    classes="rotate-[90deg] cursor-pointer"
-                    height={24}
-                    width={24}
-                  />
-                </Link>
-                <span className="font-medium text-[14px] text-color-secondary">
-                  return to proposals
-                </span>
-              </div>
-              <div className="text-[18px] text-color-primary">
-                {fetchError
-                  ? 'Failed to fetch proposal title'
-                  : `#${proposal!.parsedYAML!.cgp} ${proposal!.parsedYAML!.title}`}
-              </div>
-              <a
-                className="text-[16px] leading-[32px] text-color-callout-modal"
-                href={proposal!.metadata.descriptionURL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <div className="flex flex-row items-center bg-primary rounded-[16px] gap-2">
-                  view info{' '}
-                  <ThemedIcon
-                    name="caret-purple"
-                    alt="open"
-                    classes="rotate-[270deg]"
-                    width={16}
-                    height={16}
-                  />
+      <ContainerSecondaryBG>
+        <div className="flex bg-primary p-[8px] rounded-[16px] w-full">
+          <div className="flex flex-col gap-4 w-full">
+            <BackToListButton mode={Mode.governance} />
+            {loaded ? (
+              <>
+                <div className="text-[18px] text-color-primary">
+                  {fetchError
+                    ? 'Failed to fetch proposal title'
+                    : `#${proposal!.parsedYAML!.cgp} ${proposal!.parsedYAML!.title}`}
                 </div>
-              </a>
-            </div>
-          ) : error ? (
-            <div>Couldnt get proposal information from github: {error.message}</div>
-          ) : (
-            <ThemedIcon
-              classes="animate-spin"
-              name="spinner-contrast"
-              alt="Spinner"
-              width={40}
-              height={40}
-            />
-          )}
-        </div>
-        {ProposalStage.Referendum === proposal?.stage && (
-          <>
-            <Choices disabled={!loaded || !!error} onChange={onVoteChange} voteType={currentVote} />
-            {currentVote !== undefined && (
-              <span className="text-[18px] text-color-tertiary-callout">
-                {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
-                {proposal.parsedYAML?.cgp}
-              </span>
-            )}
-            <div className="w-full px-4 py-2">
-              <VoteButton
-                disabled={!loaded || !!error || currentVote === undefined}
-                pending={false}
+                <LinkOut classes="m-2" href={proposal!.metadata.descriptionURL}>
+                  view info
+                </LinkOut>
+              </>
+            ) : error ? (
+              <div>Could not get proposal information from github: {error.message}</div>
+            ) : (
+              <ThemedIcon
+                classes="animate-spin justify-centerr"
+                name="spinner-contrast"
+                alt="Spinner"
+                width={40}
+                height={40}
               />
-            </div>
-          </>
+            )}
+          </div>
+        </div>
+
+        {!isConnected ? (
+          <ConnectButton />
+        ) : (
+          ProposalStage.Referendum === proposal?.stage && (
+            <>
+              <Choices
+                disabled={!loaded || !!error}
+                onChange={onVoteChange}
+                voteType={currentVote}
+              />
+              {currentVote !== undefined && (
+                <TertiaryCallout>
+                  {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
+                  {proposal.parsedYAML?.cgp}
+                </TertiaryCallout>
+              )}
+              <div className="w-full px-4 py-2">
+                <VoteButton
+                  disabled={!loaded || !!error || currentVote === undefined}
+                  pending={false}
+                />
+              </div>
+            </>
+          )
         )}
-      </div>
+      </ContainerSecondaryBG>
     </CenteredLayout>
   );
 };

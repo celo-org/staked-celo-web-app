@@ -1,5 +1,7 @@
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
+import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
@@ -10,9 +12,7 @@ import { Mode } from 'src/types';
 import { Token, toToken } from 'src/utils/tokens';
 import { BalanceTools } from './BalanceTools';
 import { ReceiveSummary } from './ReceiveSummary';
-import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
-import { TransactionCalloutModal } from './TransactionCalloutModal';
 
 interface SwapFormProps {
   mode: Mode;

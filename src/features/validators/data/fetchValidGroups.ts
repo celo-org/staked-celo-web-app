@@ -35,7 +35,7 @@ export default async function fetchValidGroups(chainId: number): Promise<ValidGr
   // https://github.com/celo-org/staked-celo/blob/master/contracts/Manager.sol#L348
 
   return {
-    chainId: chainId ?? ChainId.Mainnet,
+    chainId: chainId,
     groups: allPossibleGroups,
   };
 }
