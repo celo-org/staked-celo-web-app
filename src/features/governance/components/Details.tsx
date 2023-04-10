@@ -9,6 +9,7 @@ import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
 import { useAccountAddress } from 'src/contexts/account/useAddress';
 import { useAccountBalances } from 'src/contexts/account/useBalances';
 import { Choices } from 'src/features/governance/components/Choices';
+import { StagePill } from 'src/features/governance/components/StagePill';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
 import { useCeloGovernance } from 'src/hooks/useCeloGovernance';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
@@ -51,7 +52,10 @@ export const Details = () => {
       <ContainerSecondaryBG>
         <div className="flex bg-primary p-[8px] rounded-[16px] w-full">
           <div className="flex flex-col gap-4 w-full">
-            <BackToListButton mode={Mode.governance} />
+            <div className="flex justify-between w-full flex-grow">
+              <BackToListButton mode={Mode.governance} />
+              {loaded && <StagePill stage={proposal!.stage} />}
+            </div>
             {loaded ? (
               <>
                 <div className="text-[18px] text-color-primary">
@@ -66,13 +70,15 @@ export const Details = () => {
             ) : error ? (
               <div>Could not get proposal information from github: {error.message}</div>
             ) : (
-              <ThemedIcon
-                classes="animate-spin justify-centerr"
-                name="spinner-contrast"
-                alt="Spinner"
-                width={40}
-                height={40}
-              />
+              <div className="py-6 flex justify-center w-full">
+                <ThemedIcon
+                  classes="animate-spin"
+                  name="spinner-contrast"
+                  alt="Spinner"
+                  width={40}
+                  height={40}
+                />
+              </div>
             )}
           </div>
         </div>
