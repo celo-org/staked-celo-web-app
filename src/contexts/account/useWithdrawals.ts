@@ -17,7 +17,9 @@ export const useWithdrawalBot = (address: string | null) => {
 
   const finalizeWithdrawal = useCallback(async () => {
     if (!address || !managerContract || !accountContract) return;
+
     const [activeGroups, deprecatedGroups] = await Promise.all([
+      // TODO find replacement as this is removed from v2
       managerContract.methods.getGroups().call(),
       managerContract.methods.getDeprecatedGroups().call(),
     ]);

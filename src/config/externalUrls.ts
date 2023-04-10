@@ -1,13 +1,13 @@
 import {
-  NEXT_PUBLIC_DISCORD_URL,
-  NEXT_PUBLIC_DOCS_URL,
-  NEXT_PUBLIC_GITHUB_URL,
-  NEXT_PUBLIC_PRIVACY_URL,
-  NEXT_PUBLIC_TWITTER_URL,
+  DISCORD_URL,
+  DOCS_URL,
+  GITHUB_URL,
+  PRIVACY_URL,
+  TWITTER_URL,
 } from 'src/config/consts';
 
-export const twitterUrl: string = NEXT_PUBLIC_TWITTER_URL as string;
-export const discordUrl: string = NEXT_PUBLIC_DISCORD_URL as string;
-export const githubUrl: string = NEXT_PUBLIC_GITHUB_URL as string;
-export const docsUrl: string = NEXT_PUBLIC_DOCS_URL as string;
-export const privacyUrl: string = NEXT_PUBLIC_PRIVACY_URL as string;
+export const twitterUrl: string = TWITTER_URL
+export const discordUrl: string = DISCORD_URL
+export const githubUrl: string = GITHUB_URL
+export const docsUrl: string = DOCS_URL
+export const privacyUrl: string = PRIVACY_URL
