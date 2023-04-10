@@ -1,10 +1,11 @@
 import { ContractKit, newKit } from '@celo/contractkit';
 import { useCelo } from '@celo/react-celo';
 import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { PropsWithChildren, createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
+import { Account, Manager, StakedCelo } from 'src/blockchain/types';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
 import { AbiItem } from 'web3-utils';
@@ -23,7 +24,34 @@ type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSor
 type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
 type GasPriceMinimumContract = Awaited<ReturnType<ContractKit['contracts']['getGasPriceMinimum']>>;
 
-export function useBlockchain() {
+interface BlockchainContext {
+  epochRewardsContract: EpochRewardsContract | undefined;
+  sortedOraclesContract: SortedOraclesContract | undefined;
+  stableTokenContract: StableTokenContract | undefined;
+  gasPriceMinimumContract: GasPriceMinimumContract | undefined;
+  managerContract: Manager | undefined;
+  stCeloContract: StakedCelo | undefined;
+  accountContract: Account | undefined;
+  sendTransaction: (
+    txObject: unknown,
+    txOptions: TxOptions,
+    callbacks?: TxCallbacks
+  ) => Promise<void>;
+}
+
+export const BlockchainContext = createContext<BlockchainContext>({
+  epochRewardsContract: undefined,
+  sortedOraclesContract: undefined,
+  stableTokenContract: undefined,
+  gasPriceMinimumContract: undefined,
+  managerContract: undefined,
+  stCeloContract: undefined,
+  accountContract: undefined,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  sendTransaction: (_txObject: unknown, _txOptions: TxOptions) => Promise.resolve(undefined),
+});
+
+export const BlockchainProvider = ({ children }: PropsWithChildren) => {
   const { kit, network } = useCelo();
   const contractKit = useMemo(() => newKit(network.rpcUrl), [network]);
 
@@ -34,17 +62,20 @@ export function useBlockchain() {
 
   const managerContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(ManagerABI as AbiItem[], addresses.manager);
+    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
+    return new eth.Contract(ManagerABI as AbiItem[], addresses.manager) as unknown as Manager;
   }, [kit.connection, addresses]);
 
   const stCeloContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(StCeloABI as AbiItem[], addresses.stakedCelo);
+    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
+    return new eth.Contract(StCeloABI as AbiItem[], addresses.stakedCelo) as unknown as StakedCelo;
   }, [kit.connection, addresses]);
 
   const accountContract = useMemo(() => {
     const { eth } = kit.connection.web3;
-    return new eth.Contract(AccountABI as AbiItem[], addresses.account);
+    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
+    return new eth.Contract(AccountABI as AbiItem[], addresses.account) as unknown as Account;
   }, [kit.connection, addresses]);
 
   const sendTransaction = useCallback(
@@ -85,14 +116,20 @@ export function useBlockchain() {
     [contractKit]
   );
 
-  return {
-    epochRewardsContract,
-    sortedOraclesContract,
-    stableTokenContract,
-    gasPriceMinimumContract,
-    managerContract,
-    stCeloContract,
-    accountContract,
-    sendTransaction,
-  };
-}
+  return (
+    <BlockchainContext.Provider
+      value={{
+        epochRewardsContract,
+        sortedOraclesContract,
+        stableTokenContract,
+        gasPriceMinimumContract,
+        managerContract,
+        stCeloContract,
+        accountContract,
+        sendTransaction,
+      }}
+    >
+      {children}
+    </BlockchainContext.Provider>
+  );
+};

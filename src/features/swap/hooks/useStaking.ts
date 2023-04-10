@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { useCallback, useMemo, useState } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useAPI } from 'src/hooks/useAPI';
-import { TxCallbacks, useBlockchain } from 'src/hooks/useBlockchain';
 import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
-import { transactionEvent } from '../../../utils/ga';
+import { transactionEvent } from 'src/utils/ga';
 import { showStakingToast } from '../utils/toast';
 
 export function useStaking() {
@@ -21,10 +21,10 @@ export function useStaking() {
     return { from: address, value: celoAmount?.toFixed(), gasPrice: suggestedGasPrice };
   }, [address, celoAmount, suggestedGasPrice]);
 
-  const depositTx = useCallback(() => managerContract.methods.deposit(), [managerContract]);
+  const depositTx = useCallback(() => managerContract?.methods?.deposit(), [managerContract]);
 
   const stake = async (callbacks?: TxCallbacks) => {
-    if (!address || !celoAmount || celoAmount.isEqualTo(0)) return;
+    if (!address || !managerContract || !stCeloContract || !celoAmount || celoAmount.isEqualTo(0)) return;
     const preDepositStTokenBalance = new StCelo(
       await stCeloContract.methods.balanceOf(address).call()
     );
@@ -50,10 +50,16 @@ export function useStaking() {
   };
 
   const estimateStakingGas = useCallback(async () => {
-    if (!celoAmount || celoAmount.isEqualTo(0) || celoAmount.isGreaterThan(celoBalance)) {
+    const depositTxObject = depositTx();
+    if (
+      !celoAmount ||
+      !depositTxObject ||
+      celoAmount.isEqualTo(0) ||
+      celoAmount.isGreaterThan(celoBalance)
+    ) {
       return null;
     }
-    const gasFee = new BigNumber(await depositTx().estimateGas(createTxOptions()));
+    const gasFee = new BigNumber(await depositTxObject.estimateGas(createTxOptions()));
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;

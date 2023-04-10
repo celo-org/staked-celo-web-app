@@ -1,7 +1,7 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useAPI } from 'src/hooks/useAPI';
-import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo } from 'src/utils/tokens';
 
 export interface PendingWithdrawal {
@@ -16,7 +16,7 @@ export const useWithdrawalBot = (address: string | null) => {
   const { managerContract, accountContract } = useBlockchain();
 
   const finalizeWithdrawal = useCallback(async () => {
-    if (!address) return;
+    if (!address || !managerContract || !accountContract) return;
     const [activeGroups, deprecatedGroups] = await Promise.all([
       managerContract.methods.getGroups().call(),
       managerContract.methods.getDeprecatedGroups().call(),
@@ -45,7 +45,7 @@ export const useClaimingBot = (address: string | null) => {
   const { accountContract } = useBlockchain();
 
   const claim = useCallback(async () => {
-    if (!address) return;
+    if (!address || !accountContract) return;
     const { eth } = kit.connection.web3;
 
     const [{ timestamp: currentBlockTimestamp }, { timestamps: withdrawalTimestamps }] =
@@ -109,6 +109,9 @@ export const useWithdrawals = (address: string | null) => {
 
   const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawal[]>([]);
   const loadPendingWithdrawals = useCallback(async () => {
+    if (!address || !accountContract) {
+      return;
+    }
     const { values = [], timestamps = [] } = await accountContract.methods
       .getPendingWithdrawals(address)
       .call();

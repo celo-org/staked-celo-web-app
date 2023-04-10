@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Celo } from 'src/utils/tokens';
 
 export const useTokenBalances = () => {
@@ -7,6 +7,9 @@ export const useTokenBalances = () => {
 
   const [totalCeloBalance, setTotalCeloBalance] = useState<Celo>(new Celo(0));
   const loadTotalCeloBalance = useCallback(async () => {
+    if (!accountContract) {
+      return;
+    }
     const totalCelo = new Celo(await accountContract.methods.getTotalCelo().call());
     setTotalCeloBalance(totalCelo);
   }, [accountContract]);
