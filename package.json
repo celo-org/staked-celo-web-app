@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "gen-types": "typechain 'src/blockchain/ABIs/*.json' --target=web3-v1  --out-dir src/blockchain/types",
-    "postinstall": "gen-types",
+    "postinstall": "yarn gen-types",
     "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt"
   },
   "dependencies": {
