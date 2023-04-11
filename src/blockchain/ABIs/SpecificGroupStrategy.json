@@ -65,18 +65,7 @@
         "type": "address"
       }
     ],
-    "name": "CallerNotStakedCelo",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "CallerNotStrategy",
+    "name": "CallerNotManager",
     "type": "error"
   },
   {
@@ -87,7 +76,73 @@
         "type": "address"
       }
     ],
-    "name": "FromGroupNotOverflowing",
+    "name": "CantWithdrawAccordingToStrategy",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "FailedToAddGroup",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "FailedToBlockGroup",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "FailedToUnblockGroup",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "GroupAlreadyBlocked",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "GroupBalanced",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "GroupNotBalanced",
     "type": "error"
   },
   {
@@ -109,49 +164,7 @@
         "type": "address"
       }
     ],
-    "name": "InvalidToGroup",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "actualCelo",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expectedCelo",
-        "type": "uint256"
-      }
-    ],
-    "name": "RebalanceEnoughCelo",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "actualCelo",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expectedCelo",
-        "type": "uint256"
-      }
-    ],
-    "name": "RebalanceNoExtraCelo",
+    "name": "GroupNotOverflowing",
     "type": "error"
   },
   {
@@ -162,13 +175,62 @@
         "type": "address"
       }
     ],
-    "name": "ToGroupOverflowing",
+    "name": "GroupStillOverflowing",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "ZeroWithdrawal",
+    "name": "NoActiveGroups",
     "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NoGroups",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NullAddress",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "GroupBlocked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "GroupUnblocked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "manager",
+        "type": "address"
+      }
+    ],
+    "name": "ManagerSet",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -190,27 +252,27 @@
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
+    "inputs": [],
+    "name": "account",
+    "outputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "voteContract",
+        "internalType": "contract IAccount",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "VoteContractSet",
-    "type": "event"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "newStrategy",
+        "name": "group",
         "type": "address"
       }
     ],
-    "name": "changeStrategy",
+    "name": "blockGroup",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -229,49 +291,117 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "deposit",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "accountAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getAddressStrategy",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
         "name": "group",
         "type": "address"
-      }
-    ],
-    "name": "getExpectedAndActualCeloForGroup",
-    "outputs": [
+      },
       {
         "internalType": "uint256",
-        "name": "expectedCelo",
+        "name": "celoAmount",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "actualCelo",
+        "name": "stCeloAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "generateDepositVoteDistribution",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "finalGroups",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "finalVotes",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "celoWithdrawalAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stCeloWithdrawalAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isTransfer",
+        "type": "bool"
+      }
+    ],
+    "name": "generateWithdrawalVoteDistribution",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "groups",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "votes",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBlockedGroup",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNumberOfBlockedGroups",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNumberOfVotedGroups",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -286,11 +416,21 @@
         "type": "address"
       }
     ],
-    "name": "getReceivableVotesForGroup",
+    "name": "getStCeloInGroup",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "total",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "overflow",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "unhealthy",
         "type": "uint256"
       }
     ],
@@ -326,6 +466,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getVotedGroup",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "groupHealth",
     "outputs": [
@@ -342,18 +501,69 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_registry",
+        "name": "_owner",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_owner",
+        "name": "_manager",
         "type": "address"
       }
     ],
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "isBlockedGroup",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "isVotedGroup",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "manager",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -373,16 +583,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "fromGroup",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "toGroup",
+        "name": "group",
         "type": "address"
       }
     ],
-    "name": "rebalance",
+    "name": "rebalanceOverflowedGroup",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -391,31 +596,13 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "fromGroup",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "toGroup",
+        "name": "group",
         "type": "address"
       }
     ],
-    "name": "rebalanceOverflow",
+    "name": "rebalanceWhenHealthChanged",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "registry",
-    "outputs": [
-      {
-        "internalType": "contract IRegistry",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -428,74 +615,13 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "proposalId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "revokeVotes",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "fromGroups",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "toGroups",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "fromVotes",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "toVotes",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "scheduleTransferWithinStrategy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_stakedCelo",
-        "type": "address"
-      },
-      {
         "internalType": "address",
         "name": "_account",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_vote",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "_groupHealth",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_specificGroupStrategy",
         "type": "address"
       },
       {
@@ -510,96 +636,74 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "specificGroupStrategy",
-    "outputs": [
-      {
-        "internalType": "contract ISpecificGroupStrategy",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "_manager",
         "type": "address"
       }
     ],
-    "name": "strategies",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "stCeloAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "toCelo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "celoAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "toStakedCelo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "stCeloAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "transfer",
+    "name": "setManager",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "stCeloInGroup",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalStCeloLocked",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalStCeloOverflow",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalStCeloUnhealthy",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -619,31 +723,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "accountAddress",
+        "name": "group",
         "type": "address"
       }
     ],
-    "name": "unlockBalance",
+    "name": "unblockGroup",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "beneficiary",
-        "type": "address"
-      }
-    ],
-    "name": "updateHistoryAndReturnLockedStCeloInVoting",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -676,65 +761,6 @@
     "name": "upgradeToAndCall",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "voteContract",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "proposalId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "yesVotes",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "noVotes",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "abstainVotes",
-        "type": "uint256"
-      }
-    ],
-    "name": "voteProposal",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "stCeloAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

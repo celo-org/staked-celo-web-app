@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useState } from 'react';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import BigNumber from 'bignumber.js'
+import { useCallback, useEffect, useState } from 'react'
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain'
 
 export const useAnnualProjectedRate = () => {
   const { epochRewardsContract } = useBlockchain();

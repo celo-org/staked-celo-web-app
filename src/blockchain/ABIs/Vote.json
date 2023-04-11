@@ -65,110 +65,77 @@
         "type": "address"
       }
     ],
-    "name": "CallerNotStakedCelo",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "CallerNotStrategy",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "FromGroupNotOverflowing",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "GroupNotEligible",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "InvalidToGroup",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "actualCelo",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expectedCelo",
-        "type": "uint256"
-      }
-    ],
-    "name": "RebalanceEnoughCelo",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "actualCelo",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expectedCelo",
-        "type": "uint256"
-      }
-    ],
-    "name": "RebalanceNoExtraCelo",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "ToGroupOverflowing",
+    "name": "CallerNotManager",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "ZeroWithdrawal",
+    "name": "IncorrectIndex",
     "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "NoStakedCelo",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "NotEnoughStakedCelo",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NullAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ProposalNotExpired",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lockedCelo",
+        "type": "uint256"
+      }
+    ],
+    "name": "LockedStCeloInVoting",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "manager",
+        "type": "address"
+      }
+    ],
+    "name": "ManagerSet",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -195,83 +162,86 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "voteContract",
+        "name": "voter",
         "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "yesVotes",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noVotes",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "abstainVotes",
+        "type": "uint256"
       }
     ],
-    "name": "VoteContractSet",
+    "name": "ProposalVoted",
     "type": "event"
   },
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "newStrategy",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
       }
     ],
-    "name": "changeStrategy",
+    "name": "deleteExpiredProposalTimestamp",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "defaultStrategy",
-    "outputs": [
-      {
-        "internalType": "contract IDefaultStrategy",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "deposit",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "accountAddress",
+        "name": "voter",
         "type": "address"
-      }
-    ],
-    "name": "getAddressStrategy",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "getExpectedAndActualCeloForGroup",
-    "outputs": [
+      },
       {
         "internalType": "uint256",
-        "name": "expectedCelo",
+        "name": "proposalId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "actualCelo",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "deleteExpiredVoterProposalId",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      }
+    ],
+    "name": "getLockedStCeloInVoting",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -281,12 +251,25 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
       }
     ],
-    "name": "getReceivableVotesForGroup",
+    "name": "getProposalTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getReferendumDuration",
     "outputs": [
       {
         "internalType": "uint256",
@@ -326,13 +309,79 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "groupHealth",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getVoteRecord",
     "outputs": [
       {
-        "internalType": "contract IGroupHealth",
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "proposalId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "yesVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "noVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "abstainVotes",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Vote.ProposalVoteRecord",
         "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "beneficiary",
         "type": "address"
+      }
+    ],
+    "name": "getVoteWeight",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "voter",
+        "type": "address"
+      }
+    ],
+    "name": "getVotedStillRelevantProposals",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -349,11 +398,29 @@
         "internalType": "address",
         "name": "_owner",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_manager",
+        "type": "address"
       }
     ],
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "manager",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -372,37 +439,20 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "fromGroup",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "toGroup",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "rebalance",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "proposalTimestamps",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "fromGroup",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "toGroup",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "rebalanceOverflow",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -428,46 +478,34 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "proposalId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "accountVoter",
+        "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "index",
+        "name": "proposalId",
         "type": "uint256"
       }
     ],
     "name": "revokeVotes",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "outputs": [
       {
-        "internalType": "address[]",
-        "name": "fromGroups",
-        "type": "address[]"
+        "internalType": "uint256",
+        "name": "totalYesVotes",
+        "type": "uint256"
       },
       {
-        "internalType": "address[]",
-        "name": "toGroups",
-        "type": "address[]"
+        "internalType": "uint256",
+        "name": "totalNoVotes",
+        "type": "uint256"
       },
       {
-        "internalType": "uint256[]",
-        "name": "fromVotes",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "toVotes",
-        "type": "uint256[]"
+        "internalType": "uint256",
+        "name": "totalAbstainVotes",
+        "type": "uint256"
       }
     ],
-    "name": "scheduleTransferWithinStrategy",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -482,26 +520,6 @@
         "internalType": "address",
         "name": "_account",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_vote",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_groupHealth",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_specificGroupStrategy",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_defaultStrategy",
-        "type": "address"
       }
     ],
     "name": "setDependencies",
@@ -510,35 +528,16 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "specificGroupStrategy",
-    "outputs": [
-      {
-        "internalType": "contract ISpecificGroupStrategy",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "_manager",
         "type": "address"
       }
     ],
-    "name": "strategies",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "setManager",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -583,47 +582,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "stCeloAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "transfer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "newOwner",
         "type": "address"
       }
     ],
     "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "accountAddress",
-        "type": "address"
-      }
-    ],
-    "name": "unlockBalance",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -679,28 +642,15 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "voteContract",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "proposalId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "accountVoter",
+        "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "index",
+        "name": "proposalId",
         "type": "uint256"
       },
       {
@@ -720,20 +670,28 @@
       }
     ],
     "name": "voteProposal",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "stCeloAmount",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalYesVotes",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalNoVotes",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalAbstainVotes",
         "type": "uint256"
       }
     ],
-    "name": "withdraw",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },

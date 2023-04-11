@@ -1,7 +1,7 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useAPI } from 'src/hooks/useAPI';
-import { useBlockchain } from 'src/hooks/useBlockchain';
 import { Celo } from 'src/utils/tokens';
 
 export interface PendingWithdrawal {
@@ -12,31 +12,30 @@ export interface PendingWithdrawal {
 const botActionInterval = 180 * 1000;
 
 export const useWithdrawalBot = (address: string | null) => {
-  const { api } = useAPI();
-  const { managerContract, accountContract } = useBlockchain();
-
-  const finalizeWithdrawal = useCallback(async () => {
-    if (!address) return;
-    const [activeGroups, deprecatedGroups] = await Promise.all([
-      managerContract.methods.getGroups().call(),
-      managerContract.methods.getDeprecatedGroups().call(),
-    ]);
-    const groups = [...activeGroups, ...deprecatedGroups];
-    for (const group of groups) {
-      const scheduledWithdrawals = await accountContract.methods
-        .scheduledWithdrawalsForGroupAndBeneficiary(group, address)
-        .call();
-      if (scheduledWithdrawals !== '0') return api.withdraw(address);
-    }
-  }, [address, managerContract, accountContract, api]);
-
-  useEffect(() => {
-    void finalizeWithdrawal();
-    const intervalId = setInterval(finalizeWithdrawal, botActionInterval);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [finalizeWithdrawal]);
+  // const { api } = useAPI();
+  // const { managerContract, accountContract } = useBlockchain();
+  // const finalizeWithdrawal = useCallback(async () => {
+  //   if (!address || !managerContract || !accountContract) return;
+  //   const [activeGroups, deprecatedGroups] = await Promise.all([
+  //     // TODO find replacement as this is removed from v2
+  //     managerContract.methods.getGroups().call(),
+  //     managerContract.methods.getDeprecatedGroups().call(),
+  //   ]);
+  //   const groups = [...activeGroups, ...deprecatedGroups];
+  //   for (const group of groups) {
+  //     const scheduledWithdrawals = await accountContract.methods
+  //       .scheduledWithdrawalsForGroupAndBeneficiary(group, address)
+  //       .call();
+  //     if (scheduledWithdrawals !== '0') return api.withdraw(address);
+  //   }
+  // }, [address, managerContract, accountContract, api]);
+  // useEffect(() => {
+  //   void finalizeWithdrawal();
+  //   const intervalId = setInterval(finalizeWithdrawal, botActionInterval);
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [finalizeWithdrawal]);
 };
 
 export const useClaimingBot = (address: string | null) => {
@@ -45,7 +44,7 @@ export const useClaimingBot = (address: string | null) => {
   const { accountContract } = useBlockchain();
 
   const claim = useCallback(async () => {
-    if (!address) return;
+    if (!address || !accountContract) return;
     const { eth } = kit.connection.web3;
 
     const [{ timestamp: currentBlockTimestamp }, { timestamps: withdrawalTimestamps }] =
@@ -109,6 +108,9 @@ export const useWithdrawals = (address: string | null) => {
 
   const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawal[]>([]);
   const loadPendingWithdrawals = useCallback(async () => {
+    if (!address || !accountContract) {
+      return;
+    }
     const { values = [], timestamps = [] } = await accountContract.methods
       .getPendingWithdrawals(address)
       .call();

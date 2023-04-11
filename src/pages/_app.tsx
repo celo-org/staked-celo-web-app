@@ -15,6 +15,7 @@ import { AppLayout } from 'src/layout/AppLayout';
 import 'src/styles/globals.css';
 import 'src/styles/transitions.scss';
 import { pageview } from '../utils/ga';
+import { BlockchainProvider } from 'src/contexts/blockchain/BlockchainContext'
 
 dayjs.extend(relativeTime);
 
@@ -86,9 +87,11 @@ const TopProvider = (props: PropsWithChildren) => {
 
   return (
     <ThemeProvider>
-      <ProtocolProvider>
-        <AccountProvider>{props.children}</AccountProvider>
-      </ProtocolProvider>
+      <BlockchainProvider>
+        <ProtocolProvider>
+          <AccountProvider>{props.children}</AccountProvider>
+        </ProtocolProvider>
+      </BlockchainProvider>
     </ThemeProvider>
   );
 };

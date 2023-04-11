@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { GAS_PRICE_MULTIPLIER } from 'src/config/consts';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 
 export const useGasPrices = () => {
   const { suggestedGasPrice, loadSuggestedGasPrice } = useSuggestedGasPrice();

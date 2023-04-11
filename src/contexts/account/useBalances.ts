@@ -1,6 +1,6 @@
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Celo, StCelo } from 'src/utils/tokens';
 
 export const useAccountBalances = (address: string | null) => {
@@ -20,6 +20,9 @@ export const useAccountBalances = (address: string | null) => {
   }, [kit.connection, address]);
 
   const loadStCeloBalance = useCallback(async () => {
+    if (!address || !stCeloContract) {
+      return;
+    }
     const stCeloBalance = await stCeloContract.methods.balanceOf(address).call({
       from: address,
     });
@@ -31,7 +34,6 @@ export const useAccountBalances = (address: string | null) => {
   }, [loadCeloBalance, loadStCeloBalance]);
 
   useEffect(() => {
-    if (!address) return;
     void loadBalances();
   }, [address, loadBalances]);
 
