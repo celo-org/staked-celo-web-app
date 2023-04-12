@@ -6,8 +6,7 @@ import { ContainerSecondaryBG } from 'src/components/containers/ContainerSeconda
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
 import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
-import { useAccountAddress } from 'src/contexts/account/useAddress';
-import { useAccountBalances } from 'src/contexts/account/useBalances';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
@@ -21,8 +20,7 @@ export const Details = () => {
   const {
     slug: [id],
   } = router.query as { slug: string[] };
-  const { address, isConnected } = useAccountAddress();
-  const { stCeloBalance, loadBalances } = useAccountBalances(address);
+  const { isConnected, stCeloBalance, loadBalances } = useAccountContext();
 
   useEffect(() => {
     if (isConnected) void loadBalances();

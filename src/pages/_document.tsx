@@ -44,7 +44,7 @@ class MyDocument extends Document {
           <meta name="twitter:description" content={description} />
           <meta name="twitter:image:src" content="https://app.stcelo.xyz/card-image.png" />
         </Head>
-        <body className="bg-primary">
+        <body className="bg-primary dark dark-mode">
           <Main />
           <NextScript />
         </body>
