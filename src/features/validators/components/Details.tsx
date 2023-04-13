@@ -12,6 +12,7 @@ import { ADDRESS_ZERO, EXPLORER_ALFAJORES_URL, EXPLORER_MAINNET_URL } from 'src/
 import { useAccountAddress } from 'src/contexts/account/useAddress';
 import { useAccountBalances } from 'src/contexts/account/useBalances';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
+import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import logger from 'src/services/logger';
 import { Mode } from 'src/types';
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export const Details = ({ groupAddress, name }: Props) => {
+  const isTransitioning = useIsTransitioning();
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
   const { network } = useCelo();
   const { address: myAddress, isConnected } = useAccountAddress();
@@ -51,7 +53,7 @@ export const Details = ({ groupAddress, name }: Props) => {
 
   return (
     <form id={`group-${groupAddress}`} className="w-full flex" onSubmit={onSubmit}>
-      <CenteredLayout classes="px-[24px]">
+      <CenteredLayout classes={`px-[24px] ${isTransitioning && 'animate-pulse'}`}>
         <ContainerSecondaryBG>
           <div className="flex bg-primary p-[8px] rounded-[16px] w-full">
             <div className="flex flex-col gap-4 w-full">
