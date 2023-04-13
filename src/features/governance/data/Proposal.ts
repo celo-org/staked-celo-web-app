@@ -1,8 +1,12 @@
 import { ProposalRecord } from '@celo/contractkit/lib/wrappers/Governance';
 import { ParsedYAML } from 'src/utils/proposals';
 
-export type Proposal = ProposalRecord & {
+export type Proposal = {
   proposalID: string;
-  markdown: string;
   parsedYAML: ParsedYAML | null;
+  stage: ProposalRecord['stage'];
+  metadata: {
+    descriptionURL: string;
+    timestamp: string;
+  };
 };

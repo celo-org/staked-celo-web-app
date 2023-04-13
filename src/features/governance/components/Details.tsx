@@ -14,7 +14,7 @@ import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
-import type { Proposal } from 'src/features/governance/data/getProposals';
+import type { Proposal } from '../data/Proposal';
 
 interface Props {
   proposal: Proposal;

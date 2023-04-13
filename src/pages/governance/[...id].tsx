@@ -3,7 +3,8 @@ import { ChainId } from '@celo/react-celo';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
-import { Proposal, getProposalRecord } from 'src/features/governance/data/getProposals';
+import { getProposalRecord } from 'src/features/governance/data/getProposals';
+import { Proposal } from 'src/features/governance/data/Proposal';
 import { useRedirectToConnectedChainIfNeeded } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
 

@@ -1,22 +1,9 @@
 import { newKit } from '@celo/contractkit';
-import {
-  GovernanceWrapper,
-  ProposalRecord,
-  ProposalStage,
-} from '@celo/contractkit/lib/wrappers/Governance';
+import { GovernanceWrapper, ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
 import { ChainId } from '@celo/react-celo';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
-import { ParsedYAML, getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
-
-export type Proposal = {
-  proposalID: string;
-  parsedYAML: ParsedYAML | null;
-  stage: ProposalRecord['stage'];
-  metadata: {
-    descriptionURL: string;
-    timestamp: string;
-  };
-};
+import { getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
+import { Proposal } from './Proposal';
 
 export const getProposals = async (chainId: ChainId) => {
   const kit = newKit(chainIdToRPC(chainId));

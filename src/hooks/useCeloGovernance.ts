@@ -1,9 +1,18 @@
 import { newKit } from '@celo/contractkit';
-import { GovernanceWrapper, ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
+import {
+  GovernanceWrapper,
+  ProposalRecord,
+  ProposalStage,
+} from '@celo/contractkit/lib/wrappers/Governance';
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
-import { Proposal } from '../features/governance/data/Proposal';
+import { ParsedYAML, getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
+
+export type Proposal = ProposalRecord & {
+  proposalID: string;
+  markdown: string;
+  parsedYAML: ParsedYAML | null;
+};
 
 export function useCeloGovernance() {
   const { network } = useCelo();
