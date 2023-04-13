@@ -1,6 +1,5 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ConnectButton } from 'src/components/buttons/ConnectButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
@@ -11,16 +10,17 @@ import { useAccountBalances } from 'src/contexts/account/useBalances';
 import { Choices } from 'src/features/governance/components/Choices';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
-import { useCeloGovernance } from 'src/hooks/useCeloGovernance';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
-export const Details = () => {
-  const router = useRouter();
-  const {
-    slug: [id],
-  } = router.query as { slug: string[] };
+import type { Proposal } from 'src/features/governance/data/getProposals';
+
+interface Props {
+  proposal: Proposal;
+}
+
+export const Details = ({ proposal }: Props) => {
   const { address, isConnected } = useAccountAddress();
   const { stCeloBalance, loadBalances } = useAccountBalances(address);
 
@@ -28,22 +28,11 @@ export const Details = () => {
     if (isConnected) void loadBalances();
   }, [loadBalances, isConnected]);
 
-  const { loadSpecificProposal, allProposals, error } = useCeloGovernance();
   const [currentVote, setCurrentVote] = useState<VoteType>();
-
-  const proposal = useMemo(
-    () => allProposals.find((x) => x.proposalID.toString() === id),
-    [id, allProposals]
-  );
 
   const onVoteChange = useCallback((voteType: VoteType) => {
     setCurrentVote(voteType);
   }, []);
-
-  useEffect(() => {
-    if (!proposal) void loadSpecificProposal(id);
-  }, [id, loadSpecificProposal, proposal]);
-
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
 
@@ -67,8 +56,6 @@ export const Details = () => {
                   view info
                 </LinkOut>
               </>
-            ) : error ? (
-              <div>Could not get proposal information from github: {error.message}</div>
             ) : (
               <div className="py-6 flex justify-center w-full">
                 <ThemedIcon
@@ -88,11 +75,7 @@ export const Details = () => {
         ) : (
           ProposalStage.Referendum === proposal?.stage && (
             <>
-              <Choices
-                disabled={!loaded || !!error}
-                onChange={onVoteChange}
-                voteType={currentVote}
-              />
+              <Choices disabled={!loaded} onChange={onVoteChange} voteType={currentVote} />
               {currentVote !== undefined && (
                 <TertiaryCallout>
                   {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
@@ -100,10 +83,7 @@ export const Details = () => {
                 </TertiaryCallout>
               )}
               <div className="w-full px-4 py-2">
-                <VoteButton
-                  disabled={!loaded || !!error || currentVote === undefined}
-                  pending={false}
-                />
+                <VoteButton disabled={!loaded || currentVote === undefined} pending={false} />
               </div>
             </>
           )
