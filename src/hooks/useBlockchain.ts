@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
+import DefaultStrategyABi from 'src/blockchain/ABIs/v2/DefaultStrategy.json';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
 import { AbiItem } from 'web3-utils';
@@ -54,6 +55,11 @@ export function useBlockchain() {
     return new eth.Contract(StCeloABI as AbiItem[], addresses.stakedCelo);
   }, [kit.connection, addresses]);
 
+  const defaultStrategyContract = useMemo(() => {
+    const { eth } = kit.connection.web3;
+    return new eth.Contract(DefaultStrategyABi as AbiItem[], addresses.defaultStrategy);
+  }, [kit.connection, addresses]);
+
   const accountContract = useMemo(() => {
     const { eth } = kit.connection.web3;
     return new eth.Contract(AccountABI as AbiItem[], addresses.account);
@@ -98,6 +104,7 @@ export function useBlockchain() {
   );
 
   return {
+    defaultStrategyContract,
     epochRewardsContract,
     sortedOraclesContract,
     stableTokenContract,

@@ -1,9 +1,11 @@
+import type { ContractKit } from '@celo/contractkit';
 import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useAPI } from 'src/hooks/useAPI';
 import { useBlockchain } from 'src/hooks/useBlockchain';
+import { readFromCache, writeToCache } from 'src/utils/cache';
 import { Celo } from 'src/utils/tokens';
-
+type Contract = ContractKit['connection']['web3']['eth']['Contract'];
 export interface PendingWithdrawal {
   amount: Celo;
   timestamp: string;
@@ -13,22 +15,29 @@ const botActionInterval = 180 * 1000;
 
 export const useWithdrawalBot = (address: string | null) => {
   const { api } = useAPI();
-  const { managerContract, accountContract } = useBlockchain();
+  const { managerContract, accountContract, defaultStrategyContract } = useBlockchain();
 
   const finalizeWithdrawal = useCallback(async () => {
     if (!address) return;
-    const [activeGroups, deprecatedGroups] = await Promise.all([
-      managerContract.methods.getGroups().call(),
-      managerContract.methods.getDeprecatedGroups().call(),
-    ]);
-    const groups = [...activeGroups, ...deprecatedGroups];
+    let groups = [];
+    // First try the v1 way, then if it fails try the v2 way
+    try {
+      const [activeGroups, deprecatedGroups] = await Promise.all([
+        managerContract.methods.getGroups().call(),
+        managerContract.methods.getDeprecatedGroups().call(),
+      ]);
+      groups = [...activeGroups, ...deprecatedGroups];
+    } catch {
+      groups = await getDefaultGroups(defaultStrategyContract);
+    }
+
     for (const group of groups) {
       const scheduledWithdrawals = await accountContract.methods
         .scheduledWithdrawalsForGroupAndBeneficiary(group, address)
         .call();
       if (scheduledWithdrawals !== '0') return api.withdraw(address);
     }
-  }, [address, managerContract, accountContract, api]);
+  }, [address, managerContract, accountContract, api, defaultStrategyContract]);
 
   useEffect(() => {
     void finalizeWithdrawal();
@@ -129,3 +138,29 @@ export const useWithdrawals = (address: string | null) => {
     loadPendingWithdrawals,
   };
 };
+
+const FEW_HOURS = 4 * 60 * 60 * 1000;
+
+async function getDefaultGroups(defaultStrategy: InstanceType<Contract>): Promise<string[]> {
+  const cacheKey = 'defaultGroups';
+
+  const cachedGroups = readFromCache(cacheKey);
+
+  if (cachedGroups && cachedGroups.ts + FEW_HOURS > Date.now()) {
+    return cachedGroups.data;
+  }
+
+  const activeGroupsLengthPromise = defaultStrategy.methods.getNumberOfGroups();
+  let [key] = await defaultStrategy.methods.getGroupsHead();
+
+  const activeGroups = [];
+
+  for (let i = 0; i < (await activeGroupsLengthPromise).toNumber(); i++) {
+    activeGroups.push(key);
+    [key] = await defaultStrategy.methods.getGroupPreviousAndNext(key);
+  }
+
+  writeToCache(cacheKey, activeGroups);
+
+  return activeGroups;
+}
