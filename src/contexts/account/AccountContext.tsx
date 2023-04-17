@@ -1,4 +1,5 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
+import useStrategy from 'src/contexts/account/useStrategy';
 import { Celo, StCelo } from 'src/utils/tokens';
 import { useAccountAddress } from './useAddress';
 import { useAccountBalances } from './useBalances';
@@ -17,6 +18,8 @@ interface AccountContext {
   loadBalances: () => Promise<void>;
   pendingWithdrawals: PendingWithdrawal[];
   loadPendingWithdrawals: () => Promise<void>;
+  strategy: string | null;
+  reloadStrategy: (address: string | null) => Promise<void>;
 }
 
 export const AccountContext = createContext<AccountContext>({
@@ -27,6 +30,8 @@ export const AccountContext = createContext<AccountContext>({
   loadBalances: () => Promise.resolve(),
   pendingWithdrawals: [],
   loadPendingWithdrawals: () => Promise.resolve(),
+  strategy: null,
+  reloadStrategy: () => Promise.resolve(),
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
@@ -35,6 +40,8 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
   const { pendingWithdrawals, loadPendingWithdrawals } = useWithdrawals(address);
   useWithdrawalBot(address);
   useClaimingBot(address);
+
+  const [strategy, reloadStrategy] = useStrategy(address);
 
   return (
     <AccountContext.Provider
@@ -46,6 +53,8 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         stCeloBalance,
         pendingWithdrawals,
         loadPendingWithdrawals,
+        strategy,
+        reloadStrategy,
       }}
     >
       {children}
@@ -62,6 +71,8 @@ export function useAccountContext() {
     loadBalances,
     pendingWithdrawals,
     loadPendingWithdrawals,
+    strategy,
+    reloadStrategy,
   } = useContext(AccountContext);
 
   return {
@@ -72,5 +83,7 @@ export function useAccountContext() {
     loadBalances,
     pendingWithdrawals,
     loadPendingWithdrawals,
+    strategy,
+    reloadStrategy,
   };
 }
