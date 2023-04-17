@@ -19,6 +19,7 @@ interface AccountContext {
   pendingWithdrawals: PendingWithdrawal[];
   loadPendingWithdrawals: () => Promise<void>;
   strategy: string | null;
+  reloadStrategy: (address: string | null) => Promise<void>;
 }
 
 export const AccountContext = createContext<AccountContext>({
@@ -30,6 +31,7 @@ export const AccountContext = createContext<AccountContext>({
   pendingWithdrawals: [],
   loadPendingWithdrawals: () => Promise.resolve(),
   strategy: null,
+  reloadStrategy: () => Promise.resolve(),
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
@@ -39,7 +41,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
   useWithdrawalBot(address);
   useClaimingBot(address);
 
-  const strategy = useStrategy(address);
+  const [strategy, reloadStrategy] = useStrategy(address);
 
   return (
     <AccountContext.Provider
@@ -52,6 +54,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         pendingWithdrawals,
         loadPendingWithdrawals,
         strategy,
+        reloadStrategy,
       }}
     >
       {children}
@@ -69,6 +72,7 @@ export function useAccountContext() {
     pendingWithdrawals,
     loadPendingWithdrawals,
     strategy,
+    reloadStrategy,
   } = useContext(AccountContext);
 
   return {
@@ -80,5 +84,6 @@ export function useAccountContext() {
     pendingWithdrawals,
     loadPendingWithdrawals,
     strategy,
+    reloadStrategy,
   };
 }
