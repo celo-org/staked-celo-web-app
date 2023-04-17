@@ -11,10 +11,7 @@ export default function useStrategy(
   const [strategy, setStrategy] = useState<string | null>(null);
 
   const [loadStrategy, status] = useAsyncCallback(
-    async (address: string | null, groupAddressToEagerlySet?: string) => {
-      if (groupAddressToEagerlySet) {
-        setStrategy(groupAddressToEagerlySet);
-      }
+    async (address: string | null) => {
       if (!managerContract || !address) {
         return;
       }
