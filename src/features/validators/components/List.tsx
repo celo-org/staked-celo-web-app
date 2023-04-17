@@ -25,7 +25,7 @@ export const Validators = ({ list }: ValidatorsProps) => {
   }, [list, strategy]);
 
   return (
-    <ul className="flex flex-col justify-center w-full bg-secondary mt-2 p-2 rounded-[16px] gap-2">
+    <ul className="flex flex-col justify-center w-full bg-secondary mt-[24px] p-2 rounded-[16px] gap-2">
       {fullList.map((vg) => (
         <ValidatorGroupRow
           key={vg.address}
@@ -37,3 +37,4 @@ export const Validators = ({ list }: ValidatorsProps) => {
     </ul>
   );
 };
+

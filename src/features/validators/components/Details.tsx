@@ -13,6 +13,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 
 import { useChangeStrategy } from 'src/features/validators/hooks/useChangeStrategy';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
+import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export const Details = ({ groupAddress, name }: Props) => {
+  const isTransitioning = useIsTransitioning();
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
   const { network } = useCelo();
   const { loadBalances, stCeloBalance, isConnected, strategy } = useAccountContext();
@@ -52,7 +54,7 @@ export const Details = ({ groupAddress, name }: Props) => {
 
   return (
     <form id={`group-${groupAddress}`} className="w-full flex" onSubmit={onSubmit}>
-      <CenteredLayout classes="px-[24px]">
+      <CenteredLayout classes={`px-[24px] ${isTransitioning && 'animate-pulse'}`}>
         <ContainerSecondaryBG>
           <div className="flex bg-primary p-[8px] rounded-[16px] w-full">
             <div className="flex flex-col gap-4 w-full">
