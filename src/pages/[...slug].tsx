@@ -6,6 +6,7 @@ import { Governance } from 'src/features/governance/components/Governance';
 import { Swap } from 'src/features/swap/components/Swap';
 import { Validators } from 'src/features/validators/components/List';
 import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
+import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import {
   getChainIdFromQuery,
   useRedirectToConnectedChainIfNeeded,
@@ -24,6 +25,7 @@ const MultiModePage: NextPage<Props> = ({ serverSideChainId, validatorGroups }) 
   const mode = (slug ? slug[0] : Mode.stake) as Mode;
 
   useRedirectToConnectedChainIfNeeded(serverSideChainId, mode);
+  const isTransitioning = useIsTransitioning();
 
   const page = useMemo(() => {
     switch (mode) {
@@ -42,7 +44,7 @@ const MultiModePage: NextPage<Props> = ({ serverSideChainId, validatorGroups }) 
   if (!page) return page;
 
   return (
-    <CenteredLayout classes="px-[24px]">
+    <CenteredLayout classes={`px-[24px] ${isTransitioning && 'animate-pulse'}`}>
       <Switcher mode={mode as Mode} />
       {page}
     </CenteredLayout>

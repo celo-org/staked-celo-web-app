@@ -13,8 +13,12 @@ interface Link {
 const links: Link[] = [
   { label: 'Stake', mode: Mode.stake, activeBgClass: 'bg-highlight-primary' },
   { label: 'Unstake', mode: Mode.unstake, activeBgClass: 'bg-highlight-secondary' },
-  { label: 'Govern', mode: Mode.governance, activeBgClass: 'bg-action-secondary-callout' },
-  { label: 'Vote', mode: Mode.validators, activeBgClass: 'bg-action-secondary-callout' },
+  { label: 'Governance', mode: Mode.governance, activeBgClass: 'bg-action-secondary-callout' },
+  {
+    label: 'Election',
+    mode: Mode.validators,
+    activeBgClass: 'bg-action-secondary-callout',
+  },
 ];
 
 interface SwitcherProps {
