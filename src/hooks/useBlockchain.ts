@@ -57,8 +57,9 @@ export function useBlockchain() {
 
   const defaultStrategyContract = useMemo(() => {
     const { eth } = kit.connection.web3;
+    if (!addresses.defaultStrategy) return null;
     return new eth.Contract(DefaultStrategyABi as AbiItem[], addresses.defaultStrategy);
-  }, [kit.connection, addresses]);
+  }, [kit.connection, addresses.defaultStrategy]);
 
   const accountContract = useMemo(() => {
     const { eth } = kit.connection.web3;
