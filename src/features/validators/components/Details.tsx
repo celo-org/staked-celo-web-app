@@ -9,12 +9,12 @@ import { ContainerSecondaryBG } from 'src/components/containers/ContainerSeconda
 import { LinkOut } from 'src/components/text/LinkOut';
 import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
 import { ADDRESS_ZERO, EXPLORER_ALFAJORES_URL, EXPLORER_MAINNET_URL } from 'src/config/consts';
-import { useAccountAddress } from 'src/contexts/account/useAddress';
-import { useAccountBalances } from 'src/contexts/account/useBalances';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
+
+import { useChangeStrategy } from 'src/features/validators/hooks/useChangeStrategy';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
 import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
-import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 
 interface Props {
@@ -26,9 +26,9 @@ export const Details = ({ groupAddress, name }: Props) => {
   const isTransitioning = useIsTransitioning();
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
   const { network } = useCelo();
-  const { address: myAddress, isConnected } = useAccountAddress();
-  const { stCeloBalance, loadBalances } = useAccountBalances(myAddress);
+  const { loadBalances, stCeloBalance, isConnected, strategy } = useAccountContext();
   const displayName = name || removeAddressMiddle(groupAddress);
+  const { changeStrategy } = useChangeStrategy();
 
   useEffect(() => {
     if (isConnected) {
@@ -36,13 +36,14 @@ export const Details = ({ groupAddress, name }: Props) => {
     }
   }, [loadBalances, isConnected]);
 
-  const [onSubmit, { isExecuting }] = useAsyncCallback(async (event: FormEvent) => {
-    event.preventDefault();
-    setTransactionModalOpen(true);
-    logger.warn('Pledging staked celo');
-    // Manager.changeStrategy(groupAddress)
-    return;
-  }, []);
+  const [onSubmit, { isExecuting }] = useAsyncCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
+      setTransactionModalOpen(true);
+      return changeStrategy(groupAddress);
+    },
+    [groupAddress]
+  );
 
   const explorerLink =
     network.chainId === ChainId.Alfajores ? EXPLORER_ALFAJORES_URL : EXPLORER_MAINNET_URL;
@@ -72,17 +73,25 @@ export const Details = ({ groupAddress, name }: Props) => {
               </LinkOut>
             </div>
           </div>
-          <TertiaryCallout>
+          <TertiaryCallout classes="pl-1">
             {isConnected && (
               <>
-                {stCeloBalance.displayAsBase(true)} will vote for {truncateIfLong(displayName)}
+                {'Your '}
+                {stCeloBalance.displayAsBase(true)}
+                {' stCELO '}
+                {strategy === groupAddress ? 'is voting for' : 'will vote for'}{' '}
+                {truncateIfLong(displayName)}
               </>
             )}
           </TertiaryCallout>
         </ContainerSecondaryBG>
         <div className="flex justify-center mt-[16px]">
           {isConnected ? (
-            <SubmitButton mode={Mode.validators} pending={isExecuting} />
+            <SubmitButton
+              mode={Mode.validators}
+              pending={isExecuting}
+              disabled={stCeloBalance.eq(0)}
+            />
           ) : (
             <ConnectButton />
           )}

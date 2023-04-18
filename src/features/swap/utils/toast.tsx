@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { PropsWithChildren } from 'react';
+import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import Clock from 'src/images/icons/clock.svg';
 import { showToast } from 'src/utils/toast';
@@ -22,3 +23,10 @@ export const showUnstakingToast = () =>
     <Image src={Clock} alt="Clock" quality={100} width={32} height={32} />,
     <ToastContent>You started unstaking, funds available in 3 days.</ToastContent>
   );
+
+export const showElectionToast = () => {
+  showToast(
+    <ThemedIcon name="arrow" alt="Change" />,
+    <ToastContent>Validator Group Selection Strategy Changed</ToastContent>
+  );
+};
