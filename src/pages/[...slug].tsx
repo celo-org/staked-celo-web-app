@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { Switcher } from 'src/components/switcher/Switcher';
 import { Governance } from 'src/features/governance/components/Governance';
+import { SerializedProposal, getProposals } from 'src/features/governance/data/getProposals';
 import { Swap } from 'src/features/swap/components/Swap';
 import { Validators } from 'src/features/validators/components/List';
 import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
@@ -17,9 +18,16 @@ import { Mode } from 'src/types';
 interface Props {
   serverSideChainId: number;
   validatorGroups?: ValidatorGroup[];
+  proposals?: SerializedProposal[];
+  pastProposals?: SerializedProposal[];
 }
 
-const MultiModePage: NextPage<Props> = ({ serverSideChainId, validatorGroups }) => {
+const MultiModePage: NextPage<Props> = ({
+  serverSideChainId,
+  validatorGroups,
+  proposals,
+  pastProposals,
+}) => {
   const router = useRouter();
   const { slug } = router.query as { slug?: string[] };
   const mode = (slug ? slug[0] : Mode.stake) as Mode;
@@ -33,13 +41,13 @@ const MultiModePage: NextPage<Props> = ({ serverSideChainId, validatorGroups }) 
       case Mode.unstake:
         return <Swap mode={mode as Mode} />;
       case Mode.governance:
-        return <Governance />;
+        return <Governance proposals={proposals!} pastProposals={pastProposals!} />;
       case Mode.validators:
         return <Validators list={validatorGroups || []} key={serverSideChainId} />;
       default:
         return null;
     }
-  }, [mode, validatorGroups, serverSideChainId]);
+  }, [mode, validatorGroups, serverSideChainId, proposals, pastProposals]);
 
   if (!page) return page;
 
@@ -80,7 +88,16 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
         },
       };
     }
-    case Mode.governance:
+    case Mode.governance: {
+      const proposals = await getProposals(chainId);
+      return {
+        props: {
+          serverSideChainId: chainId,
+          proposals: proposals.proposals,
+          pastProposals: proposals.pastProposals,
+        },
+      };
+    }
     case Mode.stake:
     case Mode.unstake:
       return {
