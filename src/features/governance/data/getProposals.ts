@@ -25,11 +25,28 @@ export const getProposals = async (chainId: ChainId) => {
     })
   );
 
-  const list = allProposals.filter((p) => p !== null) as Proposal[];
+  const proposals = allProposals.filter((p) => p !== null) as Proposal[];
+
+  const current = proposals.filter((x) => runningProposalStages.has(x.stage));
+  const passed = proposals.filter((x) => pastProposalStages.has(x.stage)).slice(0, 5);
+
+  const [currentWithYaml, passedWithYaml] = await Promise.all(
+    [current, passed].map(async (list) => {
+      return await Promise.all(
+        list.map(async (proposal) => {
+          const parsedYAML = await getYamlForProposal(proposal.metadata.descriptionURL);
+          return {
+            ...proposal,
+            parsedYAML,
+          };
+        })
+      );
+    })
+  );
 
   return {
-    proposals: list.filter((x) => runningProposalStages.has(x.stage)),
-    pastProposals: list.filter((x) => pastProposalStages.has(x.stage)).slice(0, 5),
+    proposals: currentWithYaml,
+    pastProposals: passedWithYaml,
   };
 };
 
@@ -41,13 +58,9 @@ export const getProposalRecord = async (
   proposalID: string
 ): Promise<SerializedProposal | null> => {
   const proposal = await governance.getProposalRecord(proposalID);
-  const md = await fetch(getRawGithubUrl(proposal))
-    .then((x) => x.text())
-    .catch(() => "Failed to fetch proposals' markdown");
   return {
     ...jsonSafe(proposal),
     proposalID,
-    parsedYAML: parsedYAMLFromMarkdown(md),
     metadata: {
       descriptionURL: proposal.metadata.descriptionURL,
       timestamp: proposal.metadata.timestamp.toString(),
@@ -55,13 +68,20 @@ export const getProposalRecord = async (
   };
 };
 
+async function getYamlForProposal(descriptionURL: string) {
+  const md = await fetch(getRawGithubUrl(descriptionURL))
+    .then((x) => x.text())
+    .catch(() => "Failed to fetch proposals' markdown");
+
+  return parsedYAMLFromMarkdown(md);
+}
+
 export type SerializedProposal = {
   proposalID: Proposal['proposalID'];
   parsedYAML: Proposal['parsedYAML'];
   passed: Proposal['passed'];
   stage: Proposal['stage'];
   metadata: Proposal['metadata'];
-  approvals?: Proposal['approvals'];
   upvotes?: string;
   votes?: {
     [VoteValue.Abstain]: string;
@@ -75,10 +95,6 @@ function jsonSafe(proposal: ProposalRecord): SerializedProposal {
     passed: proposal.passed,
     stage: proposal.stage,
   } as SerializedProposal;
-
-  if (proposal.approvals) {
-    safeProposal.approvals = proposal.approvals;
-  }
 
   if (proposal.upvotes) {
     safeProposal.upvotes = proposal.upvotes.toJSON();

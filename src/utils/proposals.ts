@@ -1,5 +1,3 @@
-import { ProposalRecord } from '@celo/contractkit/lib/wrappers/Governance';
-
 export function camelCasesify(str: string): string {
   const words = str.split(/\W/g);
 
@@ -41,8 +39,6 @@ export function parsedYAMLFromMarkdown(markdown: string): ParsedYAML | null {
   );
 }
 
-export function getRawGithubUrl(proposal: ProposalRecord) {
-  return proposal.metadata.descriptionURL
-    .replace('github.com', 'raw.githubusercontent.com')
-    .replace('/blob/', '/');
+export function getRawGithubUrl(descriptionURL: string) {
+  return descriptionURL.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
 }

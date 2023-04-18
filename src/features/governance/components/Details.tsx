@@ -9,14 +9,13 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
+import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
-import type { Proposal } from '../data/Proposal';
-
 interface Props {
-  proposal: Proposal;
+  proposal: SerializedProposal;
 }
 
 export const Details = ({ proposal }: Props) => {
