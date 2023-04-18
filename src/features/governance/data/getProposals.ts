@@ -28,7 +28,10 @@ export const getProposals = async (chainId: ChainId) => {
   const proposals = allProposals.filter((p) => p !== null) as Proposal[];
 
   const current = proposals.filter((x) => runningProposalStages.has(x.stage));
-  const passed = proposals.filter((x) => pastProposalStages.has(x.stage)).slice(0, 5);
+  const passed = proposals
+    .filter((x) => pastProposalStages.has(x.stage))
+    .sort((a, b) => (Number(a.proposalID) < Number(b.proposalID) ? 1 : -1))
+    .slice(0, 5);
 
   const [currentWithYaml, passedWithYaml] = await Promise.all(
     [current, passed].map(async (list) => {
