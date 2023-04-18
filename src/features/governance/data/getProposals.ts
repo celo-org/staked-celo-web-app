@@ -25,7 +25,7 @@ export const getProposals = async (chainId: ChainId) => {
     })
   );
 
-  const proposals = allProposals.filter((p) => p !== null) as Proposal[];
+  const proposals = allProposals.filter((p) => p !== null) as SerializedProposal[];
 
   const current = proposals.filter((x) => runningProposalStages.has(x.stage));
   const passed = proposals
