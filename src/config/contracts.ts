@@ -2,14 +2,14 @@ import { ChainId } from '@celo/react-celo'
 import {
   ACCOUNT_MAINNET_ADDRESS,
   ACCOUNT_TESTNET_ADDRESS,
-  MANAGER_MAINNET_ADDRESS,
-  MANAGER_TESTNET_ADDRESS,
-  STAKED_CELO_MAINNET_ADDRESS,
-  STAKED_CELO_TESTNET_ADDRESS,
-  SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS,
-  SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS,
   GROUP_HEALTH_MAINNET_ADDRESS,
   GROUP_HEALTH_TESTNET_ADDRESS,
+  MANAGER_MAINNET_ADDRESS,
+  MANAGER_TESTNET_ADDRESS,
+  SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS,
+  SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS,
+  STAKED_CELO_MAINNET_ADDRESS,
+  STAKED_CELO_TESTNET_ADDRESS,
 } from 'src/config/consts';
 
 interface ContractAddresses {
@@ -40,5 +40,12 @@ export const testnetAddresses: ContractAddresses = {
 type ContractNames = keyof typeof mainnetAddresses
 
 export function getContractAddressForChain(chainId: number, contractName: ContractNames): string {
-  return chainId === ChainId.Alfajores ? testnetAddresses[contractName] : mainnetAddresses[contractName]
+  const address =
+    chainId === ChainId.Alfajores ? testnetAddresses[contractName] : mainnetAddresses[contractName];
+  if (!address) {
+    throw new Error(
+      `No address for contract ${contractName} on chain ${chainId} ${chainId === ChainId.Alfajores}`
+    );
+  }
+  return address;
 }

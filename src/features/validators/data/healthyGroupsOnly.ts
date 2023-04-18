@@ -1,6 +1,7 @@
 import { ChainId } from '@celo/react-celo';
 import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth.json';
 import { GroupHealth } from 'src/blockchain/types';
+import { GROUP_HEALTH_TESTNET_ADDRESS } from 'src/config/consts';
 import { getContractAddressForChain } from 'src/config/contracts';
 import { getMultiCallForChain } from 'src/config/multicall';
 import Web3 from 'web3';
@@ -13,7 +14,7 @@ export async function healthyGroupsOnly(
   groupAddresses: string[],
   chainId: ChainId,
   web3: Web3
-): Promise<Set<unknown>> {
+): Promise<Set<string>> {
   const GroupHealthContract = makeGroupHealthContract(chainId, web3);
 
   const calls = groupAddresses.map((groupAddress) => {
@@ -37,6 +38,7 @@ export async function healthyGroupsOnly(
 
 function makeGroupHealthContract(chainId: ChainId, web3: Web3) {
   const groupHealthAddress = getContractAddressForChain(chainId, 'groupHealth');
+  console.info('groupHealthAddress', groupHealthAddress, '1', GROUP_HEALTH_TESTNET_ADDRESS);
   const GroupHealthContract = new web3.eth.Contract(
     GroupHealthABI as unknown as AbiItem,
     groupHealthAddress

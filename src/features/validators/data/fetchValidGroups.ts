@@ -1,9 +1,11 @@
-// import { newKit } from '@celo/contractkit/lib/mini-kit'
+import { newKit } from '@celo/contractkit/lib/mini-kit';
 import { Alfajores, ChainId } from '@celo/react-celo';
 import { gql, request } from 'graphql-request';
 import { EXPLORER_GRAPH_ALFAJORES_URL, EXPLORER_GRAPH_MAINNET_URL } from 'src/config/consts';
-// import { areGroupsBlocked } from 'src/features/validators/data/areGroupsBlocked'
-// import Web3 from 'web3'
+import { healthyGroupsOnly } from 'src/features/validators/data/healthyGroupsOnly';
+import { nonBlockedGroupsOnly } from 'src/features/validators/data/nonBlockedGroupsOnly';
+import chainIdToRPC from 'src/utils/chainIdToRPC';
+import Web3 from 'web3';
 
 export interface ValidatorGroup {
   name: string;
@@ -28,20 +30,46 @@ interface ValidGroups {
   groups: ValidatorGroup[];
 }
 
+// returns ValidatorGroups that are healthy and not blocked based on
+// criteria defined i https://github.com/celo-org/staked-celo/blob/master/contracts/Manager.sol#L348
 export default async function fetchValidGroups(chainId: number): Promise<ValidGroups> {
   const url =
     Alfajores.chainId === chainId ? EXPLORER_GRAPH_ALFAJORES_URL : EXPLORER_GRAPH_MAINNET_URL;
   const data = await request<GraphValues>(url, query);
 
   const allPossibleGroups = data.celoValidatorGroups;
-  // TODO Filter way block groups and groups with bad health per
-  // https://github.com/celo-org/staked-celo/blob/master/contracts/Manager.sol#L348
 
-  // const kit = newKit(chainId === ChainId.Alfajores ? Alfajores.rpcUrl : Mainnet.rpcUrl)
-  // const blocked = await areGroupsBlocked(allPossibleGroups.map((group) => group.address), chainId, kit.connection.web3 as unknown as Web3)
+  const groupAddresses = allPossibleGroups.map((group) => group.address);
+  const kit = newKit(chainIdToRPC[chainId as ChainId]);
+
+  // only while no contracts deployed so its doesnt crash
+  if (chainId === ChainId.Mainnet) {
+    return {
+      chainId: chainId,
+      groups: allPossibleGroups,
+    };
+  }
+
+  const healthyGroups = await healthyGroupsOnly(
+    groupAddresses,
+    chainId,
+    kit.connection.web3 as unknown as Web3
+  );
+  console.info('healthyGroups', healthyGroups);
+  const nonBlockedGroups = await nonBlockedGroupsOnly(
+    groupAddresses,
+    chainId,
+    kit.connection.web3 as unknown as Web3
+  );
+
+  console.info('nonBlockedGroups', nonBlockedGroups);
+
+  const validGroups = allPossibleGroups.filter(
+    (group) => healthyGroups.has(group.address) && nonBlockedGroups.has(group.address)
+  );
 
   return {
     chainId: chainId,
-    groups: allPossibleGroups,
+    groups: validGroups,
   };
 }
