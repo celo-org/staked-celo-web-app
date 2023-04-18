@@ -1,10 +1,10 @@
 import { Row } from 'src/components/list/row';
 import { StagePill } from 'src/features/governance/components/StagePill';
-import { Proposal } from 'src/features/governance/data/Proposal';
+import { SerializedProposal } from 'src/features/governance/data/getProposals';
 
 interface Props {
-  proposals: Proposal[];
-  pastProposals: Proposal[];
+  proposals: SerializedProposal[];
+  pastProposals: SerializedProposal[];
 }
 
 export const Governance = ({ proposals, pastProposals }: Props) => {
@@ -19,9 +19,9 @@ export const Governance = ({ proposals, pastProposals }: Props) => {
                 name={
                   proposal.parsedYAML
                     ? proposal.parsedYAML.title
-                    : `Proposal #${proposal.proposalID.toString()}`
+                    : `Proposal #${proposal.proposalID}`
                 }
-                href={`/governance/${proposal.proposalID.toString()}`}
+                href={`/governance/${proposal.proposalID}`}
               >
                 <StagePill stage={proposal.stage} />
               </Row>

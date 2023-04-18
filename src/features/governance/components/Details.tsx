@@ -20,8 +20,7 @@ interface Props {
 }
 
 export const Details = ({ proposal }: Props) => {
-  const { address, isConnected } = useAccountAddress();
-  const { stCeloBalance, loadBalances, isConnected } = useAccountContext(address);
+  const { stCeloBalance, loadBalances, isConnected } = useAccountContext();
 
   useEffect(() => {
     if (isConnected) void loadBalances();

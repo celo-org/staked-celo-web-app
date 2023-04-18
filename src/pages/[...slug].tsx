@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { Switcher } from 'src/components/switcher/Switcher';
 import { Governance } from 'src/features/governance/components/Governance';
-import { getProposals } from 'src/features/governance/data/getProposals';
+import { getProposals, SerializedProposal } from 'src/features/governance/data/getProposals';
 import { Proposal } from 'src/features/governance/data/Proposal';
 import { Swap } from 'src/features/swap/components/Swap';
 import { Validators } from 'src/features/validators/components/List';
@@ -19,8 +19,8 @@ import { Mode } from 'src/types';
 interface Props {
   serverSideChainId: number;
   validatorGroups?: ValidatorGroup[];
-  proposals?: Proposal[];
-  pastProposals?: Proposal[];
+  proposals?: SerializedProposal[];
+  pastProposals?: SerializedProposal[];
 }
 
 const MultiModePage: NextPage<Props> = ({
