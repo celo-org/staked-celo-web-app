@@ -5,7 +5,6 @@ export type Proposal = {
   proposalID: string;
   parsedYAML: ParsedYAML | null;
   stage: ProposalRecord['stage'];
-  upvotes?: ProposalRecord['upvotes'];
   approvals?: ProposalRecord['approvals'];
   votes?: ProposalRecord['votes'];
   passed: ProposalRecord['passed'];

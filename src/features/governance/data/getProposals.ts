@@ -85,7 +85,6 @@ export type SerializedProposal = {
   passed: Proposal['passed'];
   stage: Proposal['stage'];
   metadata: Proposal['metadata'];
-  upvotes?: string;
   votes?: {
     [VoteValue.Abstain]: string;
     [VoteValue.No]: string;
@@ -98,10 +97,6 @@ function jsonSafe(proposal: ProposalRecord): SerializedProposal {
     passed: proposal.passed,
     stage: proposal.stage,
   } as SerializedProposal;
-
-  if (proposal.upvotes) {
-    safeProposal.upvotes = proposal.upvotes.toJSON();
-  }
 
   if (proposal.votes) {
     safeProposal.votes = {
