@@ -50,20 +50,11 @@ export default async function fetchValidGroups(chainId: number): Promise<ValidGr
     };
   }
 
-  const healthyGroups = await healthyGroupsOnly(
-    groupAddresses,
-    chainId,
-    kit.connection.web3 as unknown as Web3
+  const [healthyGroups, nonBlockedGroups] = await Promise.all(
+    [healthyGroupsOnly, nonBlockedGroupsOnly].map((fn) =>
+      fn(groupAddresses, chainId, kit.connection.web3 as unknown as Web3)
+    )
   );
-  console.info('healthyGroups', healthyGroups);
-  const nonBlockedGroups = await nonBlockedGroupsOnly(
-    groupAddresses,
-    chainId,
-    kit.connection.web3 as unknown as Web3
-  );
-
-  console.info('nonBlockedGroups', nonBlockedGroups);
-
   const validGroups = allPossibleGroups.filter(
     (group) => healthyGroups.has(group.address) && nonBlockedGroups.has(group.address)
   );

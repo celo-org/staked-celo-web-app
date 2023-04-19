@@ -13,7 +13,7 @@ export async function nonBlockedGroupsOnly(
   groupAddresses: string[],
   chainId: ChainId,
   web3: Web3
-): Promise<Set<unknown>> {
+): Promise<Set<string>> {
   const multicall = getMultiCallForChain(
     chainId,
     web3.eth.currentProvider as unknown as HttpProvider
