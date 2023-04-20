@@ -1,7 +1,6 @@
 import { ChainId } from '@celo/react-celo';
 import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth.json';
 import { GroupHealth } from 'src/blockchain/types';
-import { GROUP_HEALTH_TESTNET_ADDRESS } from 'src/config/consts';
 import { getContractAddressForChain } from 'src/config/contracts';
 import { getMultiCallForChain } from 'src/config/multicall';
 import Web3 from 'web3';
@@ -21,16 +20,16 @@ export async function healthyGroupsOnly(
     return GroupHealthContract.methods.isGroupValid(groupAddress);
   });
 
+  const multicall = getMultiCallForChain(
+    chainId,
+    web3.eth.currentProvider as unknown as HttpProvider
+  );
+
   let results: boolean[] = [];
-  const noMulticall = true;
-  if (noMulticall) {
-    results = await Promise.all(calls.map((call) => call.call()));
-  } else {
-    const multicall = getMultiCallForChain(
-      chainId,
-      web3.eth.currentProvider as unknown as HttpProvider
-    );
+  try {
     results = await multicall.aggregate(calls);
+  } catch (error) {
+    results = await Promise.all(calls.map((call) => call.call()));
   }
 
   return getGoodAddresses(results, groupAddresses, true);
@@ -38,7 +37,6 @@ export async function healthyGroupsOnly(
 
 function makeGroupHealthContract(chainId: ChainId, web3: Web3) {
   const groupHealthAddress = getContractAddressForChain(chainId, 'groupHealth');
-  console.info('groupHealthAddress', groupHealthAddress, '1', GROUP_HEALTH_TESTNET_ADDRESS);
   const GroupHealthContract = new web3.eth.Contract(
     GroupHealthABI as unknown as AbiItem,
     groupHealthAddress

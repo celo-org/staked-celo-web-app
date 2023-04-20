@@ -24,12 +24,11 @@ export async function nonBlockedGroupsOnly(
     return specificGroupStrategyContract.methods.isBlockedGroup(groupAddress);
   });
 
-  const noMulticall = true;
   let results: boolean[] = [];
-  if (noMulticall) {
-    results = await Promise.all(calls.map((call) => call.call()));
-  } else {
+  try {
     results = await multicall.aggregate(calls);
+  } catch (error) {
+    results = await Promise.all(calls.map((call) => call.call()));
   }
 
   return getGoodAddresses(results, groupAddresses);

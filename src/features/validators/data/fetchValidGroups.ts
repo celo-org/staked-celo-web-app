@@ -42,7 +42,7 @@ export default async function fetchValidGroups(chainId: number): Promise<ValidGr
   const groupAddresses = allPossibleGroups.map((group) => group.address);
   const kit = newKit(chainIdToRPC(chainId as ChainId));
 
-  // only while no contracts deployed so its doesnt crash
+  // only while no contracts deployed return now so its doesnt crash
   if (chainId === ChainId.Mainnet) {
     return {
       chainId: chainId,
