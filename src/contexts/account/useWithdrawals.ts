@@ -19,7 +19,7 @@ export const useWithdrawalBot = (address: string | null) => {
 
   const finalizeWithdrawal = useCallback(async () => {
     if (!address) return;
-    let groups = [];
+    let groups: string[] = [];
     // First try the v1 way, then if it fails try the v2 way
     try {
       const [activeGroups, deprecatedGroups] = await Promise.all([
@@ -28,7 +28,9 @@ export const useWithdrawalBot = (address: string | null) => {
       ]);
       groups = [...activeGroups, ...deprecatedGroups];
     } catch {
-      groups = await getDefaultGroups(defaultStrategyContract);
+      if (defaultStrategyContract) {
+        groups = await getDefaultGroups(defaultStrategyContract);
+      }
     }
 
     for (const group of groups) {
