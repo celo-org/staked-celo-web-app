@@ -3,7 +3,11 @@ import { ChainId } from '@celo/react-celo';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
-import { SerializedProposal, getProposalRecord } from 'src/features/governance/data/getProposals';
+import {
+  SerializedProposal,
+  getProposalRecord,
+  getYamlForProposal,
+} from 'src/features/governance/data/getProposals';
 import { useRedirectToConnectedChainIfNeeded } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
 
@@ -51,11 +55,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
       notFound: true,
     };
   }
+  const parsedYAML = await getYamlForProposal(proposal.metadata.descriptionURL);
 
   return {
     props: {
       serverChainId: chainId,
-      proposal,
+      proposal: {
+        ...proposal,
+        parsedYAML,
+      },
     },
   };
 };

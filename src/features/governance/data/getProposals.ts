@@ -71,7 +71,7 @@ export const getProposalRecord = async (
   };
 };
 
-async function getYamlForProposal(descriptionURL: string) {
+export async function getYamlForProposal(descriptionURL: string) {
   const md = await fetch(getRawGithubUrl(descriptionURL))
     .then((x) => x.text())
     .catch(() => "Failed to fetch proposals' markdown");
