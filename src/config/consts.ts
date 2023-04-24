@@ -18,6 +18,18 @@ export const VOTE_TESTNET_ADDRESS = '0xB2f2bcAd9C99589a8e19E9C17207599318dBc181'
 export const MANAGER_MAINNET_ADDRESS = '0x0239b96D10a434a56CC9E09383077A0490cF9398';
 export const STAKED_CELO_MAINNET_ADDRESS = '0xC668583dcbDc9ae6FA3CE46462758188adfdfC24';
 export const ACCOUNT_MAINNET_ADDRESS = '0x4aAD04D41FD7fd495503731C5a2579e19054C432';
+// TODO - add these when contracts deployed to mainnet
+export const GROUP_HEALTH_MAINNET_ADDRESS = '';
+export const SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS = '';
+
+export const MULTICALL_MAINNET = {
+  address: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  blockCreated: 13112599,
+};
+export const MULTICALL_TESTNET = {
+  address: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  blockCreated: 14569001,
+}; //https://github.com/wagmi-dev/references/blob/main/packages/chains/src/celoAlfajores.ts
 
 export const TESTNET_API_URL =
   'https://us-central1-staked-celo-bot.cloudfunctions.net/alfajores-functions';

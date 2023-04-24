@@ -13,9 +13,9 @@ interface Link {
 const links: Link[] = [
   { label: 'Stake', mode: Mode.stake, activeBgClass: 'bg-highlight-primary' },
   { label: 'Unstake', mode: Mode.unstake, activeBgClass: 'bg-highlight-secondary' },
-  { label: 'Governance', mode: Mode.governance, activeBgClass: 'bg-action-secondary-callout' },
+  { label: 'Govern', mode: Mode.governance, activeBgClass: 'bg-action-secondary-callout' },
   {
-    label: 'Election',
+    label: 'Select Validator',
     mode: Mode.validators,
     activeBgClass: 'bg-action-secondary-callout',
   },
