@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import Clock from 'src/images/icons/clock.svg';
+import { VoteType } from 'src/types';
 import { showToast } from 'src/utils/toast';
 import { StCelo } from 'src/utils/tokens';
 
@@ -28,5 +29,14 @@ export const showElectionToast = () => {
   showToast(
     <ThemedIcon name="arrow" alt="Change" />,
     <ToastContent>Validator Group Selection Strategy Changed</ToastContent>
+  );
+};
+
+export const showVoteToast = ({ vote, proposalID }: { vote: VoteType; proposalID: string }) => {
+  showToast(
+    <ThemedIcon name="arrow" alt="Change" />,
+    <ToastContent>
+      Voted {vote} for proposal #{proposalID}
+    </ToastContent>
   );
 };

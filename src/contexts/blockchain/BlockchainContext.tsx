@@ -1,11 +1,12 @@
 import { ContractKit, newKit } from '@celo/contractkit';
 import { useCelo } from '@celo/react-celo';
 import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
-import { PropsWithChildren, createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import { Account, Manager, StakedCelo } from 'src/blockchain/types';
+import VoteABI from 'src/blockchain/ABIs/Vote.json';
+import { Account, Manager, StakedCelo, Vote } from 'src/blockchain/types';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
 import { AbiItem } from 'web3-utils';
@@ -32,6 +33,7 @@ interface BlockchainContext {
   managerContract: Manager | undefined;
   stCeloContract: StakedCelo | undefined;
   accountContract: Account | undefined;
+  voteContract: Vote | undefined;
   sendTransaction: (
     txObject: unknown,
     txOptions: TxOptions,
@@ -47,6 +49,7 @@ export const BlockchainContext = createContext<BlockchainContext>({
   managerContract: undefined,
   stCeloContract: undefined,
   accountContract: undefined,
+  voteContract: undefined,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sendTransaction: (_txObject: unknown, _txOptions: TxOptions) => Promise.resolve(undefined),
 });
@@ -76,6 +79,12 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     const { eth } = kit.connection.web3;
     // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
     return new eth.Contract(AccountABI as AbiItem[], addresses.account) as unknown as Account;
+  }, [kit.connection, addresses]);
+
+  const voteContract = useMemo(() => {
+    const { eth } = kit.connection.web3;
+    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
+    return new eth.Contract(VoteABI as AbiItem[], addresses.account) as unknown as Account;
   }, [kit.connection, addresses]);
 
   const sendTransaction = useCallback(
@@ -126,6 +135,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         managerContract,
         stCeloContract,
         accountContract,
+        voteContract,
         sendTransaction,
       }}
     >
