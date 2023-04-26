@@ -1,15 +1,13 @@
-import { newKit } from '@celo/contractkit';
-import {
-  GovernanceWrapper,
-  ProposalRecord,
-  ProposalStage,
-} from '@celo/contractkit/lib/wrappers/Governance';
+import { ContractKit, newKit } from '@celo/contractkit';
+import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
 import { ChainId } from '@celo/react-celo';
 import { getMultiCallForChain } from 'src/config/multicall';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
 import { getRawGithubUrl, ParsedYAML, parsedYAMLFromMarkdown } from 'src/utils/proposals';
 import { HttpProvider } from 'web3-core';
 import { MiniProposal, Proposal } from './Proposal';
+
+const PROPOSAL_STAGE_KEYS = Object.keys(ProposalStage);
 
 export const getProposals = async (chainId: ChainId) => {
   const kit = newKit(chainIdToRPC(chainId));
@@ -20,14 +18,13 @@ export const getProposals = async (chainId: ChainId) => {
   const governance = await kit.contracts._web3Contracts.getGovernance();
   const _dequeue = await governance.methods.getDequeue().call();
   const stageTxs = _dequeue.map((proposalId) => governance.methods.getProposalStage(proposalId));
-  const stages = await multicall.aggregate(stageTxs);
+  const stages: string[] = await multicall.aggregate(stageTxs);
 
-  const proposalStageKeys = Object.keys(ProposalStage);
   const proposals = _dequeue.map(
     (proposalID, i) =>
       ({
         proposalID,
-        stage: proposalStageKeys[stages[i]],
+        stage: PROPOSAL_STAGE_KEYS[parseInt(stages[i])],
       } as MiniProposal)
   );
 
@@ -74,26 +71,42 @@ const runningProposalStages = new Set([ProposalStage.Queued, ProposalStage.Refer
 const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
 
 export const getProposalRecord = async (
-  governance: GovernanceWrapper,
+  kit: ContractKit,
+  chainId: number,
   proposalID: string
 ): Promise<SerializedProposal | null> => {
-  // TODO
-  const proposal = await governance.getProposalRecord(proposalID);
-  console.log('stage aaron', JSON.stringify(proposal));
+  const multicall = getMultiCallForChain(
+    chainId,
+    kit.web3.eth.currentProvider as unknown as HttpProvider
+  );
+  const governance = await kit.contracts._web3Contracts.getGovernance();
+
+  const dequeueTx = governance.methods.getDequeue();
+  const stageTx = governance.methods.getProposalStage(proposalID);
+  const metadataTx = governance.methods.getProposal(proposalID);
+
+  const [dequeue, stage, metadata]: [string[], string, string[]] = await multicall.aggregate([
+    dequeueTx,
+    stageTx,
+    metadataTx,
+  ]);
+
   return {
-    ...jsonSafe(proposal),
     proposalID,
-    metadata: {
-      descriptionURL: proposal.metadata.descriptionURL,
-      timestamp: proposal.metadata.timestamp.toString(),
-    },
-  };
+    stage: PROPOSAL_STAGE_KEYS[parseInt(stage)] as ProposalStage,
+    metadata: { timestamp: metadata[2], descriptionURL: metadata[4] },
+    index: dequeue.findIndex((id) => proposalID === id),
+  } as SerializedProposal;
 };
 
 export async function getYamlForProposal(proposal: MiniProposal) {
   try {
     const md = await fetch(getRawGithubUrl(proposal.metadata.descriptionURL)).then((x) => x.text());
-    return parsedYAMLFromMarkdown(md);
+    const parsed = parsedYAMLFromMarkdown(md);
+    if (!parsed) {
+      throw new Error("Couldn't parse markdown");
+    }
+    return parsed;
   } catch {
     console.warn(`Failed to fetch proposal markdown at url ${proposal.metadata.descriptionURL}`);
 
@@ -116,21 +129,5 @@ export type SerializedProposal = {
   passed: Proposal['passed'];
   stage: Proposal['stage'];
   metadata: Proposal['metadata'];
+  index?: number;
 };
-
-function jsonSafe(proposal: ProposalRecord): SerializedProposal {
-  const safeProposal = {
-    passed: proposal.passed,
-    stage: proposal.stage,
-  } as SerializedProposal;
-
-  // if (proposal.votes) {
-  //   safeProposal.votes = {
-  //     [VoteValue.Abstain]: proposal.votes[VoteValue.Abstain].toJSON(),
-  //     [VoteValue.No]: proposal.votes[VoteValue.No].toJSON(),
-  //     [VoteValue.Yes]: proposal.votes[VoteValue.Yes].toJSON(),
-  //   };
-  // }
-
-  return safeProposal;
-}

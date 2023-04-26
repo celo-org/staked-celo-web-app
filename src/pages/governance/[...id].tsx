@@ -46,9 +46,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
   }
 
   const kit = newKit(chainIdToRPC(chainId));
-  const governance = await kit.contracts.getGovernance();
-
-  const proposal = await getProposalRecord(governance, proposalID);
+  const proposal = await getProposalRecord(kit, chainId, proposalID);
 
   if (proposal === null) {
     return {

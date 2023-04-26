@@ -34,17 +34,20 @@ export const Details = ({ proposal }: Props) => {
     setCurrentVote(voteType);
   }, []);
 
-  const onVote = useCallback(() => {
+  const updateGetHasVoted = useCallback(async () => {
+    const _hasVoted = await getHasVoted(proposal);
+    setHasVoted(_hasVoted);
+  }, [proposal, getHasVoted]);
+
+  const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
-    return voteProposal(proposal, currentVote);
+    await voteProposal(proposal, currentVote);
+    setHasVoted(true);
   }, [currentVote, hasVoted, voteProposal, proposal]);
 
   useEffect(() => {
-    void (async () => {
-      const _hasVoted = await getHasVoted(proposal);
-      setHasVoted(_hasVoted);
-    });
-  }, [proposal, getHasVoted]);
+    void updateGetHasVoted();
+  }, [updateGetHasVoted, getHasVoted]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
@@ -94,19 +97,27 @@ export const Details = ({ proposal }: Props) => {
               onChange={onVoteChange}
               voteType={currentVote}
             />
-            {currentVote !== undefined && (
-              <TertiaryCallout>
+            {currentVote !== undefined && !hasVoted && (
+              <TertiaryCallout classes="px-[8px]">
                 {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
                 {proposal.parsedYAML?.cgp}
               </TertiaryCallout>
             )}
-            <div className="w-full px-4 py-2">
-              <VoteButton
-                disabled={!loaded || currentVote === undefined || hasVoted}
-                pending={voteProposalStatus.isExecuting || getHasVotedStatus.isExecuting}
-                onVote={onVote}
-              />
-            </div>
+            {hasVoted && (
+              <TertiaryCallout classes="px-[8px]">
+                {stCeloBalance.displayAsBase()} stCELO voted {currentVote} for Proposal #
+                {proposal.parsedYAML?.cgp}
+              </TertiaryCallout>
+            )}
+            {!hasVoted && (
+              <div className="w-full px-4 py-2">
+                <VoteButton
+                  disabled={!loaded || currentVote === undefined || hasVoted}
+                  pending={voteProposalStatus.isExecuting || getHasVotedStatus.isExecuting}
+                  onVote={onVote}
+                />
+              </div>
+            )}
           </>
         ) : null}
       </ContainerSecondaryBG>

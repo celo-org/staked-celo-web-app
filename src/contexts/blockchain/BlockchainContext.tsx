@@ -84,7 +84,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
   const voteContract = useMemo(() => {
     const { eth } = kit.connection.web3;
     // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(VoteABI as AbiItem[], addresses.account) as unknown as Account;
+    return new eth.Contract(VoteABI as AbiItem[], addresses.account) as unknown as Vote;
   }, [kit.connection, addresses]);
 
   const sendTransaction = useCallback(
