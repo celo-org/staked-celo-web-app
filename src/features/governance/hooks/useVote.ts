@@ -57,13 +57,13 @@ export const useVote = () => {
       transactionEvent({
         action: 'voteProposal',
         status: 'initiated_transaction',
-        value: '',
+        value: vote,
       });
       await sendTransaction(voteProposalTxObject, txOptions);
       transactionEvent({
         action: 'voteProposal',
         status: 'signed_transaction',
-        value: '',
+        value: voteWeight,
       });
       showVoteToast({ vote, proposalID: proposal.proposalID });
     },
@@ -82,39 +82,6 @@ export const useVote = () => {
     },
     [address]
   );
-
-  // /**
-  //  * TODO: out of scope for now
-  //  */
-  // const [upvote, upvoteStatus] = useAsyncCallback(
-  //   async (proposal: SerializedProposal) => {
-  //     if (!address || !managerContract) {
-  //       throw new Error('vote called before loading completed');
-  //     }
-  //     if (proposal.stage !== ProposalStage.Queued) {
-  //       throw new Error('vote called on proposal that is not in Queued stage');
-  //     }
-
-  //     const kit = newKit(chainIdToRPC(walletChainId!));
-  //     const governance = await kit.contracts.getGovernance();
-
-  //     const upvoteTxObject = await governance.upvote(proposal.proposalID, address);
-  //     const txOptions = { from: address, gasPrice: suggestedGasPrice };
-  //     transactionEvent({
-  //       action: 'upvote',
-  //       status: 'initiated_transaction',
-  //       value: '',
-  //     });
-  //     await sendTransaction(upvoteTxObject, txOptions);
-  //     transactionEvent({
-  //       action: 'upvote',
-  //       status: 'signed_transaction',
-  //       value: '',
-  //     });
-  //     showVoteToast({ vote, proposalID: proposal.proposalID });
-  //   },
-  //   [walletChainId, address, suggestedGasPrice, managerContract]
-  // );
 
   return { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus };
 };
