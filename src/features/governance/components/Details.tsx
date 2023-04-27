@@ -52,8 +52,6 @@ export const Details = ({ proposal }: Props) => {
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
 
-  console.log(proposal);
-
   return (
     <CenteredLayout classes="px-[24px]">
       <ContainerSecondaryBG>

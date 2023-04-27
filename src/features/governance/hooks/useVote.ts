@@ -14,7 +14,7 @@ import { transactionEvent } from 'src/utils/ga';
 export const useVote = () => {
   const { managerContract, voteContract, stCeloContract, sendTransaction } = useBlockchain();
   const { suggestedGasPrice } = useProtocolContext();
-  const { stCeloBalance, celoBalance, reloadStrategy } = useAccountContext();
+  const { stCeloBalance, celoBalance } = useAccountContext();
   const { address } = useAccountAddress();
 
   const getVoteWeight = useCallback(async () => {
@@ -66,9 +66,8 @@ export const useVote = () => {
         value: '',
       });
       showVoteToast({ vote, proposalID: proposal.proposalID });
-      await reloadStrategy(address);
     },
-    [address, voteContract, suggestedGasPrice, managerContract, reloadStrategy, getVoteWeight]
+    [address, voteContract, suggestedGasPrice, managerContract, getVoteWeight]
   );
 
   const [getHasVoted, getHasVotedStatus] = useAsyncCallback(
@@ -113,9 +112,8 @@ export const useVote = () => {
   //       value: '',
   //     });
   //     showVoteToast({ vote, proposalID: proposal.proposalID });
-  //     await reloadStrategy(address);
   //   },
-  //   [walletChainId, address, suggestedGasPrice, managerContract, reloadStrategy]
+  //   [walletChainId, address, suggestedGasPrice, managerContract]
   // );
 
   return { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus };
