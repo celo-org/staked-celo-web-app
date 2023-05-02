@@ -9,13 +9,13 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AccountProvider, useAccountContext } from 'src/contexts/account/AccountContext';
+import { BlockchainProvider } from 'src/contexts/blockchain/BlockchainContext';
 import { ProtocolProvider } from 'src/contexts/protocol/ProtocolContext';
 import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
 import { AppLayout } from 'src/layout/AppLayout';
 import 'src/styles/globals.css';
 import 'src/styles/transitions.scss';
 import { pageview } from '../utils/ga';
-import { BlockchainProvider } from 'src/contexts/blockchain/BlockchainContext'
 
 dayjs.extend(relativeTime);
 
@@ -96,12 +96,13 @@ const TopProvider = (props: PropsWithChildren) => {
   );
 };
 
-const routingsWithConnection = ['/'];
+const routingsWithConnection = ['/', '/stake', '/unstake'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
   const { isConnected } = useAccountContext();
+  const previousRoute = router.asPath;
 
-  if (!isConnected && routingsWithConnection.includes(router.pathname)) {
+  if (!isConnected && routingsWithConnection.includes(router.asPath)) {
     void router.push('/connect');
 
     const handleRouteChange = (url: URL) => {
@@ -111,12 +112,15 @@ const CeloConnectRedirect = (props: PropsWithChildren) => {
 
     // Router is async. Show empty screen before redirect.
     return null;
-  } else if (isConnected && router.pathname == '/connect') {
-    void router.push('/');
+  } else if (isConnected && router.asPath == '/connect') {
+    void router.push(previousRoute);
     const handleRouteChange = (url: URL) => {
       pageview(url);
     };
     router.events.on('routeChangeComplete', handleRouteChange);
+    return null;
+  } else if (isConnected && router.asPath === '/') {
+    void router.push('/stake');
     return null;
   }
 

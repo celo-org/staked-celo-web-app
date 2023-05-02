@@ -10,6 +10,7 @@ import { Choices } from 'src/features/governance/components/Choices';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
+import { useVote } from 'src/features/governance/hooks/useVote';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
@@ -20,16 +21,34 @@ interface Props {
 
 export const Details = ({ proposal }: Props) => {
   const { stCeloBalance, loadBalances, isConnected } = useAccountContext();
+  const { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus } = useVote();
 
   useEffect(() => {
     if (isConnected) void loadBalances();
   }, [loadBalances, isConnected]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
+  const [hasVoted, setHasVoted] = useState<boolean>();
 
   const onVoteChange = useCallback((voteType: VoteType) => {
     setCurrentVote(voteType);
   }, []);
+
+  const updateGetHasVoted = useCallback(async () => {
+    const _hasVoted = await getHasVoted(proposal);
+    setHasVoted(_hasVoted);
+  }, [proposal, getHasVoted]);
+
+  const onVote = useCallback(async () => {
+    if (!currentVote || hasVoted) return;
+    await voteProposal(proposal, currentVote);
+    setHasVoted(true);
+  }, [currentVote, hasVoted, voteProposal, proposal]);
+
+  useEffect(() => {
+    void updateGetHasVoted();
+  }, [updateGetHasVoted, getHasVoted]);
+
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
 
@@ -69,22 +88,36 @@ export const Details = ({ proposal }: Props) => {
 
         {!isConnected ? (
           <ConnectButton />
-        ) : (
-          ProposalStage.Referendum === proposal?.stage && (
-            <>
-              <Choices disabled={!loaded} onChange={onVoteChange} voteType={currentVote} />
-              {currentVote !== undefined && (
-                <TertiaryCallout>
-                  {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
-                  {proposal.parsedYAML?.cgp}
-                </TertiaryCallout>
-              )}
+        ) : ProposalStage.Referendum === proposal?.stage ? (
+          <>
+            <Choices
+              disabled={!loaded || hasVoted || voteProposalStatus.isExecuting}
+              onChange={onVoteChange}
+              voteType={currentVote}
+            />
+            {currentVote !== undefined && !hasVoted && (
+              <TertiaryCallout classes="px-[8px]">
+                {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
+                {proposal.parsedYAML?.cgp}
+              </TertiaryCallout>
+            )}
+            {hasVoted && (
+              <TertiaryCallout classes="px-[8px]">
+                {stCeloBalance.displayAsBase()} stCELO voted {currentVote} for Proposal #
+                {proposal.parsedYAML?.cgp}
+              </TertiaryCallout>
+            )}
+            {!hasVoted && (
               <div className="w-full px-4 py-2">
-                <VoteButton disabled={!loaded || currentVote === undefined} pending={false} />
+                <VoteButton
+                  disabled={!loaded || currentVote === undefined || hasVoted}
+                  pending={voteProposalStatus.isExecuting || getHasVotedStatus.isExecuting}
+                  onVote={onVote}
+                />
               </div>
-            </>
-          )
-        )}
+            )}
+          </>
+        ) : null}
       </ContainerSecondaryBG>
     </CenteredLayout>
   );

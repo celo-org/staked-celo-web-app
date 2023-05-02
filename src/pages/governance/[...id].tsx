@@ -4,9 +4,9 @@ import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
 import {
-  SerializedProposal,
   getProposalRecord,
   getYamlForProposal,
+  SerializedProposal,
 } from 'src/features/governance/data/getProposals';
 import { useRedirectToConnectedChainIfNeeded } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
@@ -46,16 +46,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
   }
 
   const kit = newKit(chainIdToRPC(chainId));
-  const governance = await kit.contracts.getGovernance();
-
-  const proposal = await getProposalRecord(governance, proposalID);
+  const proposal = await getProposalRecord(kit, chainId, proposalID);
 
   if (proposal === null) {
     return {
       notFound: true,
     };
   }
-  const parsedYAML = await getYamlForProposal(proposal.metadata.descriptionURL);
+  const parsedYAML = await getYamlForProposal(proposal);
 
   return {
     props: {
