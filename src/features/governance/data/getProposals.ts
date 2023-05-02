@@ -126,7 +126,6 @@ export async function getYamlForProposal(proposal: MiniProposal) {
 export type SerializedProposal = {
   proposalID: Proposal['proposalID'];
   parsedYAML: Proposal['parsedYAML'];
-  passed: Proposal['passed'];
   stage: Proposal['stage'];
   metadata: Proposal['metadata'];
   index?: number;
