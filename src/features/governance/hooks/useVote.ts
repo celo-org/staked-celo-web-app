@@ -1,6 +1,4 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-import BigNumber from 'bignumber.js';
-import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useAccountAddress } from 'src/contexts/account/useAddress';
@@ -10,26 +8,13 @@ import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { showVoteToast } from 'src/features/swap/utils/toast';
 import { VoteType } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
+import { Celo } from 'src/utils/tokens';
 
 export const useVote = () => {
-  const { managerContract, voteContract, stCeloContract, sendTransaction } = useBlockchain();
+  const { managerContract, voteContract, sendTransaction } = useBlockchain();
   const { suggestedGasPrice } = useProtocolContext();
-  const { stCeloBalance, celoBalance } = useAccountContext();
+  const { stCeloBalance } = useAccountContext();
   const { address } = useAccountAddress();
-
-  const getVoteWeight = useCallback(async () => {
-    // Note: copied from https://github.com/celo-org/staked-celo/blob/master/contracts/Vote.sol#L450
-    const stCeloSupply = await stCeloContract?.methods
-      .totalSupply()
-      .call()
-      .then((x) => new BigNumber(x));
-
-    if (stCeloSupply?.isZero() || celoBalance.isZero()) {
-      return stCeloBalance;
-    }
-
-    return stCeloBalance.multipliedBy(celoBalance).dividedBy(stCeloSupply!).toFixed(0);
-  }, [stCeloBalance, celoBalance, stCeloContract]);
 
   /*
    * @param groupAddress the address of validator group OR 0 for default
@@ -42,9 +27,11 @@ export const useVote = () => {
       if (proposal.stage !== ProposalStage.Referendum) {
         throw new Error('vote called on proposal that is not in Referendum stage');
       }
-      // TODO: make _voteWeight work?
-      const _voteWeight = `0x${(await getVoteWeight()).toString(16)}`;
-      const voteWeight = `0x${stCeloBalance.toString(16)}`;
+      const asCelo = new Celo(
+        await managerContract?.methods.toCelo(`0x${stCeloBalance.toFixed(0).toString()}`).call()
+      );
+      const voteWeight = `0x${asCelo.toString(16)}`;
+
       const zero = `0x0`;
       const voteProposalTxObject = managerContract?.methods.voteProposal(
         proposal.proposalID,
@@ -67,7 +54,7 @@ export const useVote = () => {
       });
       showVoteToast({ vote, proposalID: proposal.proposalID });
     },
-    [address, voteContract, suggestedGasPrice, managerContract, getVoteWeight]
+    [address, voteContract, suggestedGasPrice, managerContract]
   );
 
   const [getHasVoted, getHasVotedStatus] = useAsyncCallback(
