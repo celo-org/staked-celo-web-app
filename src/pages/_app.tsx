@@ -5,8 +5,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { toast, ToastContainer, Zoom } from 'react-toastify';
+import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ToastContainer, Zoom, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AccountProvider, useAccountContext } from 'src/contexts/account/AccountContext';
 import { BlockchainProvider } from 'src/contexts/blockchain/BlockchainContext';
@@ -100,29 +100,29 @@ const routingsWithConnection = ['/', '/stake', '/unstake'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
   const { isConnected } = useAccountContext();
-  const previousRoute = router.asPath;
+  const route = router.asPath;
+  const lastRoute = useRef<string | null>(null);
 
-  if (!isConnected && routingsWithConnection.includes(router.asPath)) {
-    void router.push('/connect');
+  useLayoutEffect(() => {
+    if (!isConnected && routingsWithConnection.includes(route)) {
+      void router.push('/connect');
+    } else if (isConnected && router.asPath == '/connect') {
+      void router.push(lastRoute.current ?? '/stake');
+    } else if (isConnected && router.asPath === '/') {
+      void router.push('/stake');
+    }
+  }, [isConnected, router, route, lastRoute]);
 
+  useEffect(() => {
     const handleRouteChange = (url: URL) => {
       pageview(url);
     };
+    // Record last route
+    router.events.on('beforeHistoryChange', () => {
+      lastRoute.current = router.asPath;
+    });
     router.events.on('routeChangeComplete', handleRouteChange);
-
-    // Router is async. Show empty screen before redirect.
-    return null;
-  } else if (isConnected && router.asPath == '/connect') {
-    void router.push(previousRoute);
-    const handleRouteChange = (url: URL) => {
-      pageview(url);
-    };
-    router.events.on('routeChangeComplete', handleRouteChange);
-    return null;
-  } else if (isConnected && router.asPath === '/') {
-    void router.push('/stake');
-    return null;
-  }
+  }, [router]);
 
   return <>{props.children}</>;
 };
