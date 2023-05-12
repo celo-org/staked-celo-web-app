@@ -1,24 +1,25 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-import { useCelo } from '@celo/react-celo';
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { useAccountAddress } from 'src/contexts/account/useAddress';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { showVoteToast } from 'src/features/swap/utils/toast';
 import { VoteType } from 'src/types';
+import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
 import { readFromCache, writeToCache } from 'src/utils/localSave';
 import { Celo } from 'src/utils/tokens';
+import { useAccount, useChainId } from 'wagmi';
 
 export const useVote = () => {
   const { managerContract, voteContract, sendTransaction } = useBlockchain();
   const { suggestedGasPrice } = useProtocolContext();
   const { stCeloBalance, votes } = useAccountContext();
-  const { address } = useAccountAddress();
-  const { network } = useCelo();
+  const { address } = useAccount();
+  const chainId = useChainId();
+  const network = chainIdToChain(chainId);
 
   const getVoteCacheKey = useCallback(
     (id: string) => {

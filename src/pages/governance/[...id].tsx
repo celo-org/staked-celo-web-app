@@ -1,5 +1,4 @@
 import { newKit } from '@celo/contractkit';
-import { ChainId } from '@celo/react-celo';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
@@ -13,7 +12,7 @@ import chainIdToRPC from 'src/utils/chainIdToRPC';
 
 interface Props {
   proposal: SerializedProposal;
-  serverChainId: ChainId;
+  serverChainId: number;
 }
 
 const GovernanceDetailsPage: NextPage<Props> = ({ proposal, serverChainId }) => {

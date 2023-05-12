@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
-import { Celo, StCelo } from 'src/utils/tokens';
+import { Celo, StCelo, Token } from 'src/utils/tokens';
 
 export const useExchangeRates = () => {
   const { stakingRate, loadStakingRate } = useStakingRate();
@@ -35,7 +35,7 @@ const useStakingRate = () => {
       return;
     }
     const stCeloAmount = new StCelo(
-      await managerContract.methods.toStakedCelo(oneCelo.toFixed()).call()
+      await managerContract.contract.read.toStakedCelo([oneCelo.toFixed()])
     );
     setCeloExchangeRate(stCeloAmount.dividedBy(oneCelo).toNumber());
   }, [managerContract]);
@@ -53,10 +53,10 @@ const useUnstakingRate = () => {
 
   const loadUnstakingRate = useCallback(async () => {
     if (!managerContract) {
-      return
+      return;
     }
     const oneStCelo = new StCelo(WEI_PER_UNIT);
-    const celoAmount = new Celo(await managerContract.methods.toCelo(oneStCelo.toFixed()).call());
+    const celoAmount = new Celo(await managerContract.contract.read.toCelo([oneStCelo.toFixed()]));
     setStCeloExchangeRate(celoAmount.dividedBy(oneStCelo).toNumber());
   }, [managerContract]);
 
@@ -72,8 +72,10 @@ const useCeloToUSDRate = () => {
 
   const loadCeloToUSDRate = useCallback(async () => {
     if (!sortedOraclesContract || !stableTokenContract) return;
-    const { rate } = await sortedOraclesContract.medianRate(stableTokenContract.address);
-    setCeloToUSDRate(parseFloat(rate.toFixed(2)));
+    const [rate, by] = await sortedOraclesContract.contract.read.medianRate([
+      stableTokenContract.address,
+    ]);
+    setCeloToUSDRate(parseFloat(new Token(rate).dividedBy(new Token(by)).toFixed(2)));
   }, [sortedOraclesContract, stableTokenContract]);
 
   return {

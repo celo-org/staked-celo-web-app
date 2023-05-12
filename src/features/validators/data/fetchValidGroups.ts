@@ -1,10 +1,8 @@
-import { newKit } from '@celo/contractkit/lib/mini-kit';
-import { Alfajores, ChainId } from '@celo/react-celo';
 import { gql, request } from 'graphql-request';
 import { EXPLORER_GRAPH_ALFAJORES_URL, EXPLORER_GRAPH_MAINNET_URL } from 'src/config/consts';
 import { healthyGroupsOnly } from 'src/features/validators/data/healthyGroupsOnly';
 import { nonBlockedGroupsOnly } from 'src/features/validators/data/nonBlockedGroupsOnly';
-import chainIdToRPC from 'src/utils/chainIdToRPC';
+import { celo, celoAlfajores } from 'wagmi/chains';
 import Web3 from 'web3';
 
 export interface ValidatorGroup {
@@ -34,7 +32,7 @@ interface ValidGroups {
 // criteria defined i https://github.com/celo-org/staked-celo/blob/master/contracts/Manager.sol#L348
 export default async function fetchValidGroups(chainId: number): Promise<ValidGroups> {
   const url =
-    Alfajores.chainId === chainId ? EXPLORER_GRAPH_ALFAJORES_URL : EXPLORER_GRAPH_MAINNET_URL;
+    celoAlfajores.id === chainId ? EXPLORER_GRAPH_ALFAJORES_URL : EXPLORER_GRAPH_MAINNET_URL;
   const data = await request<GraphValues>(url, query);
 
   const allPossibleGroups = data.celoValidatorGroups;
@@ -44,7 +42,7 @@ export default async function fetchValidGroups(chainId: number): Promise<ValidGr
 
   // TODO remove this once contracts are deployed to mainnet
   // only while no contracts deployed return now so its doesnt crash
-  if (chainId === ChainId.Mainnet) {
+  if (chainId === celo.id) {
     return {
       chainId: chainId,
       groups: allPossibleGroups,

@@ -2,7 +2,7 @@ import { createContext, PropsWithChildren, useContext } from 'react';
 import { useProposalVotes, VoteRecords } from 'src/contexts/account/useProposalVotes';
 import useStrategy from 'src/contexts/account/useStrategy';
 import { Celo, StCelo } from 'src/utils/tokens';
-import { useAccountAddress } from './useAddress';
+import { useAccount } from 'wagmi';
 import { useAccountBalances } from './useBalances';
 import {
   PendingWithdrawal,
@@ -13,20 +13,20 @@ import {
 
 interface AccountContext {
   isConnected: boolean;
-  address: string | null;
+  address: string | undefined;
   celoBalance: Celo;
   stCeloBalance: StCelo;
   loadBalances: () => Promise<void>;
   pendingWithdrawals: PendingWithdrawal[];
   loadPendingWithdrawals: () => Promise<void>;
   strategy: string | null;
-  reloadStrategy: (address: string | null) => Promise<void>;
+  reloadStrategy: (address: string | undefined) => Promise<void>;
   votes: VoteRecords;
 }
 
 export const AccountContext = createContext<AccountContext>({
   isConnected: false,
-  address: null,
+  address: undefined,
   celoBalance: new Celo(0),
   stCeloBalance: new StCelo(0),
   loadBalances: () => Promise.resolve(),
@@ -38,7 +38,8 @@ export const AccountContext = createContext<AccountContext>({
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
-  const { isConnected, address } = useAccountAddress();
+  const { isConnected, address } = useAccount();
+
   const { loadBalances, celoBalance, stCeloBalance } = useAccountBalances(address);
   const { pendingWithdrawals, loadPendingWithdrawals } = useWithdrawals(address);
   useWithdrawalBot(address);

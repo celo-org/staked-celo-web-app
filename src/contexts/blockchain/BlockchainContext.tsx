@@ -1,29 +1,38 @@
-import { ContractKit, newKit } from '@celo/contractkit';
-import { useCelo } from '@celo/react-celo';
+import EpochRewards from '@celo/abis/EpochRewards.json';
+import GasPriceMinimum from '@celo/abis/GasPriceMinimum.json';
+import Registry from '@celo/abis/Registry.json';
+import SortedOracles from '@celo/abis/SortedOracles.json';
+import StableToken from '@celo/abis/StableToken.json';
 import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
-import { PropsWithChildren, createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
-import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
 import VoteABI from 'src/blockchain/ABIs/Vote.json';
-import { Account, Manager, StakedCelo, Vote } from 'src/blockchain/types';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
-import { AbiItem } from 'web3-utils';
-
-interface TxOptions {
-  from: string;
-  value?: string;
-}
+import { createPublicClient, getContract, http } from 'viem';
+import { usePublicClient, useWalletClient } from 'wagmi';
+import { celo } from 'wagmi/chains';
 
 export interface TxCallbacks {
   onSent?: () => void;
 }
 
-type EpochRewardsContract = Awaited<ReturnType<ContractKit['_web3Contracts']['getEpochRewards']>>;
-type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSortedOracles']>>;
-type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
-type GasPriceMinimumContract = Awaited<ReturnType<ContractKit['contracts']['getGasPriceMinimum']>>;
+/**
+ * TODO: figure out how to obtain that type without using typeof and doing a dummy BS
+ */
+const __dummyContract = getContract({
+  address: '0x0',
+  abi: Registry.abi,
+  publicClient: createPublicClient({
+    chain: celo,
+    transport: http(),
+  }),
+});
+interface Contract {
+  address: string;
+  contract: typeof __dummyContract;
+}
 
 interface BlockchainContext {
   epochRewardsContract: EpochRewardsContract | undefined;
@@ -53,78 +62,146 @@ export const BlockchainContext = createContext<BlockchainContext>({
   voteContract: undefined,
   addresses: mainnetAddresses,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  sendTransaction: (_txObject: unknown, _txOptions: TxOptions) => Promise.resolve(undefined),
+  sendTransaction: (_viemRequest: unknown) => Promise.resolve(undefined),
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
-  const { kit, network } = useCelo();
-  const contractKit = useMemo(() => newKit(network.rpcUrl), [network]);
+  const publicClient = usePublicClient();
+  const { data: client } = useWalletClient();
 
   const addresses = useMemo(() => {
-    if (network.name === 'Mainnet') return mainnetAddresses;
+    if (publicClient.chain.id === celo.id) return mainnetAddresses;
     return testnetAddresses;
-  }, [network]);
+  }, [publicClient]);
 
-  const managerContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(ManagerABI as AbiItem[], addresses.manager) as unknown as Manager;
-  }, [kit.connection, addresses]);
+  const REGISTRY_CONTRACT_ADDRESS = '0x000000000000000000000000000000000000ce10';
+  const registryContract = useMemo(
+    () =>
+      getContract({
+        address: REGISTRY_CONTRACT_ADDRESS,
+        abi: Registry.abi,
+        publicClient,
+      }),
+    [publicClient]
+  );
 
-  const stCeloContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(StCeloABI as AbiItem[], addresses.stakedCelo) as unknown as StakedCelo;
-  }, [kit.connection, addresses]);
+  const managerContract = useMemo<Contract>(
+    () => ({
+      address: addresses.manager,
+      contract: getContract({
+        address: addresses.manager,
+        abi: ManagerABI,
+        publicClient,
+      }),
+    }),
+    [addresses, publicClient]
+  );
 
-  const accountContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(AccountABI as AbiItem[], addresses.account) as unknown as Account;
-  }, [kit.connection, addresses]);
-
-  const voteContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(VoteABI as AbiItem[], addresses.vote) as unknown as Vote;
-  }, [kit.connection, addresses]);
+  const stCeloContract = useMemo<Contract>(
+    () =>
+      ({
+        address: addresses.stakedCelo,
+        contract: getContract({ address: addresses.stakedCelo, abi: StCeloABI, publicClient }),
+      } as Contract),
+    [addresses.stakedCelo, publicClient]
+  );
+  const accountContract = useMemo<Contract>(
+    () =>
+      ({
+        address: addresses.account,
+        contract: getContract({ address: addresses.account, abi: AccountABI, publicClient }),
+      } as Contract),
+    [addresses.account, publicClient]
+  );
+  const voteContract = useMemo<Contract>(
+    () =>
+      ({
+        address: addresses.vote,
+        contract: getContract({ address: addresses.vote, abi: VoteABI, publicClient }),
+      } as Contract),
+    [addresses.vote, publicClient]
+  );
 
   const sendTransaction = useCallback(
-    async (txObject: any, txOptions: TxOptions, callbacks?: TxCallbacks) => {
-      if (await isSanctionedAddress(txOptions.from)) {
+    async (request: any, callbacks?: TxCallbacks) => {
+      if (!client) {
+        throw new Error('Couldnt get wallet client, are you connected?');
+      }
+      if (await isSanctionedAddress(request.account)) {
         throw new Error(COMPLIANT_ERROR_RESPONSE);
       }
-      const tx = await kit.connection.sendTransactionObject(txObject, {
-        ...txOptions,
-      });
-      await tx.getHash();
+      const hash = await client.writeContract(request);
       if (callbacks?.onSent) callbacks.onSent();
-      await tx.waitReceipt();
+      await publicClient.waitForTransactionReceipt({ hash });
     },
-    [kit.connection]
+    [client, publicClient]
   );
 
-  const [epochRewardsContract, setEpochRewardsContract] = useState<EpochRewardsContract>();
+  const [epochRewardsContract, setEpochRewardsContract] = useState<Contract>();
   useEffect(
-    () => void contractKit._web3Contracts.getEpochRewards().then(setEpochRewardsContract),
-    [contractKit]
+    () =>
+      void registryContract.read.getAddressForString(['EpochRewards']).then((result) => {
+        const address = result as `0x${string}`;
+        setEpochRewardsContract({
+          address,
+          contract: getContract({
+            address,
+            abi: EpochRewards.abi,
+            publicClient,
+          }),
+        });
+      }),
+    [publicClient, registryContract]
   );
 
-  const [sortedOraclesContract, setSortedOraclesContract] = useState<SortedOraclesContract>();
+  const [sortedOraclesContract, setSortedOraclesContract] = useState<Contract>();
   useEffect(
-    () => void contractKit.contracts.getSortedOracles().then(setSortedOraclesContract),
-    [contractKit]
+    () =>
+      void registryContract.read.getAddressForString(['SortedOracles']).then((result) => {
+        const address = result as `0x${string}`;
+        setSortedOraclesContract({
+          address,
+          contract: getContract({
+            address,
+            abi: SortedOracles.abi,
+            publicClient,
+          }),
+        });
+      }),
+    [publicClient, registryContract]
   );
 
-  const [stableTokenContract, setStableTokenContract] = useState<StableTokenContract>();
+  const [stableTokenContract, setStableTokenContract] = useState<Contract>();
   useEffect(
-    () => void contractKit.contracts.getStableToken().then(setStableTokenContract),
-    [contractKit]
+    () =>
+      void registryContract.read.getAddressForString(['StableToken']).then((result) => {
+        const address = result as `0x${string}`;
+        setStableTokenContract({
+          address,
+          contract: getContract({
+            address,
+            abi: StableToken.abi,
+            publicClient,
+          }),
+        });
+      }),
+    [publicClient, registryContract]
   );
-  const [gasPriceMinimumContract, setGasPriceMinimumContract] = useState<GasPriceMinimumContract>();
+  const [gasPriceMinimumContract, setGasPriceMinimumContract] = useState<Contract>();
   useEffect(
-    () => void contractKit.contracts.getGasPriceMinimum().then(setGasPriceMinimumContract),
-    [contractKit]
+    () =>
+      void registryContract.read.getAddressForString(['GasPriceMinimum']).then((result) => {
+        const address = result as `0x${string}`;
+        setGasPriceMinimumContract({
+          address,
+          contract: getContract({
+            address,
+            abi: GasPriceMinimum.abi,
+            publicClient,
+          }),
+        });
+      }),
+    [publicClient, registryContract]
   );
 
   return (

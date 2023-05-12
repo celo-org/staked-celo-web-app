@@ -1,4 +1,3 @@
-import { ChainId } from '@celo/react-celo';
 import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy.json';
 import { SpecificGroupStrategy } from 'src/blockchain/types';
 import { getContractAddressForChain } from 'src/config/contracts';
@@ -11,7 +10,7 @@ import { getGoodAddresses } from './getGoodAddresses';
 // once complete will return all the addresses of groups that are not blocked
 export async function nonBlockedGroupsOnly(
   groupAddresses: string[],
-  chainId: ChainId,
+  chainId: number,
   web3: Web3
 ): Promise<Set<string>> {
   const multicall = getMultiCallForChain(
@@ -34,7 +33,7 @@ export async function nonBlockedGroupsOnly(
   return getGoodAddresses(results, groupAddresses);
 }
 
-function makeSpecificGroupStrategyContract(chainId: ChainId, web3: Web3) {
+function makeSpecificGroupStrategyContract(chainId: number, web3: Web3) {
   const specificGroupStrategyAddress = getContractAddressForChain(chainId, 'specificGroupStrategy');
   const specificGroupStrategyContract = new web3.eth.Contract(
     SpecificGroupStrategyABI as unknown as AbiItem,

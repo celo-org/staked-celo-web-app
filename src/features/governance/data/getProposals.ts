@@ -1,6 +1,5 @@
 import { ContractKit, newKit } from '@celo/contractkit';
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-import { ChainId } from '@celo/react-celo';
 import { getMultiCallForChain } from 'src/config/multicall';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
 import { ParsedYAML, getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
@@ -9,7 +8,7 @@ import { MiniProposal, Proposal } from './Proposal';
 
 const PROPOSAL_STAGE_KEYS = Object.keys(ProposalStage);
 
-export const getProposals = async (chainId: ChainId) => {
+export const getProposals = async (chainId: number) => {
   const kit = newKit(chainIdToRPC(chainId));
   const multicall = getMultiCallForChain(
     chainId,

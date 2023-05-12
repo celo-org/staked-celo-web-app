@@ -1,26 +1,64 @@
-import { CeloProvider, useCelo } from '@celo/react-celo';
-import '@celo/react-celo/lib/styles.css';
+import '@rainbow-me/rainbowkit/styles.css';
+
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ToastContainer, Zoom, toast } from 'react-toastify';
+import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AccountProvider, useAccountContext } from 'src/contexts/account/AccountContext';
 import { BlockchainProvider } from 'src/contexts/blockchain/BlockchainContext';
 import { ProtocolProvider } from 'src/contexts/protocol/ProtocolContext';
-import { ThemeProvider } from 'src/contexts/theme/ThemeContext';
+import { ThemeProvider, useThemeContext } from 'src/contexts/theme/ThemeContext';
 import { AppLayout } from 'src/layout/AppLayout';
 import 'src/styles/globals.css';
 import 'src/styles/transitions.scss';
 import { pageview } from '../utils/ga';
 
+import { CeloDance, CeloTerminal, CeloWallet, Valora } from '@celo/rainbowkit-celo/wallets';
+import {
+  connectorsForWallets,
+  darkTheme,
+  lightTheme,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import { metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { celo, celoAlfajores } from 'wagmi/chains';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+
+const { chains, publicClient } = configureChains(
+  [celoAlfajores, celo],
+  [jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) })]
+);
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended with CELO',
+    wallets: [
+      Valora({ chains }),
+      CeloWallet({ chains }),
+      CeloDance({ chains }),
+      CeloTerminal({ chains }),
+      walletConnectWallet({ chains }),
+      metaMaskWallet({ chains }),
+    ],
+  },
+]);
+
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors,
+  publicClient,
+});
+
 dayjs.extend(relativeTime);
 
 const App = ({ Component, pageProps, router }: AppProps) => {
   const pathName = router.pathname;
+  const { theme } = useThemeContext();
 
   return (
     <>
@@ -28,32 +66,31 @@ const App = ({ Component, pageProps, router }: AppProps) => {
         <title>{`StakedCelo - Liquid staking on Celo | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <ClientOnly>
-        <CeloProvider
-          dapp={{
-            icon: '/logo.svg',
-            name: 'StakedCelo',
-            description: 'Celo staking application',
-            url: '',
-            walletConnectProjectId: '3bcdb6756cdd7179c359c03ae1e8aca2',
-          }}
-          connectModal={{
-            title: <span>Connect Wallet</span>,
-            providersOptions: { searchable: false },
-          }}
-        >
-          <TopProvider>
-            <CeloConnectRedirect>
-              <AppLayout pathName={pathName}>
-                <Component {...pageProps} />
-                <ToastContainer
-                  transition={Zoom}
-                  position={toast.POSITION.TOP_CENTER}
-                  icon={false}
-                />
-              </AppLayout>
-            </CeloConnectRedirect>
-          </TopProvider>
-        </CeloProvider>
+        <WagmiConfig config={wagmiConfig}>
+          <RainbowKitProvider
+            chains={chains}
+            theme={
+              theme === 'dark'
+                ? darkTheme({
+                    accentColor: '#9477F5',
+                  })
+                : lightTheme({ accentColor: '#6F61D7' })
+            }
+          >
+            <TopProvider>
+              <CeloConnectRedirect>
+                <AppLayout pathName={pathName}>
+                  <Component {...pageProps} />
+                  <ToastContainer
+                    transition={Zoom}
+                    position={toast.POSITION.TOP_CENTER}
+                    icon={false}
+                  />
+                </AppLayout>
+              </CeloConnectRedirect>
+            </TopProvider>
+          </RainbowKitProvider>
+        </WagmiConfig>
       </ClientOnly>
     </>
   );
@@ -82,9 +119,6 @@ const ClientOnly = ({ children }: PropsWithChildren) => {
 };
 
 const TopProvider = (props: PropsWithChildren) => {
-  const { initialised } = useCelo();
-  if (!initialised) return null;
-
   return (
     <ThemeProvider>
       <BlockchainProvider>

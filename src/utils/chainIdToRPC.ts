@@ -1,11 +1,12 @@
-import { Alfajores, Baklava, ChainId, Mainnet } from '@celo/react-celo';
+import { celo, celoAlfajores, celoCannoli } from 'wagmi/chains';
 
 const chainIdForRPC = {
-  [ChainId.Mainnet]: Mainnet.rpcUrl,
-  [ChainId.Alfajores]: Alfajores.rpcUrl,
-  [ChainId.Baklava]: Baklava.rpcUrl,
+  [celo.id]: celo.rpcUrls.default.http[0],
+  [celoAlfajores.id]: celoAlfajores.rpcUrls.default.http[0],
+  [celoCannoli.id]: celoCannoli.rpcUrls.default.http[0],
 };
 
-export default function chainIdToRPC(chainId: ChainId) {
-  return chainIdForRPC[chainId] || chainIdForRPC[ChainId.Mainnet];
+export default function chainIdToRPC(chainId: number) {
+  // @ts-expect-error
+  return chainIdForRPC[chainId] || chainIdForRPC[celo.id];
 }

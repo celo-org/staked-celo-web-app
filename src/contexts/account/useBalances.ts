@@ -1,45 +1,38 @@
-import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Celo, StCelo } from 'src/utils/tokens';
+import { useBalance } from 'wagmi';
 
-export const useAccountBalances = (address: string | null) => {
-  const { kit } = useCelo();
+export const useAccountBalances = (address: string | undefined) => {
   const { stCeloContract } = useBlockchain();
-
+  const { data: rawCeloBalance } = useBalance({
+    address: address as `0x${string}`,
+  });
   const [celoBalance, setCeloBalance] = useState(new Celo(0));
   const [stCeloBalance, setStCeloBalance] = useState(new StCelo(0));
-
-  const loadCeloBalance = useCallback(async () => {
-    const { eth } = kit.connection.web3;
-    if (!address) return;
-
-    const balance = await eth.getBalance(address);
-
-    setCeloBalance(new Celo(balance));
-  }, [kit.connection, address]);
 
   const loadStCeloBalance = useCallback(async () => {
     if (!address || !stCeloContract) {
       return;
     }
-    const stCeloBalance = await stCeloContract.methods.balanceOf(address).call({
-      from: address,
-    });
+    const stCeloBalance = await stCeloContract.contract.read.balanceOf([address]);
+
     setStCeloBalance(new StCelo(stCeloBalance));
   }, [address, stCeloContract]);
 
-  const loadBalances = useCallback(async () => {
-    await Promise.all([loadCeloBalance(), loadStCeloBalance()]);
-  }, [loadCeloBalance, loadStCeloBalance]);
+  useEffect(() => {
+    void loadStCeloBalance();
+  }, [address, loadStCeloBalance]);
 
   useEffect(() => {
-    void loadBalances();
-  }, [address, loadBalances]);
+    if (rawCeloBalance) {
+      setCeloBalance(new Celo(rawCeloBalance));
+    }
+  }, [rawCeloBalance]);
 
   return {
     celoBalance,
     stCeloBalance,
-    loadBalances,
+    loadBalances: loadStCeloBalance,
   };
 };

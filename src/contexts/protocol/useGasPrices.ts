@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { GAS_PRICE_MULTIPLIER } from 'src/config/consts';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { Token } from 'src/utils/tokens';
 
 export const useGasPrices = () => {
   const { suggestedGasPrice, loadSuggestedGasPrice } = useSuggestedGasPrice();
@@ -25,7 +26,9 @@ const useSuggestedGasPrice = () => {
 
   const loadSuggestedGasPrice = useCallback(async () => {
     if (!gasPriceMinimumContract) return;
-    const minimumGasPrice = await gasPriceMinimumContract.gasPriceMinimum();
+    const minimumGasPrice = new Token(
+      await gasPriceMinimumContract.contract.read.gasPriceMinimum()
+    );
     // plus 20% to account for network congestion.
     const suggestedGasPrice = minimumGasPrice.multipliedBy(GAS_PRICE_MULTIPLIER);
     setCurrentGasPrice(suggestedGasPrice.toString());

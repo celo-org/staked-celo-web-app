@@ -1,4 +1,3 @@
-import { ChainId } from '@celo/react-celo';
 import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth.json';
 import { GroupHealth } from 'src/blockchain/types';
 import { getContractAddressForChain } from 'src/config/contracts';
@@ -11,7 +10,7 @@ import { getGoodAddresses } from './getGoodAddresses';
 // once complete will return all the addresses of groups that are healthy
 export async function healthyGroupsOnly(
   groupAddresses: string[],
-  chainId: ChainId,
+  chainId: number,
   web3: Web3
 ): Promise<Set<string>> {
   const GroupHealthContract = makeGroupHealthContract(chainId, web3);
@@ -35,7 +34,7 @@ export async function healthyGroupsOnly(
   return getGoodAddresses(results, groupAddresses, true);
 }
 
-function makeGroupHealthContract(chainId: ChainId, web3: Web3) {
+function makeGroupHealthContract(chainId: number, web3: Web3) {
   const groupHealthAddress = getContractAddressForChain(chainId, 'groupHealth');
   const GroupHealthContract = new web3.eth.Contract(
     GroupHealthABI as unknown as AbiItem,

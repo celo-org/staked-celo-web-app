@@ -1,29 +1,29 @@
-import { ChainId, useCelo } from '@celo/react-celo';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { useLayoutEffect } from 'react';
+import { useChainId } from 'wagmi';
+import { celo } from 'wagmi/chains';
 
 // only use on page components
 export function useRedirectToConnectedChainIfNeeded(
-  chainServerKnowsAbout: ChainId | undefined,
+  chainServerKnowsAbout: number | undefined,
   path: string
 ) {
   const router = useRouter();
-  const { network } = useCelo();
+  const chainId = useChainId();
   useLayoutEffect(() => {
-    const serverSideChainId = chainServerKnowsAbout ?? router.query.chainId ?? ChainId.Mainnet;
-    if (network.chainId !== serverSideChainId) {
+    const serverSideChainId = chainServerKnowsAbout ?? router.query.chainId ?? celo.id;
+    if (chainId !== serverSideChainId) {
       void router.push({
         pathname: path,
-        query: network.chainId === ChainId.Mainnet ? {} : { chainId: network.chainId },
+        query: chainId === celo.id ? {} : { chainId },
       });
     }
-  }, [chainServerKnowsAbout, network, router, path]);
+  }, [chainServerKnowsAbout, router, path, chainId]);
 }
 
 export function getChainIdFromQuery(query: ParsedUrlQuery) {
   return (
-    (Array.isArray(query.chainId) ? Number(query.chainId[0]) : Number(query.chainId)) ||
-    ChainId.Mainnet
+    (Array.isArray(query.chainId) ? Number(query.chainId[0]) : Number(query.chainId)) || celo.id
   );
 }

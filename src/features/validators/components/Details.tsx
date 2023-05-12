@@ -1,13 +1,12 @@
-import { ChainId, useCelo } from '@celo/react-celo';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { FormEvent, useEffect, useState } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
-import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { BackToListButton } from 'src/components/buttons/BackToListButton';
-import { ConnectButton } from 'src/components/buttons/ConnectButton';
 import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { LinkOut } from 'src/components/text/LinkOut';
 import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { ADDRESS_ZERO, EXPLORER_ALFAJORES_URL, EXPLORER_MAINNET_URL } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 
@@ -16,7 +15,8 @@ import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle
 import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
-
+import { useChainId } from 'wagmi';
+import { celoAlfajores } from 'wagmi/chains';
 interface Props {
   groupAddress: string;
   name?: string;
@@ -25,14 +25,14 @@ interface Props {
 export const Details = ({ groupAddress, name }: Props) => {
   const isTransitioning = useIsTransitioning();
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
-  const { network } = useCelo();
+  const chainId = useChainId();
   const { loadBalances, stCeloBalance, isConnected, strategy } = useAccountContext();
   const displayName = name || removeAddressMiddle(groupAddress);
   const { changeStrategy } = useChangeStrategy();
 
   useEffect(() => {
     if (isConnected) {
-      void loadBalances();
+      // void loadBalances();
     }
   }, [loadBalances, isConnected]);
 
@@ -45,8 +45,7 @@ export const Details = ({ groupAddress, name }: Props) => {
     [groupAddress]
   );
 
-  const explorerLink =
-    network.chainId === ChainId.Alfajores ? EXPLORER_ALFAJORES_URL : EXPLORER_MAINNET_URL;
+  const explorerLink = chainId === celoAlfajores.id ? EXPLORER_ALFAJORES_URL : EXPLORER_MAINNET_URL;
   const infoLink =
     groupAddress === ADDRESS_ZERO
       ? 'https://docs.stcelo.xyz/voting-for-validator-groups'

@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js'
-import { useCallback, useEffect, useState } from 'react'
-import { useBlockchain } from 'src/contexts/blockchain/useBlockchain'
+import BigNumber from 'bignumber.js';
+import { useCallback, useEffect, useState } from 'react';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 
 export const useAnnualProjectedRate = () => {
   const { epochRewardsContract } = useBlockchain();
@@ -9,8 +9,8 @@ export const useAnnualProjectedRate = () => {
   const loadAnnualProjectedRate = useCallback(async () => {
     if (!epochRewardsContract) return;
     const [rewardsMultiplierFraction, { 0: targetVotingYieldFraction }] = await Promise.all([
-      epochRewardsContract.methods.getRewardsMultiplier().call(),
-      epochRewardsContract.methods.getTargetVotingYieldParameters().call(),
+      epochRewardsContract.contract.read.getRewardsMultiplier(),
+      epochRewardsContract.contract.read.getTargetVotingYieldParameters(),
     ]);
 
     // EpochRewards contract is using Fixidity library which operates on decimal part of numbers

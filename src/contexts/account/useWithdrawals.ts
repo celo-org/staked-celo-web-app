@@ -1,17 +1,17 @@
-import { useCelo } from '@celo/react-celo';
 import { useCallback, useEffect, useState } from 'react';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useAPI } from 'src/hooks/useAPI';
 import { Celo } from 'src/utils/tokens';
+import { usePublicClient } from 'wagmi';
 
 export interface PendingWithdrawal {
   amount: Celo;
-  timestamp: string;
+  timestamp: bigint;
 }
 
 const botActionInterval = 180 * 1000;
 
-export const useWithdrawalBot = (address: string | null) => {
+export const useWithdrawalBot = (address: string | undefined) => {
   // const { api } = useAPI();
   // const { managerContract, accountContract } = useBlockchain();
   // const finalizeWithdrawal = useCallback(async () => {
@@ -38,27 +38,28 @@ export const useWithdrawalBot = (address: string | null) => {
   // }, [finalizeWithdrawal]);
 };
 
-export const useClaimingBot = (address: string | null) => {
-  const { kit } = useCelo();
+export const useClaimingBot = (address: string | undefined) => {
   const { api } = useAPI();
   const { accountContract } = useBlockchain();
+  const publicClient = usePublicClient();
 
   const claim = useCallback(async () => {
     if (!address || !accountContract) return;
-    const { eth } = kit.connection.web3;
 
-    const [{ timestamp: currentBlockTimestamp }, { timestamps: withdrawalTimestamps }] =
-      await Promise.all([
-        eth.getBlock('latest'),
-        accountContract.methods.getPendingWithdrawals(address).call(),
-      ]);
+    const [{ timestamp: currentBlockTimestamp }, valuesAndTimestamps] = await Promise.all([
+      publicClient.getBlock({ blockTag: 'latest' }),
+      accountContract.contract.read.getPendingWithdrawals([address]) as Promise<
+        [bigint[], bigint[]]
+      >,
+    ]);
+    const [, withdrawalTimestamps] = valuesAndTimestamps;
 
-    const availableToClaim = !!(withdrawalTimestamps as string[]).find(
+    const availableToClaim = !!withdrawalTimestamps.find(
       (withdrawalTimestamp) => withdrawalTimestamp < currentBlockTimestamp
     );
 
     if (availableToClaim) await api.claim(address);
-  }, [address, accountContract, kit.connection, api]);
+  }, [address, accountContract, publicClient, api]);
 
   useEffect(() => {
     void claim();
@@ -72,19 +73,19 @@ export const useClaimingBot = (address: string | null) => {
 /**
  * Groups pending withdrawals that are within 5 minutes time span
  */
-const groupingTimeSpan: number = 5 * 60;
-const formatPendingWithdrawals = (values: string[], timestamps: string[]): PendingWithdrawal[] => {
+const groupingTimeSpan = 5n * 60n;
+const formatPendingWithdrawals = (values: bigint[], timestamps: bigint[]): PendingWithdrawal[] => {
   const sortedTimestamps = [...timestamps].sort();
   const pendingWithdrawals: PendingWithdrawal[] = [];
 
-  let referenceTimestamp = 0;
+  let referenceTimestamp = 0n;
   for (const index in sortedTimestamps) {
     const timestamp = sortedTimestamps[index];
     const amount = values[index];
 
     /* If next timestamp is not within allowed time span create new pending withdrawal */
-    if (parseInt(timestamp) > referenceTimestamp + groupingTimeSpan) {
-      referenceTimestamp = parseInt(timestamp);
+    if (timestamp > referenceTimestamp + groupingTimeSpan) {
+      referenceTimestamp = timestamp;
       pendingWithdrawals.push({
         amount: new Celo(amount),
         timestamp,
@@ -95,7 +96,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
     /* If next timestamp is within allowed time span merge it with the last pending withdrawal */
     const lastPendingWithdrawal = pendingWithdrawals[pendingWithdrawals.length - 1];
     lastPendingWithdrawal.timestamp = timestamp;
-    lastPendingWithdrawal.amount = new Celo(lastPendingWithdrawal.amount.plus(amount));
+    lastPendingWithdrawal.amount = new Celo(lastPendingWithdrawal.amount.plus(amount as any));
   }
 
   return pendingWithdrawals.reverse();
@@ -103,7 +104,7 @@ const formatPendingWithdrawals = (values: string[], timestamps: string[]): Pendi
 
 const pendingWithdrawalsLoadInterval = 60 * 1000;
 
-export const useWithdrawals = (address: string | null) => {
+export const useWithdrawals = (address: string | undefined) => {
   const { accountContract } = useBlockchain();
 
   const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawal[]>([]);
@@ -111,9 +112,10 @@ export const useWithdrawals = (address: string | null) => {
     if (!address || !accountContract) {
       return;
     }
-    const { values = [], timestamps = [] } = await accountContract.methods
-      .getPendingWithdrawals(address)
-      .call();
+    const [values, timestamps] = (await accountContract.contract.read.getPendingWithdrawals([
+      address,
+    ])) as [bigint[], bigint[]];
+
     setPendingWithdrawals(formatPendingWithdrawals(values, timestamps));
   }, [accountContract, address]);
 

@@ -1,6 +1,11 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
+<<<<<<< HEAD
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ConnectButton } from 'src/components/buttons/ConnectButton';
+=======
+import { useCallback, useEffect, useState } from 'react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+>>>>>>> 49e1493 (wip: rainbowkit)
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -25,7 +30,7 @@ export const Details = ({ proposal }: Props) => {
     useVote();
 
   useEffect(() => {
-    if (isConnected) void loadBalances();
+    // if (isConnected) void loadBalances();
   }, [loadBalances, isConnected]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();

@@ -10,7 +10,7 @@ export const useTokenBalances = () => {
     if (!accountContract) {
       return;
     }
-    const totalCelo = new Celo(await accountContract.methods.getTotalCelo().call());
+    const totalCelo = new Celo(await accountContract.contract.read.getTotalCelo());
     setTotalCeloBalance(totalCelo);
   }, [accountContract]);
 

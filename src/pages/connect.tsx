@@ -1,6 +1,6 @@
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { ConnectButton } from '../components/buttons/ConnectButton';
 import styles from './connect.module.css';
 
 const Connect = () => {
