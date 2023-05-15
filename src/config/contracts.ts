@@ -12,7 +12,7 @@ import {
   VOTE_MAINNET_ADDRESS,
   VOTE_TESTNET_ADDRESS,
 } from 'src/config/consts';
-import { celoAlfajores } from 'wagmi/chains';
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
 
 interface ContractAddresses {
   manager: `0x${string}`;
@@ -45,10 +45,10 @@ type ContractNames = keyof typeof mainnetAddresses;
 
 export function getContractAddressForChain(chainId: number, contractName: ContractNames): string {
   const address =
-    chainId === celoAlfajores.id ? testnetAddresses[contractName] : mainnetAddresses[contractName];
+    chainId === Alfajores.id ? testnetAddresses[contractName] : mainnetAddresses[contractName];
   if (!address) {
     throw new Error(
-      `No address for contract ${contractName} on chain ${chainId} ${chainId === celoAlfajores.id}`
+      `No address for contract ${contractName} on chain ${chainId} ${chainId === Alfajores.id}`
     );
   }
   return address;

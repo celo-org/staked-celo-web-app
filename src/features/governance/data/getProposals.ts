@@ -1,6 +1,6 @@
 import { ContractKit, newKit } from '@celo/contractkit';
-import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
 import { getMultiCallForChain } from 'src/config/multicall';
+import { ProposalStage } from 'src/features/governance/components/Details';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
 import { ParsedYAML, getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
 import { HttpProvider } from 'web3-core';

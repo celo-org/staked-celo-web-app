@@ -1,5 +1,5 @@
-import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
 import { Pill } from 'src/components/pills/Pill';
+import { ProposalStage } from 'src/features/governance/components/Details';
 
 type StagePillProps = {
   stage: ProposalStage;

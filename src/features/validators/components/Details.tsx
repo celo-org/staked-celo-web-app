@@ -16,7 +16,7 @@ import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 import { useChainId } from 'wagmi';
-import { celoAlfajores } from 'wagmi/chains';
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
 interface Props {
   groupAddress: string;
   name?: string;
@@ -45,7 +45,7 @@ export const Details = ({ groupAddress, name }: Props) => {
     [groupAddress]
   );
 
-  const explorerLink = chainId === celoAlfajores.id ? EXPLORER_ALFAJORES_URL : EXPLORER_MAINNET_URL;
+  const explorerLink = chainId === Alfajores.id ? EXPLORER_ALFAJORES_URL : EXPLORER_MAINNET_URL;
   const infoLink =
     groupAddress === ADDRESS_ZERO
       ? 'https://docs.stcelo.xyz/voting-for-validator-groups'

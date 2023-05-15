@@ -1,9 +1,9 @@
-import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { ProposalStage } from 'src/features/governance/components/Details';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { showVoteToast } from 'src/features/swap/utils/toast';
 import { VoteType } from 'src/types';

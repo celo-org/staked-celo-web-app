@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { Mode } from 'src/types';
 import { useChainId } from 'wagmi';
-import { celoAlfajores } from 'wagmi/chains';
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
 
 export default function useModeChange() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function useModeChange() {
     (mode: Mode) => {
       void router.push({
         pathname: `/${mode}`,
-        query: currentChain === celoAlfajores.id ? { chainId: currentChain } : {},
+        query: currentChain === Alfajores.id ? { chainId: currentChain } : {},
       });
     },
     [router, currentChain]

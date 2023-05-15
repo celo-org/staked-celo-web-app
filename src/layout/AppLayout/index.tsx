@@ -1,8 +1,8 @@
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
 import { useThemeContext } from 'src/contexts/theme/ThemeContext';
 import { useChainId } from 'wagmi';
-import { celoAlfajores } from 'wagmi/chains';
 import { Footer } from './Footer';
 import { Header } from './Header';
 
@@ -39,11 +39,11 @@ export const AppLayout = ({ pathName, children }: PropsWithChildren<Props>) => {
 const DeveloperMode = () => {
   const chainId = useChainId();
 
-  if (chainId === celoAlfajores.id) {
+  if (chainId === Alfajores.id) {
     return (
       <div className="flex items-center justify-center px-[24px] py-[8px] bg-green-light">
         <span className="font-semibold text-[16px] leading-[16px] text-color-black-light">
-          Developer network: Alfajores
+          Developer network: {Alfajores.name}
         </span>
       </div>
     );

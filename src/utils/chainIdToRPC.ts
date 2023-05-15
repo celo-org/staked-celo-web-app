@@ -1,12 +1,12 @@
-import { celo, celoAlfajores, celoCannoli } from 'wagmi/chains';
+import { Alfajores, Baklava, Cannoli, Celo } from '@celo/rainbowkit-celo/chains';
 
 const chainIdForRPC = {
-  [celo.id]: celo.rpcUrls.default.http[0],
-  [celoAlfajores.id]: celoAlfajores.rpcUrls.default.http[0],
-  [celoCannoli.id]: celoCannoli.rpcUrls.default.http[0],
+  [Celo.id]: Celo.rpcUrls.default.http[0],
+  [Alfajores.id]: Alfajores.rpcUrls.default.http[0],
+  [Baklava.id]: Baklava.rpcUrls.default.http[0],
+  [Cannoli.id]: Cannoli.rpcUrls.default.http[0],
 };
 
 export default function chainIdToRPC(chainId: number) {
-  // @ts-expect-error
-  return chainIdForRPC[chainId] || chainIdForRPC[celo.id];
+  return chainIdForRPC[chainId] || chainIdForRPC[Celo.id];
 }

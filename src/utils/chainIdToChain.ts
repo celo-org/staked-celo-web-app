@@ -1,14 +1,14 @@
-import { celo, celoAlfajores, celoCannoli } from 'wagmi/chains';
+import { Alfajores, Baklava, Cannoli, Celo } from '@celo/rainbowkit-celo/chains';
 
 const chainIdForChain = {
-  [celo.id]: celo,
-  [celoAlfajores.id]: celoAlfajores,
-  [celoCannoli.id]: celoCannoli,
+  [Celo.id]: Celo,
+  [Alfajores.id]: Alfajores,
+  [Baklava.id]: Baklava,
+  [Cannoli.id]: Cannoli,
 };
 
 export default function chainIdToChain(
   chainId: number
-): typeof celo | typeof celoAlfajores | typeof celoCannoli {
-  // @ts-expect-error
-  return chainIdForChain[chainId] || chainIdForChain[celo.id];
+): typeof Celo | typeof Alfajores | typeof Baklava | typeof Cannoli {
+  return chainIdForChain[chainId] || chainIdForChain[Celo.id];
 }

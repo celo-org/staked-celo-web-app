@@ -1,11 +1,5 @@
-import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-<<<<<<< HEAD
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ConnectButton } from 'src/components/buttons/ConnectButton';
-=======
-import { useCallback, useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
->>>>>>> 49e1493 (wip: rainbowkit)
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -22,6 +16,15 @@ import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
 interface Props {
   proposal: SerializedProposal;
+}
+// From contractkit
+export declare enum ProposalStage {
+  None = 'None',
+  Queued = 'Queued',
+  Approval = 'Approval',
+  Referendum = 'Referendum',
+  Execution = 'Execution',
+  Expiration = 'Expiration',
 }
 
 export const Details = ({ proposal }: Props) => {

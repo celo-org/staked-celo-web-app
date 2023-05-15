@@ -12,7 +12,7 @@ import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
 import { createPublicClient, getContract, http } from 'viem';
 import { usePublicClient, useWalletClient } from 'wagmi';
-import { celo } from 'wagmi/chains';
+import { Celo } from '@celo/rainbowkit-celo/chains';
 
 export interface TxCallbacks {
   onSent?: () => void;
@@ -25,7 +25,7 @@ const __dummyContract = getContract({
   address: '0x0',
   abi: Registry.abi,
   publicClient: createPublicClient({
-    chain: celo,
+    chain: Celo,
     transport: http(),
   }),
 });
