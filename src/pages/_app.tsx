@@ -17,14 +17,8 @@ import 'src/styles/globals.css';
 import 'src/styles/transitions.scss';
 import { pageview } from '../utils/ga';
 
-import { CeloDance, CeloTerminal, CeloWallet, Valora } from '@celo/rainbowkit-celo/wallets';
-import {
-  connectorsForWallets,
-  darkTheme,
-  lightTheme,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
+import celoGroups from '@celo/rainbowkit-celo/lists';
+import { darkTheme, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { celo, celoAlfajores } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -34,20 +28,12 @@ const { chains, publicClient } = configureChains(
   [jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) })]
 );
 
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended with CELO',
-    wallets: [
-      Valora({ chains }),
-      CeloWallet({ chains }),
-      CeloDance({ chains }),
-      CeloTerminal({ chains }),
-      walletConnectWallet({ chains }),
-      metaMaskWallet({ chains }),
-    ],
-  },
-]);
-
+const connectors = celoGroups({
+  chains,
+  // TODO: replace this by env variable, this is Nico's test/dev project (not sensitive)
+  projectId: 'cbd4dfc72c388f372fc45f003becb013',
+  appName: 'Staked Celo',
+});
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
@@ -130,7 +116,7 @@ const TopProvider = (props: PropsWithChildren) => {
   );
 };
 
-const routingsWithConnection = ['/', '/stake', '/unstake'];
+const routingsWithConnection = ['/stake', '/unstake'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
   const { isConnected } = useAccountContext();
