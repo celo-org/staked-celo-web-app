@@ -4,6 +4,7 @@ import { ContainerSecondaryBG } from 'src/components/containers/ContainerSeconda
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
 import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
 import { StagePill } from 'src/features/governance/components/StagePill';
@@ -38,18 +39,20 @@ export const Details = ({ proposal }: Props) => {
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
   const [hasVoted, setHasVoted] = useState<boolean>(false);
+  const [transactionModalOpen, setTransactionModalOpen] = useState<boolean>(false);
 
   const onVoteChange = useCallback((voteType: VoteType) => {
     setCurrentVote(voteType);
   }, []);
 
   const pastVote = useMemo(() => {
-    return getProposalVote(proposal.proposalID);
+    return getProposalVote(proposal.proposalID.toString());
   }, [getProposalVote, proposal.proposalID]);
 
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
-    await voteProposal(proposal, currentVote);
+    setTransactionModalOpen(true);
+    await voteProposal(proposal, currentVote, { onSent: () => setTransactionModalOpen(false) });
     setHasVoted(true);
   }, [currentVote, hasVoted, voteProposal, proposal]);
 
@@ -130,6 +133,10 @@ export const Details = ({ proposal }: Props) => {
             )}
           </>
         ) : null}
+        <TransactionCalloutModal
+          isOpened={transactionModalOpen}
+          close={() => setTransactionModalOpen(false)}
+        />
       </ContainerSecondaryBG>
     </CenteredLayout>
   );

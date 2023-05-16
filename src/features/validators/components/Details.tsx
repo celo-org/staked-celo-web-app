@@ -10,13 +10,13 @@ import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal'
 import { ADDRESS_ZERO, EXPLORER_ALFAJORES_URL, EXPLORER_MAINNET_URL } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import { useChangeStrategy } from 'src/features/validators/hooks/useChangeStrategy';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
 import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 import { useChainId } from 'wagmi';
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
 interface Props {
   groupAddress: string;
   name?: string;
@@ -40,7 +40,7 @@ export const Details = ({ groupAddress, name }: Props) => {
     async (event: FormEvent) => {
       event.preventDefault();
       setTransactionModalOpen(true);
-      return changeStrategy(groupAddress);
+      return changeStrategy(groupAddress, { onSent: () => setTransactionModalOpen(false) });
     },
     [groupAddress]
   );

@@ -15,9 +15,9 @@ export default function useStrategy(
       if (!managerContract || !address) {
         return;
       }
-      const strategyFromChain: string = await managerContract?.methods
-        .getAddressStrategy(address)
-        .call();
+      const strategyFromChain = (await managerContract?.contract.read.getAddressStrategy([
+        address,
+      ])) as string;
       setStrategy(strategyFromChain);
     },
     [managerContract]
@@ -26,8 +26,7 @@ export default function useStrategy(
   const isLoading = status.isExecuting;
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    // loadStrategy(address);
+    void loadStrategy(address);
   }, [address, loadStrategy]);
 
   return [strategy, loadStrategy, isLoading];

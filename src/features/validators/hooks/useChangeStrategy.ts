@@ -1,6 +1,6 @@
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { showElectionToast } from 'src/features/swap/utils/toast';
 import { transactionEvent } from 'src/utils/ga';
@@ -16,7 +16,7 @@ export const useChangeStrategy = () => {
    * @param groupAddress the address of validator group OR 0 for default
    */
   const [changeStrategy, status] = useAsyncCallback(
-    async (groupAddress: string) => {
+    async (groupAddress: string, callbacks?: TxCallbacks) => {
       if (!address || !managerContract) {
         throw new Error('change strategy called before loading completed');
       }
@@ -29,7 +29,7 @@ export const useChangeStrategy = () => {
         status: 'initiated_transaction',
         value: '',
       });
-      await sendTransaction(request);
+      await sendTransaction(request, callbacks);
       transactionEvent({
         action: 'changeStrategy',
         status: 'signed_transaction',

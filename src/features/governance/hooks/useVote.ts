@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
@@ -33,7 +33,7 @@ export const useVote = () => {
    * @param vote - yes | no | abstain
    */
   const [voteProposal, voteProposalStatus] = useAsyncCallback(
-    async (proposal: SerializedProposal, vote: VoteType) => {
+    async (proposal: SerializedProposal, vote: VoteType, callbacks?: TxCallbacks) => {
       if (!address || !managerContract || !voteContract) {
         throw new Error('vote called before loading completed');
       }
@@ -61,7 +61,7 @@ export const useVote = () => {
         status: 'initiated_transaction',
         value: vote,
       });
-      await sendTransaction(request);
+      await sendTransaction(request, callbacks);
       transactionEvent({
         action: 'voteProposal',
         status: 'signed_transaction',
