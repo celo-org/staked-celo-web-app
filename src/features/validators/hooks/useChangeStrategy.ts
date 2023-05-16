@@ -20,14 +20,16 @@ export const useChangeStrategy = () => {
       if (!address || !managerContract) {
         throw new Error('change strategy called before loading completed');
       }
-      const changeStrategyTxObject = managerContract?.methods.changeStrategy(groupAddress);
-      const txOptions = { from: address, gasPrice: suggestedGasPrice };
+      const { request } = await managerContract.contract.simulate.changeStrategy({
+        account: address,
+        args: [groupAddress],
+      });
       transactionEvent({
         action: 'changeStrategy',
         status: 'initiated_transaction',
         value: '',
       });
-      await sendTransaction(changeStrategyTxObject, txOptions);
+      await sendTransaction(request);
       transactionEvent({
         action: 'changeStrategy',
         status: 'signed_transaction',

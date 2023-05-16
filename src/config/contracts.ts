@@ -1,3 +1,4 @@
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import {
   ACCOUNT_MAINNET_ADDRESS,
   ACCOUNT_TESTNET_ADDRESS,
@@ -12,7 +13,6 @@ import {
   VOTE_MAINNET_ADDRESS,
   VOTE_TESTNET_ADDRESS,
 } from 'src/config/consts';
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
 
 interface ContractAddresses {
   manager: `0x${string}`;
@@ -43,7 +43,10 @@ export const testnetAddresses: ContractAddresses = {
 
 type ContractNames = keyof typeof mainnetAddresses;
 
-export function getContractAddressForChain(chainId: number, contractName: ContractNames): string {
+export function getContractAddressForChain(
+  chainId: number,
+  contractName: ContractNames
+): `0x${string}` {
   const address =
     chainId === Alfajores.id ? testnetAddresses[contractName] : mainnetAddresses[contractName];
   if (!address) {

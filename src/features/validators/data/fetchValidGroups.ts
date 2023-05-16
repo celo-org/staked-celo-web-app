@@ -1,9 +1,8 @@
+import { Alfajores, Celo } from '@celo/rainbowkit-celo/chains';
 import { gql, request } from 'graphql-request';
 import { EXPLORER_GRAPH_ALFAJORES_URL, EXPLORER_GRAPH_MAINNET_URL } from 'src/config/consts';
 import { healthyGroupsOnly } from 'src/features/validators/data/healthyGroupsOnly';
 import { nonBlockedGroupsOnly } from 'src/features/validators/data/nonBlockedGroupsOnly';
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
-import Web3 from 'web3';
 
 export interface ValidatorGroup {
   name: string;
@@ -37,11 +36,10 @@ export default async function fetchValidGroups(chainId: number): Promise<ValidGr
   const allPossibleGroups = data.celoValidatorGroups;
 
   const groupAddresses = allPossibleGroups.map((group) => group.address);
-  const kit = newKit(chainIdToRPC(chainId as ChainId));
 
   // TODO remove this once contracts are deployed to mainnet
   // only while no contracts deployed return now so its doesnt crash
-  if (chainId === celo.id) {
+  if (chainId === Celo.id) {
     return {
       chainId: chainId,
       groups: allPossibleGroups,
@@ -49,9 +47,7 @@ export default async function fetchValidGroups(chainId: number): Promise<ValidGr
   }
 
   const [healthyGroups, nonBlockedGroups] = await Promise.all(
-    [healthyGroupsOnly, nonBlockedGroupsOnly].map((fn) =>
-      fn(groupAddresses, chainId, kit.connection.web3 as unknown as Web3)
-    )
+    [healthyGroupsOnly, nonBlockedGroupsOnly].map((fn) => fn(groupAddresses, chainId))
   );
   const validGroups = allPossibleGroups.filter(
     (group) => healthyGroups.has(group.address) && nonBlockedGroups.has(group.address)

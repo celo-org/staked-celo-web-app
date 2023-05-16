@@ -3,16 +3,17 @@ import GasPriceMinimum from '@celo/abis/GasPriceMinimum.json';
 import Registry from '@celo/abis/Registry.json';
 import SortedOracles from '@celo/abis/SortedOracles.json';
 import StableToken from '@celo/abis/StableToken.json';
+import { Celo } from '@celo/rainbowkit-celo/chains';
 import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
 import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import VoteABI from 'src/blockchain/ABIs/Vote.json';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
+import getCeloRegistry from 'src/utils/celoRegistry';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
 import { createPublicClient, getContract, http } from 'viem';
 import { usePublicClient, useWalletClient } from 'wagmi';
-import { Celo } from '@celo/rainbowkit-celo/chains';
 
 export interface TxCallbacks {
   onSent?: () => void;
@@ -70,20 +71,11 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
   const { data: client } = useWalletClient();
 
   const addresses = useMemo(() => {
-    if (publicClient.chain.id === celo.id) return mainnetAddresses;
+    if (publicClient.chain.id === Celo.id) return mainnetAddresses;
     return testnetAddresses;
   }, [publicClient]);
 
-  const REGISTRY_CONTRACT_ADDRESS = '0x000000000000000000000000000000000000ce10';
-  const registryContract = useMemo(
-    () =>
-      getContract({
-        address: REGISTRY_CONTRACT_ADDRESS,
-        abi: Registry.abi,
-        publicClient,
-      }),
-    [publicClient]
-  );
+  const registryContract = useMemo(() => getCeloRegistry(publicClient), [publicClient]);
 
   const managerContract = useMemo<Contract>(
     () => ({

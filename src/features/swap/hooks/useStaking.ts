@@ -15,13 +15,6 @@ export function useStaking() {
   const { stakingRate, celoToUSDRate, suggestedGasPrice } = useProtocolContext();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
 
-  const createTxOptions = useCallback(() => {
-    if (!address) throw new Error('Cannot create tx options without an address');
-    return { from: address, value: celoAmount?.toFixed(), gasPrice: suggestedGasPrice };
-  }, [address, celoAmount, suggestedGasPrice]);
-
-  // const depositTx = useCallback(() => managerContract?.methods?.deposit(), [managerContract]);
-
   const stake = useCallback(
     async (callbacks?: TxCallbacks) => {
       if (!address || !managerContract || !stCeloContract || !celoAmount || celoAmount.isEqualTo(0))

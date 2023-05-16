@@ -1,4 +1,3 @@
-import { newKit } from '@celo/contractkit';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
@@ -8,7 +7,6 @@ import {
   SerializedProposal,
 } from 'src/features/governance/data/getProposals';
 import { useRedirectToConnectedChainIfNeeded } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
-import chainIdToRPC from 'src/utils/chainIdToRPC';
 
 interface Props {
   proposal: SerializedProposal;
@@ -44,8 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
     };
   }
 
-  const kit = newKit(chainIdToRPC(chainId));
-  const proposal = await getProposalRecord(kit, chainId, proposalID);
+  const proposal = await getProposalRecord(chainId, proposalID);
 
   if (proposal === null) {
     return {

@@ -41,32 +41,39 @@ export const useVote = () => {
         throw new Error('vote called on proposal that is not in Referendum stage');
       }
       const asCelo = new Celo(
-        await managerContract?.methods.toCelo(`0x${stCeloBalance.toFixed(0).toString()}`).call()
+        await managerContract?.contract.read.toCelo([`0x${stCeloBalance.toFixed(0).toString()}`])
       );
       const voteWeight = `0x${asCelo.toString(16)}`;
 
       const zero = `0x0`;
-      const voteProposalTxObject = managerContract?.methods.voteProposal(
-        proposal.proposalID,
-        proposal.index!,
-        vote === VoteType.yes ? voteWeight : zero,
-        vote === VoteType.no ? voteWeight : zero,
-        vote === VoteType.abstain ? voteWeight : zero
-      );
-      const txOptions = { from: address, gasPrice: suggestedGasPrice };
+      const { request } = await managerContract.contract.simulate.voteProposal({
+        account: address,
+        args: [
+          proposal.proposalID,
+          proposal.index!,
+          vote === VoteType.yes ? voteWeight : zero,
+          vote === VoteType.no ? voteWeight : zero,
+          vote === VoteType.abstain ? voteWeight : zero,
+        ],
+      });
       transactionEvent({
         action: 'voteProposal',
         status: 'initiated_transaction',
         value: vote,
       });
-      await sendTransaction(voteProposalTxObject, txOptions);
+      await sendTransaction(request);
       transactionEvent({
         action: 'voteProposal',
         status: 'signed_transaction',
         value: voteWeight,
       });
-      writeToCache(getVoteCacheKey(proposal.proposalID), [vote, voteWeight]);
-      showVoteToast({ vote, proposalID: proposal.proposalID });
+      writeToCache(
+        getVoteCacheKey(
+          proposal.proposalID.toString(src / features / governance / data / getProposals.ts)
+        ),
+        [vote, voteWeight]
+      );
+      showVoteToast({ vote, proposalID: proposal.proposalID.toString() });
     },
     [address, voteContract, suggestedGasPrice, managerContract]
   );
@@ -93,9 +100,9 @@ export const useVote = () => {
       if (!address || !voteContract) {
         throw new Error('vote called before loading completed');
       }
-      const proposalIds = await voteContract?.methods
-        .getVotedStillRelevantProposals(address)
-        .call();
+      // @ts-expect-error
+      const proposalIds: bigint[] =
+        await voteContract?.contract.read.getVotedStillRelevantProposals([address]);
       return proposalIds.includes(proposal.proposalID);
     },
     [address]

@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { ParsedYAML } from 'src/utils/proposals';
 
 export type MiniProposal = {
-  proposalID: string;
+  proposalID: bigint;
   stage: ProposalRecord['stage'];
   metadata: {
     descriptionURL: string;

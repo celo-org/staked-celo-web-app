@@ -18,7 +18,7 @@ interface Props {
   proposal: SerializedProposal;
 }
 // From contractkit
-export declare enum ProposalStage {
+export enum ProposalStage {
   None = 'None',
   Queued = 'Queued',
   Approval = 'Approval',
