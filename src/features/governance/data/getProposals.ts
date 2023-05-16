@@ -29,8 +29,7 @@ export const getProposals = async (chainId: number) => {
   const publicClient = clients[chainId];
   const governanceContract = await getGovernanceContract(publicClient);
 
-  // @ts-expect-error
-  const _dequeue: bigint[] = await governanceContract.contract.read.getDequeue([]);
+  const _dequeue = (await governanceContract.contract.read.getDequeue([])) as bigint[];
   const stageCalls = _dequeue.map((proposalId) => ({
     address: governanceContract.address,
     abi: governanceContract.abi,
@@ -38,9 +37,8 @@ export const getProposals = async (chainId: number) => {
     args: [proposalId],
   }));
 
-  // @ts-expect-error
-  const stages: number[] = (await publicClient.multicall({ contracts: stageCalls })).map(
-    (x) => x.result
+  const stages = (await publicClient.multicall({ contracts: stageCalls })).map(
+    (x) => x.result as unknown as number
   );
 
   const proposals = _dequeue.map(
@@ -65,10 +63,9 @@ export const getProposals = async (chainId: number) => {
     args: [proposal.proposalID],
   }));
 
-  // @ts-expect-error
-  const metadatas: MetadataResult[] = (
-    await publicClient.multicall({ contracts: metadataCalls })
-  ).map((x) => x.result);
+  const metadatas = (await publicClient.multicall({ contracts: metadataCalls })).map(
+    (x) => x.result as MetadataResult
+  );
 
   metadatas.forEach((metadata, i) => {
     relevantProposals[i].metadata = {

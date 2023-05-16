@@ -100,9 +100,9 @@ export const useVote = () => {
       if (!address || !voteContract) {
         throw new Error('vote called before loading completed');
       }
-      // @ts-expect-error
-      const proposalIds: bigint[] =
-        await voteContract?.contract.read.getVotedStillRelevantProposals([address]);
+      const proposalIds = (await voteContract?.contract.read.getVotedStillRelevantProposals([
+        address,
+      ])) as bigint[];
       return proposalIds.includes(proposal.proposalID);
     },
     [address]
