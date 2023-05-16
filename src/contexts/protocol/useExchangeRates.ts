@@ -72,9 +72,9 @@ const useCeloToUSDRate = () => {
 
   const loadCeloToUSDRate = useCallback(async () => {
     if (!sortedOraclesContract || !stableTokenContract) return;
-    const [rate, by] = await sortedOraclesContract.contract.read.medianRate([
+    const [rate, by] = (await sortedOraclesContract.contract.read.medianRate([
       stableTokenContract.address,
-    ]);
+    ])) as [bigint, bigint];
     setCeloToUSDRate(parseFloat(new Token(rate).dividedBy(new Token(by)).toFixed(2)));
   }, [sortedOraclesContract, stableTokenContract]);
 
