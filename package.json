@@ -14,7 +14,7 @@
   "dependencies": {
     "@celo/abis": "^8.1.0",
     "@celo/contractkit": "^3.2.0",
-    "@celo/rainbowkit-celo": "^1.0.0-beta.1",
+    "@celo/rainbowkit-celo": "^1.0.0",
     "@dopex-io/web3-multicall": "^0.1.9",
     "@rainbow-me/rainbowkit": "^1.0.0",
     "@types/react-modal": "^3.13.1",
