@@ -1,4 +1,6 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
+import { useCelo } from '@celo/react-celo';
+import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useAccountAddress } from 'src/contexts/account/useAddress';
@@ -8,16 +10,26 @@ import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { showVoteToast } from 'src/features/swap/utils/toast';
 import { VoteType } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
+import { readFromCache, writeToCache } from 'src/utils/localSave';
 import { Celo } from 'src/utils/tokens';
 
 export const useVote = () => {
   const { managerContract, voteContract, sendTransaction } = useBlockchain();
   const { suggestedGasPrice } = useProtocolContext();
-  const { stCeloBalance } = useAccountContext();
+  const { stCeloBalance, votes } = useAccountContext();
   const { address } = useAccountAddress();
+  const { network } = useCelo();
+
+  const getVoteCacheKey = useCallback(
+    (id: string) => {
+      return `${network.name}:voteProposal:${id}`;
+    },
+    [network.name]
+  );
 
   /*
-   * @param groupAddress the address of validator group OR 0 for default
+   * @param proposal - full serialized proposal
+   * @param vote - yes | no | abstain
    */
   const [voteProposal, voteProposalStatus] = useAsyncCallback(
     async (proposal: SerializedProposal, vote: VoteType) => {
@@ -52,9 +64,27 @@ export const useVote = () => {
         status: 'signed_transaction',
         value: voteWeight,
       });
+      writeToCache(getVoteCacheKey(proposal.proposalID), [vote, voteWeight]);
       showVoteToast({ vote, proposalID: proposal.proposalID });
     },
     [address, voteContract, suggestedGasPrice, managerContract]
+  );
+
+  const getProposalVote = useCallback(
+    (proposalId: string) => {
+      const nodeData = votes[proposalId];
+      const localData = readFromCache(getVoteCacheKey(proposalId));
+
+      if (!nodeData && !localData?.data) {
+        return null;
+      }
+
+      return {
+        vote: nodeData?.vote || localData?.data[0],
+        weight: nodeData?.weight || localData?.data[1],
+      };
+    },
+    [votes, getVoteCacheKey]
   );
 
   const [getHasVoted, getHasVotedStatus] = useAsyncCallback(
@@ -70,5 +100,5 @@ export const useVote = () => {
     [address]
   );
 
-  return { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus };
+  return { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote };
 };

@@ -21,6 +21,8 @@ export const ACCOUNT_MAINNET_ADDRESS = '0x4aAD04D41FD7fd495503731C5a2579e19054C4
 // TODO - add these when contracts deployed to mainnet
 export const GROUP_HEALTH_MAINNET_ADDRESS = '';
 export const SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS = '';
+export const VOTE_MAINNET_ADDRESS = '';
+
 
 export const MULTICALL_MAINNET = {
   address: '0xcA11bde05977b3631167028862bE2a173976CA11',

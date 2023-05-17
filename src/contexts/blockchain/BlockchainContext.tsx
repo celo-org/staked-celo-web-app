@@ -1,7 +1,7 @@
 import { ContractKit, newKit } from '@celo/contractkit';
 import { useCelo } from '@celo/react-celo';
 import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
-import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
+import { PropsWithChildren, createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
@@ -34,6 +34,7 @@ interface BlockchainContext {
   stCeloContract: StakedCelo | undefined;
   accountContract: Account | undefined;
   voteContract: Vote | undefined;
+  addresses: typeof mainnetAddresses | typeof testnetAddresses;
   sendTransaction: (
     txObject: unknown,
     txOptions: TxOptions,
@@ -50,6 +51,7 @@ export const BlockchainContext = createContext<BlockchainContext>({
   stCeloContract: undefined,
   accountContract: undefined,
   voteContract: undefined,
+  addresses: mainnetAddresses,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sendTransaction: (_txObject: unknown, _txOptions: TxOptions) => Promise.resolve(undefined),
 });
@@ -84,7 +86,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
   const voteContract = useMemo(() => {
     const { eth } = kit.connection.web3;
     // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(VoteABI as AbiItem[], addresses.account) as unknown as Vote;
+    return new eth.Contract(VoteABI as AbiItem[], addresses.vote) as unknown as Vote;
   }, [kit.connection, addresses]);
 
   const sendTransaction = useCallback(
@@ -136,6 +138,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         stCeloContract,
         accountContract,
         voteContract,
+        addresses,
         sendTransaction,
       }}
     >
