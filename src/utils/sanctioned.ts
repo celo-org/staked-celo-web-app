@@ -1,15 +1,5 @@
 import { OFAC_SANCTIONS_LIST_URL, SANCTIONED_ADDRESSES } from 'compliance-sdk';
-
-const writeToCache = (url: string, data: string[]) =>
-  localStorage.setItem(url, JSON.stringify({ ts: Date.now(), data }));
-
-const readFromCache = (url: string) => {
-  const cached = localStorage.getItem(url);
-  if (cached) {
-    return JSON.parse(cached) as { ts: number; data: string[] };
-  }
-  return null;
-};
+import { readFromCache, writeToCache } from './localSave';
 
 const DAY = 24 * 60 * 60 * 1000;
 

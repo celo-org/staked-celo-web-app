@@ -3,7 +3,7 @@ import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
 import { ChainId } from '@celo/react-celo';
 import { getMultiCallForChain } from 'src/config/multicall';
 import chainIdToRPC from 'src/utils/chainIdToRPC';
-import { getRawGithubUrl, ParsedYAML, parsedYAMLFromMarkdown } from 'src/utils/proposals';
+import { ParsedYAML, getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
 import { HttpProvider } from 'web3-core';
 import { MiniProposal, Proposal } from './Proposal';
 

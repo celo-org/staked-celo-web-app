@@ -10,6 +10,8 @@ import {
   SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS,
   STAKED_CELO_MAINNET_ADDRESS,
   STAKED_CELO_TESTNET_ADDRESS,
+  VOTE_MAINNET_ADDRESS,
+  VOTE_TESTNET_ADDRESS,
 } from 'src/config/consts';
 
 interface ContractAddresses {
@@ -17,7 +19,8 @@ interface ContractAddresses {
   stakedCelo: string;
   account: string;
   specificGroupStrategy: string;
-  groupHealth: string
+  groupHealth: string;
+  vote: string;
 }
 
 export const mainnetAddresses: ContractAddresses = {
@@ -26,6 +29,7 @@ export const mainnetAddresses: ContractAddresses = {
   account: ACCOUNT_MAINNET_ADDRESS as string,
   specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS as string,
   groupHealth: GROUP_HEALTH_MAINNET_ADDRESS as string,
+  vote: VOTE_MAINNET_ADDRESS as string,
 };
 
 export const testnetAddresses: ContractAddresses = {
@@ -34,6 +38,7 @@ export const testnetAddresses: ContractAddresses = {
   account: ACCOUNT_TESTNET_ADDRESS as string,
   specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS as string,
   groupHealth: GROUP_HEALTH_TESTNET_ADDRESS as string,
+  vote: VOTE_TESTNET_ADDRESS as string,
 };
 
 

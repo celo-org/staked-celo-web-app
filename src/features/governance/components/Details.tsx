@@ -1,5 +1,5 @@
 import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ConnectButton } from 'src/components/buttons/ConnectButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
@@ -21,23 +21,23 @@ interface Props {
 
 export const Details = ({ proposal }: Props) => {
   const { stCeloBalance, loadBalances, isConnected } = useAccountContext();
-  const { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus } = useVote();
+  const { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote } =
+    useVote();
 
   useEffect(() => {
     if (isConnected) void loadBalances();
   }, [loadBalances, isConnected]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
-  const [hasVoted, setHasVoted] = useState<boolean>();
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
 
   const onVoteChange = useCallback((voteType: VoteType) => {
     setCurrentVote(voteType);
   }, []);
 
-  const updateGetHasVoted = useCallback(async () => {
-    const _hasVoted = await getHasVoted(proposal);
-    setHasVoted(_hasVoted);
-  }, [proposal, getHasVoted]);
+  const pastVote = useMemo(() => {
+    return getProposalVote(proposal.proposalID);
+  }, [getProposalVote, proposal.proposalID]);
 
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
@@ -46,8 +46,12 @@ export const Details = ({ proposal }: Props) => {
   }, [currentVote, hasVoted, voteProposal, proposal]);
 
   useEffect(() => {
-    void updateGetHasVoted();
-  }, [updateGetHasVoted, getHasVoted]);
+    void getHasVoted(proposal)
+      .then((didVote) => {
+        setHasVoted((isVoted) => isVoted || pastVote !== null || didVote);
+      })
+      .catch(() => setHasVoted((isVoted) => isVoted || pastVote !== null));
+  }, [pastVote, getHasVoted, proposal]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
@@ -101,9 +105,9 @@ export const Details = ({ proposal }: Props) => {
                 {proposal.parsedYAML?.cgp}
               </TertiaryCallout>
             )}
-            {hasVoted && (
+            {pastVote && (
               <TertiaryCallout classes="px-[8px]">
-                {stCeloBalance.displayAsBase()} stCELO voted {currentVote} for Proposal #
+                {pastVote.weight} stCELO voted {pastVote.vote} for Proposal #
                 {proposal.parsedYAML?.cgp}
               </TertiaryCallout>
             )}
