@@ -16,6 +16,14 @@ const nextConfig = {
     );
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/mainfest.json',
+        destination: '/site.webmanifest',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
