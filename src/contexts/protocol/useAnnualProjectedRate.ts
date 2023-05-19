@@ -9,15 +9,21 @@ export const useAnnualProjectedRate = () => {
   const loadAnnualProjectedRate = useCallback(async () => {
     if (!epochRewardsContract) return;
     const [rewardsMultiplierFraction, { 0: targetVotingYieldFraction }] = await Promise.all([
-      epochRewardsContract.contract.read.getRewardsMultiplier(),
-      epochRewardsContract.contract.read.getTargetVotingYieldParameters(),
+      epochRewardsContract.contract.read.getRewardsMultiplier() as Promise<bigint>,
+      epochRewardsContract.contract.read.getTargetVotingYieldParameters() as Promise<{
+        [x: number]: bigint;
+      }>,
     ]);
 
     // EpochRewards contract is using Fixidity library which operates on decimal part of numbers
     // Fixidity is always using 24 length decimal parts
     const fixidityDecimalSize = new BigNumber(10).pow(24);
-    const targetVotingYield = new BigNumber(targetVotingYieldFraction).div(fixidityDecimalSize);
-    const rewardsMultiplier = new BigNumber(rewardsMultiplierFraction).div(fixidityDecimalSize);
+    const targetVotingYield = new BigNumber(targetVotingYieldFraction.toString()).div(
+      fixidityDecimalSize
+    );
+    const rewardsMultiplier = new BigNumber(rewardsMultiplierFraction.toString()).div(
+      fixidityDecimalSize
+    );
 
     // Target voting yield is for a single day only, so we have to calculate this for entire year
     const unadjustedAPR = targetVotingYield.times(365);

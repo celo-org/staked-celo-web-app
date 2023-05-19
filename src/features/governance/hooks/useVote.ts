@@ -103,7 +103,7 @@ export const useVote = () => {
       const proposalIds = (await voteContract?.contract.read.getVotedStillRelevantProposals([
         address,
       ])) as bigint[];
-      return proposalIds.includes(proposal.proposalID);
+      return proposalIds.includes(BigInt(proposal.proposalID));
     },
     [address]
   );

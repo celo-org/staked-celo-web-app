@@ -16,7 +16,6 @@ export const useAccountBalances = (address: string | undefined) => {
       return;
     }
 
-    // @ts-expect-error
     const stCeloBalance = await stCeloContract.contract.read.balanceOf([address]);
 
     setStCeloBalance(new StCelo(stCeloBalance));

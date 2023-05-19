@@ -31,7 +31,7 @@ const __dummyContract = getContract({
   }),
 });
 interface Contract {
-  address: string;
+  address: `0x${string}`;
   contract: typeof __dummyContract;
 }
 
@@ -78,14 +78,15 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
   const registryContract = useMemo(() => getCeloRegistry(publicClient), [publicClient]);
 
   const managerContract = useMemo<Contract>(
-    () => ({
-      address: addresses.manager,
-      contract: getContract({
+    () =>
+      ({
         address: addresses.manager,
-        abi: ManagerABI,
-        publicClient,
-      }),
-    }),
+        contract: getContract({
+          address: addresses.manager,
+          abi: ManagerABI,
+          publicClient,
+        }),
+      } as Contract),
     [addresses, publicClient]
   );
 

@@ -13,7 +13,7 @@ import {
 
 interface AccountContext {
   isConnected: boolean;
-  address: string | undefined;
+  address: `0x${string}` | undefined;
   celoBalance: Celo;
   stCeloBalance: StCelo;
   loadBalances: () => Promise<void>;
@@ -42,7 +42,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
 
   const { loadBalances, celoBalance, stCeloBalance } = useAccountBalances(address);
   const { pendingWithdrawals, loadPendingWithdrawals } = useWithdrawals(address);
-  useWithdrawalBot(address);
+  useWithdrawalBot(/*address*/);
   useClaimingBot(address);
 
   const [strategy, reloadStrategy] = useStrategy(address);

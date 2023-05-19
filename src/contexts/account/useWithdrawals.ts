@@ -6,12 +6,12 @@ import { usePublicClient } from 'wagmi';
 
 export interface PendingWithdrawal {
   amount: Celo;
-  timestamp: bigint;
+  timestamp: string;
 }
 
 const botActionInterval = 180 * 1000;
 
-export const useWithdrawalBot = (address: string | undefined) => {
+export const useWithdrawalBot = (/*address: string | undefined*/) => {
   // const { api } = useAPI();
   // const { managerContract, accountContract } = useBlockchain();
   // const finalizeWithdrawal = useCallback(async () => {
@@ -88,14 +88,14 @@ const formatPendingWithdrawals = (values: bigint[], timestamps: bigint[]): Pendi
       referenceTimestamp = timestamp;
       pendingWithdrawals.push({
         amount: new Celo(amount),
-        timestamp,
+        timestamp: timestamp.toString(),
       });
       continue;
     }
 
     /* If next timestamp is within allowed time span merge it with the last pending withdrawal */
     const lastPendingWithdrawal = pendingWithdrawals[pendingWithdrawals.length - 1];
-    lastPendingWithdrawal.timestamp = timestamp;
+    lastPendingWithdrawal.timestamp = timestamp.toString();
     lastPendingWithdrawal.amount = new Celo(lastPendingWithdrawal.amount.plus(amount as any));
   }
 

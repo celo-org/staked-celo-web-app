@@ -25,6 +25,7 @@ export async function nonBlockedGroupsOnly(
 
   let results: boolean[] = [];
   try {
+    // @ts-expect-error
     results = (await client.multicall({ contracts: calls })).map((x) => x.result as boolean);
   } catch (error) {
     results = await Promise.all(

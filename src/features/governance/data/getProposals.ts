@@ -37,6 +37,7 @@ export const getProposals = async (chainId: number) => {
     args: [proposalId],
   }));
 
+  // @ts-expect-error
   const stages = (await publicClient.multicall({ contracts: stageCalls })).map(
     (x) => x.result as unknown as number
   );
@@ -44,7 +45,7 @@ export const getProposals = async (chainId: number) => {
   const proposals = _dequeue.map(
     (proposalID, i) =>
       ({
-        proposalID,
+        proposalID: proposalID.toString(),
         stage: PROPOSAL_STAGE_KEYS[stages[i]],
       } as MiniProposal)
   );
@@ -52,7 +53,7 @@ export const getProposals = async (chainId: number) => {
   const current = proposals.filter((x) => runningProposalStages.has(x.stage));
   const passed = proposals
     .filter((x) => pastProposalStages.has(x.stage))
-    .sort((a, b) => (a.proposalID < b.proposalID ? 1 : -1))
+    .sort((a, b) => (parseInt(a.proposalID, 10) < parseInt(b.proposalID, 10) ? 1 : -1))
     .slice(0, 5);
 
   const relevantProposals = [...current, ...passed];
@@ -63,6 +64,7 @@ export const getProposals = async (chainId: number) => {
     args: [proposal.proposalID],
   }));
 
+  // @ts-expect-error
   const metadatas = (await publicClient.multicall({ contracts: metadataCalls })).map(
     (x) => x.result as MetadataResult
   );
@@ -105,37 +107,46 @@ export const getProposalRecord = async (
   const publicClient = clients[chainId];
   const governanceContract = await getGovernanceContract(publicClient);
 
-  //  @ts-expect-error
-  const [dequeue, stage, metadata]: [bigint[], number, MetadataResult[]] = (
+  const [_dequeue, _stage, _metadata] = (
     await publicClient.multicall({
       contracts: [
         {
           address: governanceContract.address,
+          // @ts-expect-error
           abi: governanceContract.abi,
           functionName: 'getDequeue',
           args: [],
         },
         {
           address: governanceContract.address,
+          // @ts-expect-error
           abi: governanceContract.abi,
           functionName: 'getProposalStage',
           args: [proposalID],
         },
         {
           address: governanceContract.address,
+          // @ts-expect-error
           abi: governanceContract.abi,
           functionName: 'getProposal',
           args: [proposalID],
         },
       ],
     })
-  ).map((x) => x.result);
+  ).map((x) => x.result as bigint[] | number | MetadataResult);
+
+  const dequeue = _dequeue as bigint[];
+  const stage = _stage as number;
+  const metadata = _metadata as unknown as MetadataResult;
 
   return {
-    proposalID: BigInt(proposalID),
-    stage: PROPOSAL_STAGE_KEYS[stage] as ProposalStage,
-    metadata: { timestamp: metadata[2].toString(), descriptionURL: metadata[4] },
-    index: dequeue.findIndex((id) => proposalID === id.toString()),
+    proposalID,
+    stage: PROPOSAL_STAGE_KEYS[stage as number] as ProposalStage,
+    metadata: {
+      timestamp: metadata[2].toString(),
+      descriptionURL: metadata[4],
+    },
+    index: (dequeue as bigint[]).findIndex((id) => proposalID === id.toString()),
   } as unknown as SerializedProposal;
 };
 
