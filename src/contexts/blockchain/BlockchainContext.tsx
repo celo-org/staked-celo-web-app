@@ -8,6 +8,7 @@ import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
 import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account.json';
 import ManagerABI from 'src/blockchain/ABIs/Manager.json';
+import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
 import VoteABI from 'src/blockchain/ABIs/Vote.json';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import getCeloRegistry from 'src/utils/celoRegistry';
@@ -36,20 +37,16 @@ interface Contract {
 }
 
 interface BlockchainContext {
-  epochRewardsContract: EpochRewardsContract | undefined;
-  sortedOraclesContract: SortedOraclesContract | undefined;
-  stableTokenContract: StableTokenContract | undefined;
-  gasPriceMinimumContract: GasPriceMinimumContract | undefined;
-  managerContract: Manager | undefined;
-  stCeloContract: StakedCelo | undefined;
-  accountContract: Account | undefined;
-  voteContract: Vote | undefined;
+  epochRewardsContract: Contract | undefined;
+  sortedOraclesContract: Contract | undefined;
+  stableTokenContract: Contract | undefined;
+  gasPriceMinimumContract: Contract | undefined;
+  managerContract: Contract | undefined;
+  stCeloContract: Contract | undefined;
+  accountContract: Contract | undefined;
+  voteContract: Contract | undefined;
   addresses: typeof mainnetAddresses | typeof testnetAddresses;
-  sendTransaction: (
-    txObject: unknown,
-    txOptions: TxOptions,
-    callbacks?: TxCallbacks
-  ) => Promise<void>;
+  sendTransaction: (txObject: unknown, callbacks?: TxCallbacks) => Promise<void>;
 }
 
 export const BlockchainContext = createContext<BlockchainContext>({

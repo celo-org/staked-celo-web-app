@@ -41,7 +41,7 @@ export const useVote = () => {
         throw new Error('vote called on proposal that is not in Referendum stage');
       }
       const asCelo = new Celo(
-        await managerContract?.contract.read.toCelo([`0x${stCeloBalance.toFixed(0).toString()}`])
+        await managerContract?.contract.read.toCelo([`0x${stCeloBalance.toString(16)}`])
       );
       const voteWeight = `0x${asCelo.toString(16)}`;
 
@@ -67,12 +67,10 @@ export const useVote = () => {
         status: 'signed_transaction',
         value: voteWeight,
       });
-      writeToCache(
-        getVoteCacheKey(
-          proposal.proposalID.toString(src / features / governance / data / getProposals.ts)
-        ),
-        [vote, voteWeight]
-      );
+      writeToCache(getVoteCacheKey(proposal.proposalID.toString()), [
+        vote,
+        stCeloBalance.toString(),
+      ]);
       showVoteToast({ vote, proposalID: proposal.proposalID.toString() });
     },
     [address, voteContract, suggestedGasPrice, managerContract]

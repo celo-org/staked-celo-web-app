@@ -24,9 +24,9 @@ export function useStaking() {
       abi: ManagerABI,
       account: address!,
       functionName: 'deposit',
-      args: [celoAmount?.toFixed()],
+      value: `0x${celoAmount!.toString(16)}`,
     }),
-    [address, celoAmount, managerContract]
+    [address, managerContract, celoAmount]
   );
 
   const stake = useCallback(

@@ -24,11 +24,10 @@ export function useUnstaking() {
       abi: ManagerABI,
       account: address!,
       functionName: 'withdraw',
-      args: [stCeloAmount?.toFixed()],
+      args: [`0x${stCeloAmount!.toString(16)}`],
     }),
-    [address, stCeloAmount, managerContract]
+    [address, managerContract, stCeloAmount]
   );
-
   const unstake = useCallback(
     async (callbacks?: TxCallbacks) => {
       if (!address || !stCeloAmount || stCeloAmount.isEqualTo(0) || !managerContract) return;

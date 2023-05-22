@@ -1,6 +1,7 @@
 import { Row } from 'src/components/list/row';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
+import { useChainId } from 'wagmi';
 
 interface Props {
   proposals: SerializedProposal[];
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export const Governance = ({ proposals, pastProposals }: Props) => {
+  const chainId = useChainId();
   return (
     <form className="w-full flex flex-col justify-center items-center mt-[24px] bg-secondary p-[8px] pb-4 rounded-[16px] gap-16 min-h-[368px]">
       <>
@@ -47,7 +49,7 @@ export const Governance = ({ proposals, pastProposals }: Props) => {
                     : `Proposal #${proposal.proposalID.toString()}`
                 }
                 nameClasses="text-color-secondary"
-                href={`/governance/${proposal.proposalID.toString()}`}
+                href={`/governance/${proposal.proposalID.toString()}?chainId=${chainId}`}
               >
                 <StagePill stage={proposal.stage} />
               </Row>

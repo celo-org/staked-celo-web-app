@@ -1,3 +1,4 @@
+import { Alfajores, Celo } from '@celo/rainbowkit-celo/chains';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
@@ -34,7 +35,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
   );
 
   const proposalID = Array.isArray(params?.id) ? params?.id[0] : params?.id;
-  const chainId = Number(query.chainId as string);
+  const chainId =
+    Number(query.chainId as string) ||
+    (process.env.NODE_ENV === 'production' ? Celo.id : Alfajores.id);
 
   if (typeof proposalID !== 'string') {
     return {

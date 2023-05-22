@@ -13,6 +13,7 @@ import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { useVote } from 'src/features/governance/hooks/useVote';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
+import { StCelo } from 'src/utils/tokens';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
 interface Props {
@@ -34,7 +35,7 @@ export const Details = ({ proposal }: Props) => {
     useVote();
 
   useEffect(() => {
-    // if (isConnected) void loadBalances();
+    if (isConnected) void loadBalances();
   }, [loadBalances, isConnected]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
@@ -116,12 +117,6 @@ export const Details = ({ proposal }: Props) => {
                 {proposal.parsedYAML?.cgp}
               </TertiaryCallout>
             )}
-            {pastVote && (
-              <TertiaryCallout classes="px-[8px]">
-                {pastVote.weight} stCELO voted {pastVote.vote} for Proposal #
-                {proposal.parsedYAML?.cgp}
-              </TertiaryCallout>
-            )}
             {!hasVoted && (
               <div className="w-full px-4 py-2">
                 <VoteButton
@@ -133,6 +128,12 @@ export const Details = ({ proposal }: Props) => {
             )}
           </>
         ) : null}
+        {pastVote && (
+          <TertiaryCallout classes="px-[8px]">
+            {new StCelo(pastVote.weight).displayAsBase()} stCELO voted {pastVote.vote} for Proposal
+            #{proposal.parsedYAML?.cgp}
+          </TertiaryCallout>
+        )}
         <TransactionCalloutModal
           isOpened={transactionModalOpen}
           close={() => setTransactionModalOpen(false)}
