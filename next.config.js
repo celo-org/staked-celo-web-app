@@ -19,7 +19,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/mainfest.json',
+        source: '/manifest.json',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
@@ -27,7 +27,7 @@ const nextConfig = {
           },
           {
             key: 'Access-Control-Allow-Methods',
-            value: 'GET',
+            value: 'GET,OPTIONS',
           },
           {
             key: 'Access-Control-Allow-Headers',
@@ -36,12 +36,11 @@ const nextConfig = {
         ],
       },
     ];
-
   },
   async rewrites() {
     return [
       {
-        source: '/mainfest.json',
+        source: '/manifest.json',
         destination: '/site.webmanifest',
       },
     ];
