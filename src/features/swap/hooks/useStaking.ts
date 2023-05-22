@@ -33,6 +33,7 @@ export function useStaking() {
     async (callbacks?: TxCallbacks) => {
       if (!address || !stCeloContract || !celoAmount || celoAmount.isEqualTo(0)) return;
 
+      // @ts-expect-error
       const { request } = await publicClient.simulateContract(getParams());
 
       const preDepositStTokenBalance = new StCelo(
@@ -79,6 +80,8 @@ export function useStaking() {
     ) {
       return null;
     }
+
+    // @ts-expect-error
     const gasFee = new Token(await publicClient.estimateContractGas(getParams()));
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
