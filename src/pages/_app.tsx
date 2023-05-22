@@ -116,22 +116,23 @@ const TopProvider = (props: PropsWithChildren) => {
   );
 };
 
-const routingsWithConnection = ['/stake', '/unstake'];
+const routingsWithConnection = ['', 'stake', 'unstake'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
   const router = useRouter();
   const { isConnected } = useAccountContext();
   const route = router.asPath;
   const lastRoute = useRef<string | null>(null);
+  const basePath = router.query.slug?.[0] || '';
 
   useLayoutEffect(() => {
-    if (!isConnected && routingsWithConnection.includes(route)) {
+    if (!isConnected && routingsWithConnection.includes(basePath)) {
       void router.push('/connect');
-    } else if (isConnected && router.asPath == '/connect') {
+    } else if (isConnected && basePath == 'connect') {
       void router.push(lastRoute.current ?? '/stake');
-    } else if (isConnected && router.asPath === '/') {
+    } else if (isConnected && basePath === '') {
       void router.push('/stake');
     }
-  }, [isConnected, router, route, lastRoute]);
+  }, [isConnected, router, route, basePath]);
 
   useEffect(() => {
     const handleRouteChange = (url: URL) => {
