@@ -14,7 +14,6 @@
   "dependencies": {
     "@celo/abis": "^8.1.0",
     "@celo/rainbowkit-celo": "^1.0.0",
-    "@dopex-io/web3-multicall": "^0.1.9",
     "@rainbow-me/rainbowkit": "^1.0.0",
     "@types/react-modal": "^3.13.1",
     "@types/react-transition-group": "^4.4.5",
@@ -34,13 +33,9 @@
     "react-transition-group": "^4.4.5",
     "react-use-async-callback": "^2.1.2",
     "viem": "^0.3.21",
-    "wagmi": "^1.0.2",
-    "web3": "^1.3.6",
-    "web3-core": "1.3.6",
-    "web3-utils": "^1.7.4"
+    "wagmi": "^1.0.2"
   },
   "devDependencies": {
-    "@typechain/web3-v1": "^6.0.2",
     "@types/gtag.js": "^0.0.11",
     "@types/node": "18.0.3",
     "@types/react": "18.0.15",
