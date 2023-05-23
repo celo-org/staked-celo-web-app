@@ -1,6 +1,6 @@
 import { Alfajores, Baklava, Cannoli, Celo } from '@celo/rainbowkit-celo/chains';
 
-const chainIdForChain = {
+const chainFromChainId = {
   [Celo.id]: Celo,
   [Alfajores.id]: Alfajores,
   [Baklava.id]: Baklava,
@@ -10,5 +10,5 @@ const chainIdForChain = {
 export default function chainIdToChain(
   chainId: number
 ): typeof Celo | typeof Alfajores | typeof Baklava | typeof Cannoli {
-  return chainIdForChain[chainId] || chainIdForChain[Celo.id];
+  return chainFromChainId[chainId] || chainFromChainId[Celo.id];
 }

@@ -36,6 +36,9 @@ export function useProposalVotes(address: `0x${string}` | undefined) {
           { type: 'uint256', name: 'abstainVotes' },
         ],
       },
+      args: {
+        voter: address,
+      },
       fromBlock,
       toBlock: 'latest',
     });
@@ -43,7 +46,6 @@ export function useProposalVotes(address: `0x${string}` | undefined) {
     const voteRecords = events.reduce((sum: VoteRecords, currentEvent) => {
       const values = currentEvent.args;
       if (!values) return sum;
-      if (values.voter !== address) return sum;
 
       const vote = (['yesVotes', 'noVotes', 'abstainVotes'] as const).find(
         (key) => values[key] !== 0n
