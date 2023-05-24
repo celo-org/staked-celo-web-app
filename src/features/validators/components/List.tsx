@@ -31,10 +31,9 @@ export const Validators = ({ list }: ValidatorsProps) => {
           key={vg.address}
           name={vg.name}
           groupAddress={vg.address}
-          isCurrentStrategy={vg.address === strategy}
+          isCurrentStrategy={vg.address.toLowerCase() === strategy?.toLowerCase()}
         />
       ))}
     </ul>
   );
 };
-

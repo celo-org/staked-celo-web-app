@@ -1,27 +1,36 @@
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useState } from 'react';
-import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { useMemo } from 'react';
+import {
+  useEpochRewardsGetRewardsMultiplier,
+  useEpochRewardsGetTargetVotingYieldParameters,
+} from 'src/blockchain/ABIs/Celo';
+import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
 
 export const useAnnualProjectedRate = () => {
-  const { epochRewardsContract } = useBlockchain();
-  const [annualProjectedRate, setAnnualProjectedRate] = useState<string | null>(null);
+  const address = useCeloRegistryAddress('EpochRewards');
+  const { data: rewardsMultiplierFraction, isLoading: multiplierLoading } =
+    useEpochRewardsGetRewardsMultiplier({ address });
+  const { data: targetVotingYieldParameters, isLoading: yieldParamsLoading } =
+    useEpochRewardsGetTargetVotingYieldParameters({ address });
 
-  const loadAnnualProjectedRate = useCallback(async () => {
-    if (!epochRewardsContract) return;
-    const [rewardsMultiplierFraction, { 0: targetVotingYieldFraction }] = await Promise.all([
-      epochRewardsContract.contract.read.getRewardsMultiplier() as Promise<bigint>,
-      epochRewardsContract.contract.read.getTargetVotingYieldParameters() as Promise<{
-        [x: number]: bigint;
-      }>,
-    ]);
+  const annualProjectedRate = useMemo(() => {
+    if (
+      multiplierLoading ||
+      yieldParamsLoading ||
+      !targetVotingYieldParameters ||
+      !rewardsMultiplierFraction
+    ) {
+      return null;
+    }
 
     // EpochRewards contract is using Fixidity library which operates on decimal part of numbers
     // Fixidity is always using 24 length decimal parts
     const fixidityDecimalSize = new BigNumber(10).pow(24);
+    const [targetVotingYieldFraction] = targetVotingYieldParameters!;
     const targetVotingYield = new BigNumber(targetVotingYieldFraction.toString()).div(
       fixidityDecimalSize
     );
-    const rewardsMultiplier = new BigNumber(rewardsMultiplierFraction.toString()).div(
+    const rewardsMultiplier = new BigNumber(rewardsMultiplierFraction!.toString()).div(
       fixidityDecimalSize
     );
 
@@ -33,12 +42,13 @@ export const useAnnualProjectedRate = () => {
 
     const percentageAPR = adjustedAPR.times(100);
 
-    setAnnualProjectedRate(percentageAPR.toFixed(2));
-  }, [epochRewardsContract]);
-
-  useEffect(() => {
-    void loadAnnualProjectedRate();
-  }, [loadAnnualProjectedRate]);
+    return percentageAPR.toFixed(2);
+  }, [
+    rewardsMultiplierFraction,
+    multiplierLoading,
+    targetVotingYieldParameters,
+    yieldParamsLoading,
+  ]);
 
   return {
     annualProjectedRate,

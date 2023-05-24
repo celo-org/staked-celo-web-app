@@ -10,7 +10,7 @@
     "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt"
   },
   "dependencies": {
-    "@celo/abis": "^8.1.0",
+    "@celo/abis": "^9.0.1",
     "@celo/rainbowkit-celo": "^1.0.0",
     "@rainbow-me/rainbowkit": "^1.0.0",
     "@types/react-modal": "^3.13.1",

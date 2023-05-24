@@ -16,7 +16,7 @@ interface Props {
 
 const GovernanceDetailsPage: NextPage<Props> = ({ proposal, serverChainId }) => {
   const router = useRouter();
-  const { id } = router.query;
+  const { slug: id } = router.query;
   const proposalId = Array.isArray(id) ? id[0] : id;
   useRedirectToConnectedChainIfNeeded(serverChainId, `/governance/${proposalId}`);
 
@@ -34,7 +34,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SWR_SECONDS}`
   );
 
-  const proposalID = Array.isArray(params?.id) ? params?.id[0] : params?.id;
+  const id = params?.slug;
+  const proposalID = Array.isArray(id) ? id[0] : id;
   const chainId =
     Number(query.chainId as string) ||
     (process.env.NODE_ENV === 'production' ? Celo.id : Alfajores.id);

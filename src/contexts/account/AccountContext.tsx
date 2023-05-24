@@ -16,11 +16,11 @@ interface AccountContext {
   address: `0x${string}` | undefined;
   celoBalance: Celo;
   stCeloBalance: StCelo;
-  loadBalances: () => Promise<void>;
+  loadBalances: ReturnType<typeof useAccountBalances>['loadBalances'] | undefined;
   pendingWithdrawals: PendingWithdrawal[];
   loadPendingWithdrawals: () => Promise<void>;
-  strategy: string | null;
-  reloadStrategy: (address: string | undefined) => Promise<void>;
+  strategy: `0x${string}` | undefined;
+  reloadStrategy: ReturnType<typeof useStrategy>['reloadStrategy'] | undefined;
   votes: VoteRecords;
 }
 
@@ -29,11 +29,11 @@ export const AccountContext = createContext<AccountContext>({
   address: undefined,
   celoBalance: new Celo(0),
   stCeloBalance: new StCelo(0),
-  loadBalances: () => Promise.resolve(),
+  loadBalances: undefined,
   pendingWithdrawals: [],
   loadPendingWithdrawals: () => Promise.resolve(),
-  strategy: null,
-  reloadStrategy: () => Promise.resolve(),
+  strategy: undefined,
+  reloadStrategy: undefined,
   votes: {},
 });
 
@@ -45,7 +45,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
   useWithdrawalBot(/*address*/);
   useClaimingBot(address);
 
-  const [strategy, reloadStrategy] = useStrategy(address);
+  const { strategy, reloadStrategy } = useStrategy(address);
   const { votes } = useProposalVotes(address);
 
   return (

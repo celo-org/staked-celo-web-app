@@ -36,10 +36,10 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@celo/abis@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@celo/abis/-/abis-8.1.0.tgz#81efed6215b33fafba7be7c74dc5803309b33764"
-  integrity sha512-0DAuzDyAMAndC4jwmP7YNP+UZ6pzQRHzzF1gYtnPwmmm1S06Qbs2QnL6GGclp836LR2TEYlaWLSUbPJXN5zDKg==
+"@celo/abis@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@celo/abis/-/abis-9.0.1.tgz#1643ec197c6786f26f8fd3dc9cdd8f643e8d1f30"
+  integrity sha512-681Yt6zu6zMJNQSHErOc8w415ZpGXww40SnBVEY+0sms5lktyllHPNWkU0k3IxpTyDMMoyp+MjLR608gjrqD4w==
 
 "@celo/base@3.2.0":
   version "3.2.0"

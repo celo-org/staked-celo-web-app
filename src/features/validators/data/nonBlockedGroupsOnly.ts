@@ -1,4 +1,4 @@
-import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy.json';
+import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy';
 import { getContractAddressForChain } from 'src/config/contracts';
 import clients from 'src/utils/clients';
 import { getContract } from 'viem';
@@ -20,17 +20,16 @@ export async function nonBlockedGroupsOnly(
     address: getContractAddressForChain(chainId, 'specificGroupStrategy'),
     abi: SpecificGroupStrategyABI,
     functionName: 'isBlockedGroup',
-    args: [groupAddress],
+    args: [groupAddress] as [`0x${string}`],
   }));
 
   let results: boolean[] = [];
   try {
-    // @ts-expect-error
     results = (await client.multicall({ contracts: calls })).map((x) => x.result as boolean);
   } catch (error) {
     results = await Promise.all(
       calls.map(
-        (call) => specificGroupStrategyContract.read.isGroupValid(call.args) as Promise<boolean>
+        (call) => specificGroupStrategyContract.read.isBlockedGroup(call.args) as Promise<boolean>
       )
     );
   }

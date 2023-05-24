@@ -1,45 +1,53 @@
 import { useCallback, useMemo, useState } from 'react';
-import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { useAPI } from 'src/hooks/useAPI';
 import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { usePublicClient } from 'wagmi';
+import { useContractWrite, usePublicClient } from 'wagmi';
 import { transactionEvent } from '../../../utils/ga';
 import { showUnstakingToast } from '../utils/toast';
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
-  const { managerContract, sendTransaction } = useBlockchain();
+  const { managerContract } = useBlockchain();
   const { api } = useAPI();
-  const { unstakingRate, celoToUSDRate, suggestedGasPrice } = useProtocolContext();
+  const { unstakingRate, celoToUSDRate } = useProtocolContext();
+  const { suggestedGasPrice } = useGasPrices();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
   const publicClient = usePublicClient();
 
-  const getParams = useCallback(
-    () => ({
-      address: managerContract!.address,
-      abi: ManagerABI,
-      account: address!,
-      functionName: 'withdraw',
-      args: [`0x${stCeloAmount!.toString(16)}`],
-    }),
-    [address, managerContract, stCeloAmount]
-  );
+  const params = {
+    functionName: 'withdraw',
+    args: [stCeloAmount?.toBigInt() || 0n] as const,
+  } as const;
+
+  const { writeAsync: _unstake } = useContractWrite({
+    ...managerContract,
+    ...params,
+  });
+
   const unstake = useCallback(
     async (callbacks?: TxCallbacks) => {
-      if (!address || !stCeloAmount || stCeloAmount.isEqualTo(0) || !managerContract) return;
+      if (
+        !address ||
+        !stCeloAmount ||
+        stCeloAmount.isEqualTo(0) ||
+        !managerContract ||
+        !loadBalances
+      )
+        return;
 
-      const { request } = await publicClient.simulateContract(getParams());
-      await sendTransaction(request, callbacks);
       transactionEvent({
         action: Mode.unstake,
         status: 'signed_transaction',
         value: stCeloAmount.displayAsBase(),
       });
+      await _unstake();
       await api.withdraw(address);
+      callbacks?.onSent?.();
       showUnstakingToast();
       await Promise.all([loadBalances(), loadPendingWithdrawals()]);
       setStCeloAmount(null);
@@ -47,12 +55,10 @@ export function useUnstaking() {
     [
       address,
       api,
-      getParams,
       loadBalances,
       loadPendingWithdrawals,
       managerContract,
       publicClient,
-      sendTransaction,
       stCeloAmount,
     ]
   );
@@ -66,7 +72,15 @@ export function useUnstaking() {
     ) {
       return null;
     }
-    const gasFee = new Token(await publicClient.estimateContractGas(getParams()));
+
+    const gasFee = new Token(
+      await publicClient.estimateContractGas({
+        abi: managerContract.abi,
+        address: managerContract.address!,
+        account: address!,
+        ...params,
+      })
+    );
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;
@@ -75,7 +89,6 @@ export function useUnstaking() {
     stCeloBalance,
     managerContract,
     publicClient,
-    getParams,
     suggestedGasPrice,
     celoToUSDRate,
   ]);

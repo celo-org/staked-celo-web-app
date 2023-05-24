@@ -1,4 +1,4 @@
-import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth.json';
+import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth';
 import { getContractAddressForChain } from 'src/config/contracts';
 import clients from 'src/utils/clients';
 import { getContract } from 'viem';
@@ -20,12 +20,11 @@ export async function healthyGroupsOnly(
     address: getContractAddressForChain(chainId, 'groupHealth'),
     abi: GroupHealthABI,
     functionName: 'isGroupValid',
-    args: [groupAddress],
+    args: [groupAddress] as [`0x${string}`],
   }));
 
   let results: boolean[] = [];
   try {
-    // @ts-expect-error
     results = (await client.multicall({ contracts: calls })).map((x) => x.result as boolean);
   } catch (error) {
     results = await Promise.all(

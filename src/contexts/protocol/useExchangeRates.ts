@@ -1,20 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useSortedOraclesMedianRate } from 'src/blockchain/ABIs/Celo';
 import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
 import { Celo, StCelo, Token } from 'src/utils/tokens';
+import { useContractRead } from 'wagmi';
 
 export const useExchangeRates = () => {
   const { stakingRate, loadStakingRate } = useStakingRate();
   const { unstakingRate, loadUnstakingRate } = useUnstakingRate();
-  const { celoToUSDRate, loadCeloToUSDRate } = useCeloToUSDRate();
+  const celoToUSDRate = useCeloToUSDRate();
 
   const loadExchangeRates = useCallback(async () => {
-    await Promise.all([loadStakingRate(), loadUnstakingRate(), loadCeloToUSDRate()]);
-  }, [loadStakingRate, loadUnstakingRate, loadCeloToUSDRate]);
-
-  useEffect(() => {
-    void loadExchangeRates();
-  }, [loadExchangeRates]);
+    await Promise.all([loadStakingRate(), loadUnstakingRate()]);
+  }, [loadStakingRate, loadUnstakingRate]);
 
   return {
     stakingRate,
@@ -27,18 +26,17 @@ export const useExchangeRates = () => {
 const useStakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const [stakingRate, setCeloExchangeRate] = useState(0);
+  const oneCelo = new Celo(WEI_PER_UNIT);
+  const { data: _stakingRate, refetch: loadStakingRate } = useContractRead({
+    ...managerContract,
+    functionName: 'toStakedCelo',
+    args: [oneCelo.toBigInt()],
+  });
 
-  const loadStakingRate = useCallback(async () => {
-    const oneCelo = new Celo(WEI_PER_UNIT);
-    if (!managerContract) {
-      return;
-    }
-    const stCeloAmount = new StCelo(
-      await managerContract.contract.read.toStakedCelo([oneCelo.toFixed()])
-    );
-    setCeloExchangeRate(stCeloAmount.dividedBy(oneCelo).toNumber());
-  }, [managerContract]);
+  const stakingRate = useMemo(
+    () => new StCelo(_stakingRate).dividedBy(oneCelo).toNumber() || 0,
+    [_stakingRate]
+  );
 
   return {
     stakingRate,
@@ -49,16 +47,17 @@ const useStakingRate = () => {
 const useUnstakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const [unstakingRate, setStCeloExchangeRate] = useState(0);
+  const oneStCelo = new StCelo(WEI_PER_UNIT);
+  const { data: _unstakingRate, refetch: loadUnstakingRate } = useContractRead({
+    ...managerContract,
+    functionName: 'toCelo',
+    args: [oneStCelo.toBigInt()],
+  });
 
-  const loadUnstakingRate = useCallback(async () => {
-    if (!managerContract) {
-      return;
-    }
-    const oneStCelo = new StCelo(WEI_PER_UNIT);
-    const celoAmount = new Celo(await managerContract.contract.read.toCelo([oneStCelo.toFixed()]));
-    setStCeloExchangeRate(celoAmount.dividedBy(oneStCelo).toNumber());
-  }, [managerContract]);
+  const unstakingRate = useMemo(
+    () => new Celo(_unstakingRate).dividedBy(oneStCelo).toNumber() || 0,
+    [_unstakingRate]
+  );
 
   return {
     unstakingRate,
@@ -67,19 +66,19 @@ const useUnstakingRate = () => {
 };
 
 const useCeloToUSDRate = () => {
-  const { sortedOraclesContract, stableTokenContract } = useBlockchain();
-  const [celoToUSDRate, setCeloToUSDRate] = useState(0);
+  const sortedOraclesAddress = useCeloRegistryAddress('SortedOracles');
+  const stableTokenAddress = useCeloRegistryAddress('StableToken');
+  const { data, isLoading } = useSortedOraclesMedianRate({
+    address: stableTokenAddress ? sortedOraclesAddress : undefined,
+    args: [stableTokenAddress!],
+  });
 
-  const loadCeloToUSDRate = useCallback(async () => {
-    if (!sortedOraclesContract || !stableTokenContract) return;
-    const [rate, by] = (await sortedOraclesContract.contract.read.medianRate([
-      stableTokenContract.address,
-    ])) as [bigint, bigint];
-    setCeloToUSDRate(parseFloat(new Token(rate).dividedBy(new Token(by)).toFixed(2)));
-  }, [sortedOraclesContract, stableTokenContract]);
+  const celoToUSDRate = useMemo(() => {
+    if (isLoading || !data) return 0;
 
-  return {
-    celoToUSDRate,
-    loadCeloToUSDRate,
-  };
+    const [rate, by] = data;
+    return parseFloat(new Token(rate / by).toFixed(2));
+  }, [isLoading, data]);
+
+  return celoToUSDRate;
 };

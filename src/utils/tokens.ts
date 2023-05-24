@@ -27,6 +27,10 @@ export class Token extends BigNumber {
     const baseValue = fromWei(this.toFixed(0, BigNumber.ROUND_FLOOR));
     return new BigNumber(baseValue);
   }
+
+  toBigInt(): bigint {
+    return BigInt(this.toString());
+  }
 }
 
 export class Celo extends Token {

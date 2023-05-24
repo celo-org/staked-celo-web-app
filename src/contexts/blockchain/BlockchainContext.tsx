@@ -1,212 +1,56 @@
-import EpochRewards from '@celo/abis/EpochRewards.json';
-import GasPriceMinimum from '@celo/abis/GasPriceMinimum.json';
-import Registry from '@celo/abis/Registry.json';
-import SortedOracles from '@celo/abis/SortedOracles.json';
-import StableToken from '@celo/abis/StableToken.json';
-import { Celo } from '@celo/rainbowkit-celo/chains';
-import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
-import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
-import AccountABI from 'src/blockchain/ABIs/Account.json';
-import ManagerABI from 'src/blockchain/ABIs/Manager.json';
-import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import VoteABI from 'src/blockchain/ABIs/Vote.json';
+import { disconnect } from '@wagmi/core';
+import { createContext, PropsWithChildren, useEffect, useMemo } from 'react';
+import ManagerABI from 'src/blockchain/ABIs/Manager';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
-import getCeloRegistry from 'src/utils/celoRegistry';
+import useAddresses from 'src/hooks/useAddresses';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
-import { createPublicClient, getContract, http } from 'viem';
-import { usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 export interface TxCallbacks {
   onSent?: () => void;
 }
 
-/**
- * TODO: figure out how to obtain that type without using typeof and doing a dummy BS
- */
-const __dummyContract = getContract({
-  address: '0x0',
-  abi: Registry.abi,
-  publicClient: createPublicClient({
-    chain: Celo,
-    transport: http(),
-  }),
-});
-interface Contract {
-  address: `0x${string}`;
-  contract: typeof __dummyContract;
-}
-
 interface BlockchainContext {
-  epochRewardsContract: Contract | undefined;
-  sortedOraclesContract: Contract | undefined;
-  stableTokenContract: Contract | undefined;
-  gasPriceMinimumContract: Contract | undefined;
-  managerContract: Contract | undefined;
-  stCeloContract: Contract | undefined;
-  accountContract: Contract | undefined;
-  voteContract: Contract | undefined;
   addresses: typeof mainnetAddresses | typeof testnetAddresses;
-  sendTransaction: (txObject: unknown, callbacks?: TxCallbacks) => Promise<void>;
+  managerContract: {
+    address: `0x${string}` | undefined;
+    abi: typeof ManagerABI;
+  };
 }
 
 export const BlockchainContext = createContext<BlockchainContext>({
-  epochRewardsContract: undefined,
-  sortedOraclesContract: undefined,
-  stableTokenContract: undefined,
-  gasPriceMinimumContract: undefined,
-  managerContract: undefined,
-  stCeloContract: undefined,
-  accountContract: undefined,
-  voteContract: undefined,
   addresses: mainnetAddresses,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  sendTransaction: (_viemRequest: unknown) => Promise.resolve(undefined),
+  managerContract: {
+    address: undefined,
+    abi: ManagerABI,
+  },
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
-  const publicClient = usePublicClient();
-  const { data: client } = useWalletClient();
-
-  const addresses = useMemo(() => {
-    if (publicClient.chain.id === Celo.id) return mainnetAddresses;
-    return testnetAddresses;
-  }, [publicClient]);
-
-  const registryContract = useMemo(() => getCeloRegistry(publicClient), [publicClient]);
-
-  const managerContract = useMemo<Contract>(
-    () =>
-      ({
-        address: addresses.manager,
-        contract: getContract({
-          address: addresses.manager,
-          abi: ManagerABI,
-          publicClient,
-        }),
-      } as Contract),
-    [addresses, publicClient]
+  const { address } = useAccount();
+  const addresses = useAddresses();
+  const managerContract = useMemo(
+    () => ({
+      address: addresses.manager,
+      abi: ManagerABI,
+    }),
+    [addresses]
   );
 
-  const stCeloContract = useMemo<Contract>(
-    () =>
-      ({
-        address: addresses.stakedCelo,
-        contract: getContract({ address: addresses.stakedCelo, abi: StCeloABI, publicClient }),
-      } as Contract),
-    [addresses.stakedCelo, publicClient]
-  );
-  const accountContract = useMemo<Contract>(
-    () =>
-      ({
-        address: addresses.account,
-        contract: getContract({ address: addresses.account, abi: AccountABI, publicClient }),
-      } as Contract),
-    [addresses.account, publicClient]
-  );
-  const voteContract = useMemo<Contract>(
-    () =>
-      ({
-        address: addresses.vote,
-        contract: getContract({ address: addresses.vote, abi: VoteABI, publicClient }),
-      } as Contract),
-    [addresses.vote, publicClient]
-  );
-
-  const sendTransaction = useCallback(
-    async (request: any, callbacks?: TxCallbacks) => {
-      if (!client) {
-        throw new Error('Couldnt get wallet client, are you connected?');
+  useEffect(() => {
+    void (async () => {
+      const sanctioned = address && (await isSanctionedAddress(address));
+      if (sanctioned) {
+        await disconnect();
       }
-      if (await isSanctionedAddress(request.account)) {
-        throw new Error(COMPLIANT_ERROR_RESPONSE);
-      }
-      const hash = await client.writeContract(request);
-      if (callbacks?.onSent) callbacks.onSent();
-      await publicClient.waitForTransactionReceipt({ hash });
-    },
-    [client, publicClient]
-  );
-
-  const [epochRewardsContract, setEpochRewardsContract] = useState<Contract>();
-  useEffect(
-    () =>
-      void registryContract.read.getAddressForString(['EpochRewards']).then((result) => {
-        const address = result as `0x${string}`;
-        setEpochRewardsContract({
-          address,
-          contract: getContract({
-            address,
-            abi: EpochRewards.abi,
-            publicClient,
-          }),
-        });
-      }),
-    [publicClient, registryContract]
-  );
-
-  const [sortedOraclesContract, setSortedOraclesContract] = useState<Contract>();
-  useEffect(
-    () =>
-      void registryContract.read.getAddressForString(['SortedOracles']).then((result) => {
-        const address = result as `0x${string}`;
-        setSortedOraclesContract({
-          address,
-          contract: getContract({
-            address,
-            abi: SortedOracles.abi,
-            publicClient,
-          }),
-        });
-      }),
-    [publicClient, registryContract]
-  );
-
-  const [stableTokenContract, setStableTokenContract] = useState<Contract>();
-  useEffect(
-    () =>
-      void registryContract.read.getAddressForString(['StableToken']).then((result) => {
-        const address = result as `0x${string}`;
-        setStableTokenContract({
-          address,
-          contract: getContract({
-            address,
-            abi: StableToken.abi,
-            publicClient,
-          }),
-        });
-      }),
-    [publicClient, registryContract]
-  );
-  const [gasPriceMinimumContract, setGasPriceMinimumContract] = useState<Contract>();
-  useEffect(
-    () =>
-      void registryContract.read.getAddressForString(['GasPriceMinimum']).then((result) => {
-        const address = result as `0x${string}`;
-        setGasPriceMinimumContract({
-          address,
-          contract: getContract({
-            address,
-            abi: GasPriceMinimum.abi,
-            publicClient,
-          }),
-        });
-      }),
-    [publicClient, registryContract]
-  );
+    })();
+  }, [address]);
 
   return (
     <BlockchainContext.Provider
       value={{
-        epochRewardsContract,
-        sortedOraclesContract,
-        stableTokenContract,
-        gasPriceMinimumContract,
-        managerContract,
-        stCeloContract,
-        accountContract,
-        voteContract,
         addresses,
-        sendTransaction,
+        managerContract,
       }}
     >
       {children}

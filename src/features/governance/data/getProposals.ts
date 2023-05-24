@@ -1,43 +1,33 @@
-import Governance from '@celo/abis/Governance.json';
+import { governanceABI } from 'src/blockchain/ABIs/Celo';
 import { ProposalStage } from 'src/features/governance/components/Details';
-import getCeloRegistry from 'src/utils/celoRegistry';
+import celoRegistry from 'src/utils/celoRegistry';
 import clients from 'src/utils/clients';
 import { getRawGithubUrl, ParsedYAML, parsedYAMLFromMarkdown } from 'src/utils/proposals';
-import { getContract, PublicClient } from 'viem';
+import { getContract } from 'viem';
 import { MiniProposal, Proposal } from './Proposal';
 
 const PROPOSAL_STAGE_KEYS = Object.keys(ProposalStage);
 
 type MetadataResult = [string, bigint, bigint, bigint, string];
 
-async function getGovernanceContract(publicClient: PublicClient) {
-  const registryContract = getCeloRegistry(publicClient);
-  const result = await registryContract.read.getAddressForString(['Governance']);
-  const address = result as `0x${string}`;
-  return {
-    address,
-    abi: Governance.abi,
-    contract: getContract({
-      address,
-      abi: Governance.abi,
-      publicClient,
-    }),
-  };
-}
-
 export const getProposals = async (chainId: number) => {
   const publicClient = clients[chainId];
-  const governanceContract = await getGovernanceContract(publicClient);
+  const registryContract = getContract({ ...celoRegistry, publicClient });
+  const governanceAddress = await registryContract.read.getAddressForString(['Governance']);
+  const governanceContract = getContract({
+    address: governanceAddress,
+    abi: governanceABI,
+    publicClient,
+  });
 
-  const _dequeue = (await governanceContract.contract.read.getDequeue([])) as bigint[];
+  const _dequeue = await governanceContract.read.getDequeue();
   const stageCalls = _dequeue.map((proposalId) => ({
-    address: governanceContract.address,
-    abi: governanceContract.abi,
+    address: governanceAddress,
+    abi: governanceABI,
     functionName: 'getProposalStage',
     args: [proposalId],
   }));
 
-  // @ts-expect-error
   const stages = (await publicClient.multicall({ contracts: stageCalls })).map(
     (x) => x.result as unknown as number
   );
@@ -58,13 +48,12 @@ export const getProposals = async (chainId: number) => {
 
   const relevantProposals = [...current, ...passed];
   const metadataCalls = relevantProposals.map((proposal) => ({
-    address: governanceContract.address,
-    abi: governanceContract.abi,
+    address: governanceAddress,
+    abi: governanceABI,
     functionName: 'getProposal',
     args: [proposal.proposalID],
   }));
 
-  // @ts-expect-error
   const metadatas = (await publicClient.multicall({ contracts: metadataCalls })).map(
     (x) => x.result as MetadataResult
   );
@@ -105,31 +94,33 @@ export const getProposalRecord = async (
   proposalID: string
 ): Promise<SerializedProposal | null> => {
   const publicClient = clients[chainId];
-  const governanceContract = await getGovernanceContract(publicClient);
+  const registryContract = getContract({ ...celoRegistry, publicClient });
+  const governanceAddress = await registryContract.read.getAddressForString(['Governance']);
+  const governanceContract = getContract({
+    address: governanceAddress,
+    abi: governanceABI,
+    publicClient,
+  });
 
   const [_dequeue, _stage, _metadata] = (
     await publicClient.multicall({
       contracts: [
         {
-          address: governanceContract.address,
-          // @ts-expect-error
-          abi: governanceContract.abi,
+          address: governanceAddress,
+          abi: governanceABI,
           functionName: 'getDequeue',
-          args: [],
         },
         {
-          address: governanceContract.address,
-          // @ts-expect-error
-          abi: governanceContract.abi,
+          address: governanceAddress,
+          abi: governanceABI,
           functionName: 'getProposalStage',
-          args: [proposalID],
+          args: [BigInt(proposalID)],
         },
         {
-          address: governanceContract.address,
-          // @ts-expect-error
-          abi: governanceContract.abi,
+          address: governanceAddress,
+          abi: governanceABI,
           functionName: 'getProposal',
-          args: [proposalID],
+          args: [BigInt(proposalID)],
         },
       ],
     })

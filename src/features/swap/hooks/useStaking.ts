@@ -1,74 +1,57 @@
 import { useCallback, useMemo, useState } from 'react';
-import ManagerABI from 'src/blockchain/ABIs/Manager.json';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { useAPI } from 'src/hooks/useAPI';
 import { Mode } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { usePublicClient } from 'wagmi';
+import { useContractWrite, usePublicClient } from 'wagmi';
 import { showStakingToast } from '../utils/toast';
 
 export function useStaking() {
-  const { address, loadBalances, celoBalance } = useAccountContext();
-  const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
+  const { address, loadBalances, celoBalance, stCeloBalance } = useAccountContext();
+  const { managerContract } = useBlockchain();
   const { api } = useAPI();
-  const { stakingRate, celoToUSDRate, suggestedGasPrice } = useProtocolContext();
+  const { stakingRate, celoToUSDRate } = useProtocolContext();
+  const { suggestedGasPrice } = useGasPrices();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
   const publicClient = usePublicClient();
 
-  const getParams = useCallback(
-    () => ({
-      address: managerContract!.address,
-      abi: ManagerABI,
-      account: address!,
-      functionName: 'deposit',
-      value: `0x${celoAmount!.toString(16)}`,
-    }),
-    [address, managerContract, celoAmount]
-  );
+  const { writeAsync: _stake } = useContractWrite({
+    ...managerContract,
+    functionName: 'deposit',
+    value: 0n,
+  });
 
   const stake = useCallback(
     async (callbacks?: TxCallbacks) => {
-      if (!address || !stCeloContract || !celoAmount || celoAmount.isEqualTo(0)) return;
+      if (!address || !celoAmount || celoAmount.isEqualTo(0) || !stCeloBalance || !loadBalances) {
+        return;
+      }
 
-      // @ts-expect-error
-      const { request } = await publicClient.simulateContract(getParams());
-
-      const preDepositStTokenBalance = new StCelo(
-        await stCeloContract.contract.read.balanceOf([address])
-      );
+      const preDepositStTokenBalance = stCeloBalance!;
       transactionEvent({
         action: Mode.stake,
         status: 'initiated_transaction',
         value: celoAmount.displayAsBase(),
       });
-      await sendTransaction(request, callbacks);
+      await _stake({ value: celoAmount?.toBigInt() });
       transactionEvent({
         action: Mode.stake,
         status: 'signed_transaction',
         value: celoAmount.displayAsBase(),
       });
       void api.activate(); // TODO: should this be awaited? added void to shut linter.
-      await loadBalances();
-      const postDepositStTokenBalance = new StCelo(
-        await stCeloContract.contract.read.balanceOf([address])
-      );
+      const [{ data: _celoBalance }, { data: _stCeloBalance }] = await loadBalances();
+      const postDepositStTokenBalance = new StCelo(_stCeloBalance);
       const receivedStCelo = new StCelo(postDepositStTokenBalance.minus(preDepositStTokenBalance));
+      callbacks?.onSent?.();
       showStakingToast(receivedStCelo);
       setCeloAmount(null);
     },
-    [
-      address,
-      api,
-      celoAmount,
-      getParams,
-      loadBalances,
-      publicClient,
-      sendTransaction,
-      stCeloContract,
-    ]
+    [address, api, celoAmount, loadBalances, publicClient, stCeloBalance]
   );
 
   const estimateStakingGas = useCallback(async () => {
@@ -76,25 +59,25 @@ export function useStaking() {
       !celoAmount ||
       celoAmount.isEqualTo(0) ||
       celoAmount.isGreaterThan(celoBalance) ||
-      !managerContract
+      !address ||
+      !managerContract.address
     ) {
       return null;
     }
 
-    // @ts-expect-error
-    const gasFee = new Token(await publicClient.estimateContractGas(getParams()));
+    const gasFee = new Token(
+      await publicClient.estimateContractGas({
+        abi: managerContract.abi,
+        address: managerContract.address!,
+        account: address!,
+        functionName: 'deposit',
+        value: celoAmount.toBigInt(),
+      })
+    );
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;
-  }, [
-    celoAmount,
-    celoBalance,
-    managerContract,
-    publicClient,
-    getParams,
-    suggestedGasPrice,
-    celoToUSDRate,
-  ]);
+  }, [celoAmount, celoBalance, managerContract, publicClient, suggestedGasPrice, celoToUSDRate]);
 
   const receivedStCelo = useMemo(
     () => (celoAmount ? new StCelo(celoAmount.multipliedBy(stakingRate).dp(0)) : null),

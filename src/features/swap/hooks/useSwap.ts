@@ -46,7 +46,7 @@ export function useSwap(mode: Mode) {
   }
 
   const setMaxAmount = useCallback(() => {
-    const maxAmount = new Token(balance.minus(MAX_AMOUNT_THRESHOLD));
+    const maxAmount = new Token(balance.minus(MAX_AMOUNT_THRESHOLD.toString()));
     setAmount(maxAmount);
   }, [setAmount, balance]);
 

@@ -22,7 +22,7 @@ interface Query extends ParsedUrlQuery {
 
 const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }: Props) => {
   const router = useRouter();
-  const { groupAddress } = router.query;
+  const { slug: groupAddress } = router.query;
   const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
   useRedirectToConnectedChainIfNeeded(serverChainId, `/validators/${address}`);
 
@@ -46,9 +46,8 @@ export const getServerSideProps: GetServerSideProps<Props, Query> = async ({
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SERVE_STALE_WHILE_REVALIDATE_SECONDS}`
   );
 
-  const address = Array.isArray(params?.groupAddress)
-    ? params?.groupAddress[0]
-    : params?.groupAddress;
+  const groupAddress = params?.slug;
+  const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
   if (typeof address !== 'string' || !isAddress(address)) {
     return {
       notFound: true,

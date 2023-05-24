@@ -1,21 +1,23 @@
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
+import VoteABI from 'src/blockchain/ABIs/Vote';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
-import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { showVoteToast } from 'src/features/swap/utils/toast';
+import useAddresses from 'src/hooks/useAddresses';
 import { VoteType } from 'src/types';
 import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
 import { readFromCache, writeToCache } from 'src/utils/localSave';
-import { Celo } from 'src/utils/tokens';
-import { useAccount, useChainId } from 'wagmi';
+import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
 
 export const useVote = () => {
-  const { managerContract, voteContract, sendTransaction } = useBlockchain();
-  const { suggestedGasPrice } = useProtocolContext();
+  const addresses = useAddresses();
+  const { managerContract } = useBlockchain();
+  const { suggestedGasPrice } = useGasPrices();
   const { stCeloBalance, votes } = useAccountContext();
   const { address } = useAccount();
   const chainId = useChainId();
@@ -28,52 +30,58 @@ export const useVote = () => {
     [network.name]
   );
 
+  const { data: voteWeight } = useContractRead({
+    ...managerContract,
+    functionName: 'toCelo',
+    args: [stCeloBalance.toBigInt()],
+  });
+  const { writeAsync: _voteProposal } = useContractWrite({
+    ...managerContract,
+    functionName: 'voteProposal',
+  });
+
   /*
    * @param proposal - full serialized proposal
    * @param vote - yes | no | abstain
    */
   const [voteProposal, voteProposalStatus] = useAsyncCallback(
     async (proposal: SerializedProposal, vote: VoteType, callbacks?: TxCallbacks) => {
-      if (!address || !managerContract || !voteContract) {
+      if (!address || !managerContract) {
         throw new Error('vote called before loading completed');
       }
       if (proposal.stage !== ProposalStage.Referendum) {
         throw new Error('vote called on proposal that is not in Referendum stage');
       }
-      const asCelo = new Celo(
-        await managerContract?.contract.read.toCelo([`0x${stCeloBalance.toString(16)}`])
-      );
-      const voteWeight = `0x${asCelo.toString(16)}`;
-
-      const zero = `0x0`;
-      const { request } = await managerContract.contract.simulate.voteProposal({
-        account: address,
-        args: [
-          proposal.proposalID,
-          proposal.index!,
-          vote === VoteType.yes ? voteWeight : zero,
-          vote === VoteType.no ? voteWeight : zero,
-          vote === VoteType.abstain ? voteWeight : zero,
-        ],
-      });
+      if (!voteWeight) {
+        throw new Error('Unsufficient balance');
+      }
       transactionEvent({
         action: 'voteProposal',
         status: 'initiated_transaction',
         value: vote,
       });
-      await sendTransaction(request, callbacks);
+      await _voteProposal?.({
+        args: [
+          BigInt(proposal.proposalID),
+          BigInt(proposal.index!),
+          vote === VoteType.yes ? voteWeight : 0n,
+          vote === VoteType.no ? voteWeight : 0n,
+          vote === VoteType.abstain ? voteWeight : 0n,
+        ],
+      });
       transactionEvent({
         action: 'voteProposal',
         status: 'signed_transaction',
-        value: voteWeight,
+        value: voteWeight.toString(),
       });
+      callbacks?.onSent?.();
       writeToCache(getVoteCacheKey(proposal.proposalID.toString()), [
         vote,
         stCeloBalance.toString(),
       ]);
       showVoteToast({ vote, proposalID: proposal.proposalID.toString() });
     },
-    [address, voteContract, suggestedGasPrice, managerContract]
+    [address, suggestedGasPrice, voteWeight]
   );
 
   const getProposalVote = useCallback(
@@ -93,17 +101,21 @@ export const useVote = () => {
     [votes, getVoteCacheKey]
   );
 
+  const { data: proposalIds } = useContractRead({
+    abi: VoteABI,
+    address: address ? addresses.vote : undefined,
+    functionName: 'getVotedStillRelevantProposals',
+    args: [address!],
+  });
+
   const [getHasVoted, getHasVotedStatus] = useAsyncCallback(
     async (proposal: SerializedProposal): Promise<boolean> => {
-      if (!address || !voteContract) {
+      if (!proposalIds) {
         throw new Error('vote called before loading completed');
       }
-      const proposalIds = (await voteContract?.contract.read.getVotedStillRelevantProposals([
-        address,
-      ])) as bigint[];
       return proposalIds.includes(BigInt(proposal.proposalID));
     },
-    [address]
+    [address, proposalIds]
   );
 
   return { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote };
