@@ -69,7 +69,7 @@ const useCeloToUSDRate = () => {
   const sortedOraclesAddress = useCeloRegistryAddress('SortedOracles');
   const stableTokenAddress = useCeloRegistryAddress('StableToken');
   const { data, isLoading } = useSortedOraclesMedianRate({
-    address: stableTokenAddress ? sortedOraclesAddress : undefined,
+    address: stableTokenAddress && sortedOraclesAddress,
     args: [stableTokenAddress!],
   });
 

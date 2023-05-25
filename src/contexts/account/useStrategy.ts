@@ -10,9 +10,8 @@ export default function useStrategy(address: `0x${string}` | undefined) {
     isLoading,
     refetch: reloadStrategy,
   } = useContractRead({
-    abi: managerContract.abi,
-    address: address ? managerContract.address : undefined,
-    functionName: 'getAddressStrategy',
+    ...managerContract,
+    functionName: address && 'getAddressStrategy',
     args: [address!],
   });
 

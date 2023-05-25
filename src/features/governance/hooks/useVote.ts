@@ -1,13 +1,11 @@
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
-import VoteABI from 'src/blockchain/ABIs/Vote';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { showVoteToast } from 'src/features/swap/utils/toast';
-import useAddresses from 'src/hooks/useAddresses';
 import { VoteType } from 'src/types';
 import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
@@ -15,8 +13,7 @@ import { readFromCache, writeToCache } from 'src/utils/localSave';
 import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
 
 export const useVote = () => {
-  const addresses = useAddresses();
-  const { managerContract } = useBlockchain();
+  const { managerContract, voteContract } = useBlockchain();
   const { suggestedGasPrice } = useGasPrices();
   const { stCeloBalance, votes } = useAccountContext();
   const { address } = useAccount();
@@ -81,7 +78,7 @@ export const useVote = () => {
       ]);
       showVoteToast({ vote, proposalID: proposal.proposalID.toString() });
     },
-    [address, suggestedGasPrice, voteWeight]
+    [address, suggestedGasPrice, voteWeight, _voteProposal]
   );
 
   const getProposalVote = useCallback(
@@ -102,9 +99,8 @@ export const useVote = () => {
   );
 
   const { data: proposalIds } = useContractRead({
-    abi: VoteABI,
-    address: address ? addresses.vote : undefined,
-    functionName: 'getVotedStillRelevantProposals',
+    ...voteContract,
+    functionName: address && 'getVotedStillRelevantProposals',
     args: [address!],
   });
 
@@ -115,7 +111,7 @@ export const useVote = () => {
       }
       return proposalIds.includes(BigInt(proposal.proposalID));
     },
-    [address, proposalIds]
+    [proposalIds]
   );
 
   return { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote };

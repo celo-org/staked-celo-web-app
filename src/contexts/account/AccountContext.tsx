@@ -17,8 +17,8 @@ interface AccountContext {
   celoBalance: Celo;
   stCeloBalance: StCelo;
   loadBalances: ReturnType<typeof useAccountBalances>['loadBalances'] | undefined;
-  pendingWithdrawals: PendingWithdrawal[];
-  loadPendingWithdrawals: () => Promise<void>;
+  pendingWithdrawals: PendingWithdrawal[] | undefined;
+  loadPendingWithdrawals: ReturnType<typeof useWithdrawals>['loadPendingWithdrawals'] | undefined;
   strategy: `0x${string}` | undefined;
   reloadStrategy: ReturnType<typeof useStrategy>['reloadStrategy'] | undefined;
   votes: VoteRecords;
@@ -31,7 +31,7 @@ export const AccountContext = createContext<AccountContext>({
   stCeloBalance: new StCelo(0),
   loadBalances: undefined,
   pendingWithdrawals: [],
-  loadPendingWithdrawals: () => Promise.resolve(),
+  loadPendingWithdrawals: undefined,
   strategy: undefined,
   reloadStrategy: undefined,
   votes: {},

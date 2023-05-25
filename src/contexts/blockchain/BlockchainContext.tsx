@@ -1,6 +1,11 @@
 import { disconnect } from '@wagmi/core';
 import { createContext, PropsWithChildren, useEffect, useMemo } from 'react';
+import AccountABI from 'src/blockchain/ABIs/Account';
+import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth';
 import ManagerABI from 'src/blockchain/ABIs/Manager';
+import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy';
+import StakedCeloABI from 'src/blockchain/ABIs/StakedCelo';
+import VoteABI from 'src/blockchain/ABIs/Vote';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import useAddresses from 'src/hooks/useAddresses';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
@@ -10,12 +15,19 @@ export interface TxCallbacks {
   onSent?: () => void;
 }
 
+interface Contract<T> {
+  address: `0x${string}` | undefined;
+  abi: T;
+}
+
 interface BlockchainContext {
   addresses: typeof mainnetAddresses | typeof testnetAddresses;
-  managerContract: {
-    address: `0x${string}` | undefined;
-    abi: typeof ManagerABI;
-  };
+  managerContract: Contract<typeof ManagerABI>;
+  accountContract: Contract<typeof AccountABI>;
+  stakedCeloContract: Contract<typeof StakedCeloABI>;
+  voteContract: Contract<typeof VoteABI>;
+  groupHealthContract: Contract<typeof GroupHealthABI>;
+  specificGroupStrategyContract: Contract<typeof SpecificGroupStrategyABI>;
 }
 
 export const BlockchainContext = createContext<BlockchainContext>({
@@ -23,6 +35,26 @@ export const BlockchainContext = createContext<BlockchainContext>({
   managerContract: {
     address: undefined,
     abi: ManagerABI,
+  },
+  accountContract: {
+    address: undefined,
+    abi: AccountABI,
+  },
+  stakedCeloContract: {
+    address: undefined,
+    abi: StakedCeloABI,
+  },
+  voteContract: {
+    address: undefined,
+    abi: VoteABI,
+  },
+  groupHealthContract: {
+    address: undefined,
+    abi: GroupHealthABI,
+  },
+  specificGroupStrategyContract: {
+    address: undefined,
+    abi: SpecificGroupStrategyABI,
   },
 });
 
@@ -37,6 +69,41 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     [addresses]
   );
 
+  const accountContract = useMemo(
+    () => ({
+      address: addresses.account,
+      abi: AccountABI,
+    }),
+    [addresses]
+  );
+  const stakedCeloContract = useMemo(
+    () => ({
+      address: addresses.stakedCelo,
+      abi: StakedCeloABI,
+    }),
+    [addresses]
+  );
+  const voteContract = useMemo(
+    () => ({
+      address: addresses.vote,
+      abi: VoteABI,
+    }),
+    [addresses]
+  );
+  const groupHealthContract = useMemo(
+    () => ({
+      address: addresses.groupHealth,
+      abi: GroupHealthABI,
+    }),
+    [addresses]
+  );
+  const specificGroupStrategyContract = useMemo(
+    () => ({
+      address: addresses.specificGroupStrategy,
+      abi: SpecificGroupStrategyABI,
+    }),
+    [addresses]
+  );
   useEffect(() => {
     void (async () => {
       const sanctioned = address && (await isSanctionedAddress(address));
@@ -51,6 +118,11 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
       value={{
         addresses,
         managerContract,
+        accountContract,
+        stakedCeloContract,
+        voteContract,
+        groupHealthContract,
+        specificGroupStrategyContract,
       }}
     >
       {children}

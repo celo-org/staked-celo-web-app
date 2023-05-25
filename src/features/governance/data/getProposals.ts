@@ -96,11 +96,6 @@ export const getProposalRecord = async (
   const publicClient = clients[chainId];
   const registryContract = getContract({ ...celoRegistry, publicClient });
   const governanceAddress = await registryContract.read.getAddressForString(['Governance']);
-  const governanceContract = getContract({
-    address: governanceAddress,
-    abi: governanceABI,
-    publicClient,
-  });
 
   const [_dequeue, _stage, _metadata] = (
     await publicClient.multicall({

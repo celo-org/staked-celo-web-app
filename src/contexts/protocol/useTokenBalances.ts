@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import AccountABI from 'src/blockchain/ABIs/Account';
-import useAddresses from 'src/hooks/useAddresses';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Celo } from 'src/utils/tokens';
 import { useContractRead } from 'wagmi';
 
 export const useTokenBalances = () => {
-  const addresses = useAddresses();
+  const { accountContract } = useBlockchain();
   const { data: _totalCeloBalance, refetch: loadTotalCeloBalance } = useContractRead({
-    address: addresses.account,
-    abi: AccountABI,
+    ...accountContract,
     functionName: 'getTotalCelo',
   });
   const totalCeloBalance = useMemo(() => new Celo(_totalCeloBalance || 0), [_totalCeloBalance]);

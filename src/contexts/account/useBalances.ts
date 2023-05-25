@@ -1,18 +1,16 @@
 import { useMemo } from 'react';
-import StakedCeloABI from 'src/blockchain/ABIs/StakedCelo';
-import useAddresses from 'src/hooks/useAddresses';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Celo, StCelo } from 'src/utils/tokens';
 import { useBalance, useContractRead } from 'wagmi';
 
 export const useAccountBalances = (address: `0x${string}` | undefined) => {
-  const addresses = useAddresses();
+  const { stakedCeloContract } = useBlockchain();
   const { data: rawCeloBalance, refetch: refetchCelo } = useBalance({
-    address: address,
+    address,
   });
   const { data: rawStCeloBalance, refetch: refetchStCelo } = useContractRead({
-    abi: StakedCeloABI,
-    address: address ? addresses.stakedCelo : undefined,
-    functionName: 'balanceOf',
+    ...stakedCeloContract,
+    functionName: address && 'balanceOf',
     args: [address!],
   });
 

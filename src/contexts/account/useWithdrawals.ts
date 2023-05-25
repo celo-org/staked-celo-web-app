@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useAPI } from 'src/hooks/useAPI';
 import { Celo } from 'src/utils/tokens';
-import { usePublicClient } from 'wagmi';
+import { useContractRead, usePublicClient } from 'wagmi';
 
 export interface PendingWithdrawal {
   amount: Celo;
@@ -38,28 +38,29 @@ export const useWithdrawalBot = (/*address: string | undefined*/) => {
   // }, [finalizeWithdrawal]);
 };
 
-export const useClaimingBot = (address: string | undefined) => {
+export const useClaimingBot = (address: `0x${string}` | undefined) => {
   const { api } = useAPI();
   const { accountContract } = useBlockchain();
   const publicClient = usePublicClient();
+  const { refetch: loadPendingWithdrawals } = useContractRead({
+    ...accountContract,
+    functionName: address && 'getPendingWithdrawals',
+    args: [address!],
+  });
 
   const claim = useCallback(async () => {
-    if (!address || !accountContract) return;
+    if (!address) return;
 
-    const [{ timestamp: currentBlockTimestamp }, valuesAndTimestamps] = await Promise.all([
-      publicClient.getBlock({ blockTag: 'latest' }),
-      accountContract.contract.read.getPendingWithdrawals([address]) as Promise<
-        [bigint[], bigint[]]
-      >,
-    ]);
-    const [, withdrawalTimestamps] = valuesAndTimestamps;
-
+    const [{ timestamp: currentBlockTimestamp }, { data: valuesAndTimestamps }] = await Promise.all(
+      [publicClient.getBlock({ blockTag: 'latest' }), loadPendingWithdrawals()]
+    );
+    const [, withdrawalTimestamps] = valuesAndTimestamps!;
     const availableToClaim = !!withdrawalTimestamps.find(
       (withdrawalTimestamp) => withdrawalTimestamp < currentBlockTimestamp
     );
 
     if (availableToClaim) await api.claim(address);
-  }, [address, accountContract, publicClient, api]);
+  }, [address, loadPendingWithdrawals, publicClient, api]);
 
   useEffect(() => {
     void claim();
@@ -104,24 +105,18 @@ const formatPendingWithdrawals = (values: bigint[], timestamps: bigint[]): Pendi
 
 const pendingWithdrawalsLoadInterval = 60 * 1000;
 
-export const useWithdrawals = (address: string | undefined) => {
+export const useWithdrawals = (address: `0x${string}` | undefined) => {
   const { accountContract } = useBlockchain();
-
-  const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawal[]>([]);
-  const loadPendingWithdrawals = useCallback(async () => {
-    if (!address || !accountContract) {
-      return;
-    }
-    const [values, timestamps] = (await accountContract.contract.read.getPendingWithdrawals([
-      address,
-    ])) as [bigint[], bigint[]];
-
-    setPendingWithdrawals(formatPendingWithdrawals(values, timestamps));
-  }, [accountContract, address]);
+  const { data: pendingWithdrawals, refetch: loadPendingWithdrawals } = useContractRead({
+    ...accountContract,
+    functionName: address && 'getPendingWithdrawals',
+    args: [address!],
+    select: ([values, timestamps]) =>
+      formatPendingWithdrawals(values as bigint[], timestamps as bigint[]),
+  });
 
   useEffect(() => {
     if (!address) return;
-    void loadPendingWithdrawals();
     const intervalId = setInterval(loadPendingWithdrawals, pendingWithdrawalsLoadInterval);
     return () => {
       clearInterval(intervalId);
