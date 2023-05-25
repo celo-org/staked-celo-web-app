@@ -40,3 +40,6 @@ public/THIRD_PARTY_LICENSES.txt
 # env
 .env
 src/blockchain/types
+
+# generated
+src/blockchain/ABIs/Celo.ts

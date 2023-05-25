@@ -7,7 +7,8 @@
     "build": "yarn generate-disclaimer && next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt"
+    "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt",
+    "postinstall": "ln -sf ../../../node_modules/@celo/abis/types/wagmi/index.ts src/blockchain/ABIs/Celo.ts"
   },
   "dependencies": {
     "@celo/abis": "^9.0.1",

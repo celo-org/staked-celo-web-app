@@ -35,7 +35,7 @@ export const Details = ({ proposal }: Props) => {
     useVote();
 
   useEffect(() => {
-    if (isConnected) void loadBalances();
+    if (isConnected) void loadBalances?.();
   }, [loadBalances, isConnected]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
