@@ -37,7 +37,7 @@ export const useChangeStrategy = () => {
         value: '',
       });
       showElectionToast();
-      await reloadStrategy?.(address);
+      await reloadStrategy?.();
       callbacks?.onSent?.();
     },
     [address, managerContract, reloadStrategy]
