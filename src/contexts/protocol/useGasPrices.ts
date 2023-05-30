@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { useGasPriceMinimumGasPriceMinimum } from 'src/blockchain/ABIs/Celo';
+import { gasPriceMinimumABI } from 'src/blockchain/ABIs/Celo';
 import { GAS_PRICE, GAS_PRICE_MULTIPLIER } from 'src/config/consts';
 import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
 import { Token } from 'src/utils/tokens';
+import { useContractRead } from 'wagmi';
 
 export const useGasPrices = () => {
   const address = useCeloRegistryAddress('GasPriceMinimum');
@@ -10,8 +11,10 @@ export const useGasPrices = () => {
     data: minimumGasPrice,
     isLoading: gasPriceMinimumLoading,
     refetch: loadGasPrices,
-  } = useGasPriceMinimumGasPriceMinimum({
+  } = useContractRead({
+    abi: gasPriceMinimumABI,
     address,
+    functionName: 'gasPriceMinimum',
   });
 
   const suggestedGasPrice = useMemo(() => {

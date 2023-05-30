@@ -1,17 +1,21 @@
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import {
-  useEpochRewardsGetRewardsMultiplier,
-  useEpochRewardsGetTargetVotingYieldParameters,
-} from 'src/blockchain/ABIs/Celo';
+import { epochRewardsABI } from 'src/blockchain/ABIs/Celo';
 import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
+import { useContractRead } from 'wagmi';
 
 export const useAnnualProjectedRate = () => {
   const address = useCeloRegistryAddress('EpochRewards');
-  const { data: rewardsMultiplierFraction, isLoading: multiplierLoading } =
-    useEpochRewardsGetRewardsMultiplier({ address });
-  const { data: targetVotingYieldParameters, isLoading: yieldParamsLoading } =
-    useEpochRewardsGetTargetVotingYieldParameters({ address });
+  const { data: rewardsMultiplierFraction, isLoading: multiplierLoading } = useContractRead({
+    abi: epochRewardsABI,
+    address,
+    functionName: 'getRewardsMultiplier',
+  });
+  const { data: targetVotingYieldParameters, isLoading: yieldParamsLoading } = useContractRead({
+    abi: epochRewardsABI,
+    address,
+    functionName: 'getTargetVotingYieldParameters',
+  });
 
   const annualProjectedRate = useMemo(() => {
     if (

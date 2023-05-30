@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useSortedOraclesMedianRate } from 'src/blockchain/ABIs/Celo';
+import { sortedOraclesABI } from 'src/blockchain/ABIs/Celo';
 import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
@@ -68,9 +68,11 @@ const useUnstakingRate = () => {
 const useCeloToUSDRate = () => {
   const sortedOraclesAddress = useCeloRegistryAddress('SortedOracles');
   const stableTokenAddress = useCeloRegistryAddress('StableToken');
-  const { data, isLoading } = useSortedOraclesMedianRate({
+  const { data, isLoading } = useContractRead({
+    abi: sortedOraclesABI,
     address: sortedOraclesAddress,
     args: [stableTokenAddress!],
+    functionName: 'medianRate',
     enabled: !!stableTokenAddress,
   });
 

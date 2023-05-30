@@ -37,9 +37,9 @@
     regenerator-runtime "^0.13.4"
 
 "@celo/abis@^9.0.1":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/@celo/abis/-/abis-9.0.1.tgz#1643ec197c6786f26f8fd3dc9cdd8f643e8d1f30"
-  integrity sha512-681Yt6zu6zMJNQSHErOc8w415ZpGXww40SnBVEY+0sms5lktyllHPNWkU0k3IxpTyDMMoyp+MjLR608gjrqD4w==
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@celo/abis/-/abis-9.0.2.tgz#28f42816d5ea26e2e4adea5149f64317c584251f"
+  integrity sha512-P3eEcXpUVpQAAqEICEoOoH/ONo8EloHBtwDl7Z5vueOGSWhTg/1zwpvoW1NEkB2r3liDA4NIQRAqSVeRunYRhA==
 
 "@celo/base@3.2.0":
   version "3.2.0"
