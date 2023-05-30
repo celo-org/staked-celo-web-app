@@ -51,7 +51,7 @@ export function useProposalVotes(address: `0x${string}` | undefined) {
         (key) => values[key] !== 0n
       );
 
-      if (vote) {
+      if (vote && values.proposalId) {
         sum[values.proposalId.toString()] = {
           vote: vote.replace('Votes', '') as VoteType,
           weight: values[vote as keyof typeof values] as string,
