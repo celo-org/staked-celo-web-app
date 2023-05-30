@@ -44,8 +44,9 @@ export const useClaimingBot = (address: `0x${string}` | undefined) => {
   const publicClient = usePublicClient();
   const { refetch: loadPendingWithdrawals } = useContractRead({
     ...accountContract,
-    functionName: address && 'getPendingWithdrawals',
+    functionName: 'getPendingWithdrawals',
     args: [address!],
+    enabled: !!address,
   });
 
   const claim = useCallback(async () => {
@@ -109,10 +110,11 @@ export const useWithdrawals = (address: `0x${string}` | undefined) => {
   const { accountContract } = useBlockchain();
   const { data: pendingWithdrawal, refetch: loadPendingWithdrawals } = useContractRead({
     ...accountContract,
-    functionName: address && 'getPendingWithdrawals',
+    functionName: 'getPendingWithdrawals',
     args: [address!],
     select: ([values, timestamps]) =>
       formatPendingWithdrawals(values as bigint[], timestamps as bigint[]),
+    enabled: !!address,
   });
 
   useEffect(() => {

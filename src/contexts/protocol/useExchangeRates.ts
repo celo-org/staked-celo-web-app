@@ -69,8 +69,9 @@ const useCeloToUSDRate = () => {
   const sortedOraclesAddress = useCeloRegistryAddress('SortedOracles');
   const stableTokenAddress = useCeloRegistryAddress('StableToken');
   const { data, isLoading } = useSortedOraclesMedianRate({
-    address: stableTokenAddress && sortedOraclesAddress,
+    address: sortedOraclesAddress,
     args: [stableTokenAddress!],
+    enabled: !!stableTokenAddress,
   });
 
   const celoToUSDRate = useMemo(() => {

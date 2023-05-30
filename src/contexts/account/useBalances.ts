@@ -10,8 +10,9 @@ export const useAccountBalances = (address: `0x${string}` | undefined) => {
   });
   const { data: rawStCeloBalance, refetch: refetchStCelo } = useContractRead({
     ...stakedCeloContract,
-    functionName: address && 'balanceOf',
+    functionName: 'balanceOf',
     args: [address!],
+    enabled: !!address,
   });
 
   const celoBalance = useMemo(() => new Celo(rawCeloBalance || 0), [rawCeloBalance]);

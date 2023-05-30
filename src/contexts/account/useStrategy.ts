@@ -11,8 +11,9 @@ export default function useStrategy(address: `0x${string}` | undefined) {
     refetch: reloadStrategy,
   } = useContractRead({
     ...managerContract,
-    functionName: address && 'getAddressStrategy',
+    functionName: 'getAddressStrategy',
     args: [address!],
+    enabled: !!address,
   });
 
   return { strategy, reloadStrategy, isLoading };

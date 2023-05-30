@@ -100,8 +100,9 @@ export const useVote = () => {
 
   const { data: proposalIds } = useContractRead({
     ...voteContract,
-    functionName: address && 'getVotedStillRelevantProposals',
+    functionName: 'getVotedStillRelevantProposals',
     args: [address!],
+    enabled: !!address,
   });
 
   const [getHasVoted, getHasVotedStatus] = useAsyncCallback(
