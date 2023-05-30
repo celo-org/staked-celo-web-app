@@ -45,13 +45,13 @@ export const SwapForm = ({
       e.preventDefault();
       setIsCalloutModalOpened(true);
       setIsLoading(true);
-      try {
-        onSubmit({ onSent: () => setIsCalloutModalOpened(false) });
-        await reloadProtocolContext();
-      } finally {
-        setIsLoading(false);
-        setIsCalloutModalOpened(false);
-      }
+      onSubmit({
+        onSent: () => {
+          setIsCalloutModalOpened(false);
+          setIsLoading(false);
+          void reloadProtocolContext();
+        },
+      });
     },
     [onSubmit, reloadProtocolContext]
   );

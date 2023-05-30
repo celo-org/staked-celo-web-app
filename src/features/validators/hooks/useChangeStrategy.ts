@@ -1,7 +1,7 @@
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
-import { showElectionToast } from 'src/features/swap/utils/toast';
+import { showElectionToast, showErrorToast } from 'src/features/swap/utils/toast';
 import { transactionEvent } from 'src/utils/ga';
 import { useAccount, useContractWrite } from 'wagmi';
 
@@ -28,17 +28,27 @@ export const useChangeStrategy = () => {
         status: 'initiated_transaction',
         value: '',
       });
-      await _changeStrategy?.({
-        args: [groupAddress],
-      });
-      transactionEvent({
-        action: 'changeStrategy',
-        status: 'signed_transaction',
-        value: '',
-      });
-      showElectionToast();
-      await reloadStrategy?.();
-      callbacks?.onSent?.();
+      try {
+        await _changeStrategy?.({
+          args: [groupAddress],
+        });
+        transactionEvent({
+          action: 'changeStrategy',
+          status: 'signed_transaction',
+          value: '',
+        });
+        showElectionToast();
+        await reloadStrategy?.();
+      } catch (e: unknown) {
+        console.error(e);
+        showErrorToast(
+          (e as Error).message.includes('rejected')
+            ? 'User rejected the request'
+            : (e as Error).message
+        );
+      } finally {
+        callbacks?.onSent?.();
+      }
     },
     [address, managerContract, reloadStrategy]
   );

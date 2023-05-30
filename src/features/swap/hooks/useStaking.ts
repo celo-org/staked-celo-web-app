@@ -8,7 +8,7 @@ import { Mode } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { useContractWrite, usePublicClient } from 'wagmi';
-import { showStakingToast } from '../utils/toast';
+import { showErrorToast, showStakingToast } from '../utils/toast';
 
 export function useStaking() {
   const { address, loadBalances, celoBalance, stCeloBalance } = useAccountContext();
@@ -37,19 +37,31 @@ export function useStaking() {
         status: 'initiated_transaction',
         value: celoAmount.displayAsBase(),
       });
-      await _stake({ value: celoAmount?.toBigInt() });
-      transactionEvent({
-        action: Mode.stake,
-        status: 'signed_transaction',
-        value: celoAmount.displayAsBase(),
-      });
-      void api.activate(); // TODO: should this be awaited? added void to shut linter.
-      const [{ data: _celoBalance }, { data: _stCeloBalance }] = await loadBalances();
-      const postDepositStTokenBalance = new StCelo(_stCeloBalance);
-      const receivedStCelo = new StCelo(postDepositStTokenBalance.minus(preDepositStTokenBalance));
-      callbacks?.onSent?.();
-      showStakingToast(receivedStCelo);
-      setCeloAmount(null);
+      try {
+        await _stake({ value: celoAmount?.toBigInt() });
+        transactionEvent({
+          action: Mode.stake,
+          status: 'signed_transaction',
+          value: celoAmount.displayAsBase(),
+        });
+        await api.activate();
+        const [{ data: _celoBalance }, { data: _stCeloBalance }] = await loadBalances();
+        const postDepositStTokenBalance = new StCelo(_stCeloBalance);
+        const receivedStCelo = new StCelo(
+          postDepositStTokenBalance.minus(preDepositStTokenBalance)
+        );
+        showStakingToast(receivedStCelo);
+        setCeloAmount(null);
+      } catch (e: unknown) {
+        console.error(e);
+        showErrorToast(
+          (e as Error).message.includes('rejected')
+            ? 'User rejected the request'
+            : (e as Error).message
+        );
+      } finally {
+        callbacks?.onSent?.();
+      }
     },
     [address, api, celoAmount, loadBalances, publicClient, stCeloBalance]
   );

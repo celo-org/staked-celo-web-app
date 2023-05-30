@@ -5,7 +5,7 @@ import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchai
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
-import { showVoteToast } from 'src/features/swap/utils/toast';
+import { showErrorToast, showVoteToast } from 'src/features/swap/utils/toast';
 import { VoteType } from 'src/types';
 import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
@@ -57,26 +57,36 @@ export const useVote = () => {
         status: 'initiated_transaction',
         value: vote,
       });
-      await _voteProposal?.({
-        args: [
-          BigInt(proposal.proposalID),
-          BigInt(proposal.index),
-          vote === VoteType.yes ? voteWeight : 0n,
-          vote === VoteType.no ? voteWeight : 0n,
-          vote === VoteType.abstain ? voteWeight : 0n,
-        ],
-      });
-      transactionEvent({
-        action: 'voteProposal',
-        status: 'signed_transaction',
-        value: voteWeight.toString(),
-      });
-      callbacks?.onSent?.();
-      writeToCache(getVoteCacheKey(proposal.proposalID.toString()), [
-        vote,
-        stCeloBalance.toString(),
-      ]);
-      showVoteToast({ vote, proposalID: proposal.proposalID.toString() });
+      try {
+        await _voteProposal?.({
+          args: [
+            BigInt(proposal.proposalID),
+            BigInt(proposal.index),
+            vote === VoteType.yes ? voteWeight : 0n,
+            vote === VoteType.no ? voteWeight : 0n,
+            vote === VoteType.abstain ? voteWeight : 0n,
+          ],
+        });
+        transactionEvent({
+          action: 'voteProposal',
+          status: 'signed_transaction',
+          value: voteWeight.toString(),
+        });
+        writeToCache(getVoteCacheKey(proposal.proposalID.toString()), [
+          vote,
+          stCeloBalance.toString(),
+        ]);
+        showVoteToast({ vote, proposalID: proposal.proposalID.toString() });
+      } catch (e: unknown) {
+        console.error(e);
+        showErrorToast(
+          (e as Error).message.includes('rejected')
+            ? 'User rejected the request'
+            : (e as Error).message
+        );
+      } finally {
+        callbacks?.onSent?.();
+      }
     },
     [address, suggestedGasPrice, voteWeight, _voteProposal]
   );
