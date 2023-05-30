@@ -17,7 +17,7 @@ interface AccountContext {
   celoBalance: Celo;
   stCeloBalance: StCelo;
   loadBalances: ReturnType<typeof useAccountBalances>['loadBalances'] | undefined;
-  pendingWithdrawals: PendingWithdrawal[] | undefined;
+  pendingWithdrawals: PendingWithdrawal[];
   loadPendingWithdrawals: ReturnType<typeof useWithdrawals>['loadPendingWithdrawals'] | undefined;
   strategy: `0x${string}` | undefined;
   reloadStrategy: ReturnType<typeof useStrategy>['reloadStrategy'] | undefined;

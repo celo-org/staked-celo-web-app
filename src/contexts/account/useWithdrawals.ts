@@ -107,7 +107,7 @@ const pendingWithdrawalsLoadInterval = 60 * 1000;
 
 export const useWithdrawals = (address: `0x${string}` | undefined) => {
   const { accountContract } = useBlockchain();
-  const { data: pendingWithdrawals, refetch: loadPendingWithdrawals } = useContractRead({
+  const { data: pendingWithdrawal, refetch: loadPendingWithdrawals } = useContractRead({
     ...accountContract,
     functionName: address && 'getPendingWithdrawals',
     args: [address!],
@@ -124,7 +124,7 @@ export const useWithdrawals = (address: `0x${string}` | undefined) => {
   }, [loadPendingWithdrawals, address]);
 
   return {
-    pendingWithdrawals,
+    pendingWithdrawals: pendingWithdrawal || [],
     loadPendingWithdrawals,
   };
 };
