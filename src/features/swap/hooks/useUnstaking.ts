@@ -49,7 +49,7 @@ export function useUnstaking() {
       await api.withdraw(address);
       callbacks?.onSent?.();
       showUnstakingToast();
-      await Promise.all([loadBalances(), loadPendingWithdrawals()]);
+      await Promise.all([loadBalances(), loadPendingWithdrawals?.()]);
       setStCeloAmount(null);
     },
     [
