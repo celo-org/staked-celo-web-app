@@ -8,7 +8,7 @@ export class Token extends BigNumber {
   constructor(value: any) {
     if (value instanceof BigNumber) {
       super(value.toFixed());
-    } else if (typeof value.value !== 'undefined') {
+    } else if (value && typeof value.value !== 'undefined') {
       // returnvalue from viem balanceOf looks like that:
       // { decimals: 18, formatted: "1", symbol: "CELO", value: 1n }
       super(value.value);

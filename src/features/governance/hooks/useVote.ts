@@ -43,7 +43,7 @@ export const useVote = () => {
    */
   const [voteProposal, voteProposalStatus] = useAsyncCallback(
     async (proposal: SerializedProposal, vote: VoteType, callbacks?: TxCallbacks) => {
-      if (!address || !managerContract) {
+      if (!address || !managerContract || !proposal.index) {
         throw new Error('vote called before loading completed');
       }
       if (proposal.stage !== ProposalStage.Referendum) {
@@ -60,7 +60,7 @@ export const useVote = () => {
       await _voteProposal?.({
         args: [
           BigInt(proposal.proposalID),
-          BigInt(proposal.index!),
+          BigInt(proposal.index),
           vote === VoteType.yes ? voteWeight : 0n,
           vote === VoteType.no ? voteWeight : 0n,
           vote === VoteType.abstain ? voteWeight : 0n,
