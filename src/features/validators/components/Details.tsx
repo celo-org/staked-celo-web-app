@@ -18,7 +18,7 @@ import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
 import { useChainId } from 'wagmi';
 interface Props {
-  groupAddress: string;
+  groupAddress: `0x${string}`;
   name?: string;
 }
 
