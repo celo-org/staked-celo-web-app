@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useAPI } from 'src/hooks/useAPI';
+import { Option } from 'src/types';
 import { Celo } from 'src/utils/tokens';
-import { useContractRead, usePublicClient } from 'wagmi';
+import { Address, useContractRead, usePublicClient } from 'wagmi';
 
 export interface PendingWithdrawal {
   amount: Celo;
@@ -38,7 +39,7 @@ export const useWithdrawalBot = (/*address: string | undefined*/) => {
   // }, [finalizeWithdrawal]);
 };
 
-export const useClaimingBot = (address: `0x${string}` | undefined) => {
+export const useClaimingBot = (address: Option<Address>) => {
   const { api } = useAPI();
   const { accountContract } = useBlockchain();
   const publicClient = usePublicClient();
@@ -106,7 +107,7 @@ const formatPendingWithdrawals = (values: bigint[], timestamps: bigint[]): Pendi
 
 const pendingWithdrawalsLoadInterval = 60 * 1000;
 
-export const useWithdrawals = (address: `0x${string}` | undefined) => {
+export const useWithdrawals = (address: Option<Address>) => {
   const { accountContract } = useBlockchain();
   const { data: pendingWithdrawal, refetch: loadPendingWithdrawals } = useContractRead({
     ...accountContract,

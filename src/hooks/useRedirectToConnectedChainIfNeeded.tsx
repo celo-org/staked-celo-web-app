@@ -2,11 +2,12 @@ import { Celo } from '@celo/rainbowkit-celo/chains';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { useLayoutEffect } from 'react';
+import { Option } from 'src/types';
 import { useChainId } from 'wagmi';
 
 // only use on page components
 export function useRedirectToConnectedChainIfNeeded(
-  chainServerKnowsAbout: number | undefined,
+  chainServerKnowsAbout: Option<number>,
   path: string
 ) {
   const router = useRouter();

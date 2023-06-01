@@ -13,40 +13,38 @@ import {
   VOTE_MAINNET_ADDRESS,
   VOTE_TESTNET_ADDRESS,
 } from 'src/config/consts';
+import { Address } from 'viem';
 
 interface ContractAddresses {
-  manager: `0x${string}`;
-  stakedCelo: `0x${string}`;
-  account: `0x${string}`;
-  specificGroupStrategy: `0x${string}`;
-  groupHealth: `0x${string}`;
-  vote: `0x${string}`;
+  manager: Address;
+  stakedCelo: Address;
+  account: Address;
+  specificGroupStrategy: Address;
+  groupHealth: Address;
+  vote: Address;
 }
 
 export const mainnetAddresses: ContractAddresses = {
-  manager: MANAGER_MAINNET_ADDRESS as `0x${string}`,
-  stakedCelo: STAKED_CELO_MAINNET_ADDRESS as `0x${string}`,
-  account: ACCOUNT_MAINNET_ADDRESS as `0x${string}`,
-  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS as `0x${string}`,
-  groupHealth: GROUP_HEALTH_MAINNET_ADDRESS as `0x${string}`,
-  vote: VOTE_MAINNET_ADDRESS as `0x${string}`,
+  manager: MANAGER_MAINNET_ADDRESS as Address,
+  stakedCelo: STAKED_CELO_MAINNET_ADDRESS as Address,
+  account: ACCOUNT_MAINNET_ADDRESS as Address,
+  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS as Address,
+  groupHealth: GROUP_HEALTH_MAINNET_ADDRESS as Address,
+  vote: VOTE_MAINNET_ADDRESS as Address,
 };
 
 export const testnetAddresses: ContractAddresses = {
-  manager: MANAGER_TESTNET_ADDRESS as `0x${string}`,
-  stakedCelo: STAKED_CELO_TESTNET_ADDRESS as `0x${string}`,
-  account: ACCOUNT_TESTNET_ADDRESS as `0x${string}`,
-  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS as `0x${string}`,
-  groupHealth: GROUP_HEALTH_TESTNET_ADDRESS as `0x${string}`,
-  vote: VOTE_TESTNET_ADDRESS as `0x${string}`,
+  manager: MANAGER_TESTNET_ADDRESS as Address,
+  stakedCelo: STAKED_CELO_TESTNET_ADDRESS as Address,
+  account: ACCOUNT_TESTNET_ADDRESS as Address,
+  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS as Address,
+  groupHealth: GROUP_HEALTH_TESTNET_ADDRESS as Address,
+  vote: VOTE_TESTNET_ADDRESS as Address,
 };
 
 type ContractNames = keyof typeof mainnetAddresses;
 
-export function getContractAddressForChain(
-  chainId: number,
-  contractName: ContractNames
-): `0x${string}` {
+export function getContractAddressForChain(chainId: number, contractName: ContractNames): Address {
   const address =
     chainId === Alfajores.id ? testnetAddresses[contractName] : mainnetAddresses[contractName];
   if (!address) {

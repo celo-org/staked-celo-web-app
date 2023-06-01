@@ -2,12 +2,9 @@ import { accountsABI } from 'src/blockchain/ABIs/Celo';
 import { ADDRESS_ZERO } from 'src/config/consts';
 import celoRegistry from 'src/utils/celoRegistry';
 import clients from 'src/utils/clients';
-import { getContract } from 'viem';
+import { Address, getContract } from 'viem';
 
-export default async function getGroupName(
-  chainId: number,
-  address: `0x${string}`
-): Promise<string> {
+export default async function getGroupName(chainId: number, address: Address): Promise<string> {
   const publicClient = clients[chainId];
   if (address === ADDRESS_ZERO) {
     return 'Default Strategy';

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import useAddresses from 'src/hooks/useAddresses';
-import { VoteType } from 'src/types';
-import { usePublicClient } from 'wagmi';
+import { Option, VoteType } from 'src/types';
+import { Address, usePublicClient } from 'wagmi';
 
 interface Vote {
   vote: VoteType;
@@ -13,7 +13,7 @@ type ProposalID = string;
 export type VoteRecords = Record<ProposalID, Vote | null>;
 
 // Don't call directly use `votes` from `useAccountContext`
-export function useProposalVotes(address: `0x${string}` | undefined) {
+export function useProposalVotes(address: Option<Address>) {
   const [votes, setVotes] = useState<VoteRecords>({});
   const addresses = useAddresses();
   const publicClient = usePublicClient();

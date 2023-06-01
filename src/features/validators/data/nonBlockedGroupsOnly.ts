@@ -1,7 +1,7 @@
 import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy';
 import { getContractAddressForChain } from 'src/config/contracts';
 import clients from 'src/utils/clients';
-import { getContract } from 'viem';
+import { Address, getContract } from 'viem';
 import { getGoodAddresses } from './getGoodAddresses';
 
 // once complete will return all the addresses of groups that are not blocked
@@ -20,7 +20,7 @@ export async function nonBlockedGroupsOnly(
     address: getContractAddressForChain(chainId, 'specificGroupStrategy'),
     abi: SpecificGroupStrategyABI,
     functionName: 'isBlockedGroup',
-    args: [groupAddress] as [`0x${string}`],
+    args: [groupAddress] as [Address],
   }));
 
   let results: boolean[] = [];

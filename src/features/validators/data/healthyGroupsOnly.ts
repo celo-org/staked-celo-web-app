@@ -1,7 +1,7 @@
 import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth';
 import { getContractAddressForChain } from 'src/config/contracts';
 import clients from 'src/utils/clients';
-import { getContract } from 'viem';
+import { Address, getContract } from 'viem';
 import { getGoodAddresses } from './getGoodAddresses';
 
 // once complete will return all the addresses of groups that are healthy
@@ -20,7 +20,7 @@ export async function healthyGroupsOnly(
     address: getContractAddressForChain(chainId, 'groupHealth'),
     abi: GroupHealthABI,
     functionName: 'isGroupValid',
-    args: [groupAddress] as [`0x${string}`],
+    args: [groupAddress] as [Address],
   }));
 
   let results: boolean[] = [];

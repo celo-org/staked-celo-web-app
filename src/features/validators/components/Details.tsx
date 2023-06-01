@@ -16,9 +16,9 @@ import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle
 import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
-import { useChainId } from 'wagmi';
+import { Address, useChainId } from 'wagmi';
 interface Props {
-  groupAddress: `0x${string}`;
+  groupAddress: Address;
   name?: string;
 }
 
@@ -32,7 +32,7 @@ export const Details = ({ groupAddress, name }: Props) => {
 
   useEffect(() => {
     if (isConnected) {
-      // void loadBalances();
+      loadBalances?.();
     }
   }, [loadBalances, isConnected]);
 

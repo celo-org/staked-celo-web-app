@@ -8,15 +8,16 @@ import StakedCeloABI from 'src/blockchain/ABIs/StakedCelo';
 import VoteABI from 'src/blockchain/ABIs/Vote';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import useAddresses from 'src/hooks/useAddresses';
+import { Option } from 'src/types';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
-import { useAccount } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 
 export interface TxCallbacks {
   onSent?: () => void;
 }
 
 interface Contract<T> {
-  address: `0x${string}` | undefined;
+  address: Option<Address>;
   abi: T;
 }
 

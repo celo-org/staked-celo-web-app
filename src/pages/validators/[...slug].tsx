@@ -9,6 +9,7 @@ import {
   useRedirectToConnectedChainIfNeeded,
 } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import logger from 'src/services/logger';
+import { Address } from 'viem';
 import { isAddress } from 'web3-utils';
 
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
 }
 
 interface Query extends ParsedUrlQuery {
-  groupAddress: `0x${string}`[];
+  groupAddress: Address[];
 }
 
 const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }: Props) => {
@@ -26,7 +27,7 @@ const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }:
   const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
   useRedirectToConnectedChainIfNeeded(serverChainId, `/validators/${address}`);
 
-  return <Details groupAddress={address! as `0x${string}`} name={name} />;
+  return <Details groupAddress={address! as Address} name={name} />;
 };
 
 export default ValidatorGroupShowPage;
@@ -57,7 +58,7 @@ export const getServerSideProps: GetServerSideProps<Props, Query> = async ({
 
   // will throw if no validatorGroup with such address
   try {
-    const name = await getGroupName(chainId, address as `0x${string}`);
+    const name = await getGroupName(chainId, address as Address);
 
     return {
       props: {

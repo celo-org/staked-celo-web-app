@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { GAS_PRICE } from 'src/config/consts';
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
+import { Option } from 'src/types';
 import { Celo } from 'src/utils/tokens';
 import { useAnnualProjectedRate } from './useAnnualProjectedRate';
 import { useExchangeRates } from './useExchangeRates';
@@ -12,7 +13,7 @@ interface ProtocolContext {
   celoToUSDRate: number;
   suggestedGasPrice: string;
   loadExchangeRates: () => Promise<void>;
-  loadGasPrices: ReturnType<typeof useGasPrices>['loadGasPrices'] | undefined;
+  loadGasPrices: Option<ReturnType<typeof useGasPrices>['loadGasPrices']>;
   totalCeloBalance: Celo;
   loadTokenBalances: () => Promise<void>;
   annualProjectedRate: string | null;

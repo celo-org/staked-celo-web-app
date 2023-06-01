@@ -1,8 +1,9 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { useProposalVotes, VoteRecords } from 'src/contexts/account/useProposalVotes';
 import useStrategy from 'src/contexts/account/useStrategy';
+import { Option } from 'src/types';
 import { Celo, StCelo } from 'src/utils/tokens';
-import { useAccount } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 import { useAccountBalances } from './useBalances';
 import {
   PendingWithdrawal,
@@ -13,14 +14,14 @@ import {
 
 interface AccountContext {
   isConnected: boolean;
-  address: `0x${string}` | undefined;
+  address: Option<Address>;
   celoBalance: Celo;
   stCeloBalance: StCelo;
-  loadBalances: ReturnType<typeof useAccountBalances>['loadBalances'] | undefined;
+  loadBalances: Option<ReturnType<typeof useAccountBalances>['loadBalances']>;
   pendingWithdrawals: PendingWithdrawal[];
-  loadPendingWithdrawals: ReturnType<typeof useWithdrawals>['loadPendingWithdrawals'] | undefined;
-  strategy: `0x${string}` | undefined;
-  reloadStrategy: ReturnType<typeof useStrategy>['reloadStrategy'] | undefined;
+  loadPendingWithdrawals: Option<ReturnType<typeof useWithdrawals>['loadPendingWithdrawals']>;
+  strategy: Option<Address>;
+  reloadStrategy: Option<ReturnType<typeof useStrategy>['reloadStrategy']>;
   votes: VoteRecords;
 }
 

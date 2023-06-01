@@ -1,8 +1,8 @@
 import { RadioButton } from 'src/components/buttons/RadioButton';
-import { VoteType } from 'src/types';
+import { Option, VoteType } from 'src/types';
 
 export type ChoiceProps = {
-  voteType: VoteType | undefined;
+  voteType: Option<VoteType>;
   disabled?: boolean;
   onChange: (voteType: VoteType) => void;
 };
