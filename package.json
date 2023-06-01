@@ -53,5 +53,11 @@
     "tailwindcss": "^3.1.5",
     "typescript": "5.0.4",
     "webpack": "^5.76.0"
+  },
+  "nextBundleAnalysis": {
+    "budget": 358400,
+    "budgetPercentIncreaseRed": 20,
+    "minimumChangeThreshold": 0,
+    "showDetails": true
   }
 }
