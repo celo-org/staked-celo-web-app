@@ -23,15 +23,6 @@ export const VOTE_MAINNET_ADDRESS = '';
 export const GROUP_HEALTH_MAINNET_ADDRESS = '';
 export const SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS = '';
 
-export const MULTICALL_MAINNET = {
-  address: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  blockCreated: 13112599,
-};
-export const MULTICALL_TESTNET = {
-  address: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  blockCreated: 14569001,
-}; //https://github.com/wagmi-dev/references/blob/main/packages/chains/src/celoAlfajores.ts
-
 export const TESTNET_API_URL =
   'https://us-central1-staked-celo-bot.cloudfunctions.net/alfajores-functions';
 export const MAINNET_API_URL =
