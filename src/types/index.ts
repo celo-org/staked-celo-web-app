@@ -11,5 +11,4 @@ export enum VoteType {
   abstain = 'abstain',
 }
 
-export type Address = `0x${string}`;
 export type Option<T> = T | undefined;
