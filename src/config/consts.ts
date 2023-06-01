@@ -40,3 +40,7 @@ export const DOCS_URL = 'https://docs.stcelo.xyz/';
 export const PRIVACY_URL = 'https://clabs.co/privacy';
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';
+
+// the default is Nico's test/dev project (not sensitive)
+export const WALLET_CONNECT_PROJECT_ID =
+  process.env.WALLET_CONNECT_PROJECT_ID || 'cbd4dfc72c388f372fc45f003becb013';
