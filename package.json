@@ -55,5 +55,11 @@
     "typechain": "^8.1.1",
     "typescript": "4.7.4",
     "webpack": "^5.76.0"
+  },
+  "nextBundleAnalysis": {
+    "budget": 358400,
+    "budgetPercentIncreaseRed": 20,
+    "minimumChangeThreshold": 0,
+    "showDetails": true
   }
 }
