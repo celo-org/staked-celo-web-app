@@ -3,11 +3,9 @@ import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
-import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import styles from './connect.module.css';
 
 const Connect = () => {
-  const { annualProjectedRate } = useProtocolContext();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
