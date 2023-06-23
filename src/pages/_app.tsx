@@ -33,6 +33,7 @@ const App = ({ Component, pageProps, router }: AppProps) => {
             name: 'Celo Staking',
             description: 'Celo staking application',
             url: '',
+            walletConnectProjectId: '3bcdb6756cdd7179c359c03ae1e8aca2',
           }}
           connectModal={{
             title: <span>Connect Wallet</span>,
