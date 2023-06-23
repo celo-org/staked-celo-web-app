@@ -58,7 +58,7 @@ const Detail = ({ title, value, tooltip }: DetailProps) => {
         </span>
       </span>
       <span className={value === freePriceValue ? 'text-color-tertiary-callout font-medium' : ''}>
-        {value}
+        {value === freePriceValue ? <FreePriceValue /> : value}
       </span>
       <InfoModal title={title} isOpen={isOpen} close={() => setIsOpen(false)}>
         {tooltip}
@@ -68,6 +68,33 @@ const Detail = ({ title, value, tooltip }: DetailProps) => {
 };
 
 const freePriceValue = 'Free*';
+
+const FreePriceValue = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <span className="inline-flex items-center">
+        <span>Free</span>
+        <span className="flex items-center ml-[8px]">
+          <ThemedIcon
+            classes="cursor-pointer"
+            name="receive_info"
+            alt={`Free info`}
+            height={16}
+            width={16}
+            onClick={() => setIsOpen(true)}
+          />
+        </span>
+      </span>
+
+      <InfoModal title="What does free mean ?" isOpen={isOpen} close={() => setIsOpen(false)}>
+        All the epoch rewards accrued by the underlying CELO are shared with stCELO holders and the
+        StakedCelo protocol is earning no fees. Blockchain transaction fees and/or other fees may
+        apply.
+      </InfoModal>
+    </>
+  );
+};
 
 const exchangeDetail = (swapRate: number): DetailProps => ({
   title: 'Exchange Rate',
