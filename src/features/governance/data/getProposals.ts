@@ -1,4 +1,4 @@
-import { governanceABI } from 'src/blockchain/ABIs/Celo';
+import { governanceABI } from '@celo/abis/types/wagmi';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import celoRegistry from 'src/utils/celoRegistry';
 import clients from 'src/utils/clients';

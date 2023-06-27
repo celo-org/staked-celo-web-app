@@ -1,5 +1,5 @@
+import { gasPriceMinimumABI } from '@celo/abis/types/wagmi';
 import { useMemo } from 'react';
-import { gasPriceMinimumABI } from 'src/blockchain/ABIs/Celo';
 import { GAS_PRICE, GAS_PRICE_MULTIPLIER } from 'src/config/consts';
 import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
 import { Token } from 'src/utils/tokens';

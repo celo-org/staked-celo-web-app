@@ -8,4 +8,3 @@ postcss.config.js
 next.config.js
 setupTests.ts
 scripts
-src/blockchain/ABIS/Celo.ts

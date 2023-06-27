@@ -7,12 +7,11 @@
     "build": "yarn generate-disclaimer && next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt",
-    "postinstall": "cp -f node_modules/@celo/abis/types/wagmi/index.ts src/blockchain/ABIs/Celo.ts"
+    "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt"
   },
   "dependencies": {
-    "@celo/abis": "^9.0.1",
-    "@celo/rainbowkit-celo": "^1.0.0",
+    "@celo/abis": "^9.0.6",
+    "@celo/rainbowkit-celo": "^1.0.1",
     "@rainbow-me/rainbowkit": "^1.0.3",
     "@types/react-modal": "^3.13.1",
     "@types/react-transition-group": "^4.4.5",

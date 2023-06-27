@@ -1,6 +1,6 @@
+import { epochRewardsABI } from '@celo/abis/types/wagmi';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import { epochRewardsABI } from 'src/blockchain/ABIs/Celo';
 import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
 import { useContractRead } from 'wagmi';
 

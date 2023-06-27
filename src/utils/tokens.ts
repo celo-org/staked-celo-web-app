@@ -29,7 +29,7 @@ export class Token extends BigNumber {
   }
 
   toBigInt(): bigint {
-    return BigInt(this.toString());
+    return BigInt(this.toNumber());
   }
 }
 
