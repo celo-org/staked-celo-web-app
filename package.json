@@ -10,8 +10,8 @@
     "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt"
   },
   "dependencies": {
-    "@celo/contractkit": "^2.0.0",
-    "@celo/react-celo": "^4.0.1",
+    "@celo/contractkit": "^3.2.0",
+    "@celo/react-celo": "^5.0.4",
     "@types/react-modal": "^3.13.1",
     "@types/react-transition-group": "^4.4.5",
     "axios": "^0.27.2",
