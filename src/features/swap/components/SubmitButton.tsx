@@ -1,3 +1,4 @@
+import { WalletTypes, useCelo } from '@celo/react-celo';
 import { Button } from 'src/components/buttons/Button';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
@@ -10,6 +11,9 @@ interface SubmitButtonProps {
 }
 
 export const SubmitButton = ({ mode, pending, disabled }: SubmitButtonProps) => {
+
+  const { walletType } = useCelo();
+
   /* It has to be defined like this, otherwise Tailwind will not build CSS classes */
   const stakeClasses =
     'bg-action-primary-regular disabled:bg-action-primary-light hover:bg-action-primary-dark active:bg-action-primary-light';
@@ -26,7 +30,7 @@ export const SubmitButton = ({ mode, pending, disabled }: SubmitButtonProps) => 
         <ThemedIcon classes="animate-spin" name="spinner" alt="Spinner" width={40} height={40} />
       ) : (
         <OpacityTransition id={mode}>
-          <div className="w-full inline-flex justify-center">{getText(mode)}</div>
+          <div className="w-full inline-flex justify-center">{getButtonText(mode, walletType) }</div>
         </OpacityTransition>
       )}
     </Button>
@@ -40,4 +44,11 @@ const getText = (mode: Mode) => {
     case 'unstake':
       return 'Unstake';
   }
+};
+
+const getButtonText = (mode: Mode, walletType: WalletTypes) => {
+  if ( walletType === WalletTypes.MetaMask ) {
+    return `${getText(mode)} with Alternate Currency`;
+  }
+  return getText(mode);
 };
