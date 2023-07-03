@@ -132,7 +132,7 @@ const CeloConnectRedirect = (props: PropsWithChildren) => {
     } else if (isConnected && basePath === '') {
       void router.push('/stake');
     }
-  }, [isConnected, router, route, basePath]);
+  }, [isConnected, route, basePath]);
 
   useEffect(() => {
     const handleRouteChange = (url: URL) => {
