@@ -1,5 +1,5 @@
 import { Celo } from '@celo/rainbowkit-celo/chains';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { useLayoutEffect } from 'react';
 import { Option } from 'src/types';
@@ -10,17 +10,16 @@ export function useRedirectToConnectedChainIfNeeded(
   chainServerKnowsAbout: Option<number>,
   path: string
 ) {
-  const router = useRouter();
   const chainId = useChainId();
   useLayoutEffect(() => {
-    const serverSideChainId = chainServerKnowsAbout ?? router.query.chainId ?? Celo.id;
+    const serverSideChainId = chainServerKnowsAbout ?? Router.query.chainId ?? Celo.id;
     if (chainId !== serverSideChainId) {
-      void router.push({
+      void Router.push({
         pathname: path,
         query: chainId === Celo.id ? {} : { chainId },
       });
     }
-  }, [chainServerKnowsAbout, router, path, chainId]);
+  }, [chainServerKnowsAbout, path, chainId]);
 }
 
 export function getChainIdFromQuery(query: ParsedUrlQuery) {

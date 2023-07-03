@@ -1,6 +1,6 @@
 import { Alfajores, Celo } from '@celo/rainbowkit-celo/chains';
 import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
 import {
   getProposalRecord,
@@ -15,8 +15,7 @@ interface Props {
 }
 
 const GovernanceDetailsPage: NextPage<Props> = ({ proposal, serverChainId }) => {
-  const router = useRouter();
-  const { slug: id } = router.query;
+  const { slug: id } = Router.query;
   const proposalId = Array.isArray(id) ? id[0] : id;
   useRedirectToConnectedChainIfNeeded(serverChainId, `/governance/${proposalId}`);
 

@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -118,19 +118,18 @@ const TopProvider = (props: PropsWithChildren) => {
 
 const routingsWithConnection = ['', 'stake', 'unstake'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
-  const router = useRouter();
   const { isConnected } = useAccountContext();
-  const route = router.asPath;
+  const route = Router.asPath;
   const lastRoute = useRef<string | null>(null);
-  const basePath = router.query.slug?.[0] || '';
+  const basePath = Router.query.slug?.[0] || '';
 
   useLayoutEffect(() => {
     if (!isConnected && routingsWithConnection.includes(basePath)) {
-      void router.push('/connect');
+      void Router.push('/connect');
     } else if (isConnected && basePath == 'connect') {
-      void router.push(lastRoute.current ?? '/stake');
+      void Router.push(lastRoute.current ?? '/stake');
     } else if (isConnected && basePath === '') {
-      void router.push('/stake');
+      void Router.push('/stake');
     }
   }, [isConnected, route, basePath]);
 
@@ -139,11 +138,11 @@ const CeloConnectRedirect = (props: PropsWithChildren) => {
       pageview(url);
     };
     // Record last route
-    router.events.on('beforeHistoryChange', () => {
-      lastRoute.current = router.asPath;
+    Router.events.on('beforeHistoryChange', () => {
+      lastRoute.current = Router.asPath;
     });
-    router.events.on('routeChangeComplete', handleRouteChange);
-  }, [router]);
+    Router.events.on('routeChangeComplete', handleRouteChange);
+  }, []);
 
   return <>{props.children}</>;
 };

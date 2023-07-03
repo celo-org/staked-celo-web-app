@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { Details } from 'src/features/validators/components/Details';
 import getGroupName from 'src/features/validators/data/getGroupName';
@@ -22,8 +22,7 @@ interface Query extends ParsedUrlQuery {
 }
 
 const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }: Props) => {
-  const router = useRouter();
-  const { slug: groupAddress } = router.query;
+  const { slug: groupAddress } = Router.query;
   const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
   useRedirectToConnectedChainIfNeeded(serverChainId, `/validators/${address}`);
 
