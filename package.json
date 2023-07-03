@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@celo/abis": "^9.0.6",
-    "@celo/rainbowkit-celo": "^1.0.2",
+    "@celo/rainbowkit-celo": "^1.0.3-beta.3",
     "@rainbow-me/rainbowkit": "^1.0.4",
     "@types/react-modal": "^3.13.1",
     "@types/react-transition-group": "^4.4.5",
+    "@wagmi/chains": "^1.4.0",
     "axios": "^0.27.2",
     "bignumber.js": "^9.0.2",
     "compliance-sdk": "^1.0.5",

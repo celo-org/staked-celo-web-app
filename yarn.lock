@@ -78,10 +78,10 @@
     semver "^7.3.5"
     web3 "1.3.6"
 
-"@celo/rainbowkit-celo@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@celo/rainbowkit-celo/-/rainbowkit-celo-1.0.2.tgz#8a5f78bf047c8caec53425c1446c373c65cafc63"
-  integrity sha512-6CSnlbOWM0VYSHoVDscwfXg5newmLebaetuh+RL1OkA9fjMVQc2y/hUs6MLhnrozfw65P0WULBVDl9IFigsdHw==
+"@celo/rainbowkit-celo@^1.0.3-beta.3":
+  version "1.0.3-beta.3"
+  resolved "https://registry.yarnpkg.com/@celo/rainbowkit-celo/-/rainbowkit-celo-1.0.3-beta.3.tgz#811d2e7bd3ab1e9bf3d2458b4960f668a5740e34"
+  integrity sha512-7613ZZBZABdenXkYn5tCd3GZSXEO8o6TTWV22eVwfqAt1XP3ogr77hqmmQZPvQGCvPhD2uiRvvfHJkwau1C/ZQ==
 
 "@celo/utils@3.2.0":
   version "3.2.0"
@@ -1275,7 +1275,7 @@
   resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-1.2.0.tgz#d59eaa70ec51a5fdcd113975926992acfb17ab12"
   integrity sha512-dmDRipsE54JfyudOBkuhEexqQWcrZqxn/qiujG8SBzMh/az/AH5xlJSA+j1CPWTx9+QofSMF3B7A4gb6XRmSaQ==
 
-"@wagmi/chains@1.4.0":
+"@wagmi/chains@1.4.0", "@wagmi/chains@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-1.4.0.tgz#71855105b510de0b412b8238016808dd9940d370"
   integrity sha512-9HwJrhcZ1TxyrCbE10y7s1eSiSiyfGam7AHIOLYExaOX+vpOZ+MNTt4orFEDbEpz1fxwJDPPI38lanAUix1OSA==
