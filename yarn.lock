@@ -1280,10 +1280,10 @@
   resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-1.4.0.tgz#71855105b510de0b412b8238016808dd9940d370"
   integrity sha512-9HwJrhcZ1TxyrCbE10y7s1eSiSiyfGam7AHIOLYExaOX+vpOZ+MNTt4orFEDbEpz1fxwJDPPI38lanAUix1OSA==
 
-"@wagmi/connectors@2.6.3":
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-2.6.3.tgz#37b2343f3419677b56c7a98cda52a8bc92f97ba6"
-  integrity sha512-tloHzZq/7OCoOnveNdouhwv0pB1H0lB8+wqurColJsQdMKBTKn5xodl0pCkHjcKHZdELyIcuTINoq9aDzt30sA==
+"@wagmi/connectors@2.6.3", "@wagmi/connectors@^2.6.4":
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-2.6.4.tgz#c2a0cae01d10758370dee404bd74d427cfae7c4a"
+  integrity sha512-UrgYRNR573uy5exaVDMUfsZrcAh5rj5wNxZB+uN/3O45gOVZFh0o63ZmAWIvouuQDBJPr9UP2pNegEvi4v13cg==
   dependencies:
     "@coinbase/wallet-sdk" "^3.6.6"
     "@ledgerhq/connect-kit-loader" "^1.1.0"
