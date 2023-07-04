@@ -1,4 +1,4 @@
-import { CeloProvider, useCelo } from '@celo/react-celo';
+import { CeloProvider, Mainnet, useCelo } from '@celo/react-celo';
 import '@celo/react-celo/lib/styles.css';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -35,6 +35,8 @@ const App = ({ Component, pageProps, router }: AppProps) => {
             url: '',
             walletConnectProjectId: '3bcdb6756cdd7179c359c03ae1e8aca2',
           }}
+          defaultNetwork={Mainnet.name}
+          networks={[Mainnet]}
           connectModal={{
             title: <span>Connect Wallet</span>,
             providersOptions: { searchable: false },
