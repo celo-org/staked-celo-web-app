@@ -19,6 +19,7 @@ import { pageview } from '../utils/ga';
 
 import celoGroups from '@celo/rainbowkit-celo/lists';
 import { darkTheme, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WALLET_CONNECT_PROJECT_ID } from 'src/config/consts';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { celo, celoAlfajores } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -30,7 +31,7 @@ const { chains, publicClient } = configureChains(
 
 const connectors = celoGroups({
   chains,
-  projectId: 'dade6878aa543f9bd5a3248e8b18da61',
+  projectId: WALLET_CONNECT_PROJECT_ID,
   appName: 'Staked Celo',
 });
 const wagmiConfig = createConfig({
