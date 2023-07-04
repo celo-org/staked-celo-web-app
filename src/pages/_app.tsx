@@ -25,7 +25,7 @@ import { celo, celoAlfajores } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 const { chains, publicClient } = configureChains(
-  [celoAlfajores, celo],
+  [celo, celoAlfajores],
   [jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) })]
 );
 
