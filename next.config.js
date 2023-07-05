@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
+  swcMinify: false,
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.plugins.push(
@@ -11,7 +11,7 @@ const nextConfig = {
         banner: 'For third party licenses check /THIRD_PARTY_LICENSES.txt',
       })
     );
-    config.optimization.minimizer = [];
+    // config.optimization.minimizer = [];
     return config;
   },
   async headers() {
