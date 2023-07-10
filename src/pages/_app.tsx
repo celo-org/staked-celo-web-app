@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import '@rainbow-me/rainbowkit/styles.css';
 
-=======
-import { CeloProvider, Mainnet, useCelo } from '@celo/react-celo';
-import '@celo/react-celo/lib/styles.css';
->>>>>>> main
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
