@@ -48,10 +48,10 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
 
   useEffect(() => {
     const cachedGroups = readFromCache(cacheKey);
-    const shouldRefetch = !(cachedGroups && cachedGroups.ts + FEW_HOURS > Date.now());
+    const shouldUseCache = cachedGroups && cachedGroups.ts + FEW_HOURS > Date.now();
 
-    if (!shouldRefetch) {
-      setActiveGroups(cachedGroups.data as Address[]);
+    if (shouldUseCache) {
+      setActiveGroups(cachedGroups!.data as Address[]);
     } else if (groupsHead && activeGroupsLength) {
       void fetchGroups(groupsHead[0], activeGroupsLength)
         .then((groups) => {
