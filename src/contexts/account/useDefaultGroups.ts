@@ -17,18 +17,20 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
   const { data: activeGroupsLength } = useContractRead({
     ...defaultGroupStrategyContract,
     functionName: 'getNumberOfGroups',
+    cacheTime: FEW_HOURS,
   });
 
   const { data: groupsHead } = useContractRead({
     ...defaultGroupStrategyContract,
     functionName: 'getGroupsHead',
+    cacheTime: FEW_HOURS,
   });
 
   const fetchGroups = useCallback(
     async (key: Address, length: bigint) => {
-      const groups: Address[] = [];
+      const groups: Address[] = [key];
+
       for (let i = 0; i < length; i++) {
-        groups.push(key);
         const previousAndNext = await readContract({
           address: defaultGroupStrategyContract.address!,
           abi: defaultGroupStrategyContract.abi,
@@ -36,6 +38,7 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
           args: [key],
         });
         [key] = previousAndNext;
+        groups.push(key);
       }
 
       return groups;
