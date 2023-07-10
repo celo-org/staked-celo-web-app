@@ -51,7 +51,7 @@ const ReceiveInfo = ({ mode }: ReceiveInfoProps) => {
     case Mode.stake:
       return (
         <span className="text-color-primary-callout font-medium text-[15px] leading-[20px]">
-          {annualProjectedRate ? `${annualProjectedRate}%` : '-'} projected APR
+          Earn projected {annualProjectedRate ? `${annualProjectedRate}%` : '-'} annually
         </span>
       );
   }
