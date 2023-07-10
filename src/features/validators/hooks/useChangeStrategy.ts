@@ -1,42 +1,56 @@
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { useAccountAddress } from 'src/contexts/account/useAddress';
-import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
-import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { showElectionToast } from 'src/features/swap/utils/toast';
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { showElectionToast, showErrorToast } from 'src/features/swap/utils/toast';
 import { transactionEvent } from 'src/utils/ga';
+import { Address, useAccount, useContractWrite } from 'wagmi';
 
 export const useChangeStrategy = () => {
-  const { managerContract, sendTransaction } = useBlockchain();
-  const { suggestedGasPrice } = useProtocolContext();
+  const { managerContract } = useBlockchain();
   const { reloadStrategy } = useAccountContext();
-  const { address } = useAccountAddress();
+  const { address } = useAccount();
+
+  const { writeAsync: _changeStrategy } = useContractWrite({
+    ...managerContract,
+    functionName: 'changeStrategy',
+  });
 
   /*
    * @param groupAddress the address of validator group OR 0 for default
    */
   const [changeStrategy, status] = useAsyncCallback(
-    async (groupAddress: string) => {
+    async (groupAddress: Address, callbacks?: TxCallbacks) => {
       if (!address || !managerContract) {
         throw new Error('change strategy called before loading completed');
       }
-      const changeStrategyTxObject = managerContract?.methods.changeStrategy(groupAddress);
-      const txOptions = { from: address, gasPrice: suggestedGasPrice };
       transactionEvent({
         action: 'changeStrategy',
         status: 'initiated_transaction',
         value: '',
       });
-      await sendTransaction(changeStrategyTxObject, txOptions);
-      transactionEvent({
-        action: 'changeStrategy',
-        status: 'signed_transaction',
-        value: '',
-      });
-      showElectionToast();
-      await reloadStrategy(address);
+      try {
+        await _changeStrategy?.({
+          args: [groupAddress],
+        });
+        transactionEvent({
+          action: 'changeStrategy',
+          status: 'signed_transaction',
+          value: '',
+        });
+        showElectionToast();
+        await reloadStrategy?.();
+      } catch (e: unknown) {
+        console.error(e);
+        showErrorToast(
+          (e as Error).message.includes('rejected')
+            ? 'User rejected the request'
+            : (e as Error).message
+        );
+      } finally {
+        callbacks?.onSent?.();
+      }
     },
-    [address, suggestedGasPrice, managerContract, reloadStrategy]
+    [address, managerContract, reloadStrategy]
   );
 
   return { changeStrategy, ...status };

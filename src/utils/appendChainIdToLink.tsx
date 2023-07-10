@@ -1,7 +1,6 @@
-import { ChainId } from '@celo/react-celo';
-
+import { Celo } from '@celo/rainbowkit-celo/chains';
 export function appendChainIdToLink(link: string, chainId: number) {
-  if (chainId === ChainId.Mainnet) {
+  if (chainId === Celo.id) {
     return link;
   } else {
     return `${link}?chainId=${chainId}`;

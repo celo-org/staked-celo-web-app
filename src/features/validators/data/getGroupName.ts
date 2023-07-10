@@ -1,19 +1,22 @@
-import { newKit } from '@celo/contractkit';
-import { ChainId } from '@celo/react-celo';
+import { accountsABI } from '@celo/abis/types/wagmi';
 import { ADDRESS_ZERO } from 'src/config/consts';
-import chainIdToRPC from 'src/utils/chainIdToRPC';
+import celoRegistry from 'src/utils/celoRegistry';
+import clients from 'src/utils/clients';
+import { Address, getContract } from 'viem';
 
-export default async function getGroupName(chainId: ChainId, address: string): Promise<string> {
-  console.info('using', chainId, chainIdToRPC(chainId));
-  const kit = newKit(chainIdToRPC(chainId));
-
+export default async function getGroupName(chainId: number, address: Address): Promise<string> {
+  const publicClient = clients[chainId];
   if (address === ADDRESS_ZERO) {
     return 'Default Strategy';
   }
+  const registryContract = getContract({ ...celoRegistry, publicClient });
+  const accountsAddress = await registryContract.read.getAddressForString(['Accounts']);
+  const accountsContract = getContract({
+    address: accountsAddress,
+    abi: accountsABI,
+    publicClient,
+  });
 
-  const validatorWrapper = await kit.contracts.getValidators();
-
-  const group = await validatorWrapper.getValidatorGroup(address, false);
-
-  return group.name;
+  const groupName: string = (await accountsContract.read.getName([address])) as string;
+  return groupName;
 }

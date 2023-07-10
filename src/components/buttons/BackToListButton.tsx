@@ -1,8 +1,8 @@
-import { useCelo } from '@celo/react-celo';
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Mode } from 'src/types';
 import { appendChainIdToLink } from 'src/utils/appendChainIdToLink';
+import { useChainId } from 'wagmi';
 
 function modeToCollectionName(mode: Mode) {
   switch (mode) {
@@ -19,8 +19,8 @@ interface Props {
 }
 
 export const BackToListButton = ({ mode }: Props) => {
-  const { network } = useCelo();
-  const href = appendChainIdToLink(`/${mode}`, network.chainId);
+  const chainId = useChainId();
+  const href = appendChainIdToLink(`/${mode}`, chainId);
   return (
     <Link href={href}>
       <div className="flex flex-row items-center rounded-[16px] gap-2 cursor-pointer">

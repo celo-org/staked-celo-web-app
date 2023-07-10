@@ -1,44 +1,38 @@
-import { ChainId } from '@celo/react-celo';
-import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy.json';
-import { SpecificGroupStrategy } from 'src/blockchain/types';
+import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy';
 import { getContractAddressForChain } from 'src/config/contracts';
-import { getMultiCallForChain } from 'src/config/multicall';
-import Web3 from 'web3';
-import { HttpProvider } from 'web3-core';
-import { AbiItem } from 'web3-utils';
+import clients from 'src/utils/clients';
+import { Address, getContract } from 'viem';
 import { getGoodAddresses } from './getGoodAddresses';
 
 // once complete will return all the addresses of groups that are not blocked
 export async function nonBlockedGroupsOnly(
   groupAddresses: string[],
-  chainId: ChainId,
-  web3: Web3
+  chainId: number
 ): Promise<Set<string>> {
-  const multicall = getMultiCallForChain(
-    chainId,
-    web3.eth.currentProvider as unknown as HttpProvider
-  );
-  const specificGroupStrategyContract = makeSpecificGroupStrategyContract(chainId, web3);
-
-  const calls = groupAddresses.map((groupAddress) => {
-    return specificGroupStrategyContract.methods.isBlockedGroup(groupAddress);
+  const client = clients[chainId];
+  const specificGroupStrategyContract = getContract({
+    abi: SpecificGroupStrategyABI,
+    address: getContractAddressForChain(chainId, 'specificGroupStrategy'),
+    publicClient: client,
   });
+
+  const calls = groupAddresses.map((groupAddress) => ({
+    address: getContractAddressForChain(chainId, 'specificGroupStrategy'),
+    abi: SpecificGroupStrategyABI,
+    functionName: 'isBlockedGroup',
+    args: [groupAddress] as [Address],
+  }));
 
   let results: boolean[] = [];
   try {
-    results = await multicall.aggregate(calls);
+    results = (await client.multicall({ contracts: calls })).map((x) => x.result as boolean);
   } catch (error) {
-    results = await Promise.all(calls.map((call) => call.call()));
+    results = await Promise.all(
+      calls.map(
+        (call) => specificGroupStrategyContract.read.isBlockedGroup(call.args) as Promise<boolean>
+      )
+    );
   }
 
   return getGoodAddresses(results, groupAddresses);
-}
-
-function makeSpecificGroupStrategyContract(chainId: ChainId, web3: Web3) {
-  const specificGroupStrategyAddress = getContractAddressForChain(chainId, 'specificGroupStrategy');
-  const specificGroupStrategyContract = new web3.eth.Contract(
-    SpecificGroupStrategyABI as unknown as AbiItem,
-    specificGroupStrategyAddress
-  ) as unknown as SpecificGroupStrategy;
-  return specificGroupStrategyContract;
 }

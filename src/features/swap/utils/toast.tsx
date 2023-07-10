@@ -40,3 +40,7 @@ export const showVoteToast = ({ vote, proposalID }: { vote: VoteType; proposalID
     </ToastContent>
   );
 };
+
+export const showErrorToast = (message: string) => {
+  showToast(<ThemedIcon name="receive_info" alt="Error" />, <ToastContent>{message}</ToastContent>);
+};

@@ -1,7 +1,6 @@
-import { newKit } from '@celo/contractkit';
-import { ChainId } from '@celo/react-celo';
+import { Alfajores, Celo } from '@celo/rainbowkit-celo/chains';
 import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
 import {
   getProposalRecord,
@@ -9,16 +8,14 @@ import {
   SerializedProposal,
 } from 'src/features/governance/data/getProposals';
 import { useRedirectToConnectedChainIfNeeded } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
-import chainIdToRPC from 'src/utils/chainIdToRPC';
 
 interface Props {
   proposal: SerializedProposal;
-  serverChainId: ChainId;
+  serverChainId: number;
 }
 
 const GovernanceDetailsPage: NextPage<Props> = ({ proposal, serverChainId }) => {
-  const router = useRouter();
-  const { id } = router.query;
+  const { slug: id } = Router.query;
   const proposalId = Array.isArray(id) ? id[0] : id;
   useRedirectToConnectedChainIfNeeded(serverChainId, `/governance/${proposalId}`);
 
@@ -36,8 +33,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SWR_SECONDS}`
   );
 
-  const proposalID = Array.isArray(params?.id) ? params?.id[0] : params?.id;
-  const chainId = Number(query.chainId as string);
+  const id = params?.slug;
+  const proposalID = Array.isArray(id) ? id[0] : id;
+  const chainId =
+    Number(query.chainId as string) ||
+    (process.env.NODE_ENV === 'production' ? Celo.id : Alfajores.id);
 
   if (typeof proposalID !== 'string') {
     return {
@@ -45,8 +45,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
     };
   }
 
-  const kit = newKit(chainIdToRPC(chainId));
-  const proposal = await getProposalRecord(kit, chainId, proposalID);
+  const proposal = await getProposalRecord(chainId, proposalID);
 
   if (proposal === null) {
     return {

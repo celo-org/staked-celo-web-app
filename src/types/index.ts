@@ -10,3 +10,5 @@ export enum VoteType {
   no = 'no',
   abstain = 'abstain',
 }
+
+export type Option<T> = T | undefined;

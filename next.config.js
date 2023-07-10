@@ -3,17 +3,15 @@ const webpack = require('webpack');
 
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback.net = false;
-      config.resolve.fallback.fs = false;
-    }
+  swcMinify: false,
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, net: false, tls: false };
     config.plugins.push(
       new webpack.BannerPlugin({
         banner: 'For third party licenses check /THIRD_PARTY_LICENSES.txt',
       })
     );
+    // config.optimization.minimizer = [];
     return config;
   },
   async headers() {
@@ -47,4 +45,7 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+module.exports = withBundleAnalyzer(nextConfig);

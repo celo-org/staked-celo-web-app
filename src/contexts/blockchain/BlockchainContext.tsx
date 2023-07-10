@@ -1,145 +1,129 @@
-import { ContractKit, newKit } from '@celo/contractkit';
-import { useCelo } from '@celo/react-celo';
-import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk';
-import { PropsWithChildren, createContext, useCallback, useEffect, useMemo, useState } from 'react';
-import AccountABI from 'src/blockchain/ABIs/Account.json';
-import ManagerABI from 'src/blockchain/ABIs/Manager.json';
-import StCeloABI from 'src/blockchain/ABIs/StakedCelo.json';
-import VoteABI from 'src/blockchain/ABIs/Vote.json';
-import { Account, Manager, StakedCelo, Vote } from 'src/blockchain/types';
+import { disconnect } from '@wagmi/core';
+import { createContext, PropsWithChildren, useEffect, useMemo } from 'react';
+import AccountABI from 'src/blockchain/ABIs/Account';
+import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth';
+import ManagerABI from 'src/blockchain/ABIs/Manager';
+import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy';
+import StakedCeloABI from 'src/blockchain/ABIs/StakedCelo';
+import VoteABI from 'src/blockchain/ABIs/Vote';
 import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
+import useAddresses from 'src/hooks/useAddresses';
+import { Option } from 'src/types';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
-import { AbiItem } from 'web3-utils';
-
-interface TxOptions {
-  from: string;
-  value?: string;
-}
+import { Address, useAccount } from 'wagmi';
 
 export interface TxCallbacks {
   onSent?: () => void;
 }
 
-type EpochRewardsContract = Awaited<ReturnType<ContractKit['_web3Contracts']['getEpochRewards']>>;
-type SortedOraclesContract = Awaited<ReturnType<ContractKit['contracts']['getSortedOracles']>>;
-type StableTokenContract = Awaited<ReturnType<ContractKit['contracts']['getStableToken']>>;
-type GasPriceMinimumContract = Awaited<ReturnType<ContractKit['contracts']['getGasPriceMinimum']>>;
+interface Contract<T> {
+  address: Option<Address>;
+  abi: T;
+}
 
 interface BlockchainContext {
-  epochRewardsContract: EpochRewardsContract | undefined;
-  sortedOraclesContract: SortedOraclesContract | undefined;
-  stableTokenContract: StableTokenContract | undefined;
-  gasPriceMinimumContract: GasPriceMinimumContract | undefined;
-  managerContract: Manager | undefined;
-  stCeloContract: StakedCelo | undefined;
-  accountContract: Account | undefined;
-  voteContract: Vote | undefined;
   addresses: typeof mainnetAddresses | typeof testnetAddresses;
-  sendTransaction: (
-    txObject: unknown,
-    txOptions: TxOptions,
-    callbacks?: TxCallbacks
-  ) => Promise<void>;
+  managerContract: Contract<typeof ManagerABI>;
+  accountContract: Contract<typeof AccountABI>;
+  stakedCeloContract: Contract<typeof StakedCeloABI>;
+  voteContract: Contract<typeof VoteABI>;
+  groupHealthContract: Contract<typeof GroupHealthABI>;
+  specificGroupStrategyContract: Contract<typeof SpecificGroupStrategyABI>;
 }
 
 export const BlockchainContext = createContext<BlockchainContext>({
-  epochRewardsContract: undefined,
-  sortedOraclesContract: undefined,
-  stableTokenContract: undefined,
-  gasPriceMinimumContract: undefined,
-  managerContract: undefined,
-  stCeloContract: undefined,
-  accountContract: undefined,
-  voteContract: undefined,
   addresses: mainnetAddresses,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  sendTransaction: (_txObject: unknown, _txOptions: TxOptions) => Promise.resolve(undefined),
+  managerContract: {
+    address: undefined,
+    abi: ManagerABI,
+  },
+  accountContract: {
+    address: undefined,
+    abi: AccountABI,
+  },
+  stakedCeloContract: {
+    address: undefined,
+    abi: StakedCeloABI,
+  },
+  voteContract: {
+    address: undefined,
+    abi: VoteABI,
+  },
+  groupHealthContract: {
+    address: undefined,
+    abi: GroupHealthABI,
+  },
+  specificGroupStrategyContract: {
+    address: undefined,
+    abi: SpecificGroupStrategyABI,
+  },
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
-  const { kit, network } = useCelo();
-  const contractKit = useMemo(() => newKit(network.rpcUrl), [network]);
+  const { address } = useAccount();
+  const addresses = useAddresses();
+  const managerContract = useMemo(
+    () => ({
+      address: addresses.manager,
+      abi: ManagerABI,
+    }),
+    [addresses]
+  );
 
-  const addresses = useMemo(() => {
-    if (network.name === 'Mainnet') return mainnetAddresses;
-    return testnetAddresses;
-  }, [network]);
-
-  const managerContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(ManagerABI as AbiItem[], addresses.manager) as unknown as Manager;
-  }, [kit.connection, addresses]);
-
-  const stCeloContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(StCeloABI as AbiItem[], addresses.stakedCelo) as unknown as StakedCelo;
-  }, [kit.connection, addresses]);
-
-  const accountContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(AccountABI as AbiItem[], addresses.account) as unknown as Account;
-  }, [kit.connection, addresses]);
-
-  const voteContract = useMemo(() => {
-    const { eth } = kit.connection.web3;
-    // necessary as eth.Contract types the constructor a Function when it is actually the same interface as Generated interface
-    return new eth.Contract(VoteABI as AbiItem[], addresses.vote) as unknown as Vote;
-  }, [kit.connection, addresses]);
-
-  const sendTransaction = useCallback(
-    async (txObject: any, txOptions: TxOptions, callbacks?: TxCallbacks) => {
-      if (await isSanctionedAddress(txOptions.from)) {
-        throw new Error(COMPLIANT_ERROR_RESPONSE);
+  const accountContract = useMemo(
+    () => ({
+      address: addresses.account,
+      abi: AccountABI,
+    }),
+    [addresses]
+  );
+  const stakedCeloContract = useMemo(
+    () => ({
+      address: addresses.stakedCelo,
+      abi: StakedCeloABI,
+    }),
+    [addresses]
+  );
+  const voteContract = useMemo(
+    () => ({
+      address: addresses.vote,
+      abi: VoteABI,
+    }),
+    [addresses]
+  );
+  const groupHealthContract = useMemo(
+    () => ({
+      address: addresses.groupHealth,
+      abi: GroupHealthABI,
+    }),
+    [addresses]
+  );
+  const specificGroupStrategyContract = useMemo(
+    () => ({
+      address: addresses.specificGroupStrategy,
+      abi: SpecificGroupStrategyABI,
+    }),
+    [addresses]
+  );
+  useEffect(() => {
+    void (async () => {
+      const sanctioned = address && (await isSanctionedAddress(address));
+      if (sanctioned) {
+        await disconnect();
       }
-      const tx = await kit.connection.sendTransactionObject(txObject, {
-        ...txOptions,
-      });
-      await tx.getHash();
-      if (callbacks?.onSent) callbacks.onSent();
-      await tx.waitReceipt();
-    },
-    [kit.connection]
-  );
-
-  const [epochRewardsContract, setEpochRewardsContract] = useState<EpochRewardsContract>();
-  useEffect(
-    () => void contractKit._web3Contracts.getEpochRewards().then(setEpochRewardsContract),
-    [contractKit]
-  );
-
-  const [sortedOraclesContract, setSortedOraclesContract] = useState<SortedOraclesContract>();
-  useEffect(
-    () => void contractKit.contracts.getSortedOracles().then(setSortedOraclesContract),
-    [contractKit]
-  );
-
-  const [stableTokenContract, setStableTokenContract] = useState<StableTokenContract>();
-  useEffect(
-    () => void contractKit.contracts.getStableToken().then(setStableTokenContract),
-    [contractKit]
-  );
-  const [gasPriceMinimumContract, setGasPriceMinimumContract] = useState<GasPriceMinimumContract>();
-  useEffect(
-    () => void contractKit.contracts.getGasPriceMinimum().then(setGasPriceMinimumContract),
-    [contractKit]
-  );
+    })();
+  }, [address]);
 
   return (
     <BlockchainContext.Provider
       value={{
-        epochRewardsContract,
-        sortedOraclesContract,
-        stableTokenContract,
-        gasPriceMinimumContract,
-        managerContract,
-        stCeloContract,
-        accountContract,
-        voteContract,
         addresses,
-        sendTransaction,
+        managerContract,
+        accountContract,
+        stakedCeloContract,
+        voteContract,
+        groupHealthContract,
+        specificGroupStrategyContract,
       }}
     >
       {children}

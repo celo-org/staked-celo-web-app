@@ -1,4 +1,4 @@
-import { ChainId } from '@celo/react-celo'
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import {
   ACCOUNT_MAINNET_ADDRESS,
   ACCOUNT_TESTNET_ADDRESS,
@@ -13,43 +13,43 @@ import {
   VOTE_MAINNET_ADDRESS,
   VOTE_TESTNET_ADDRESS,
 } from 'src/config/consts';
+import { Address } from 'viem';
 
 interface ContractAddresses {
-  manager: string;
-  stakedCelo: string;
-  account: string;
-  specificGroupStrategy: string;
-  groupHealth: string;
-  vote: string;
+  manager: Address;
+  stakedCelo: Address;
+  account: Address;
+  specificGroupStrategy: Address;
+  groupHealth: Address;
+  vote: Address;
 }
 
 export const mainnetAddresses: ContractAddresses = {
-  manager: MANAGER_MAINNET_ADDRESS as string,
-  stakedCelo: STAKED_CELO_MAINNET_ADDRESS as string,
-  account: ACCOUNT_MAINNET_ADDRESS as string,
-  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS as string,
-  groupHealth: GROUP_HEALTH_MAINNET_ADDRESS as string,
-  vote: VOTE_MAINNET_ADDRESS as string,
+  manager: MANAGER_MAINNET_ADDRESS as Address,
+  stakedCelo: STAKED_CELO_MAINNET_ADDRESS as Address,
+  account: ACCOUNT_MAINNET_ADDRESS as Address,
+  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS as Address,
+  groupHealth: GROUP_HEALTH_MAINNET_ADDRESS as Address,
+  vote: VOTE_MAINNET_ADDRESS as Address,
 };
 
 export const testnetAddresses: ContractAddresses = {
-  manager: MANAGER_TESTNET_ADDRESS as string,
-  stakedCelo: STAKED_CELO_TESTNET_ADDRESS as string,
-  account: ACCOUNT_TESTNET_ADDRESS as string,
-  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS as string,
-  groupHealth: GROUP_HEALTH_TESTNET_ADDRESS as string,
-  vote: VOTE_TESTNET_ADDRESS as string,
+  manager: MANAGER_TESTNET_ADDRESS as Address,
+  stakedCelo: STAKED_CELO_TESTNET_ADDRESS as Address,
+  account: ACCOUNT_TESTNET_ADDRESS as Address,
+  specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS as Address,
+  groupHealth: GROUP_HEALTH_TESTNET_ADDRESS as Address,
+  vote: VOTE_TESTNET_ADDRESS as Address,
 };
 
+type ContractNames = keyof typeof mainnetAddresses;
 
-type ContractNames = keyof typeof mainnetAddresses
-
-export function getContractAddressForChain(chainId: number, contractName: ContractNames): string {
+export function getContractAddressForChain(chainId: number, contractName: ContractNames): Address {
   const address =
-    chainId === ChainId.Alfajores ? testnetAddresses[contractName] : mainnetAddresses[contractName];
+    chainId === Alfajores.id ? testnetAddresses[contractName] : mainnetAddresses[contractName];
   if (!address) {
     throw new Error(
-      `No address for contract ${contractName} on chain ${chainId} ${chainId === ChainId.Alfajores}`
+      `No address for contract ${contractName} on chain ${chainId} ${chainId === Alfajores.id}`
     );
   }
   return address;

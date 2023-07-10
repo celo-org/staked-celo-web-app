@@ -1,4 +1,4 @@
-import { ProposalRecord } from '@celo/contractkit/lib/wrappers/Governance';
+import type { ProposalRecord } from '@celo/contractkit/lib/wrappers/Governance';
 import BigNumber from 'bignumber.js';
 import { ParsedYAML } from 'src/utils/proposals';
 

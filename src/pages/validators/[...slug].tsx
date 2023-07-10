@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { Details } from 'src/features/validators/components/Details';
 import getGroupName from 'src/features/validators/data/getGroupName';
@@ -9,6 +9,7 @@ import {
   useRedirectToConnectedChainIfNeeded,
 } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import logger from 'src/services/logger';
+import { Address } from 'viem';
 import { isAddress } from 'web3-utils';
 
 interface Props {
@@ -17,16 +18,15 @@ interface Props {
 }
 
 interface Query extends ParsedUrlQuery {
-  groupAddress: string[];
+  groupAddress: Address[];
 }
 
 const ValidatorGroupShowPage: NextPage<Props, Query> = ({ name, serverChainId }: Props) => {
-  const router = useRouter();
-  const { groupAddress } = router.query;
+  const { slug: groupAddress } = Router.query;
   const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
   useRedirectToConnectedChainIfNeeded(serverChainId, `/validators/${address}`);
 
-  return <Details groupAddress={address!} name={name} />;
+  return <Details groupAddress={address! as Address} name={name} />;
 };
 
 export default ValidatorGroupShowPage;
@@ -46,9 +46,8 @@ export const getServerSideProps: GetServerSideProps<Props, Query> = async ({
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SERVE_STALE_WHILE_REVALIDATE_SECONDS}`
   );
 
-  const address = Array.isArray(params?.groupAddress)
-    ? params?.groupAddress[0]
-    : params?.groupAddress;
+  const groupAddress = params?.slug;
+  const address = Array.isArray(groupAddress) ? groupAddress[0] : groupAddress;
   if (typeof address !== 'string' || !isAddress(address)) {
     return {
       notFound: true,
@@ -58,7 +57,7 @@ export const getServerSideProps: GetServerSideProps<Props, Query> = async ({
 
   // will throw if no validatorGroup with such address
   try {
-    const name = await getGroupName(chainId, address);
+    const name = await getGroupName(chainId, address as Address);
 
     return {
       props: {

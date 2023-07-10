@@ -1,48 +1,66 @@
-import { ContractKit, newKit } from '@celo/contractkit';
-import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
-import { ChainId } from '@celo/react-celo';
-import { getMultiCallForChain } from 'src/config/multicall';
-import chainIdToRPC from 'src/utils/chainIdToRPC';
-import { ParsedYAML, getRawGithubUrl, parsedYAMLFromMarkdown } from 'src/utils/proposals';
-import { HttpProvider } from 'web3-core';
+import { governanceABI } from '@celo/abis/types/wagmi';
+import { ProposalStage } from 'src/features/governance/components/Details';
+import celoRegistry from 'src/utils/celoRegistry';
+import clients from 'src/utils/clients';
+import { getRawGithubUrl, ParsedYAML, parsedYAMLFromMarkdown } from 'src/utils/proposals';
+import { getContract } from 'viem';
 import { MiniProposal, Proposal } from './Proposal';
 
 const PROPOSAL_STAGE_KEYS = Object.keys(ProposalStage);
 
-export const getProposals = async (chainId: ChainId) => {
-  const kit = newKit(chainIdToRPC(chainId));
-  const multicall = getMultiCallForChain(
-    chainId,
-    kit.web3.eth.currentProvider as unknown as HttpProvider
+type MetadataResult = [string, bigint, bigint, bigint, string];
+
+export const getProposals = async (chainId: number) => {
+  const publicClient = clients[chainId];
+  const registryContract = getContract({ ...celoRegistry, publicClient });
+  const governanceAddress = await registryContract.read.getAddressForString(['Governance']);
+  const governanceContract = getContract({
+    address: governanceAddress,
+    abi: governanceABI,
+    publicClient,
+  });
+
+  const _dequeue = await governanceContract.read.getDequeue();
+  const stageCalls = _dequeue.map((proposalId) => ({
+    address: governanceAddress,
+    abi: governanceABI,
+    functionName: 'getProposalStage',
+    args: [proposalId],
+  }));
+
+  const stages = (await publicClient.multicall({ contracts: stageCalls })).map(
+    (x) => x.result as unknown as number
   );
-  const governance = await kit.contracts._web3Contracts.getGovernance();
-  const _dequeue = await governance.methods.getDequeue().call();
-  const stageTxs = _dequeue.map((proposalId) => governance.methods.getProposalStage(proposalId));
-  const stages: string[] = await multicall.aggregate(stageTxs);
 
   const proposals = _dequeue.map(
     (proposalID, i) =>
       ({
-        proposalID,
-        stage: PROPOSAL_STAGE_KEYS[parseInt(stages[i])],
+        proposalID: proposalID.toString(),
+        stage: PROPOSAL_STAGE_KEYS[stages[i]],
       } as MiniProposal)
   );
 
   const current = proposals.filter((x) => runningProposalStages.has(x.stage));
   const passed = proposals
     .filter((x) => pastProposalStages.has(x.stage))
-    .sort((a, b) => (Number(a.proposalID) < Number(b.proposalID) ? 1 : -1))
+    .sort((a, b) => (parseInt(a.proposalID, 10) < parseInt(b.proposalID, 10) ? 1 : -1))
     .slice(0, 5);
 
   const relevantProposals = [...current, ...passed];
-  const metadataTxs = relevantProposals.map((proposal) =>
-    governance.methods.getProposal(proposal.proposalID)
+  const metadataCalls = relevantProposals.map((proposal) => ({
+    address: governanceAddress,
+    abi: governanceABI,
+    functionName: 'getProposal',
+    args: [proposal.proposalID],
+  }));
+
+  const metadatas = (await publicClient.multicall({ contracts: metadataCalls })).map(
+    (x) => x.result as MetadataResult
   );
-  const metadatas: string[] = await multicall.aggregate(metadataTxs);
 
   metadatas.forEach((metadata, i) => {
     relevantProposals[i].metadata = {
-      timestamp: metadata[2],
+      timestamp: metadata[2].toString(),
       descriptionURL: metadata[4],
     };
   });
@@ -54,6 +72,7 @@ export const getProposals = async (chainId: ChainId) => {
           const parsedYAML = await getYamlForProposal(proposal);
           return {
             ...proposal,
+            proposalID: proposal.proposalID.toString(),
             parsedYAML,
           };
         })
@@ -71,32 +90,50 @@ const runningProposalStages = new Set([ProposalStage.Queued, ProposalStage.Refer
 const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
 
 export const getProposalRecord = async (
-  kit: ContractKit,
   chainId: number,
   proposalID: string
 ): Promise<SerializedProposal | null> => {
-  const multicall = getMultiCallForChain(
-    chainId,
-    kit.web3.eth.currentProvider as unknown as HttpProvider
-  );
-  const governance = await kit.contracts._web3Contracts.getGovernance();
+  const publicClient = clients[chainId];
+  const registryContract = getContract({ ...celoRegistry, publicClient });
+  const governanceAddress = await registryContract.read.getAddressForString(['Governance']);
 
-  const dequeueTx = governance.methods.getDequeue();
-  const stageTx = governance.methods.getProposalStage(proposalID);
-  const metadataTx = governance.methods.getProposal(proposalID);
+  const [_dequeue, _stage, _metadata] = (
+    await publicClient.multicall({
+      contracts: [
+        {
+          address: governanceAddress,
+          abi: governanceABI,
+          functionName: 'getDequeue',
+        },
+        {
+          address: governanceAddress,
+          abi: governanceABI,
+          functionName: 'getProposalStage',
+          args: [BigInt(proposalID)],
+        },
+        {
+          address: governanceAddress,
+          abi: governanceABI,
+          functionName: 'getProposal',
+          args: [BigInt(proposalID)],
+        },
+      ],
+    })
+  ).map((x) => x.result as bigint[] | number | MetadataResult);
 
-  const [dequeue, stage, metadata]: [string[], string, string[]] = await multicall.aggregate([
-    dequeueTx,
-    stageTx,
-    metadataTx,
-  ]);
+  const dequeue = _dequeue as bigint[];
+  const stage = _stage as number;
+  const metadata = _metadata as unknown as MetadataResult;
 
   return {
     proposalID,
-    stage: PROPOSAL_STAGE_KEYS[parseInt(stage)] as ProposalStage,
-    metadata: { timestamp: metadata[2], descriptionURL: metadata[4] },
-    index: dequeue.findIndex((id) => proposalID === id),
-  } as SerializedProposal;
+    stage: PROPOSAL_STAGE_KEYS[stage as number] as ProposalStage,
+    metadata: {
+      timestamp: metadata[2].toString(),
+      descriptionURL: metadata[4],
+    },
+    index: (dequeue as bigint[]).findIndex((id) => proposalID === id.toString()),
+  } as unknown as SerializedProposal;
 };
 
 export async function getYamlForProposal(proposal: MiniProposal) {
@@ -111,13 +148,13 @@ export async function getYamlForProposal(proposal: MiniProposal) {
     console.warn(`Failed to fetch proposal markdown at url ${proposal.metadata.descriptionURL}`);
 
     return {
-      cgp: proposal.proposalID,
+      cgp: proposal.proposalID.toString(),
       title: `Proposal ${proposal.proposalID}`,
-      dateCreated: proposal.metadata.timestamp,
+      dateCreated: proposal.metadata.timestamp.toString(),
       author: '',
       status: proposal.stage,
       discussionsTo: '',
-      governanceProposalId: proposal.proposalID,
+      governanceProposalId: proposal.proposalID.toString(),
       dateExecuted: '',
     } as ParsedYAML;
   }

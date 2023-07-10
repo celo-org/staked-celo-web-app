@@ -1,45 +1,36 @@
-import { ChainId } from '@celo/react-celo';
-import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth.json';
-import { GroupHealth } from 'src/blockchain/types';
+import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth';
 import { getContractAddressForChain } from 'src/config/contracts';
-import { getMultiCallForChain } from 'src/config/multicall';
-import Web3 from 'web3';
-import { HttpProvider } from 'web3-core';
-import { AbiItem } from 'web3-utils';
+import clients from 'src/utils/clients';
+import { Address, getContract } from 'viem';
 import { getGoodAddresses } from './getGoodAddresses';
 
 // once complete will return all the addresses of groups that are healthy
 export async function healthyGroupsOnly(
   groupAddresses: string[],
-  chainId: ChainId,
-  web3: Web3
+  chainId: number
 ): Promise<Set<string>> {
-  const GroupHealthContract = makeGroupHealthContract(chainId, web3);
-
-  const calls = groupAddresses.map((groupAddress) => {
-    return GroupHealthContract.methods.isGroupValid(groupAddress);
+  const client = clients[chainId];
+  const GroupHealthContract = getContract({
+    abi: GroupHealthABI,
+    address: getContractAddressForChain(chainId, 'groupHealth'),
+    publicClient: client,
   });
 
-  const multicall = getMultiCallForChain(
-    chainId,
-    web3.eth.currentProvider as unknown as HttpProvider
-  );
+  const calls = groupAddresses.map((groupAddress) => ({
+    address: getContractAddressForChain(chainId, 'groupHealth'),
+    abi: GroupHealthABI,
+    functionName: 'isGroupValid',
+    args: [groupAddress] as [Address],
+  }));
 
   let results: boolean[] = [];
   try {
-    results = await multicall.aggregate(calls);
+    results = (await client.multicall({ contracts: calls })).map((x) => x.result as boolean);
   } catch (error) {
-    results = await Promise.all(calls.map((call) => call.call()));
+    results = await Promise.all(
+      calls.map((call) => GroupHealthContract.read.isGroupValid(call.args) as Promise<boolean>)
+    );
   }
 
   return getGoodAddresses(results, groupAddresses, true);
-}
-
-function makeGroupHealthContract(chainId: ChainId, web3: Web3) {
-  const groupHealthAddress = getContractAddressForChain(chainId, 'groupHealth');
-  const GroupHealthContract = new web3.eth.Contract(
-    GroupHealthABI as unknown as AbiItem,
-    groupHealthAddress
-  ) as unknown as GroupHealth;
-  return GroupHealthContract;
 }

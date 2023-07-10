@@ -1,23 +1,42 @@
-import BigNumber from 'bignumber.js'
-import { useCallback, useEffect, useState } from 'react'
-import { useBlockchain } from 'src/contexts/blockchain/useBlockchain'
+import { epochRewardsABI } from '@celo/abis/types/wagmi';
+import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
+import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
+import { useContractRead } from 'wagmi';
 
 export const useAnnualProjectedRate = () => {
-  const { epochRewardsContract } = useBlockchain();
-  const [annualProjectedRate, setAnnualProjectedRate] = useState<string | null>(null);
+  const address = useCeloRegistryAddress('EpochRewards');
+  const { data: rewardsMultiplierFraction, isLoading: multiplierLoading } = useContractRead({
+    abi: epochRewardsABI,
+    address,
+    functionName: 'getRewardsMultiplier',
+  });
+  const { data: targetVotingYieldParameters, isLoading: yieldParamsLoading } = useContractRead({
+    abi: epochRewardsABI,
+    address,
+    functionName: 'getTargetVotingYieldParameters',
+  });
 
-  const loadAnnualProjectedRate = useCallback(async () => {
-    if (!epochRewardsContract) return;
-    const [rewardsMultiplierFraction, { 0: targetVotingYieldFraction }] = await Promise.all([
-      epochRewardsContract.methods.getRewardsMultiplier().call(),
-      epochRewardsContract.methods.getTargetVotingYieldParameters().call(),
-    ]);
+  const annualProjectedRate = useMemo(() => {
+    if (
+      multiplierLoading ||
+      yieldParamsLoading ||
+      !targetVotingYieldParameters ||
+      !rewardsMultiplierFraction
+    ) {
+      return null;
+    }
 
     // EpochRewards contract is using Fixidity library which operates on decimal part of numbers
     // Fixidity is always using 24 length decimal parts
     const fixidityDecimalSize = new BigNumber(10).pow(24);
-    const targetVotingYield = new BigNumber(targetVotingYieldFraction).div(fixidityDecimalSize);
-    const rewardsMultiplier = new BigNumber(rewardsMultiplierFraction).div(fixidityDecimalSize);
+    const [targetVotingYieldFraction] = targetVotingYieldParameters!;
+    const targetVotingYield = new BigNumber(targetVotingYieldFraction.toString()).div(
+      fixidityDecimalSize
+    );
+    const rewardsMultiplier = new BigNumber(rewardsMultiplierFraction!.toString()).div(
+      fixidityDecimalSize
+    );
 
     // Target voting yield is for a single day only, so we have to calculate this for entire year
     const unadjustedAPR = targetVotingYield.times(365);
@@ -27,12 +46,13 @@ export const useAnnualProjectedRate = () => {
 
     const percentageAPR = adjustedAPR.times(100);
 
-    setAnnualProjectedRate(percentageAPR.toFixed(2));
-  }, [epochRewardsContract]);
-
-  useEffect(() => {
-    void loadAnnualProjectedRate();
-  }, [loadAnnualProjectedRate]);
+    return percentageAPR.toFixed(2);
+  }, [
+    rewardsMultiplierFraction,
+    multiplierLoading,
+    targetVotingYieldParameters,
+    yieldParamsLoading,
+  ]);
 
   return {
     annualProjectedRate,

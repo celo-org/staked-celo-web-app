@@ -33,6 +33,7 @@ type IconName =
   | 'logo'
   | 'info'
   | 'receive_info'
+  | 'warning_info'
   | 'github'
   | 'discord'
   | 'twitter'
@@ -53,7 +54,8 @@ const icons: Record<IconName, ThemedIcons> = {
   arrow: { light: ArrowDark, dark: ArrowLight },
   logo: { light: LogoDark, dark: LogoLight },
   info: { light: InfoDark, dark: InfoLight },
-  receive_info: { light: InfoOrange, dark: InfoAqua },
+  receive_info: { light: InfoAqua, dark: InfoAqua },
+  warning_info: { light: InfoOrange, dark: InfoOrange },
   github: { light: GithubDark, dark: GithubLight },
   discord: { light: DiscordDark, dark: DiscordLight },
   twitter: { light: TwitterDark, dark: TwitterLight },

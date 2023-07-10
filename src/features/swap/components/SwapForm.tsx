@@ -1,8 +1,8 @@
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
-import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { TxCallbacks } from 'src/contexts/blockchain/useBlockchain';
@@ -45,13 +45,13 @@ export const SwapForm = ({
       e.preventDefault();
       setIsCalloutModalOpened(true);
       setIsLoading(true);
-      try {
-        await onSubmit({ onSent: () => setIsCalloutModalOpened(false) });
-        await reloadProtocolContext();
-      } finally {
-        setIsLoading(false);
-        setIsCalloutModalOpened(false);
-      }
+      onSubmit({
+        onSent: () => {
+          setIsCalloutModalOpened(false);
+          setIsLoading(false);
+          void reloadProtocolContext();
+        },
+      });
     },
     [onSubmit, reloadProtocolContext]
   );

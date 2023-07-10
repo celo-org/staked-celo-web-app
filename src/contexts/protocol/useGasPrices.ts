@@ -1,38 +1,27 @@
-import { useCallback, useEffect, useState } from 'react';
-import { GAS_PRICE_MULTIPLIER } from 'src/config/consts';
-import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { gasPriceMinimumABI } from '@celo/abis/types/wagmi';
+import { useMemo } from 'react';
+import { GAS_PRICE, GAS_PRICE_MULTIPLIER } from 'src/config/consts';
+import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
+import { Token } from 'src/utils/tokens';
+import { useContractRead } from 'wagmi';
 
 export const useGasPrices = () => {
-  const { suggestedGasPrice, loadSuggestedGasPrice } = useSuggestedGasPrice();
+  const address = useCeloRegistryAddress('GasPriceMinimum');
+  const {
+    data: minimumGasPrice,
+    isLoading: gasPriceMinimumLoading,
+    refetch: loadGasPrices,
+  } = useContractRead({
+    abi: gasPriceMinimumABI,
+    address,
+    functionName: 'gasPriceMinimum',
+  });
 
-  const loadGasPrices = useCallback(async () => {
-    await Promise.all([loadSuggestedGasPrice()]);
-  }, [loadSuggestedGasPrice]);
+  const suggestedGasPrice = useMemo(() => {
+    if (gasPriceMinimumLoading || !minimumGasPrice) return GAS_PRICE.toString();
 
-  useEffect(() => {
-    void loadGasPrices();
-  }, [loadGasPrices]);
-
-  return {
-    suggestedGasPrice,
-    loadGasPrices,
-  };
-};
-
-const useSuggestedGasPrice = () => {
-  const { gasPriceMinimumContract } = useBlockchain();
-  const [suggestedGasPrice, setCurrentGasPrice] = useState('');
-
-  const loadSuggestedGasPrice = useCallback(async () => {
-    if (!gasPriceMinimumContract) return;
-    const minimumGasPrice = await gasPriceMinimumContract.gasPriceMinimum();
-    // plus 20% to account for network congestion.
-    const suggestedGasPrice = minimumGasPrice.multipliedBy(GAS_PRICE_MULTIPLIER);
-    setCurrentGasPrice(suggestedGasPrice.toString());
-  }, [gasPriceMinimumContract]);
-
-  return {
-    suggestedGasPrice,
-    loadSuggestedGasPrice,
-  };
+    const suggestedGasPrice = new Token(minimumGasPrice).multipliedBy(GAS_PRICE_MULTIPLIER);
+    return suggestedGasPrice.toString();
+  }, [gasPriceMinimumLoading, minimumGasPrice]);
+  return { suggestedGasPrice, loadGasPrices };
 };

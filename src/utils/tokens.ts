@@ -6,7 +6,15 @@ export type TokenType = 'CELO' | 'stCELO' | 'cUSD';
 
 export class Token extends BigNumber {
   constructor(value: any) {
-    super(value instanceof BigNumber ? value.toFixed() : value);
+    if (value instanceof BigNumber) {
+      super(value.toFixed());
+    } else if (value && typeof value.value !== 'undefined') {
+      // returnvalue from viem balanceOf looks like that:
+      // { decimals: 18, formatted: "1", symbol: "CELO", value: 1n }
+      super(value.value);
+    } else {
+      super(value);
+    }
   }
 
   displayAsBase(skipTrailingZeroes = false): string {
@@ -18,6 +26,10 @@ export class Token extends BigNumber {
   convertToBase(): BigNumber {
     const baseValue = fromWei(this.toFixed(0, BigNumber.ROUND_FLOOR));
     return new BigNumber(baseValue);
+  }
+
+  toBigInt(): bigint {
+    return BigInt(this.toNumber());
   }
 }
 

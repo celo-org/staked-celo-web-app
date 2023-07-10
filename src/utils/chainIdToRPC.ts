@@ -1,11 +1,12 @@
-import { Alfajores, Baklava, ChainId, Mainnet } from '@celo/react-celo';
+import { Alfajores, Baklava, Cannoli, Celo } from '@celo/rainbowkit-celo/chains';
 
 const chainIdForRPC = {
-  [ChainId.Mainnet]: Mainnet.rpcUrl,
-  [ChainId.Alfajores]: Alfajores.rpcUrl,
-  [ChainId.Baklava]: Baklava.rpcUrl,
+  [Celo.id]: Celo.rpcUrls.default.http[0],
+  [Alfajores.id]: Alfajores.rpcUrls.default.http[0],
+  [Baklava.id]: Baklava.rpcUrls.default.http[0],
+  [Cannoli.id]: Cannoli.rpcUrls.default.http[0],
 };
 
-export default function chainIdToRPC(chainId: ChainId) {
-  return chainIdForRPC[chainId] || chainIdForRPC[ChainId.Mainnet];
+export default function chainIdToRPC(chainId: number) {
+  return chainIdForRPC[chainId] || chainIdForRPC[Celo.id];
 }

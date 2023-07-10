@@ -1,20 +1,20 @@
-import { ChainId, useCelo } from '@celo/react-celo'
-import { useRouter } from 'next/router';
+import { Alfajores } from '@celo/rainbowkit-celo/chains';
+import Router from 'next/router';
 import { useCallback } from 'react';
 import { Mode } from 'src/types';
+import { useChainId } from 'wagmi';
 
 export default function useModeChange() {
-  const router = useRouter();
-  const { network } = useCelo();
-  const currentChain = network.chainId
+  const currentChain = useChainId();
+
   const onModeChange = useCallback(
     (mode: Mode) => {
-      void router.push({
+      void Router.push({
         pathname: `/${mode}`,
-        query: currentChain === ChainId.Alfajores ? {chainId: currentChain} : {}
+        query: currentChain === Alfajores.id ? { chainId: currentChain } : {},
       });
     },
-    [router, currentChain]
+    [currentChain]
   );
 
   return onModeChange;

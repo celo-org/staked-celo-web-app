@@ -1,10 +1,10 @@
-import { ProposalStage } from '@celo/contractkit/lib/wrappers/Governance';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ConnectButton } from 'src/components/buttons/ConnectButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
 import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
 import { StagePill } from 'src/features/governance/components/StagePill';
@@ -13,10 +13,20 @@ import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { useVote } from 'src/features/governance/hooks/useVote';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
+import { StCelo } from 'src/utils/tokens';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
 interface Props {
   proposal: SerializedProposal;
+}
+// From contractkit
+export enum ProposalStage {
+  None = 'None',
+  Queued = 'Queued',
+  Approval = 'Approval',
+  Referendum = 'Referendum',
+  Execution = 'Execution',
+  Expiration = 'Expiration',
 }
 
 export const Details = ({ proposal }: Props) => {
@@ -25,23 +35,25 @@ export const Details = ({ proposal }: Props) => {
     useVote();
 
   useEffect(() => {
-    if (isConnected) void loadBalances();
+    if (isConnected) void loadBalances?.();
   }, [loadBalances, isConnected]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
   const [hasVoted, setHasVoted] = useState<boolean>(false);
+  const [transactionModalOpen, setTransactionModalOpen] = useState<boolean>(false);
 
   const onVoteChange = useCallback((voteType: VoteType) => {
     setCurrentVote(voteType);
   }, []);
 
   const pastVote = useMemo(() => {
-    return getProposalVote(proposal.proposalID);
+    return getProposalVote(proposal.proposalID.toString());
   }, [getProposalVote, proposal.proposalID]);
 
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
-    await voteProposal(proposal, currentVote);
+    setTransactionModalOpen(true);
+    await voteProposal(proposal, currentVote, { onSent: () => setTransactionModalOpen(false) });
     setHasVoted(true);
   }, [currentVote, hasVoted, voteProposal, proposal]);
 
@@ -105,12 +117,6 @@ export const Details = ({ proposal }: Props) => {
                 {proposal.parsedYAML?.cgp}
               </TertiaryCallout>
             )}
-            {pastVote && (
-              <TertiaryCallout classes="px-[8px]">
-                {pastVote.weight} stCELO voted {pastVote.vote} for Proposal #
-                {proposal.parsedYAML?.cgp}
-              </TertiaryCallout>
-            )}
             {!hasVoted && (
               <div className="w-full px-4 py-2">
                 <VoteButton
@@ -122,6 +128,16 @@ export const Details = ({ proposal }: Props) => {
             )}
           </>
         ) : null}
+        {pastVote && (
+          <TertiaryCallout classes="px-[8px]">
+            {new StCelo(pastVote.weight).displayAsBase()} stCELO voted {pastVote.vote} for Proposal
+            #{proposal.parsedYAML?.cgp}
+          </TertiaryCallout>
+        )}
+        <TransactionCalloutModal
+          isOpened={transactionModalOpen}
+          close={() => setTransactionModalOpen(false)}
+        />
       </ContainerSecondaryBG>
     </CenteredLayout>
   );

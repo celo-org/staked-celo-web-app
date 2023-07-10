@@ -3,9 +3,9 @@ export const DISPLAY_DECIMALS = 4;
 export const INPUT_DECIMALS = 4;
 export const MIN_ROUNDED_VALUE = 0.001;
 
-export const GAS_PRICE = process.env.NEXT_PUBLIC_GAS_PRICE || '6000000000';
+export const GAS_PRICE = BigInt(process.env.NEXT_PUBLIC_GAS_PRICE || '6000000000');
 export const GAS_PRICE_MULTIPLIER = process.env.NEXT_PUBLIC_GAS_PRICE_MULTIPLIER || 1.2;
-export const MAX_AMOUNT_THRESHOLD = '10000000000000000';
+export const MAX_AMOUNT_THRESHOLD = BigInt('10000000000000000');
 
 export const MANAGER_TESTNET_ADDRESS = '0xFfe124dde2b29fA848aD8caAEBE85651F0b5c406';
 export const STAKED_CELO_TESTNET_ADDRESS = '0xD22E18556E43cb29D6d6172D4b33Fd2Edb629EF2';
@@ -19,19 +19,9 @@ export const MANAGER_MAINNET_ADDRESS = '0x0239b96D10a434a56CC9E09383077A0490cF93
 export const STAKED_CELO_MAINNET_ADDRESS = '0xC668583dcbDc9ae6FA3CE46462758188adfdfC24';
 export const ACCOUNT_MAINNET_ADDRESS = '0x4aAD04D41FD7fd495503731C5a2579e19054C432';
 // TODO - add these when contracts deployed to mainnet
+export const VOTE_MAINNET_ADDRESS = '';
 export const GROUP_HEALTH_MAINNET_ADDRESS = '';
 export const SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS = '';
-export const VOTE_MAINNET_ADDRESS = '';
-
-
-export const MULTICALL_MAINNET = {
-  address: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  blockCreated: 13112599,
-};
-export const MULTICALL_TESTNET = {
-  address: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  blockCreated: 14569001,
-}; //https://github.com/wagmi-dev/references/blob/main/packages/chains/src/celoAlfajores.ts
 
 export const TESTNET_API_URL =
   'https://us-central1-staked-celo-bot.cloudfunctions.net/alfajores-functions';
@@ -50,3 +40,7 @@ export const DOCS_URL = 'https://docs.stcelo.xyz/';
 export const PRIVACY_URL = 'https://clabs.co/privacy';
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';
+
+// the default is Nico's test/dev project (not sensitive)
+export const WALLET_CONNECT_PROJECT_ID =
+  process.env.WALLET_CONNECT_PROJECT_ID || 'e6e81d9f3439a3d1571b3f4193271978';

@@ -1,9 +1,9 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { useMemo } from 'react';
 import { Switcher } from 'src/components/switcher/Switcher';
 import { Governance } from 'src/features/governance/components/Governance';
-import { SerializedProposal, getProposals } from 'src/features/governance/data/getProposals';
+import { getProposals, SerializedProposal } from 'src/features/governance/data/getProposals';
 import { Swap } from 'src/features/swap/components/Swap';
 import { Validators } from 'src/features/validators/components/List';
 import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
@@ -28,8 +28,7 @@ const MultiModePage: NextPage<Props> = ({
   proposals,
   pastProposals,
 }) => {
-  const router = useRouter();
-  const { slug } = router.query as { slug?: string[] };
+  const { slug } = Router.query as { slug?: string[] };
   const mode = (slug ? slug[0] : Mode.stake) as Mode;
 
   useRedirectToConnectedChainIfNeeded(serverSideChainId, mode);

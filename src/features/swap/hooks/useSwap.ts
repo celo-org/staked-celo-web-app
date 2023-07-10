@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useState } from 'react';
 import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
@@ -46,7 +47,7 @@ export function useSwap(mode: Mode) {
   }
 
   const setMaxAmount = useCallback(() => {
-    const maxAmount = new Token(balance.minus(MAX_AMOUNT_THRESHOLD));
+    const maxAmount = new Token(BigNumber.max(0, balance.minus(MAX_AMOUNT_THRESHOLD.toString())));
     setAmount(maxAmount);
   }, [setAmount, balance]);
 

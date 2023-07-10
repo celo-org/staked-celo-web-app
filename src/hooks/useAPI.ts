@@ -1,15 +1,15 @@
-import { useCelo } from '@celo/react-celo';
+import { Celo } from '@celo/rainbowkit-celo/chains';
 import { useMemo } from 'react';
 import { mainnetAPIUrl, testnetAPIUrl } from 'src/config/services';
 import { createAPI } from 'src/services/api';
+import { useChainId } from 'wagmi';
 
 export function useAPI() {
-  const { network } = useCelo();
-
+  const chainId = useChainId();
   const api = useMemo(() => {
-    if (network.name === 'Mainnet') return createAPI(mainnetAPIUrl);
+    if (chainId === Celo.id) return createAPI(mainnetAPIUrl);
     return createAPI(testnetAPIUrl);
-  }, [network]);
+  }, [chainId]);
 
   return { api };
 }

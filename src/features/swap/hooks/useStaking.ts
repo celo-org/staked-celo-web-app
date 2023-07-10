@@ -1,69 +1,95 @@
-import BigNumber from 'bignumber.js';
 import { useCallback, useMemo, useState } from 'react';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { useAPI } from 'src/hooks/useAPI';
 import { Mode } from 'src/types';
-import { Celo, CeloUSD, StCelo } from 'src/utils/tokens';
 import { transactionEvent } from 'src/utils/ga';
-import { showStakingToast } from '../utils/toast';
+import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
+import { useContractWrite, usePublicClient } from 'wagmi';
+import { showErrorToast, showStakingToast } from '../utils/toast';
 
 export function useStaking() {
-  const { address, loadBalances, celoBalance } = useAccountContext();
-  const { managerContract, stCeloContract, sendTransaction } = useBlockchain();
+  const { address, loadBalances, celoBalance, stCeloBalance } = useAccountContext();
+  const { managerContract } = useBlockchain();
   const { api } = useAPI();
-  const { stakingRate, celoToUSDRate, suggestedGasPrice } = useProtocolContext();
+  const { stakingRate, celoToUSDRate } = useProtocolContext();
+  const { suggestedGasPrice } = useGasPrices();
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
+  const publicClient = usePublicClient();
 
-  const createTxOptions = useCallback(() => {
-    if (!address) throw new Error('Cannot create tx options without an address');
-    return { from: address, value: celoAmount?.toFixed(), gasPrice: suggestedGasPrice };
-  }, [address, celoAmount, suggestedGasPrice]);
+  const { writeAsync: _stake } = useContractWrite({
+    ...managerContract,
+    functionName: 'deposit',
+    value: 0n,
+  });
 
-  const depositTx = useCallback(() => managerContract?.methods?.deposit(), [managerContract]);
+  const stake = useCallback(
+    async (callbacks?: TxCallbacks) => {
+      if (!address || !celoAmount || celoAmount.isEqualTo(0) || !stCeloBalance || !loadBalances) {
+        return;
+      }
 
-  const stake = async (callbacks?: TxCallbacks) => {
-    if (!address || !managerContract || !stCeloContract || !celoAmount || celoAmount.isEqualTo(0)) return;
-    const preDepositStTokenBalance = new StCelo(
-      await stCeloContract.methods.balanceOf(address).call()
-    );
-    transactionEvent({
-      action: Mode.stake,
-      status: 'initiated_transaction',
-      value: celoAmount.displayAsBase(),
-    });
-    await sendTransaction(depositTx(), createTxOptions(), callbacks);
-    transactionEvent({
-      action: Mode.stake,
-      status: 'signed_transaction',
-      value: celoAmount.displayAsBase(),
-    });
-    void api.activate(); // TODO: should this be awaited? added void to shut linter.
-    await loadBalances();
-    const postDepositStTokenBalance = new StCelo(
-      await stCeloContract.methods.balanceOf(address).call()
-    );
-    const receivedStCelo = new StCelo(postDepositStTokenBalance.minus(preDepositStTokenBalance));
-    showStakingToast(receivedStCelo);
-    setCeloAmount(null);
-  };
+      const preDepositStTokenBalance = stCeloBalance!;
+      transactionEvent({
+        action: Mode.stake,
+        status: 'initiated_transaction',
+        value: celoAmount.displayAsBase(),
+      });
+      try {
+        await _stake({ value: celoAmount?.toBigInt() });
+        transactionEvent({
+          action: Mode.stake,
+          status: 'signed_transaction',
+          value: celoAmount.displayAsBase(),
+        });
+        await api.activate();
+        const [{ data: _celoBalance }, { data: _stCeloBalance }] = await loadBalances();
+        const postDepositStTokenBalance = new StCelo(_stCeloBalance);
+        const receivedStCelo = new StCelo(
+          postDepositStTokenBalance.minus(preDepositStTokenBalance)
+        );
+        showStakingToast(receivedStCelo);
+        setCeloAmount(null);
+      } catch (e: unknown) {
+        console.error(e);
+        showErrorToast(
+          (e as Error).message.includes('rejected')
+            ? 'User rejected the request'
+            : (e as Error).message
+        );
+      } finally {
+        callbacks?.onSent?.();
+      }
+    },
+    [address, api, celoAmount, loadBalances, publicClient, stCeloBalance]
+  );
 
   const estimateStakingGas = useCallback(async () => {
-    const depositTxObject = depositTx();
     if (
       !celoAmount ||
-      !depositTxObject ||
       celoAmount.isEqualTo(0) ||
-      celoAmount.isGreaterThan(celoBalance)
+      celoAmount.isGreaterThan(celoBalance) ||
+      !address ||
+      !managerContract.address
     ) {
       return null;
     }
-    const gasFee = new BigNumber(await depositTxObject.estimateGas(createTxOptions()));
+
+    const gasFee = new Token(
+      await publicClient.estimateContractGas({
+        abi: managerContract.abi,
+        address: managerContract.address!,
+        account: address!,
+        functionName: 'deposit',
+        value: celoAmount.toBigInt(),
+      })
+    );
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;
-  }, [createTxOptions, depositTx, celoBalance, celoAmount, celoToUSDRate, suggestedGasPrice]);
+  }, [celoAmount, celoBalance, managerContract, publicClient, suggestedGasPrice, celoToUSDRate]);
 
   const receivedStCelo = useMemo(
     () => (celoAmount ? new StCelo(celoAmount.multipliedBy(stakingRate).dp(0)) : null),

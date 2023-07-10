@@ -64,7 +64,7 @@ const UnstakeInfo = () => {
     <>
       <span className="flex items-center ml-[6px]">
         <ThemedIcon
-          name="receive_info"
+          name="warning_info"
           classes="cursor-pointer"
           alt="Unstaking period info"
           height={16}
