@@ -11,10 +11,8 @@ const cacheKey = 'defaultGroups';
 
 export default function useDefaultGroups(): { activeGroups: Address[]; error: Option<Error> } {
   const { defaultGroupStrategyContract } = useBlockchain();
-  const cachedGroups = readFromCache(cacheKey);
   const [activeGroups, setActiveGroups] = useState<Address[]>([]);
   const [error, setError] = useState<Error>();
-  const shouldRefetch = !(cachedGroups && cachedGroups.ts + FEW_HOURS > Date.now());
 
   const { data: activeGroupsLength } = useContractRead({
     ...defaultGroupStrategyContract,
@@ -46,6 +44,9 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
   );
 
   useEffect(() => {
+    const cachedGroups = readFromCache(cacheKey);
+    const shouldRefetch = !(cachedGroups && cachedGroups.ts + FEW_HOURS > Date.now());
+
     if (!shouldRefetch) {
       setActiveGroups(cachedGroups.data as Address[]);
     } else if (groupsHead && activeGroupsLength) {
@@ -58,7 +59,7 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
           setError(err as Error);
         });
     }
-  }, [shouldRefetch, cachedGroups, groupsHead, activeGroupsLength]);
+  }, [groupsHead, activeGroupsLength]);
 
   return { activeGroups, error };
 }

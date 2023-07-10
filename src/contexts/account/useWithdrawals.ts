@@ -19,13 +19,13 @@ export const useWithdrawalBot = (address: Option<Address>) => {
   const { api } = useAPI();
   const { managerContract, accountContract } = useBlockchain();
 
-  const { data: activeGroupsV1 } = useContractRead({
+  const { data: activeGroupsV1 = [], error: _activeGroupsV1Error } = useContractRead({
     address: managerContract.address,
     abi: ManagerABIV1,
     functionName: 'getGroups',
   });
 
-  const { data: deprecatedGroupsV1 } = useContractRead({
+  const { data: deprecatedGroupsV1 = [], error: _deprecatedGroupsV1Error } = useContractRead({
     address: managerContract.address,
     abi: ManagerABIV1,
     functionName: 'getDeprecatedGroups',
@@ -33,12 +33,14 @@ export const useWithdrawalBot = (address: Option<Address>) => {
 
   const { activeGroups: groupsV2, error: groupsV2Error } = useDefaultGroups();
 
+  let groups =
+    activeGroupsV1.length || deprecatedGroupsV1.length
+      ? [...activeGroupsV1, ...deprecatedGroupsV1]
+      : groupsV2;
+
   const finalizeWithdrawal = useCallback(async () => {
     if (!address) return;
-
-    let groups = groupsV2Error
-      ? [...(activeGroupsV1 || []), ...(deprecatedGroupsV1 || [])]
-      : groupsV2;
+    if (!groups.length) return;
 
     for (const group of groups) {
       const scheduledWithdrawals = await readContract({
@@ -50,7 +52,7 @@ export const useWithdrawalBot = (address: Option<Address>) => {
 
       if (scheduledWithdrawals > 0) return api.withdraw(address);
     }
-  }, [address, managerContract, accountContract, api]);
+  }, [address, groups, accountContract, api]);
 
   useEffect(() => {
     void finalizeWithdrawal();
