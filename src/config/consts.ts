@@ -22,6 +22,7 @@ export const ACCOUNT_MAINNET_ADDRESS = '0x4aAD04D41FD7fd495503731C5a2579e19054C4
 export const VOTE_MAINNET_ADDRESS = '';
 export const GROUP_HEALTH_MAINNET_ADDRESS = '';
 export const SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS = '';
+export const DEFAULT_GROUP_STRATEGY_MAINNET_ADDRESS = '';
 
 export const TESTNET_API_URL =
   'https://us-central1-staked-celo-bot.cloudfunctions.net/alfajores-functions';

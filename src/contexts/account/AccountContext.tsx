@@ -43,7 +43,7 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
 
   const { loadBalances, celoBalance, stCeloBalance } = useAccountBalances(address);
   const { pendingWithdrawals, loadPendingWithdrawals } = useWithdrawals(address);
-  useWithdrawalBot(/*address*/);
+  useWithdrawalBot(address);
   useClaimingBot(address);
 
   const { strategy, reloadStrategy } = useStrategy(address);
