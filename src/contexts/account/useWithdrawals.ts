@@ -1,4 +1,7 @@
+import { readContract } from '@wagmi/core';
 import { useCallback, useEffect } from 'react';
+import ManagerABIV1 from 'src/blockchain/ABIs/legacy/v1/Manager';
+import useDefaultGroups from 'src/contexts/account/useDefaultGroups';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useAPI } from 'src/hooks/useAPI';
 import { Option } from 'src/types';
@@ -12,31 +15,50 @@ export interface PendingWithdrawal {
 
 const botActionInterval = 180 * 1000;
 
-export const useWithdrawalBot = (/*address: string | undefined*/) => {
-  // const { api } = useAPI();
-  // const { managerContract, accountContract } = useBlockchain();
-  // const finalizeWithdrawal = useCallback(async () => {
-  //   if (!address || !managerContract || !accountContract) return;
-  //   const [activeGroups, deprecatedGroups] = await Promise.all([
-  //     // TODO find replacement as this is removed from v2
-  //     managerContract.methods.getGroups().call(),
-  //     managerContract.methods.getDeprecatedGroups().call(),
-  //   ]);
-  //   const groups = [...activeGroups, ...deprecatedGroups];
-  //   for (const group of groups) {
-  //     const scheduledWithdrawals = await accountContract.methods
-  //       .scheduledWithdrawalsForGroupAndBeneficiary(group, address)
-  //       .call();
-  //     if (scheduledWithdrawals !== '0') return api.withdraw(address);
-  //   }
-  // }, [address, managerContract, accountContract, api]);
-  // useEffect(() => {
-  //   void finalizeWithdrawal();
-  //   const intervalId = setInterval(finalizeWithdrawal, botActionInterval);
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // }, [finalizeWithdrawal]);
+export const useWithdrawalBot = (address: Option<Address>) => {
+  const { api } = useAPI();
+  const { managerContract, accountContract } = useBlockchain();
+
+  const { data: activeGroupsV1 } = useContractRead({
+    address: managerContract.address,
+    abi: ManagerABIV1,
+    functionName: 'getGroups',
+  });
+
+  const { data: deprecatedGroupsV1 } = useContractRead({
+    address: managerContract.address,
+    abi: ManagerABIV1,
+    functionName: 'getDeprecatedGroups',
+  });
+
+  const { activeGroups: groupsV2, error: groupsV2Error } = useDefaultGroups();
+
+  const finalizeWithdrawal = useCallback(async () => {
+    if (!address) return;
+
+    let groups = groupsV2Error
+      ? [...(activeGroupsV1 || []), ...(deprecatedGroupsV1 || [])]
+      : groupsV2;
+
+    for (const group of groups) {
+      const scheduledWithdrawals = await readContract({
+        address: accountContract.address!,
+        abi: accountContract.abi,
+        functionName: 'scheduledWithdrawalsForGroupAndBeneficiary',
+        args: [group, address],
+      });
+
+      if (scheduledWithdrawals > 0) return api.withdraw(address);
+    }
+  }, [address, managerContract, accountContract, api]);
+
+  useEffect(() => {
+    void finalizeWithdrawal();
+    const intervalId = setInterval(finalizeWithdrawal, botActionInterval);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [finalizeWithdrawal]);
 };
 
 export const useClaimingBot = (address: Option<Address>) => {

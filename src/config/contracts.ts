@@ -2,6 +2,8 @@ import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import {
   ACCOUNT_MAINNET_ADDRESS,
   ACCOUNT_TESTNET_ADDRESS,
+  DEFAULT_GROUP_STRATEGY_MAINNET_ADDRESS,
+  DEFAULT_GROUP_STRATEGY_TESTNET_ADDRESS,
   GROUP_HEALTH_MAINNET_ADDRESS,
   GROUP_HEALTH_TESTNET_ADDRESS,
   MANAGER_MAINNET_ADDRESS,
@@ -20,6 +22,7 @@ interface ContractAddresses {
   stakedCelo: Address;
   account: Address;
   specificGroupStrategy: Address;
+  defaultGroupStrategy: Address;
   groupHealth: Address;
   vote: Address;
 }
@@ -29,6 +32,7 @@ export const mainnetAddresses: ContractAddresses = {
   stakedCelo: STAKED_CELO_MAINNET_ADDRESS as Address,
   account: ACCOUNT_MAINNET_ADDRESS as Address,
   specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_MAINNET_ADDRESS as Address,
+  defaultGroupStrategy: DEFAULT_GROUP_STRATEGY_MAINNET_ADDRESS as Address,
   groupHealth: GROUP_HEALTH_MAINNET_ADDRESS as Address,
   vote: VOTE_MAINNET_ADDRESS as Address,
 };
@@ -38,6 +42,7 @@ export const testnetAddresses: ContractAddresses = {
   stakedCelo: STAKED_CELO_TESTNET_ADDRESS as Address,
   account: ACCOUNT_TESTNET_ADDRESS as Address,
   specificGroupStrategy: SPECIFIC_GROUP_STRATEGY_TESTNET_ADDRESS as Address,
+  defaultGroupStrategy: DEFAULT_GROUP_STRATEGY_TESTNET_ADDRESS as Address,
   groupHealth: GROUP_HEALTH_TESTNET_ADDRESS as Address,
   vote: VOTE_TESTNET_ADDRESS as Address,
 };

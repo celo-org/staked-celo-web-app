@@ -1,7 +1,9 @@
 import { disconnect } from '@wagmi/core';
 import { createContext, PropsWithChildren, useEffect, useMemo } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account';
+import DefaultGroupStrategyABI from 'src/blockchain/ABIs/DefaultGroupStrategy';
 import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth';
+import ManagerABIV1 from 'src/blockchain/ABIs/legacy/v1/Manager';
 import ManagerABI from 'src/blockchain/ABIs/Manager';
 import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy';
 import StakedCeloABI from 'src/blockchain/ABIs/StakedCelo';
@@ -29,6 +31,7 @@ interface BlockchainContext {
   voteContract: Contract<typeof VoteABI>;
   groupHealthContract: Contract<typeof GroupHealthABI>;
   specificGroupStrategyContract: Contract<typeof SpecificGroupStrategyABI>;
+  defaultGroupStrategyContract: Contract<typeof DefaultGroupStrategyABI>;
 }
 
 export const BlockchainContext = createContext<BlockchainContext>({
@@ -57,6 +60,10 @@ export const BlockchainContext = createContext<BlockchainContext>({
     address: undefined,
     abi: SpecificGroupStrategyABI,
   },
+  defaultGroupStrategyContract: {
+    address: undefined,
+    abi: DefaultGroupStrategyABI,
+  },
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
@@ -66,6 +73,13 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     () => ({
       address: addresses.manager,
       abi: ManagerABI,
+    }),
+    [addresses]
+  );
+  const managerContractV1 = useMemo(
+    () => ({
+      address: addresses.manager,
+      abi: ManagerABIV1,
     }),
     [addresses]
   );
@@ -98,6 +112,13 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     }),
     [addresses]
   );
+  const defaultGroupStrategyContract = useMemo(
+    () => ({
+      address: addresses.defaultGroupStrategy,
+      abi: DefaultGroupStrategyABI,
+    }),
+    [addresses]
+  );
   const specificGroupStrategyContract = useMemo(
     () => ({
       address: addresses.specificGroupStrategy,
@@ -124,6 +145,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         voteContract,
         groupHealthContract,
         specificGroupStrategyContract,
+        defaultGroupStrategyContract,
       }}
     >
       {children}
