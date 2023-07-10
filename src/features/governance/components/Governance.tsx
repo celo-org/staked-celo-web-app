@@ -23,6 +23,7 @@ export const Governance = ({ proposals, pastProposals }: Props) => {
       <CenteredLayout>
         <div className="inline text-[16px]">
           This is where you'll be able to vote on Celo when the contracts are deployed on Mainnet.
+          <br />
           You can{' '}
           <LinkOut href="https://github.com/celo-org/staked-celo/issues/131" classes="text-[16px]">
             follow the progress here

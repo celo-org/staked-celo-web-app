@@ -39,7 +39,9 @@ export const Validators = ({ list }: ValidatorsProps) => {
       <CenteredLayout>
         <div className="inline text-[16px]">
           This is where you'll be select which validator group will be voting on your behalf when
-          the contracts are deployed on Mainnet. You can{' '}
+          the contracts are deployed on Mainnet.
+          <br />
+          You can{' '}
           <LinkOut href="https://github.com/celo-org/staked-celo/issues/131" classes="text-[16px]">
             follow the progress here
           </LinkOut>
