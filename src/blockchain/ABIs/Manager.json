@@ -53,123 +53,122 @@
     "type": "receive"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "FailedToAddActiveGroup",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "FailedToAddDeprecatedGroup",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "FailedToRemoveDeprecatedGroup",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "GroupAlreadyAdded",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "GroupNotActive",
-    "type": "error"
-  },
-  {
     "inputs": [],
-    "name": "MaxGroupsVotedForReached",
+    "name": "AddressZeroNotAllowed",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "NoActiveGroups",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "CallerNotStakedCelo",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "NoGroups",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "CallerNotStrategy",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "NoVotableGroups",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "FromGroupNotOverflowing",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "GroupNotEligible",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "InvalidToGroup",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "actualCelo",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "expectedCelo",
+        "type": "uint256"
+      }
+    ],
+    "name": "RebalanceEnoughCelo",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "actualCelo",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "expectedCelo",
+        "type": "uint256"
+      }
+    ],
+    "name": "RebalanceNoExtraCelo",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "ToGroupOverflowing",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "ZeroWithdrawal",
     "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "GroupActivated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "GroupDeprecated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "group",
-        "type": "address"
-      }
-    ],
-    "name": "GroupRemoved",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -191,16 +190,42 @@
     "type": "event"
   },
   {
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
         "internalType": "address",
-        "name": "group",
+        "name": "voteContract",
         "type": "address"
       }
     ],
-    "name": "activateGroup",
+    "name": "VoteContractSet",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newStrategy",
+        "type": "address"
+      }
+    ],
+    "name": "changeStrategy",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "defaultStrategy",
+    "outputs": [
+      {
+        "internalType": "contract IDefaultStrategy",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -214,23 +239,59 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "accountAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getAddressStrategy",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "group",
         "type": "address"
       }
     ],
-    "name": "deprecateGroup",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getExpectedAndActualCeloForGroup",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "expectedCelo",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "actualCelo",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getDeprecatedGroups",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "group",
+        "type": "address"
+      }
+    ],
+    "name": "getReceivableVotesForGroup",
     "outputs": [
       {
-        "internalType": "address[]",
+        "internalType": "uint256",
         "name": "",
-        "type": "address[]"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -238,12 +299,40 @@
   },
   {
     "inputs": [],
-    "name": "getGroups",
+    "name": "getVersionNumber",
     "outputs": [
       {
-        "internalType": "address[]",
+        "internalType": "uint256",
         "name": "",
-        "type": "address[]"
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "groupHealth",
+    "outputs": [
+      {
+        "internalType": "contract IGroupHealth",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -281,6 +370,42 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "fromGroup",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "toGroup",
+        "type": "address"
+      }
+    ],
+    "name": "rebalance",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "fromGroup",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "toGroup",
+        "type": "address"
+      }
+    ],
+    "name": "rebalanceOverflow",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "registry",
     "outputs": [
@@ -303,6 +428,52 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "revokeVotes",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "fromGroups",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "toGroups",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "fromVotes",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "toVotes",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "scheduleTransferWithinStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_stakedCelo",
         "type": "address"
@@ -311,11 +482,63 @@
         "internalType": "address",
         "name": "_account",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_vote",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_groupHealth",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_specificGroupStrategy",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_defaultStrategy",
+        "type": "address"
       }
     ],
     "name": "setDependencies",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "specificGroupStrategy",
+    "outputs": [
+      {
+        "internalType": "contract ISpecificGroupStrategy",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "strategies",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -360,12 +583,67 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stCeloAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "newOwner",
         "type": "address"
       }
     ],
     "name": "transferOwnership",
     "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "accountAddress",
+        "type": "address"
+      }
+    ],
+    "name": "unlockBalance",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      }
+    ],
+    "name": "updateHistoryAndReturnLockedStCeloInVoting",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -401,10 +679,56 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "voteContract",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "stakedCeloAmount",
+        "name": "proposalId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yesVotes",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "noVotes",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "abstainVotes",
+        "type": "uint256"
+      }
+    ],
+    "name": "voteProposal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "stCeloAmount",
         "type": "uint256"
       }
     ],

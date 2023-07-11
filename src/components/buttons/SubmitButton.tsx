@@ -1,7 +1,7 @@
 import { Button } from 'src/components/buttons/Button';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
-import { Mode } from '../types';
+import { Mode } from 'src/types';
 
 interface SubmitButtonProps {
   mode: Mode;
@@ -19,7 +19,9 @@ export const SubmitButton = ({ mode, pending, disabled }: SubmitButtonProps) => 
   return (
     <Button
       type="submit"
-      classes={`${mode === 'stake' ? stakeClasses : unstakeClasses} text-color-contrast w-full`}
+      classes={`${
+        mode === Mode.stake || mode === Mode.validators ? stakeClasses : unstakeClasses
+      } text-color-contrast w-full`}
       disabled={disabled || pending}
     >
       {pending ? (
@@ -35,9 +37,13 @@ export const SubmitButton = ({ mode, pending, disabled }: SubmitButtonProps) => 
 
 const getText = (mode: Mode) => {
   switch (mode) {
-    case 'stake':
-      return 'Stake';
-    case 'unstake':
+    case Mode.unstake:
       return 'Unstake';
+    case Mode.stake:
+      return 'Stake';
+    case Mode.validators:
+      return 'Delegate';
+    default:
+      return 'Submit';
   }
 };

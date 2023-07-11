@@ -4,6 +4,9 @@ module.exports = {
   content: ['src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      borderColor: {
+        'color-tertiary-callout': 'var(--c-text-tertiary-callout-color)',
+      },
       textColor: {
         'color-primary': 'var(--c-text-primary-color)',
         'color-secondary': 'var(--c-text-secondary-color)',
@@ -38,6 +41,7 @@ module.exports = {
         'action-secondary-light': 'var(--c-bg-action-secondary-light-color)',
         'action-secondary-regular': 'var(--c-bg-action-secondary-regular-color)',
         'action-secondary-dark': 'var(--c-bg-action-secondary-dark-color)',
+        'action-secondary-callout': 'var(--c-text-secondary-callout-color)',
         'highlight-primary': 'var(--c-bg-highlight-primary-color)',
         'highlight-secondary': 'var(--c-bg-highlight-secondary-color)',
         'callout-modal': 'var(--c-bg-callout-modal-color)',

@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Celo } from 'src/utils/tokens';
+import { useContractRead } from 'wagmi';
 
 export const useTokenBalances = () => {
   const { accountContract } = useBlockchain();
-
-  const [totalCeloBalance, setTotalCeloBalance] = useState<Celo>(new Celo(0));
-  const loadTotalCeloBalance = useCallback(async () => {
-    const totalCelo = new Celo(await accountContract.methods.getTotalCelo().call());
-    setTotalCeloBalance(totalCelo);
-  }, [accountContract]);
+  const { data: _totalCeloBalance, refetch: loadTotalCeloBalance } = useContractRead({
+    ...accountContract,
+    functionName: 'getTotalCelo',
+  });
+  const totalCeloBalance = useMemo(() => new Celo(_totalCeloBalance || 0), [_totalCeloBalance]);
 
   const loadTokenBalances = useCallback(async () => {
     await Promise.all([loadTotalCeloBalance()]);

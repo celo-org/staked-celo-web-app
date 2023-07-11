@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { GAS_PRICE } from 'src/config/consts';
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
+import { Option } from 'src/types';
 import { Celo } from 'src/utils/tokens';
 import { useAnnualProjectedRate } from './useAnnualProjectedRate';
 import { useExchangeRates } from './useExchangeRates';
@@ -12,7 +13,7 @@ interface ProtocolContext {
   celoToUSDRate: number;
   suggestedGasPrice: string;
   loadExchangeRates: () => Promise<void>;
-  loadGasPrices: () => Promise<void>;
+  loadGasPrices: Option<ReturnType<typeof useGasPrices>['loadGasPrices']>;
   totalCeloBalance: Celo;
   loadTokenBalances: () => Promise<void>;
   annualProjectedRate: string | null;
@@ -22,9 +23,9 @@ export const ProtocolContext = createContext<ProtocolContext>({
   stakingRate: 0,
   unstakingRate: 0,
   celoToUSDRate: 0,
-  suggestedGasPrice: GAS_PRICE,
+  suggestedGasPrice: GAS_PRICE.toString(),
   loadExchangeRates: () => Promise.resolve(),
-  loadGasPrices: () => Promise.resolve(),
+  loadGasPrices: undefined,
   totalCeloBalance: new Celo(0),
   loadTokenBalances: () => Promise.resolve(),
   annualProjectedRate: null,
@@ -69,7 +70,7 @@ export function useProtocolContext() {
   } = useContext(ProtocolContext);
 
   const reloadProtocolContext = useCallback(async () => {
-    await Promise.all([loadTokenBalances(), loadExchangeRates(), loadGasPrices()]);
+    await Promise.all([loadTokenBalances?.(), loadExchangeRates?.(), loadGasPrices?.()]);
   }, [loadTokenBalances, loadExchangeRates, loadGasPrices]);
 
   return {

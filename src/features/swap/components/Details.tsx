@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
+import { Mode } from 'src/types';
 import { CeloUSD } from 'src/utils/tokens';
-import { Mode } from '../types';
 
 interface DetailsProps {
   mode: Mode;
@@ -25,9 +25,10 @@ export const Details = ({ mode, swapRate, gasFee }: DetailsProps) => {
 
 const getDetails = (mode: Mode, swapRate: number, gasFee: CeloUSD) => {
   switch (mode) {
-    case 'unstake':
+    case Mode.unstake:
       return [exchangeDetail(swapRate), gasDetail(gasFee), feeDetail];
-    case 'stake':
+    default:
+    case Mode.stake:
       return [exchangeDetail(swapRate), gasDetail(gasFee), feeDetail, periodDetail];
   }
 };
@@ -57,7 +58,7 @@ const Detail = ({ title, value, tooltip }: DetailProps) => {
         </span>
       </span>
       <span className={value === freePriceValue ? 'text-color-tertiary-callout font-medium' : ''}>
-        {value}
+        {value === freePriceValue ? <FreePriceValue /> : value}
       </span>
       <InfoModal title={title} isOpen={isOpen} close={() => setIsOpen(false)}>
         {tooltip}
@@ -67,6 +68,33 @@ const Detail = ({ title, value, tooltip }: DetailProps) => {
 };
 
 const freePriceValue = 'Free*';
+
+const FreePriceValue = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <span className="inline-flex items-center">
+        <span>Free</span>
+        <span className="flex items-center ml-[8px]">
+          <ThemedIcon
+            classes="cursor-pointer"
+            name="receive_info"
+            alt={`Free info`}
+            height={16}
+            width={16}
+            onClick={() => setIsOpen(true)}
+          />
+        </span>
+      </span>
+
+      <InfoModal title="What does free mean ?" isOpen={isOpen} close={() => setIsOpen(false)}>
+        All the epoch rewards accrued by the underlying CELO are shared with stCELO holders and the
+        StakedCelo protocol is earning no fees. Blockchain transaction fees and/or other fees may
+        apply.
+      </InfoModal>
+    </>
+  );
+};
 
 const exchangeDetail = (swapRate: number): DetailProps => ({
   title: 'Exchange Rate',

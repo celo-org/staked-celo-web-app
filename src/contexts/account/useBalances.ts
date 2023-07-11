@@ -1,39 +1,29 @@
-import { useCelo } from '@celo/react-celo';
-import { useCallback, useEffect, useState } from 'react';
-import { useBlockchain } from 'src/hooks/useBlockchain';
+import { useCallback, useMemo } from 'react';
+import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { Option } from 'src/types';
 import { Celo, StCelo } from 'src/utils/tokens';
+import { Address, useBalance, useContractRead } from 'wagmi';
 
-export const useAccountBalances = (address: string | null) => {
-  const { kit } = useCelo();
-  const { stCeloContract } = useBlockchain();
+export const useAccountBalances = (address: Option<Address>) => {
+  const { stakedCeloContract } = useBlockchain();
+  const { data: rawCeloBalance, refetch: refetchCelo } = useBalance({
+    address,
+    enabled: !!address,
+  });
+  const { data: rawStCeloBalance, refetch: refetchStCelo } = useContractRead({
+    ...stakedCeloContract,
+    functionName: 'balanceOf',
+    args: [address!],
+    enabled: !!address,
+  });
 
-  const [celoBalance, setCeloBalance] = useState(new Celo(0));
-  const [stCeloBalance, setStCeloBalance] = useState(new StCelo(0));
+  const celoBalance = useMemo(() => new Celo(rawCeloBalance || 0), [rawCeloBalance]);
+  const stCeloBalance = useMemo(() => new StCelo(rawStCeloBalance || 0), [rawStCeloBalance]);
 
-  const loadCeloBalance = useCallback(async () => {
-    const { eth } = kit.connection.web3;
-    if (!address) return;
-
-    const balance = await eth.getBalance(address);
-
-    setCeloBalance(new Celo(balance));
-  }, [kit.connection, address]);
-
-  const loadStCeloBalance = useCallback(async () => {
-    const stCeloBalance = await stCeloContract.methods.balanceOf(address).call({
-      from: address,
-    });
-    setStCeloBalance(new StCelo(stCeloBalance));
-  }, [address, stCeloContract]);
-
-  const loadBalances = useCallback(async () => {
-    await Promise.all([loadCeloBalance(), loadStCeloBalance()]);
-  }, [loadCeloBalance, loadStCeloBalance]);
-
-  useEffect(() => {
-    if (!address) return;
-    void loadBalances();
-  }, [address, loadBalances]);
+  const loadBalances = useCallback(
+    () => Promise.all([refetchCelo(), refetchStCelo()]),
+    [refetchCelo, refetchStCelo]
+  );
 
   return {
     celoBalance,

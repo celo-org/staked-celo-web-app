@@ -1,6 +1,9 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
+import { useProposalVotes, VoteRecords } from 'src/contexts/account/useProposalVotes';
+import useStrategy from 'src/contexts/account/useStrategy';
+import { Option } from 'src/types';
 import { Celo, StCelo } from 'src/utils/tokens';
-import { useAccountAddress } from './useAddress';
+import { Address, useAccount } from 'wagmi';
 import { useAccountBalances } from './useBalances';
 import {
   PendingWithdrawal,
@@ -11,30 +14,40 @@ import {
 
 interface AccountContext {
   isConnected: boolean;
-  address: string | null;
+  address: Option<Address>;
   celoBalance: Celo;
   stCeloBalance: StCelo;
-  loadBalances: () => Promise<void>;
+  loadBalances: Option<ReturnType<typeof useAccountBalances>['loadBalances']>;
   pendingWithdrawals: PendingWithdrawal[];
-  loadPendingWithdrawals: () => Promise<void>;
+  loadPendingWithdrawals: Option<ReturnType<typeof useWithdrawals>['loadPendingWithdrawals']>;
+  strategy: Option<Address>;
+  reloadStrategy: Option<ReturnType<typeof useStrategy>['reloadStrategy']>;
+  votes: VoteRecords;
 }
 
 export const AccountContext = createContext<AccountContext>({
   isConnected: false,
-  address: null,
+  address: undefined,
   celoBalance: new Celo(0),
   stCeloBalance: new StCelo(0),
-  loadBalances: () => Promise.resolve(),
+  loadBalances: undefined,
   pendingWithdrawals: [],
-  loadPendingWithdrawals: () => Promise.resolve(),
+  loadPendingWithdrawals: undefined,
+  strategy: undefined,
+  reloadStrategy: undefined,
+  votes: {},
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
-  const { isConnected, address } = useAccountAddress();
+  const { isConnected, address } = useAccount();
+
   const { loadBalances, celoBalance, stCeloBalance } = useAccountBalances(address);
   const { pendingWithdrawals, loadPendingWithdrawals } = useWithdrawals(address);
   useWithdrawalBot(address);
   useClaimingBot(address);
+
+  const { strategy, reloadStrategy } = useStrategy(address);
+  const { votes } = useProposalVotes(address);
 
   return (
     <AccountContext.Provider
@@ -46,6 +59,9 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         stCeloBalance,
         pendingWithdrawals,
         loadPendingWithdrawals,
+        strategy,
+        reloadStrategy,
+        votes,
       }}
     >
       {children}
@@ -62,6 +78,9 @@ export function useAccountContext() {
     loadBalances,
     pendingWithdrawals,
     loadPendingWithdrawals,
+    strategy,
+    reloadStrategy,
+    votes,
   } = useContext(AccountContext);
 
   return {
@@ -72,5 +91,8 @@ export function useAccountContext() {
     loadBalances,
     pendingWithdrawals,
     loadPendingWithdrawals,
+    strategy,
+    reloadStrategy,
+    votes,
   };
 }

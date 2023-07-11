@@ -1,17 +1,18 @@
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
+import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
+import { TxCallbacks } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { TxCallbacks } from 'src/hooks/useBlockchain';
+import useModeChange from 'src/hooks/useModeChange';
+import { Mode } from 'src/types';
 import { Token, toToken } from 'src/utils/tokens';
-import { Mode } from '../types';
 import { BalanceTools } from './BalanceTools';
 import { ReceiveSummary } from './ReceiveSummary';
-import { SubmitButton } from './SubmitButton';
 import { TokenCard } from './TokenCard';
-import { TransactionCalloutModal } from './TransactionCalloutModal';
 
 interface SwapFormProps {
   mode: Mode;
@@ -22,7 +23,6 @@ interface SwapFormProps {
   setMaxAmount: () => void;
   onSubmit: (callbacks: TxCallbacks) => void;
   onChange: (amount?: Token) => void;
-  onModeChange: (mode: Mode) => void;
 }
 
 export const SwapForm = ({
@@ -34,7 +34,6 @@ export const SwapForm = ({
   setMaxAmount,
   onSubmit,
   onChange,
-  onModeChange,
 }: SwapFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCalloutModalOpened, setIsCalloutModalOpened] = useState(false);
@@ -46,17 +45,18 @@ export const SwapForm = ({
       e.preventDefault();
       setIsCalloutModalOpened(true);
       setIsLoading(true);
-      try {
-        await onSubmit({ onSent: () => setIsCalloutModalOpened(false) });
-        await reloadProtocolContext();
-      } finally {
-        setIsLoading(false);
-        setIsCalloutModalOpened(false);
-      }
+      onSubmit({
+        onSent: () => {
+          setIsCalloutModalOpened(false);
+          setIsLoading(false);
+          void reloadProtocolContext();
+        },
+      });
     },
     [onSubmit, reloadProtocolContext]
   );
 
+  const onModeChange = useModeChange();
   return (
     <>
       <form className="w-full justify-center items-center mt-[24px]" onSubmit={submit}>
@@ -71,7 +71,7 @@ export const SwapForm = ({
           />
           <div
             className="absolute inline-flex cursor-pointer"
-            onClick={() => onModeChange(mode === 'stake' ? 'unstake' : 'stake')}
+            onClick={() => onModeChange(mode === Mode.stake ? Mode.unstake : Mode.stake)}
           >
             <ThemedIcon name="arrow" alt="Arrow" width={40} height={40} quality={100} />
           </div>
@@ -101,10 +101,11 @@ interface FormInputProps {
 const getTitle = (error: string | null, mode: Mode) => {
   if (error) return <span className="text-color-error whitespace-nowrap">{error}</span>;
   switch (mode) {
-    case 'stake':
-      return 'Stake';
-    case 'unstake':
+    case Mode.unstake:
       return 'Unstake';
+    default:
+    case Mode.stake:
+      return 'Stake';
   }
 };
 
@@ -129,7 +130,7 @@ const SwapFormInput = ({
   return (
     <TokenCard
       classes="bg-tertiary rounded-t-[16px] pb-[32px]"
-      token={mode === 'stake' ? 'CELO' : 'stCELO'}
+      token={mode === Mode.stake ? 'CELO' : 'stCELO'}
       titleChild={
         <OpacityTransition id={mode}>
           <span>{getTitle(error, mode)}</span>

@@ -1,0 +1,12 @@
+import { Alfajores, Baklava, Cannoli, Celo } from '@celo/rainbowkit-celo/chains';
+
+const chainIdForRPC = {
+  [Celo.id]: Celo.rpcUrls.default.http[0],
+  [Alfajores.id]: Alfajores.rpcUrls.default.http[0],
+  [Baklava.id]: Baklava.rpcUrls.default.http[0],
+  [Cannoli.id]: Cannoli.rpcUrls.default.http[0],
+};
+
+export default function chainIdToRPC(chainId: number) {
+  return chainIdForRPC[chainId] || chainIdForRPC[Celo.id];
+}

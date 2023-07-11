@@ -1,11 +1,11 @@
+import { Mode } from 'src/types';
 import { Token } from 'src/utils/tokens';
-import { Mode } from '../types';
 
 export const validateAmount = (amount: Token | null, balance: Token, mode: Mode) => {
   if (!amount) return null;
-  if (amount.isLessThan(0)) return 'Amount cannot be negative';
+  if (amount.isLessThanOrEqualTo(0)) return 'Amount cannot be negative or zero';
   if (balance.isLessThan(amount)) {
-    return `Not enough ${mode === 'stake' ? 'CELO' : 'stCELO'}`;
+    return `Not enough ${mode === Mode.stake ? 'CELO' : 'stCELO'}`;
   }
   return null;
 };

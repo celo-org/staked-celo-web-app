@@ -5,6 +5,8 @@ import ArrowDark from 'src/images/icons/arrow-dark.svg';
 import ArrowLight from 'src/images/icons/arrow-light.svg';
 import CaretDark from 'src/images/icons/caret-dark.svg';
 import CaretLight from 'src/images/icons/caret-light.svg';
+import CaretPurpleDark from 'src/images/icons/caret-purple-dark.svg';
+import CaretPurpleLight from 'src/images/icons/caret-purple-light.svg';
 import DiscordDark from 'src/images/icons/discord-dark.svg';
 import DiscordLight from 'src/images/icons/discord-light.svg';
 import GithubDark from 'src/images/icons/github-dark.svg';
@@ -31,10 +33,12 @@ type IconName =
   | 'logo'
   | 'info'
   | 'receive_info'
+  | 'warning_info'
   | 'github'
   | 'discord'
   | 'twitter'
   | 'caret'
+  | 'caret-purple'
   | 'spinner'
   | 'spinner-contrast'
   | 'spinner-purple'
@@ -50,11 +54,13 @@ const icons: Record<IconName, ThemedIcons> = {
   arrow: { light: ArrowDark, dark: ArrowLight },
   logo: { light: LogoDark, dark: LogoLight },
   info: { light: InfoDark, dark: InfoLight },
-  receive_info: { light: InfoOrange, dark: InfoAqua },
+  receive_info: { light: InfoAqua, dark: InfoAqua },
+  warning_info: { light: InfoOrange, dark: InfoOrange },
   github: { light: GithubDark, dark: GithubLight },
   discord: { light: DiscordDark, dark: DiscordLight },
   twitter: { light: TwitterDark, dark: TwitterLight },
   caret: { light: CaretDark, dark: CaretLight },
+  'caret-purple': { light: CaretPurpleDark, dark: CaretPurpleLight },
   spinner: { light: SpinnerLight, dark: SpinnerDark },
   'spinner-contrast': { light: SpinnerDark, dark: SpinnerLight },
   'spinner-purple': { light: SpinnerPurpleDark, dark: SpinnerPurpleLight },

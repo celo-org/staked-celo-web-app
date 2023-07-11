@@ -1,4 +1,4 @@
-import { NEXT_PUBLIC_MAINNET_API_URL, NEXT_PUBLIC_TESTNET_API_URL } from 'src/config/consts';
+import { MAINNET_API_URL, TESTNET_API_URL } from 'src/config/consts';
 
-export const mainnetAPIUrl: string = NEXT_PUBLIC_MAINNET_API_URL as string;
-export const testnetAPIUrl: string = NEXT_PUBLIC_TESTNET_API_URL as string;
+export const mainnetAPIUrl: string = MAINNET_API_URL as string;
+export const testnetAPIUrl: string = TESTNET_API_URL as string;
