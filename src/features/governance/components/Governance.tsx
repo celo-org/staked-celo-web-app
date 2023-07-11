@@ -1,11 +1,6 @@
-import { Celo } from '@celo/rainbowkit-celo/chains';
 import { Row } from 'src/components/list/row';
-import { LinkOut } from 'src/components/text/LinkOut';
-import { VOTE_MAINNET_ADDRESS } from 'src/config/consts';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
-import { CenteredLayout } from 'src/layout/CenteredLayout';
-import chainIdToChain from 'src/utils/chainIdToChain';
 import { useChainId } from 'wagmi';
 
 interface Props {
@@ -15,23 +10,6 @@ interface Props {
 
 export const Governance = ({ proposals, pastProposals }: Props) => {
   const chainId = useChainId();
-  const chain = chainIdToChain(chainId);
-
-  // It means the contracts aren't deployed yet
-  if (VOTE_MAINNET_ADDRESS === '' && chain === Celo) {
-    return (
-      <CenteredLayout>
-        <div className="inline text-[16px]">
-          This is where you'll be able to vote on Celo when the contracts are deployed on Mainnet.
-          <br />
-          You can{' '}
-          <LinkOut href="https://github.com/celo-org/staked-celo/issues/131" classes="text-[16px]">
-            follow the progress here
-          </LinkOut>
-        </div>
-      </CenteredLayout>
-    );
-  }
 
   return (
     <form className="w-full flex flex-col justify-center items-center mt-[24px] bg-secondary p-[8px] pb-4 rounded-[16px] gap-16 min-h-[368px]">
