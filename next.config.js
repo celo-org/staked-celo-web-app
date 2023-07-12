@@ -48,7 +48,7 @@ const nextConfig = {
       {
         source: '/',
         destination: '/stake',
-        permanent: true,
+        permanent: false,
       },
     ];
   },
