@@ -44,7 +44,7 @@ export const Header = ({ isConnectPage = true }: HeaderProps) => {
 
   return (
     <header className="px-base w-full h-[80px] flex items-center justify-between">
-      <Link href="/">
+      <Link href="/stake">
         <a className={`flex items-center ${isConnectPage ? 'invisible' : ''}`}>
           <ThemedIcon name="logo" alt="StakedCelo Home" quality={100} width={40} height={40} />
         </a>

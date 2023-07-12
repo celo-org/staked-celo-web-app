@@ -1,12 +1,24 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useState } from 'react';
+import Router from 'next/router';
+import { useLayoutEffect, useState } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { TokenIcon } from 'src/components/icons/TokenIcon';
 import { InfoModal } from 'src/components/modals/InfoModal';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import styles from './connect.module.css';
 
 const Connect = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const isTransitioning = useIsTransitioning();
+  const { isConnected } = useAccountContext();
+
+  useLayoutEffect(() => {
+    if (isTransitioning) return;
+    if (isConnected) {
+      void Router.replace('/stake');
+    }
+  }, [isTransitioning, isConnected]);
 
   return (
     <div className="inline-flex w-full sm:pt-[0] sm:pb-[80px] mt-[-80px] sm:mt-0">

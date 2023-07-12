@@ -1,7 +1,8 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import Router from 'next/router';
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { Switcher } from 'src/components/switcher/Switcher';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Governance } from 'src/features/governance/components/Governance';
 import { getProposals, SerializedProposal } from 'src/features/governance/data/getProposals';
 import { Swap } from 'src/features/swap/components/Swap';
@@ -33,6 +34,15 @@ const MultiModePage: NextPage<Props> = ({
 
   useRedirectToConnectedChainIfNeeded(serverSideChainId, mode);
   const isTransitioning = useIsTransitioning();
+  const { isConnected } = useAccountContext();
+
+  useLayoutEffect(() => {
+    if (isTransitioning) return;
+
+    if (!isConnected && [Mode.stake, Mode.unstake].includes(mode)) {
+      void Router.replace('/connect');
+    }
+  }, [isTransitioning, mode, isConnected]);
 
   const page = useMemo(() => {
     switch (mode) {
