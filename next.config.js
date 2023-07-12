@@ -43,6 +43,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/stake',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({

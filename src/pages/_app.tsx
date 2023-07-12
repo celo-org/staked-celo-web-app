@@ -5,10 +5,10 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
-import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AccountProvider, useAccountContext } from 'src/contexts/account/AccountContext';
+import { AccountProvider } from 'src/contexts/account/AccountContext';
 import { BlockchainProvider } from 'src/contexts/blockchain/BlockchainContext';
 import { ProtocolProvider } from 'src/contexts/protocol/ProtocolContext';
 import { ThemeProvider, useThemeContext } from 'src/contexts/theme/ThemeContext';
@@ -116,31 +116,11 @@ const TopProvider = (props: PropsWithChildren) => {
   );
 };
 
-const routingsWithConnection = ['', 'stake', 'unstake'];
 const CeloConnectRedirect = (props: PropsWithChildren) => {
-  const { isConnected } = useAccountContext();
-  const route = Router.asPath;
-  const lastRoute = useRef<string | null>(null);
-  const basePath = Router.query.slug?.[0] || '';
-
-  useLayoutEffect(() => {
-    if (!isConnected && routingsWithConnection.includes(basePath)) {
-      void Router.push('/connect');
-    } else if (isConnected && basePath == 'connect') {
-      void Router.push(lastRoute.current ?? '/stake');
-    } else if (isConnected && basePath === '') {
-      void Router.push('/stake');
-    }
-  }, [isConnected, route, basePath]);
-
   useEffect(() => {
     const handleRouteChange = (url: URL) => {
       pageview(url);
     };
-    // Record last route
-    Router.events.on('beforeHistoryChange', () => {
-      lastRoute.current = Router.asPath;
-    });
     Router.events.on('routeChangeComplete', handleRouteChange);
   }, []);
 
