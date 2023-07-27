@@ -36,8 +36,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
   const id = params?.slug;
   const proposalID = Array.isArray(id) ? id[0] : id;
   const chainId =
-    Number(query.chainId as string) ||
-    (process.env.NODE_ENV === 'production' ? Celo.id : Alfajores.id);
+    Number(query.chainId as string) || Celo.id
 
   if (typeof proposalID !== 'string') {
     return {
