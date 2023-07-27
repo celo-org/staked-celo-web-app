@@ -1,16 +1,16 @@
-import { useCallback } from 'react'
-import { useAsyncCallback } from 'react-use-async-callback'
-import { useAccountContext } from 'src/contexts/account/AccountContext'
-import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain'
-import { useGasPrices } from 'src/contexts/protocol/useGasPrices'
-import { ProposalStage } from 'src/features/governance/components/Details'
-import { SerializedProposal } from 'src/features/governance/data/getProposals'
-import { showErrorToast, showVoteToast } from 'src/features/swap/utils/toast'
-import { VoteType } from 'src/types'
-import chainIdToChain from 'src/utils/chainIdToChain'
-import { transactionEvent } from 'src/utils/ga'
-import { readFromCache, writeToCache } from 'src/utils/localSave'
-import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi'
+import { useCallback } from 'react';
+import { useAsyncCallback } from 'react-use-async-callback';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
+import { ProposalStage } from 'src/features/governance/components/Details';
+import { SerializedProposal } from 'src/features/governance/data/getProposals';
+import { showErrorToast, showVoteToast } from 'src/features/swap/utils/toast';
+import { VoteType } from 'src/types';
+import chainIdToChain from 'src/utils/chainIdToChain';
+import { transactionEvent } from 'src/utils/ga';
+import { readFromCache, writeToCache } from 'src/utils/localSave';
+import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
 
 export const useVote = () => {
   const { managerContract, voteContract } = useBlockchain();
