@@ -21,8 +21,9 @@ export function useProposalVotes(address: Option<Address>) {
     if (!address) {
       return;
     }
-
-    const fromBlock = 15086029n; //TODO set to the block number of Contract deployment
+    // This times out with deployment block to latest
+    // TODO does searching by proposalID help? AND/OR start when proposal went to referendum? and end when it goes to next stage or if in ref to latest?
+    const fromBlock = 19918403n; // Block number of deployment of specific group strategy contract https://celoscan.io/tx/0x03a035646ae34e0ae79a7092c7d3521295863608b6061f15d983dc4b331b2bb3
     const events = await publicClient.getLogs({
       address: addresses.vote,
       event: {
