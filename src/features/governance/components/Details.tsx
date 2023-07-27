@@ -30,7 +30,7 @@ export enum ProposalStage {
 }
 
 export const Details = ({ proposal }: Props) => {
-  const { stCeloBalance, loadBalances, isConnected } = useAccountContext();
+  const { stCeloBalance, loadBalances, isConnected, address } = useAccountContext();
   const { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote } =
     useVote();
 
@@ -47,23 +47,23 @@ export const Details = ({ proposal }: Props) => {
   }, []);
 
   const pastVote = useMemo(() => {
-    return getProposalVote(proposal.proposalID.toString());
-  }, [getProposalVote, proposal.proposalID]);
+    return getProposalVote(proposal.proposalID.toString(), address!);
+  }, [getProposalVote, proposal.proposalID, address]);
 
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
     setTransactionModalOpen(true);
     await voteProposal(proposal, currentVote, { onSent: () => setTransactionModalOpen(false) });
-    setHasVoted(true);
   }, [currentVote, hasVoted, voteProposal, proposal]);
 
   useEffect(() => {
+    console.info('Checking if user has voted', address, proposal.proposalID);
     void getHasVoted(proposal)
       .then((didVote) => {
-        setHasVoted((isVoted) => isVoted || pastVote !== null || didVote);
+        setHasVoted(pastVote !== null || didVote);
       })
-      .catch(() => setHasVoted((isVoted) => isVoted || pastVote !== null));
-  }, [pastVote, getHasVoted, proposal]);
+      .catch(() => setHasVoted(pastVote !== null));
+  }, [pastVote, getHasVoted, proposal, address]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);

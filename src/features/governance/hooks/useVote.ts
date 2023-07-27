@@ -1,16 +1,16 @@
-import { useCallback } from 'react';
-import { useAsyncCallback } from 'react-use-async-callback';
-import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
-import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
-import { ProposalStage } from 'src/features/governance/components/Details';
-import { SerializedProposal } from 'src/features/governance/data/getProposals';
-import { showErrorToast, showVoteToast } from 'src/features/swap/utils/toast';
-import { VoteType } from 'src/types';
-import chainIdToChain from 'src/utils/chainIdToChain';
-import { transactionEvent } from 'src/utils/ga';
-import { readFromCache, writeToCache } from 'src/utils/localSave';
-import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
+import { useCallback } from 'react'
+import { useAsyncCallback } from 'react-use-async-callback'
+import { useAccountContext } from 'src/contexts/account/AccountContext'
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain'
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices'
+import { ProposalStage } from 'src/features/governance/components/Details'
+import { SerializedProposal } from 'src/features/governance/data/getProposals'
+import { showErrorToast, showVoteToast } from 'src/features/swap/utils/toast'
+import { VoteType } from 'src/types'
+import chainIdToChain from 'src/utils/chainIdToChain'
+import { transactionEvent } from 'src/utils/ga'
+import { readFromCache, writeToCache } from 'src/utils/localSave'
+import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi'
 
 export const useVote = () => {
   const { managerContract, voteContract } = useBlockchain();
@@ -19,10 +19,9 @@ export const useVote = () => {
   const { address } = useAccount();
   const chainId = useChainId();
   const network = chainIdToChain(chainId);
-
   const getVoteCacheKey = useCallback(
-    (id: string) => {
-      return `${network.name}:voteProposal:${id}`;
+    (id: string, addr: string) => {
+      return `${network.name}:${addr}:voteProposal:${id}`;
     },
     [network.name]
   );
@@ -72,7 +71,7 @@ export const useVote = () => {
           status: 'signed_transaction',
           value: voteWeight.toString(),
         });
-        writeToCache(getVoteCacheKey(proposal.proposalID.toString()), [
+        writeToCache(getVoteCacheKey(proposal.proposalID.toString(), address), [
           vote,
           stCeloBalance.toString(),
         ]);
@@ -92,14 +91,13 @@ export const useVote = () => {
   );
 
   const getProposalVote = useCallback(
-    (proposalId: string) => {
+    (proposalId: string, address: string) => {
       const nodeData = votes[proposalId];
-      const localData = readFromCache(getVoteCacheKey(proposalId));
+      const localData = readFromCache(getVoteCacheKey(proposalId, address));
 
       if (!nodeData && !localData?.data) {
         return null;
       }
-
       return {
         vote: nodeData?.vote || localData?.data[0],
         weight: nodeData?.weight || localData?.data[1],
