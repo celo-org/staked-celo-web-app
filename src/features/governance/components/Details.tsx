@@ -128,12 +128,17 @@ export const Details = ({ proposal }: Props) => {
             )}
           </>
         ) : null}
-        {pastVote && (
+        {pastVote ? (
           <TertiaryCallout classes="px-[8px]">
             {new StCelo(pastVote.weight).displayAsBase()} stCELO voted {pastVote.vote} for Proposal
             #{proposal.parsedYAML?.cgp}
           </TertiaryCallout>
-        )}
+          ) : hasVoted ? (
+            <TertiaryCallout classes="px-[8px]">
+              {address} voted for Proposal #{proposal.parsedYAML?.cgp}
+            </TertiaryCallout>
+          ) : null
+        }
         <TransactionCalloutModal
           isOpened={transactionModalOpen}
           close={() => setTransactionModalOpen(false)}
