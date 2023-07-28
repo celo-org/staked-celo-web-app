@@ -57,7 +57,9 @@ export const Details = ({ proposal }: Props) => {
     if (!currentVote || hasVoted) return;
     setTransactionModalOpen(true);
     await voteProposal(proposal, currentVote, { onSent: () => setTransactionModalOpen(false) });
-  }, [currentVote, hasVoted, voteProposal, proposal]);
+    const recentVote = await getProposalVote(proposal.proposalID.toString(), address!);
+    setPastVote(recentVote);
+  }, [currentVote, hasVoted, voteProposal, proposal, getProposalVote, address]);
 
   useEffect(() => {
     console.info('Checking if user has voted', proposal.proposalID);
@@ -66,7 +68,8 @@ export const Details = ({ proposal }: Props) => {
         setHasVoted(pastVote != null || didVote);
       })
       .catch(() => setHasVoted(pastVote != null));
-  }, [pastVote, getHasVoted, proposal]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
+  }, [pastVote, getHasVoted, proposal, voteProposalStatus.successfullyExecuted]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
