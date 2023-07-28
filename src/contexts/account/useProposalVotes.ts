@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useAsyncCallback } from 'react-use-async-callback';
+import { governanceABI } from '@celo/abis/types/wagmi/index';
+import { useCallback } from 'react';
 import useAddresses from 'src/hooks/useAddresses';
-import { Option, VoteType } from 'src/types';
-import { Address, usePublicClient } from 'wagmi';
+import { VoteType } from 'src/types';
+import celoRegistry from 'src/utils/celoRegistry';
+import { useAccount, usePublicClient } from 'wagmi';
 
 interface Vote {
   vote: VoteType;
@@ -10,63 +11,108 @@ interface Vote {
 }
 type ProposalID = string;
 
-export type VoteRecords = Record<ProposalID, Vote | null>;
-
 // Don't call directly use `votes` from `useAccountContext`
-export function useProposalVotes(address: Option<Address>) {
-  const [votes, setVotes] = useState<VoteRecords>({});
+export function useProposalVotes() {
+  const { address } = useAccount();
   const addresses = useAddresses();
   const publicClient = usePublicClient();
-  const [loadVotes] = useAsyncCallback(async () => {
-    if (!address) {
-      return;
-    }
-    // This times out with deployment block to latest
-    // TODO does searching by proposalID help? AND/OR start when proposal went to referendum? and end when it goes to next stage or if in ref to latest?
-    const fromBlock = 19918403n; // Block number of deployment of specific group strategy contract https://celoscan.io/tx/0x03a035646ae34e0ae79a7092c7d3521295863608b6061f15d983dc4b331b2bb3
-    const events = await publicClient.getLogs({
-      address: addresses.vote,
-      event: {
-        type: 'event',
-        name: 'ProposalVoted',
-        inputs: [
-          { type: 'address', name: 'voter', indexed: true },
-          { type: 'uint256', name: 'proposalId', indexed: true },
-          { type: 'uint256', name: 'yesVotes' },
-          { type: 'uint256', name: 'noVotes' },
-          { type: 'uint256', name: 'abstainVotes' },
-        ],
-      },
-      args: {
-        voter: address,
-      },
-      fromBlock,
-      toBlock: 'latest',
-    });
-
-    const voteRecords = events.reduce((sum: VoteRecords, currentEvent) => {
-      const values = currentEvent.args;
-      if (!values) return sum;
-
-      const vote = (['yesVotes', 'noVotes', 'abstainVotes'] as const).find(
-        (key) => values[key] !== 0n
-      );
-
-      if (vote && values.proposalId) {
-        sum[values.proposalId.toString()] = {
-          vote: vote.replace('Votes', '') as VoteType,
-          weight: values[vote as keyof typeof values] as string,
-        };
+  const getVotesForProposal = useCallback(
+    async (proposalId: ProposalID) => {
+      if (!address) {
+        return;
       }
 
-      return sum;
-    }, {} as VoteRecords);
-    setVotes(voteRecords);
-  }, [address, addresses]);
+      const governanceAddress = await publicClient.readContract({
+        ...celoRegistry,
+        functionName: 'getAddressForString',
+        args: ['Governance'],
+      });
 
-  useEffect(() => {
-    void loadVotes();
-  }, [loadVotes]);
+      const [{ result: proposal }, { result: queueExpiry }, { result: referendumStageDurations }] =
+        await publicClient.multicall({
+          contracts: [
+            {
+              address: governanceAddress,
+              abi: governanceABI,
+              functionName: 'getProposal',
+              args: [BigInt(proposalId)],
+            },
+            {
+              address: governanceAddress,
+              abi: governanceABI,
+              functionName: 'queueExpiry',
+            },
+            {
+              address: governanceAddress,
+              abi: governanceABI,
+              functionName: 'getReferendumStageDuration',
+            },
+          ],
+        });
+      if (!proposal || !queueExpiry || !referendumStageDurations)
+        throw new Error('proposal not found with id ' + proposalId);
 
-  return { votes, loadVotes };
+      const latestBlock = await publicClient.getBlock();
+
+      const blockPadding = 12n; // probably more than necessary, this is 1 minute
+      const now = Date.now() / 1000; // work with seconds, not ms
+
+      // infer the fromBlock from the creation timestamp and do some approximative maths
+      // with block duration being ~5 seconds
+      const createdAtTimestamp = proposal[2];
+      const blockDiff = BigInt(Math.floor((now - Number(createdAtTimestamp)) / 5)); // floor to get lowest possible block
+      const fromBlock = latestBlock.number! - blockDiff - blockPadding;
+
+      // infer the value of toBlock from the time a proposals stays in flight
+      const endedAtTimestampDiff = queueExpiry + referendumStageDurations;
+      const endedAtBlockDiff = Math.ceil(Number(endedAtTimestampDiff) / 5); // ceil to get highest possible block
+      const endedAtBlock = Number(fromBlock) + endedAtBlockDiff;
+      const toBlock = BigInt(Math.min(Number(latestBlock.number!), endedAtBlock));
+      const events = await publicClient.getLogs({
+        address: addresses.vote,
+        event: {
+          type: 'event',
+          name: 'ProposalVoted',
+          inputs: [
+            { type: 'address', name: 'voter', indexed: true },
+            { type: 'uint256', name: 'proposalId', indexed: true },
+            { type: 'uint256', name: 'yesVotes' },
+            { type: 'uint256', name: 'noVotes' },
+            { type: 'uint256', name: 'abstainVotes' },
+          ],
+        },
+        args: {
+          voter: address,
+          proposalId: BigInt(proposalId),
+        },
+        fromBlock,
+        toBlock,
+      });
+      console.log(events);
+
+      const voteRecord = events.reduce((sum: Vote, currentEvent) => {
+        const values = currentEvent.args;
+        if (!values) return sum;
+
+        const vote = (['yesVotes', 'noVotes', 'abstainVotes'] as const).find(
+          (key) => values[key] !== 0n
+        );
+
+        if (vote && values.proposalId) {
+          sum.vote = vote.replace('Votes', '') as VoteType;
+          sum.weight = values[vote as keyof typeof values] as string;
+        }
+
+        return sum;
+      }, {} as Vote);
+      console.log(voteRecord);
+
+      if (!voteRecord.vote || !voteRecord.weight) return;
+
+      return voteRecord;
+    },
+    [address, addresses, publicClient]
+  );
+
+  return { getVotesForProposal };
 }
