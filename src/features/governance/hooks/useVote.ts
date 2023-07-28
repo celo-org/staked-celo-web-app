@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { useProposalVotes } from 'src/contexts/account/useProposalVotes';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { ProposalStage } from 'src/features/governance/components/Details';
@@ -15,10 +16,11 @@ import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi
 export const useVote = () => {
   const { managerContract, voteContract } = useBlockchain();
   const { suggestedGasPrice } = useGasPrices();
-  const { stCeloBalance, votes } = useAccountContext();
+  const { stCeloBalance } = useAccountContext();
   const { address } = useAccount();
   const chainId = useChainId();
   const network = chainIdToChain(chainId);
+  const { getVotesForProposal } = useProposalVotes();
   const getVoteCacheKey = useCallback(
     (id: string, addr: string) => {
       return `${network.name}:${addr}:voteProposal:${id}`;
@@ -91,19 +93,19 @@ export const useVote = () => {
   );
 
   const getProposalVote = useCallback(
-    (proposalId: string, address: string) => {
-      const nodeData = votes[proposalId];
+    async (proposalId: string, address: string) => {
+      const nodeData = await getVotesForProposal(proposalId);
       const localData = readFromCache(getVoteCacheKey(proposalId, address));
 
       if (!nodeData && !localData?.data) {
         return null;
       }
       return {
-        vote: nodeData?.vote || localData?.data[0],
-        weight: nodeData?.weight || localData?.data[1],
+        vote: nodeData?.vote || (localData?.data[0] as string),
+        weight: nodeData?.weight || (localData?.data[1] as string),
       };
     },
-    [votes, getVoteCacheKey]
+    [getVoteCacheKey, getVotesForProposal]
   );
 
   const { data: proposalIds } = useContractRead({
@@ -111,6 +113,7 @@ export const useVote = () => {
     functionName: 'getVotedStillRelevantProposals',
     args: [address!],
     enabled: !!address,
+    keepPreviousData: false,
   });
 
   const [getHasVoted, getHasVotedStatus] = useAsyncCallback(

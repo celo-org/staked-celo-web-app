@@ -3,12 +3,11 @@ import { ProposalStage } from 'src/features/governance/components/Details';
 import celoRegistry from 'src/utils/celoRegistry';
 import clients from 'src/utils/clients';
 import { getRawGithubUrl, ParsedYAML, parsedYAMLFromMarkdown } from 'src/utils/proposals';
-import { getContract } from 'viem';
+import { Address, getContract } from 'viem';
 import { MiniProposal, Proposal } from './Proposal';
 
 const PROPOSAL_STAGE_KEYS = Object.keys(ProposalStage);
-
-type MetadataResult = [string, bigint, bigint, bigint, string];
+type MetadataResult = [Address, bigint, bigint, bigint, string];
 
 export const getProposals = async (chainId: number) => {
   const publicClient = clients[chainId];
@@ -119,7 +118,7 @@ export const getProposalRecord = async (
         },
       ],
     })
-  ).map((x) => x.result as bigint[] | number | MetadataResult);
+  ).map((x) => x.result);
 
   const dequeue = _dequeue as bigint[];
   const stage = _stage as number;

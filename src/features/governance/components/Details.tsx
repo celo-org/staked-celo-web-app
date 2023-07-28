@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -46,9 +46,12 @@ export const Details = ({ proposal }: Props) => {
     setCurrentVote(voteType);
   }, []);
 
-  const pastVote = useMemo(() => {
-    return getProposalVote(proposal.proposalID.toString(), address!);
-  }, [getProposalVote, proposal.proposalID, address]);
+  const [pastVote, setPastVote] = useState<{ vote: string; weight: string } | null>(null);
+  useEffect(() => {
+    void getProposalVote(proposal.proposalID.toString(), address!).then((vote) => {
+      setPastVote(vote);
+    });
+  }, [address, getProposalVote, proposal.proposalID]);
 
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
@@ -57,17 +60,18 @@ export const Details = ({ proposal }: Props) => {
   }, [currentVote, hasVoted, voteProposal, proposal]);
 
   useEffect(() => {
-    console.info('Checking if user has voted', address, proposal.proposalID);
+    console.info('Checking if user has voted', proposal.proposalID);
     void getHasVoted(proposal)
       .then((didVote) => {
-        setHasVoted(pastVote !== null || didVote);
+        setHasVoted(pastVote != null || didVote);
       })
-      .catch(() => setHasVoted(pastVote !== null));
-  }, [pastVote, getHasVoted, proposal, address]);
+      .catch(() => setHasVoted(pastVote != null));
+  }, [pastVote, getHasVoted, proposal]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
 
+  console.log({ loaded, hasVoted, status: voteProposalStatus.isExecuting });
   return (
     <CenteredLayout classes="px-[24px]">
       <ContainerSecondaryBG>

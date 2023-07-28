@@ -1,5 +1,4 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { useProposalVotes, VoteRecords } from 'src/contexts/account/useProposalVotes';
 import useStrategy from 'src/contexts/account/useStrategy';
 import { Option } from 'src/types';
 import { Celo, StCelo } from 'src/utils/tokens';
@@ -22,7 +21,6 @@ interface AccountContext {
   loadPendingWithdrawals: Option<ReturnType<typeof useWithdrawals>['loadPendingWithdrawals']>;
   strategy: Option<Address>;
   reloadStrategy: Option<ReturnType<typeof useStrategy>['reloadStrategy']>;
-  votes: VoteRecords;
 }
 
 export const AccountContext = createContext<AccountContext>({
@@ -35,7 +33,6 @@ export const AccountContext = createContext<AccountContext>({
   loadPendingWithdrawals: undefined,
   strategy: undefined,
   reloadStrategy: undefined,
-  votes: {},
 });
 
 export const AccountProvider = ({ children }: PropsWithChildren) => {
@@ -47,7 +44,6 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
   useClaimingBot(address);
 
   const { strategy, reloadStrategy } = useStrategy(address);
-  const { votes } = useProposalVotes(address);
 
   return (
     <AccountContext.Provider
@@ -61,7 +57,6 @@ export const AccountProvider = ({ children }: PropsWithChildren) => {
         loadPendingWithdrawals,
         strategy,
         reloadStrategy,
-        votes,
       }}
     >
       {children}
@@ -80,7 +75,6 @@ export function useAccountContext() {
     loadPendingWithdrawals,
     strategy,
     reloadStrategy,
-    votes,
   } = useContext(AccountContext);
 
   return {
@@ -93,6 +87,5 @@ export function useAccountContext() {
     loadPendingWithdrawals,
     strategy,
     reloadStrategy,
-    votes,
   };
 }
