@@ -44,7 +44,6 @@ export function useStaking() {
           status: 'signed_transaction',
           value: celoAmount.displayAsBase(),
         });
-        await api.activate();
         const [{ data: _celoBalance }, { data: _stCeloBalance }] = await loadBalances();
         const postDepositStTokenBalance = new StCelo(_stCeloBalance);
         const receivedStCelo = new StCelo(
@@ -62,8 +61,13 @@ export function useStaking() {
       } finally {
         callbacks?.onSent?.();
       }
+      try {
+        await api.activate();
+      } catch (e) {
+        console.error(e);
+      }
     },
-    [address, api, celoAmount, loadBalances, publicClient, stCeloBalance]
+    [_stake, address, api, celoAmount, loadBalances, stCeloBalance]
   );
 
   const estimateStakingGas = useCallback(async () => {
