@@ -3,7 +3,6 @@ import { createContext, PropsWithChildren, useEffect, useMemo } from 'react';
 import AccountABI from 'src/blockchain/ABIs/Account';
 import DefaultGroupStrategyABI from 'src/blockchain/ABIs/DefaultGroupStrategy';
 import GroupHealthABI from 'src/blockchain/ABIs/GroupHealth';
-import ManagerABIV1 from 'src/blockchain/ABIs/legacy/v1/Manager';
 import ManagerABI from 'src/blockchain/ABIs/Manager';
 import SpecificGroupStrategyABI from 'src/blockchain/ABIs/SpecificGroupStrategy';
 import StakedCeloABI from 'src/blockchain/ABIs/StakedCelo';
@@ -76,14 +75,6 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     }),
     [addresses]
   );
-  const managerContractV1 = useMemo(
-    () => ({
-      address: addresses.manager,
-      abi: ManagerABIV1,
-    }),
-    [addresses]
-  );
-
   const accountContract = useMemo(
     () => ({
       address: addresses.account,

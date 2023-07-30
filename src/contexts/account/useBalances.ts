@@ -6,20 +6,25 @@ import { Address, useBalance, useContractRead } from 'wagmi';
 
 export const useAccountBalances = (address: Option<Address>) => {
   const { stakedCeloContract } = useBlockchain();
-  const { data: rawCeloBalance, refetch: refetchCelo } = useBalance({
+  const {
+    data: rawCeloBalance,
+    refetch: refetchCelo,
+    fetchStatus,
+  } = useBalance({
     address,
     enabled: !!address,
   });
-  const { data: rawStCeloBalance, refetch: refetchStCelo } = useContractRead({
+  const { data: stCeloBalance, refetch: refetchStCelo } = useContractRead({
     ...stakedCeloContract,
     functionName: 'balanceOf',
     args: [address!],
     enabled: !!address,
+    select: (data) => new StCelo(data),
   });
+  console.info('stCeloBalance', stCeloBalance?.toString());
 
-  const celoBalance = useMemo(() => new Celo(rawCeloBalance || 0), [rawCeloBalance]);
-  const stCeloBalance = useMemo(() => new StCelo(rawStCeloBalance || 0), [rawStCeloBalance]);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- force update when fetchStatus changes
+  const celoBalance = useMemo(() => new Celo(rawCeloBalance || 0), [rawCeloBalance, fetchStatus]);
   const loadBalances = useCallback(
     () => Promise.all([refetchCelo(), refetchStCelo()]),
     [refetchCelo, refetchStCelo]
@@ -27,7 +32,9 @@ export const useAccountBalances = (address: Option<Address>) => {
 
   return {
     celoBalance,
-    stCeloBalance,
+    stCeloBalance: stCeloBalance || ZERO,
     loadBalances,
   };
 };
+
+const ZERO = new StCelo(0);

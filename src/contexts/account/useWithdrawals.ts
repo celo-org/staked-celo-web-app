@@ -1,6 +1,5 @@
 import { readContract } from '@wagmi/core';
 import { useCallback, useEffect } from 'react';
-import ManagerABIV1 from 'src/blockchain/ABIs/legacy/v1/Manager';
 import useDefaultGroups from 'src/contexts/account/useDefaultGroups';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { useAPI } from 'src/hooks/useAPI';
@@ -17,26 +16,9 @@ const botActionInterval = 180 * 1000;
 
 export const useWithdrawalBot = (address: Option<Address>) => {
   const { api } = useAPI();
-  const { managerContract, accountContract } = useBlockchain();
+  const { accountContract } = useBlockchain();
 
-  const { data: activeGroupsV1 = [], error: _activeGroupsV1Error } = useContractRead({
-    address: managerContract.address,
-    abi: ManagerABIV1,
-    functionName: 'getGroups',
-  });
-
-  const { data: deprecatedGroupsV1 = [], error: _deprecatedGroupsV1Error } = useContractRead({
-    address: managerContract.address,
-    abi: ManagerABIV1,
-    functionName: 'getDeprecatedGroups',
-  });
-
-  const { activeGroups: groupsV2, error: groupsV2Error } = useDefaultGroups();
-
-  let groups =
-    activeGroupsV1.length || deprecatedGroupsV1.length
-      ? [...activeGroupsV1, ...deprecatedGroupsV1]
-      : groupsV2;
+  const { activeGroups: groups } = useDefaultGroups();
 
   const finalizeWithdrawal = useCallback(async () => {
     if (!address) return;

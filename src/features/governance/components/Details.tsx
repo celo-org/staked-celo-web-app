@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -30,7 +30,7 @@ export enum ProposalStage {
 }
 
 export const Details = ({ proposal }: Props) => {
-  const { stCeloBalance, loadBalances, isConnected } = useAccountContext();
+  const { stCeloBalance, loadBalances, isConnected, address } = useAccountContext();
   const { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote } =
     useVote();
 
@@ -46,28 +46,35 @@ export const Details = ({ proposal }: Props) => {
     setCurrentVote(voteType);
   }, []);
 
-  const pastVote = useMemo(() => {
-    return getProposalVote(proposal.proposalID.toString());
-  }, [getProposalVote, proposal.proposalID]);
+  const [pastVote, setPastVote] = useState<{ vote: string; weight: string } | null>(null);
+  useEffect(() => {
+    void getProposalVote(proposal.proposalID.toString(), address!).then((vote) => {
+      setPastVote(vote);
+    });
+  }, [address, getProposalVote, proposal.proposalID]);
 
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
     setTransactionModalOpen(true);
     await voteProposal(proposal, currentVote, { onSent: () => setTransactionModalOpen(false) });
-    setHasVoted(true);
-  }, [currentVote, hasVoted, voteProposal, proposal]);
+    const recentVote = await getProposalVote(proposal.proposalID.toString(), address!);
+    setPastVote(recentVote);
+  }, [currentVote, hasVoted, voteProposal, proposal, getProposalVote, address]);
 
   useEffect(() => {
+    console.info('Checking if user has voted', proposal.proposalID);
     void getHasVoted(proposal)
       .then((didVote) => {
-        setHasVoted((isVoted) => isVoted || pastVote !== null || didVote);
+        setHasVoted(pastVote != null || didVote);
       })
-      .catch(() => setHasVoted((isVoted) => isVoted || pastVote !== null));
-  }, [pastVote, getHasVoted, proposal]);
+      .catch(() => setHasVoted(pastVote != null));
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
+  }, [pastVote, getHasVoted, proposal, voteProposalStatus.successfullyExecuted]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
 
+  console.log({ loaded, hasVoted, status: voteProposalStatus.isExecuting });
   return (
     <CenteredLayout classes="px-[24px]">
       <ContainerSecondaryBG>
@@ -128,12 +135,17 @@ export const Details = ({ proposal }: Props) => {
             )}
           </>
         ) : null}
-        {pastVote && (
+        {pastVote ? (
           <TertiaryCallout classes="px-[8px]">
             {new StCelo(pastVote.weight).displayAsBase()} stCELO voted {pastVote.vote} for Proposal
             #{proposal.parsedYAML?.cgp}
           </TertiaryCallout>
-        )}
+          ) : hasVoted ? (
+            <TertiaryCallout classes="px-[8px]">
+              {address} voted for Proposal #{proposal.parsedYAML?.cgp}
+            </TertiaryCallout>
+          ) : null
+        }
         <TransactionCalloutModal
           isOpened={transactionModalOpen}
           close={() => setTransactionModalOpen(false)}
