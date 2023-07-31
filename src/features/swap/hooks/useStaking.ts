@@ -35,7 +35,6 @@ export function useStaking() {
       }
 
       const preDepositStTokenBalance = stCeloBalance.toString();
-      console.info('preDepositStTokenBalance', preDepositStTokenBalance);
       transactionEvent({
         action: Mode.stake,
         status: 'initiated_transaction',
@@ -43,6 +42,7 @@ export function useStaking() {
       });
       try {
         const stakeHash = await _stake({ value: celoAmount?.toBigInt() });
+        console.info('stakeHash', stakeHash);
         transactionEvent({
           action: Mode.stake,
           status: 'signed_transaction',
@@ -60,7 +60,7 @@ export function useStaking() {
           postDepositStTokenBalance.minus(preDepositStTokenBalance)
         );
         showStakingToast(receivedStCelo);
-        console.info('new CELO balance', _celoBalance)
+        console.info('new CELO balance', _celoBalance);
         setCeloAmount(null);
       } catch (e: unknown) {
         console.error(e);
@@ -73,8 +73,9 @@ export function useStaking() {
         callbacks?.onSent?.();
       }
       try {
-        const response = await api.afterDeposit();
-        console.info('afterDeposit response', response?.statusText);
+        // eslint-disable-next-line no-console
+        console.info('afterDeposit');
+        await api.afterDeposit();
       } catch (e) {
         logger.error('afterDeposit error', e);
       }

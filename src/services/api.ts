@@ -11,14 +11,14 @@ export const createAPI = (baseURL: string) => {
 
   const sendRequest = async (action: ActionType, address?: string) => {
     if (!baseURL) return;
-    return apiService.post('/', {
+    await apiService.post('/', {
       beneficiary: address,
       type: action,
     });
   };
 
   const afterDeposit = async () => {
-    return sendRequest(['rebalanceDefault', 'rebalance', 'revoke', 'activate']);
+    await sendRequest(['rebalanceDefault', 'rebalance', 'revoke', 'activate']);
   };
 
   const activate = () => sendRequest('activate');
