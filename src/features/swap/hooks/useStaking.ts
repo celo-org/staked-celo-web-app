@@ -1,15 +1,15 @@
-import { useCallback, useMemo, useState } from 'react'
-import { useAccountContext } from 'src/contexts/account/AccountContext'
-import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain'
-import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext'
-import { useGasPrices } from 'src/contexts/protocol/useGasPrices'
-import { useAPI } from 'src/hooks/useAPI'
-import logger from 'src/services/logger'
-import { Mode } from 'src/types'
-import { transactionEvent } from 'src/utils/ga'
-import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens'
-import { useContractWrite, usePublicClient } from 'wagmi'
-import { showErrorToast, showStakingToast } from '../utils/toast'
+import { useCallback, useMemo, useState } from 'react';
+import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
+import { useAPI } from 'src/hooks/useAPI';
+import logger from 'src/services/logger';
+import { Mode } from 'src/types';
+import { transactionEvent } from 'src/utils/ga';
+import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
+import { useContractWrite, usePublicClient } from 'wagmi';
+import { showErrorToast, showHashToast, showStakingToast } from '../utils/toast';
 
 export function useStaking() {
   const { address, loadBalances, celoBalance, stCeloBalance } = useAccountContext();
@@ -48,6 +48,8 @@ export function useStaking() {
           status: 'signed_transaction',
           value: celoAmount.displayAsBase(),
         });
+        showHashToast(stakeHash.hash);
+        callbacks?.onSent?.();
         // Must wait for reciept or balances will not have changed yet
         const receipt = await client.waitForTransactionReceipt({
           hash: stakeHash.hash,
@@ -69,7 +71,6 @@ export function useStaking() {
             ? 'User rejected the request'
             : (e as Error).message
         );
-      } finally {
         callbacks?.onSent?.();
       }
       try {

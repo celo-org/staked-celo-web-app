@@ -32,6 +32,16 @@ export const showElectionToast = () => {
   );
 };
 
+export const showHashToast = (hash: string) => {
+  return showToast(
+    <ThemedIcon name="receive_info" alt="Receive" />,
+    <ToastContent>
+      Transaction submitted <br />{' '}
+      <small className="text-ellipsis truncate">{hash.slice(0, 36) + '...'}</small>
+    </ToastContent>
+  );
+};
+
 export const showVoteToast = ({ vote, proposalID }: { vote: VoteType; proposalID: string }) => {
   showToast(
     <ThemedIcon name="arrow" alt="Change" />,
