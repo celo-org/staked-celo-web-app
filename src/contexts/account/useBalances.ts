@@ -21,7 +21,6 @@ export const useAccountBalances = (address: Option<Address>) => {
     enabled: !!address,
     select: (data) => new StCelo(data),
   });
-  console.info('stCeloBalance', stCeloBalance?.toString());
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- force update when fetchStatus changes
   const celoBalance = useMemo(() => new Celo(rawCeloBalance || 0), [rawCeloBalance, fetchStatus]);

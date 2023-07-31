@@ -9,6 +9,7 @@ import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { useContractWrite, usePublicClient } from 'wagmi';
 import { transactionEvent } from '../../../utils/ga';
 import { showErrorToast, showUnstakingToast } from '../utils/toast';
+import logger from 'src/services/logger'
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
@@ -52,7 +53,7 @@ export function useUnstaking() {
         await Promise.all([loadBalances(), loadPendingWithdrawals?.()]);
         setStCeloAmount(null);
       } catch (e: unknown) {
-        console.error(e);
+        logger.error(e);
         showErrorToast(
           (e as Error).message.includes('rejected')
             ? 'User rejected the request'

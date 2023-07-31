@@ -4,6 +4,7 @@ import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchai
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { useAPI } from 'src/hooks/useAPI';
+import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
@@ -34,7 +35,6 @@ export function useStaking() {
       }
 
       const preDepositStTokenBalance = stCeloBalance.toString();
-      console.info('preDepositStTokenBalance', preDepositStTokenBalance);
       transactionEvent({
         action: Mode.stake,
         status: 'initiated_transaction',
@@ -42,6 +42,7 @@ export function useStaking() {
       });
       try {
         const stakeHash = await _stake({ value: celoAmount?.toBigInt() });
+        console.info('stakeHash', stakeHash);
         transactionEvent({
           action: Mode.stake,
           status: 'signed_transaction',
@@ -59,7 +60,7 @@ export function useStaking() {
           postDepositStTokenBalance.minus(preDepositStTokenBalance)
         );
         showStakingToast(receivedStCelo);
-        console.info('new CELO balance', _celoBalance)
+        console.info('new CELO balance', _celoBalance);
         setCeloAmount(null);
       } catch (e: unknown) {
         console.error(e);
@@ -72,9 +73,11 @@ export function useStaking() {
         callbacks?.onSent?.();
       }
       try {
-        await api.activate();
+        // eslint-disable-next-line no-console
+        console.info('afterDeposit');
+        await api.afterDeposit();
       } catch (e) {
-        console.error(e);
+        logger.error('afterDeposit error', e);
       }
     },
     [_stake, address, api, celoAmount, client, loadBalances, stCeloBalance]

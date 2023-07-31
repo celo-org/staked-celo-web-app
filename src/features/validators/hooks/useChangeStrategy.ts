@@ -2,6 +2,7 @@ import { useAsyncCallback } from 'react-use-async-callback';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { showElectionToast, showErrorToast } from 'src/features/swap/utils/toast';
+import logger from 'src/services/logger';
 import { transactionEvent } from 'src/utils/ga';
 import { Address, useAccount, useContractWrite } from 'wagmi';
 
@@ -40,7 +41,7 @@ export const useChangeStrategy = () => {
         showElectionToast();
         await reloadStrategy?.();
       } catch (e: unknown) {
-        console.error(e);
+        logger.error('changeStrategy error', e);
         showErrorToast(
           (e as Error).message.includes('rejected')
             ? 'User rejected the request'

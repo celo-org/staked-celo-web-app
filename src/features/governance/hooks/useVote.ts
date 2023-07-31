@@ -7,6 +7,7 @@ import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { showErrorToast, showVoteToast } from 'src/features/swap/utils/toast';
+import logger from 'src/services/logger'
 import { VoteType } from 'src/types';
 import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
@@ -79,7 +80,7 @@ export const useVote = () => {
         ]);
         showVoteToast({ vote, proposalID: proposal.proposalID.toString() });
       } catch (e: unknown) {
-        console.error(e);
+        logger.error('voteProposal error', e);
         showErrorToast(
           (e as Error).message.includes('rejected')
             ? 'User rejected the request'
