@@ -4,6 +4,7 @@ import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchai
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { useAPI } from 'src/hooks/useAPI';
+import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
@@ -72,9 +73,10 @@ export function useStaking() {
         callbacks?.onSent?.();
       }
       try {
-        await api.activate();
+        const response = await api.afterDeposit();
+        console.info('afterDeposit response', response?.statusText);
       } catch (e) {
-        console.error(e);
+        logger.error('afterDeposit error', e);
       }
     },
     [_stake, address, api, celoAmount, client, loadBalances, stCeloBalance]
