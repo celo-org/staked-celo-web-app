@@ -9,7 +9,7 @@ import { Mode } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { useContractWrite, usePublicClient } from 'wagmi';
-import { showErrorToast, showStakingToast } from '../utils/toast';
+import { showErrorToast, showHashToast, showStakingToast } from '../utils/toast';
 
 export function useStaking() {
   const { address, loadBalances, celoBalance, stCeloBalance } = useAccountContext();
@@ -48,6 +48,8 @@ export function useStaking() {
           status: 'signed_transaction',
           value: celoAmount.displayAsBase(),
         });
+        showHashToast(stakeHash.hash);
+        callbacks?.onSent?.();
         // Must wait for reciept or balances will not have changed yet
         const receipt = await client.waitForTransactionReceipt({
           hash: stakeHash.hash,
@@ -69,7 +71,6 @@ export function useStaking() {
             ? 'User rejected the request'
             : (e as Error).message
         );
-      } finally {
         callbacks?.onSent?.();
       }
       try {
