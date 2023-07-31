@@ -1,15 +1,15 @@
-import { useCallback, useMemo, useState } from 'react';
-import { useAccountContext } from 'src/contexts/account/AccountContext';
-import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
-import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
-import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
-import { useAPI } from 'src/hooks/useAPI';
-import logger from 'src/services/logger';
-import { Mode } from 'src/types';
-import { transactionEvent } from 'src/utils/ga';
-import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { useContractWrite, usePublicClient } from 'wagmi';
-import { showErrorToast, showStakingToast } from '../utils/toast';
+import { useCallback, useMemo, useState } from 'react'
+import { useAccountContext } from 'src/contexts/account/AccountContext'
+import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain'
+import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext'
+import { useGasPrices } from 'src/contexts/protocol/useGasPrices'
+import { useAPI } from 'src/hooks/useAPI'
+import logger from 'src/services/logger'
+import { Mode } from 'src/types'
+import { transactionEvent } from 'src/utils/ga'
+import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens'
+import { useContractWrite, usePublicClient } from 'wagmi'
+import { showErrorToast, showStakingToast } from '../utils/toast'
 
 export function useStaking() {
   const { address, loadBalances, celoBalance, stCeloBalance } = useAccountContext();
