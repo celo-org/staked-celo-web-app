@@ -74,7 +74,6 @@ export const Details = ({ proposal }: Props) => {
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
 
-  console.log({ loaded, hasVoted, status: voteProposalStatus.isExecuting });
   return (
     <CenteredLayout classes="px-[24px]">
       <ContainerSecondaryBG>

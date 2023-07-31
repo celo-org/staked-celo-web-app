@@ -88,7 +88,6 @@ export function useProposalVotes() {
         fromBlock,
         toBlock,
       });
-      console.log(events);
 
       const voteRecord = events.reduce((sum: Vote, currentEvent) => {
         const values = currentEvent.args;
