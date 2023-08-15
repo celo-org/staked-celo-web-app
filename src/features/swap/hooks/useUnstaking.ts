@@ -4,12 +4,12 @@ import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchai
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { useAPI } from 'src/hooks/useAPI';
+import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { useContractWrite, usePublicClient } from 'wagmi';
 import { transactionEvent } from '../../../utils/ga';
 import { showErrorToast, showUnstakingToast } from '../utils/toast';
-import logger from 'src/services/logger'
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
@@ -20,14 +20,10 @@ export function useUnstaking() {
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
   const publicClient = usePublicClient();
 
-  const params = {
-    functionName: 'withdraw',
-    args: [stCeloAmount?.toBigInt() || 0n] as const,
-  } as const;
-
   const { writeAsync: _unstake } = useContractWrite({
     ...managerContract,
-    ...params,
+    functionName: 'withdraw',
+    args: [stCeloAmount?.toBigInt() || 0n] as const,
   });
 
   const unstake = useCallback(
@@ -63,15 +59,7 @@ export function useUnstaking() {
         callbacks?.onSent?.();
       }
     },
-    [
-      address,
-      api,
-      loadBalances,
-      loadPendingWithdrawals,
-      managerContract,
-      publicClient,
-      stCeloAmount,
-    ]
+    [_unstake, address, api, loadBalances, loadPendingWithdrawals, managerContract, stCeloAmount]
   );
 
   const estimateUnstakingGas = useCallback(async () => {
@@ -89,7 +77,8 @@ export function useUnstaking() {
         abi: managerContract.abi,
         address: managerContract.address!,
         account: address!,
-        ...params,
+        functionName: 'withdraw',
+        args: [stCeloAmount?.toBigInt() || 0n] as const,
       })
     );
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
@@ -100,6 +89,7 @@ export function useUnstaking() {
     stCeloBalance,
     managerContract,
     publicClient,
+    address,
     suggestedGasPrice,
     celoToUSDRate,
   ]);
