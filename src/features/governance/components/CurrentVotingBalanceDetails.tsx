@@ -74,7 +74,7 @@ const CurrentVotingBalanceDetails = ({
               <br />
               When a you vote on a governance proposal, your stCELO balance gets locked. <br />
               This stCELO is not automatically unlocked after a proposal voting period has elapsed
-              and explains why you may think your funds are mising. While your stCELO balance is
+              and explains why you may think your funds are missing. While your stCELO balance is
               locked, you cannot see that balance or transfer it.
               <Button onClick={unlock}>
                 Click here to unlock your {lockedVoteBalance.convertToBase().toFixed()} stCELO.
