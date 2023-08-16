@@ -1,12 +1,13 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useCallback, useEffect, useState } from 'react';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
 import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
-import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
+import CurrentVotingBalanceDetails from 'src/features/governance/components/CurrentVotingBalanceDetails';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
@@ -31,8 +32,16 @@ export enum ProposalStage {
 
 export const Details = ({ proposal }: Props) => {
   const { stCeloBalance, loadBalances, isConnected, address } = useAccountContext();
-  const { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote } =
-    useVote();
+  const {
+    voteProposal,
+    voteProposalStatus,
+    getHasVoted,
+    getHasVotedStatus,
+    getProposalVote,
+    lockedVoteBalance,
+    lockedStCeloInVoting,
+    unlockVoteBalance,
+  } = useVote();
 
   useEffect(() => {
     if (isConnected) void loadBalances?.();
@@ -68,7 +77,7 @@ export const Details = ({ proposal }: Props) => {
         setHasVoted(pastVote != null || didVote);
       })
       .catch(() => setHasVoted(pastVote != null));
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
   }, [pastVote, getHasVoted, proposal, voteProposalStatus.successfullyExecuted]);
 
   const loaded = Boolean(proposal);
@@ -139,17 +148,21 @@ export const Details = ({ proposal }: Props) => {
             {new StCelo(pastVote.weight).displayAsBase()} stCELO voted {pastVote.vote} for Proposal
             #{proposal.parsedYAML?.cgp}
           </TertiaryCallout>
-          ) : hasVoted ? (
-            <TertiaryCallout classes="px-[8px]">
-              {address} voted for Proposal #{proposal.parsedYAML?.cgp}
-            </TertiaryCallout>
-          ) : null
-        }
+        ) : hasVoted ? (
+          <TertiaryCallout classes="px-[8px]">
+            {address} voted for Proposal #{proposal.parsedYAML?.cgp}
+          </TertiaryCallout>
+        ) : null}
         <TransactionCalloutModal
           isOpened={transactionModalOpen}
           close={() => setTransactionModalOpen(false)}
         />
       </ContainerSecondaryBG>
+      <CurrentVotingBalanceDetails
+        lockedVoteBalance={lockedVoteBalance}
+        lockedStCeloInVoting={lockedStCeloInVoting}
+        unlockVoteBalance={unlockVoteBalance}
+      />
     </CenteredLayout>
   );
 };

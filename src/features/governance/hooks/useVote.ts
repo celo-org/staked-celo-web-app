@@ -6,16 +6,17 @@ import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchai
 import { useGasPrices } from 'src/contexts/protocol/useGasPrices';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
-import { showErrorToast, showVoteToast } from 'src/features/swap/utils/toast';
-import logger from 'src/services/logger'
+import { showErrorToast, showStakingToast, showVoteToast } from 'src/features/swap/utils/toast';
+import logger from 'src/services/logger';
 import { VoteType } from 'src/types';
 import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
 import { readFromCache, writeToCache } from 'src/utils/localSave';
-import { useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
+import { StCelo } from 'src/utils/tokens';
+import { Address, useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
 
 export const useVote = () => {
-  const { managerContract, voteContract } = useBlockchain();
+  const { managerContract, voteContract, stakedCeloContract } = useBlockchain();
   const { suggestedGasPrice } = useGasPrices();
   const { stCeloBalance } = useAccountContext();
   const { address } = useAccount();
@@ -127,5 +128,63 @@ export const useVote = () => {
     [proposalIds]
   );
 
-  return { voteProposal, voteProposalStatus, getHasVoted, getHasVotedStatus, getProposalVote };
+  const { data: lockedVoteBalance } = useContractRead({
+    ...stakedCeloContract,
+    functionName: 'lockedVoteBalanceOf',
+    args: [address as Address],
+    enabled: !!address,
+    select(data) {
+      return new StCelo(data);
+    },
+  });
+
+  const { data: lockedStCeloInVoting } = useContractRead({
+    ...voteContract,
+    functionName: 'getLockedStCeloInVoting',
+    args: [address as Address],
+    enabled: !!address,
+    select(data) {
+      return new StCelo(data);
+    },
+  });
+
+  const { writeAsync: _unlockVoteBalance } = useContractWrite({
+    ...stakedCeloContract,
+    functionName: 'unlockVoteBalance',
+  });
+
+  const [unlockVoteBalance] = useAsyncCallback(
+    async (callbacks?: TxCallbacks) => {
+      if (!address || !_unlockVoteBalance) {
+        throw new Error('vote called before loading completed');
+      }
+      try {
+        await _unlockVoteBalance?.({
+          args: [address as Address],
+        });
+        showStakingToast(lockedVoteBalance!);
+      } catch (e: unknown) {
+        logger.error('voteProposal error', e);
+        showErrorToast(
+          (e as Error).message.includes('rejected')
+            ? 'User rejected the request'
+            : (e as Error).message
+        );
+      } finally {
+        callbacks?.onSent?.();
+      }
+    },
+    [address]
+  );
+
+  return {
+    voteProposal,
+    voteProposalStatus,
+    getHasVoted,
+    getHasVotedStatus,
+    getProposalVote,
+    lockedVoteBalance,
+    lockedStCeloInVoting,
+    unlockVoteBalance,
+  };
 };
