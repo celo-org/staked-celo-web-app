@@ -57,3 +57,9 @@ body.dark-mode {
   --c-bg-highlight-secondary-color: #E7B65D;
   --c-bg-callout-modal-color: #324142;
 }
+
+.custom--primary-color-filter {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: brightness(0) saturate(100%) invert(98%) sepia(91%) saturate(1110%) hue-rotate(6deg)
+    brightness(88%) contrast(92%);
+}

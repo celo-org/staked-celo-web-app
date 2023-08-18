@@ -8,16 +8,26 @@ import { useVote } from 'src/features/governance/hooks/useVote';
 import { Option } from 'src/types';
 import { StCelo, Token } from 'src/utils/tokens';
 
-const Detail = ({ title, value, children }: PropsWithChildren<{ title: string; value: Token }>) => {
+const Detail = ({
+  title,
+  value,
+  unlockable,
+  children,
+}: PropsWithChildren<{ title: string; value: Token; unlockable?: boolean }>) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <li key={title} className="flex justify-between font-normal mb-[4px]">
+    <li
+      key={title}
+      className={`flex justify-between font-normal mb-[4px] ${
+        unlockable ? 'text-color-primary-callout' : ''
+      }`}
+    >
       <span className="inline-flex items-center">
         <span className="text-[15px] leading-[24px]">{title}</span>
         <span className="inline-flex items-center ml-[8px]">
           <ThemedIcon
-            classes="cursor-pointer"
+            classes={`cursor-pointer fill ${unlockable ? 'custom--primary-color-filter' : ''}`}
             name="info"
             alt={`locked stCelo in voting info`}
             height={16}
@@ -67,7 +77,7 @@ const CurrentVotingBalanceDetails = ({
         {lockedVoteBalance &&
           lockedVoteBalance.isGreaterThan(0) &&
           !lockedVoteBalance.eq(lockedStCeloInVoting!) && (
-            <Detail title={'Locked stCELO'} value={lockedVoteBalance}>
+            <Detail unlockable title={'Locked stCELO'} value={lockedVoteBalance}>
               <i className="inline-flex mb-4 text-color-primary-callout">
                 You have {lockedVoteBalance.convertToBase().toFixed()} unlockable stCELO
               </i>
@@ -76,8 +86,8 @@ const CurrentVotingBalanceDetails = ({
               This stCELO is not automatically unlocked after a proposal voting period has elapsed
               and explains why you may think your funds are missing. While your stCELO balance is
               locked, you cannot see that balance or transfer it.
-              <Button onClick={unlock}>
-                Click here to unlock your {lockedVoteBalance.convertToBase().toFixed()} stCELO.
+              <Button classes="self-center" onClick={unlock}>
+                Click here to unlock your locked stCELO.
               </Button>
             </Detail>
           )}
