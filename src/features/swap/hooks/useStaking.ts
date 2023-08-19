@@ -71,6 +71,8 @@ export function useStaking() {
             ? 'User rejected the request'
             : (e as Error).message.includes('Invalid Currency')
             ? 'User provided an Invalid Currency'
+            : (e as Error).message.includes('Insufficient funds')
+            ? 'Insufficient Funds'
             : (e as Error).message
         );
         callbacks?.onSent?.();
