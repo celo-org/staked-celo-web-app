@@ -69,6 +69,8 @@ export function useStaking() {
         showErrorToast(
           (e as Error).message.includes('rejected')
             ? 'User rejected the request'
+            : (e as Error).message.includes('Invalid Currency')
+            ? 'User provided an Invalid Currency'
             : (e as Error).message
         );
         callbacks?.onSent?.();
