@@ -15,6 +15,7 @@ const GasSnaps = () => {
         regarding the derivation of coin-path 60 keys. Please ensure you&apos;re following the steps
         closely.
       </p>
+      <p>⚠️ You cannot have other versions of MetaMask installed.</p>
       <br />
       <p className="italic">
         Disclaimer: This guide is for informational purposes. Ensure you have the necessary backups
