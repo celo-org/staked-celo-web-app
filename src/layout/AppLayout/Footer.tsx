@@ -39,6 +39,9 @@ const FAQLinks = ({ classes }: FAQLinksProps) => {
   return (
     <div className={`text-[18px] leading-[32px] font-medium underline ${classes}`}>
       <div className={linkPositionClasses}>
+        <Link href="/gas-snaps">New Gas-Snaps</Link>
+      </div>
+      <div className={linkPositionClasses}>
         <Link href="/faq">FAQ</Link>
       </div>
       <div className={linkPositionClasses}>
