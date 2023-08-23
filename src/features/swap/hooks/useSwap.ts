@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useState } from 'react';
-import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';

@@ -56,10 +56,35 @@ body.dark-mode {
   --c-bg-highlight-primary-color: #A654E7;
   --c-bg-highlight-secondary-color: #E7B65D;
   --c-bg-callout-modal-color: #324142;
+  --toastify-color-dark: #324142;
 }
 
 .custom--primary-color-filter {
   /* https://codepen.io/sosuke/pen/Pjoqqp */
   filter: brightness(0) saturate(100%) invert(98%) sepia(91%) saturate(1110%) hue-rotate(6deg)
     brightness(88%) contrast(92%);
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+z .ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+.ReactModal__Content {
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 150ms ease;
+}
+.ReactModal__Content--after-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+.ReactModal__Content--before-close {
+  opacity: 0;
+  transform: translateY(100%);
 }

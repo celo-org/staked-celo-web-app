@@ -1,12 +1,20 @@
-import Image from 'next/image';
 import { ReactElement } from 'react';
 import { toast as reactToast } from 'react-toastify';
-import CloseIcon from 'src/images/icons/close.svg';
+import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 
 // react-toastify default styles are overridden in styles/toasts.css
+type ToastTypes = 'default' | 'error' | 'warning' | 'info' | 'success';
 
-export const showToast = (icon: ReactElement, content: ReactElement) =>
-  reactToast.success(content, {
+export const showToast = (
+  icon: ReactElement,
+  content: ReactElement,
+  type?: ToastTypes,
+  duration?: number
+) =>
+  reactToast(content, {
     icon,
-    closeButton: <Image alt="Close" width={32} height={32} src={CloseIcon} />,
+    type: type || 'success',
+    theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
+    closeButton: <ThemedIcon name="close" alt="Close" width={32} height={32} />,
+    autoClose: duration,
   });

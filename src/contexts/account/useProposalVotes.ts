@@ -104,7 +104,6 @@ export function useProposalVotes() {
 
         return sum;
       }, {} as Vote);
-      console.log(voteRecord);
 
       if (!voteRecord.vote || !voteRecord.weight) return;
 
