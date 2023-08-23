@@ -7,6 +7,7 @@ import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { useStaking } from './useStaking';
 import { useUnstaking } from './useUnstaking';
+import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 
 export function useSwap(mode: Mode) {
   const { stakingRate, unstakingRate } = useProtocolContext();

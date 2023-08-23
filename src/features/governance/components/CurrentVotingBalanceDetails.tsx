@@ -18,7 +18,7 @@ const Detail = ({
 }: PropsWithChildren<{
   title: string;
   unlock?: () => void;
-  inModal: boolean;
+  inModal?: boolean;
   value?: Token;
 }>) => {
   const [isOpen, setIsOpen] = useState(false);
