@@ -7,6 +7,10 @@ import CaretDark from 'src/images/icons/caret-dark.svg';
 import CaretLight from 'src/images/icons/caret-light.svg';
 import CaretPurpleDark from 'src/images/icons/caret-purple-dark.svg';
 import CaretPurpleLight from 'src/images/icons/caret-purple-light.svg';
+import ClipboardDark from 'src/images/icons/clipboard-dark.svg';
+import ClipboardLight from 'src/images/icons/clipboard-light.svg';
+import CloseDark from 'src/images/icons/close-dark.svg';
+import CloseLight from 'src/images/icons/close-light.svg';
 import DiscordDark from 'src/images/icons/discord-dark.svg';
 import DiscordLight from 'src/images/icons/discord-light.svg';
 import GithubDark from 'src/images/icons/github-dark.svg';
@@ -43,7 +47,9 @@ type IconName =
   | 'spinner-contrast'
   | 'spinner-purple'
   | 'theme'
-  | 'theme-oposite';
+  | 'theme-oposite'
+  | 'close'
+  | 'clipboard';
 
 interface ThemedIcons {
   dark: any;
@@ -66,6 +72,8 @@ const icons: Record<IconName, ThemedIcons> = {
   'spinner-purple': { light: SpinnerPurpleDark, dark: SpinnerPurpleLight },
   theme: { light: ThemeDark, dark: ThemeLight },
   'theme-oposite': { light: ThemeOpositeDark, dark: ThemeOpositeLight },
+  close: { light: CloseDark, dark: CloseLight },
+  clipboard: { light: ClipboardDark, dark: ClipboardLight },
 };
 
 interface ThemedIconProps {

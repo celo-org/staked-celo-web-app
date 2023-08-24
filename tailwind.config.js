@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       borderColor: {
         'color-tertiary-callout': 'var(--c-text-tertiary-callout-color)',
+        'color-secondary-callout': 'var(--c-bg-action-secondary-light-color)',
       },
       textColor: {
         'color-primary': 'var(--c-text-primary-color)',

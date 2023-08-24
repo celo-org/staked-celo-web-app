@@ -52,5 +52,18 @@ export const showVoteToast = ({ vote, proposalID }: { vote: VoteType; proposalID
 };
 
 export const showErrorToast = (message: string) => {
-  showToast(<ThemedIcon name="receive_info" alt="Error" />, <ToastContent>{message}</ToastContent>);
+  showToast(
+    <ThemedIcon name="receive_info" alt="Error" />,
+    <ToastContent>{message}</ToastContent>,
+    'error'
+  );
+};
+
+export const showClipboardToast = () => {
+  showToast(
+    <ThemedIcon name="clipboard" alt="Copy to clipboard" />,
+    <ToastContent>Copied to clipboard!</ToastContent>,
+    'success',
+    1000
+  );
 };

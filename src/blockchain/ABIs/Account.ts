@@ -234,6 +234,11 @@ const AccountABI = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'TransferAmountMisalignment',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -247,6 +252,17 @@ const AccountABI = [
       },
     ],
     name: 'VoteFailed',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'proposalId',
+        type: 'uint256',
+      },
+    ],
+    name: 'VotingNotSuccessful',
     type: 'error',
   },
   {
@@ -375,6 +391,25 @@ const AccountABI = [
       },
     ],
     name: 'OwnershipTransferred',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'group',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'RevocationScheduled',
     type: 'event',
   },
   {
@@ -553,6 +588,34 @@ const AccountABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'getVersionNumber',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -653,6 +716,72 @@ const AccountABI = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'group',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'lesserAfterPendingRevoke',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'greaterAfterPendingRevoke',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'lesserAfterActiveRevoke',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'greaterAfterActiveRevoke',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+    ],
+    name: 'revokeVotes',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address[]',
+        name: 'fromGroups',
+        type: 'address[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'fromVotes',
+        type: 'uint256[]',
+      },
+      {
+        internalType: 'address[]',
+        name: 'toGroups',
+        type: 'address[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'toVotes',
+        type: 'uint256[]',
+      },
+    ],
+    name: 'scheduleTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'address[]',
         name: 'groups',
         type: 'address[]',
@@ -689,6 +818,25 @@ const AccountABI = [
     name: 'scheduleWithdrawals',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'group',
+        type: 'address',
+      },
+    ],
+    name: 'scheduledRevokeForGroup',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -751,6 +899,19 @@ const AccountABI = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bool',
+        name: 'flag',
+        type: 'bool',
+      },
+    ],
+    name: 'setAllowedToVoteOverMaxNumberOfGroups',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -821,6 +982,39 @@ const AccountABI = [
     name: 'upgradeToAndCall',
     outputs: [],
     stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'proposalId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'yesVotes',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'noVotes',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'abstainVotes',
+        type: 'uint256',
+      },
+    ],
+    name: 'votePartially',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
