@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
+import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProposalVotes } from 'src/contexts/account/useProposalVotes';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
@@ -39,6 +40,25 @@ export const useVote = () => {
     ...managerContract,
     functionName: 'voteProposal',
   });
+  const { data: lockedVoteBalance, refetch: refetchLockedVoteBalance } = useContractRead({
+    ...stakedCeloContract,
+    functionName: 'lockedVoteBalanceOf',
+    args: [address as Address],
+    enabled: !!address,
+    select(data) {
+      return new StCelo(data);
+    },
+  });
+
+  const { data: lockedStCeloInVoting, refetch: refetchLockedStCeloInVoting } = useContractRead({
+    ...voteContract,
+    functionName: 'getLockedStCeloInVoting',
+    args: [address as Address],
+    enabled: !!address,
+    select(data) {
+      return new StCelo(data);
+    },
+  });
 
   /*
    * @param proposal - full serialized proposal
@@ -65,9 +85,9 @@ export const useVote = () => {
           args: [
             BigInt(proposal.proposalID),
             BigInt(proposal.index),
-            vote === VoteType.yes ? voteWeight : 0n,
-            vote === VoteType.no ? voteWeight : 0n,
-            vote === VoteType.abstain ? voteWeight : 0n,
+            vote === VoteType.yes ? voteWeight - MAX_AMOUNT_THRESHOLD : 0n,
+            vote === VoteType.no ? voteWeight - MAX_AMOUNT_THRESHOLD : 0n,
+            vote === VoteType.abstain ? voteWeight - MAX_AMOUNT_THRESHOLD : 0n,
           ],
         });
         transactionEvent({
@@ -89,9 +109,18 @@ export const useVote = () => {
         );
       } finally {
         callbacks?.onSent?.();
+        void refetchLockedVoteBalance();
+        void refetchLockedStCeloInVoting();
       }
     },
-    [address, suggestedGasPrice, voteWeight, _voteProposal]
+    [
+      address,
+      suggestedGasPrice,
+      voteWeight,
+      _voteProposal,
+      refetchLockedVoteBalance,
+      refetchLockedStCeloInVoting,
+    ]
   );
 
   const getProposalVote = useCallback(
@@ -128,26 +157,6 @@ export const useVote = () => {
     [proposalIds]
   );
 
-  const { data: lockedVoteBalance } = useContractRead({
-    ...stakedCeloContract,
-    functionName: 'lockedVoteBalanceOf',
-    args: [address as Address],
-    enabled: !!address,
-    select(data) {
-      return new StCelo(data);
-    },
-  });
-
-  const { data: lockedStCeloInVoting } = useContractRead({
-    ...voteContract,
-    functionName: 'getLockedStCeloInVoting',
-    args: [address as Address],
-    enabled: !!address,
-    select(data) {
-      return new StCelo(data);
-    },
-  });
-
   const { writeAsync: _unlockVoteBalance } = useContractWrite({
     ...stakedCeloContract,
     functionName: 'unlockVoteBalance',
@@ -172,6 +181,8 @@ export const useVote = () => {
         );
       } finally {
         callbacks?.onSent?.();
+        void refetchLockedVoteBalance();
+        void refetchLockedStCeloInVoting();
       }
     },
     [address]
