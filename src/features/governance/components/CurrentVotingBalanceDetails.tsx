@@ -13,11 +13,13 @@ const Detail = ({
   title,
   value,
   unlock,
+  unlockable,
   inModal,
   children,
 }: PropsWithChildren<{
   title: string;
   unlock?: () => void;
+  unlockable?: Token;
   inModal?: boolean;
   value?: Token;
 }>) => {
@@ -43,10 +45,14 @@ const Detail = ({
       </div>
       {Boolean(unlock) && (
         <div className="flex gap-2 items-center justify-between mb-2">
-          <i className="inline-flex">of which {value?.convertToBase().toFixed()} can be unlocked</i>
-          <Button onClick={unlock} classes="h-[24px]">
-            <Pill classes={inModal ? 'bg-primary' : 'bg-secondary'}>Unlock</Pill>
-          </Button>
+          <i className="inline-flex">
+            of which {unlockable?.convertToBase().toFixed()} can be unlocked
+          </i>
+          {unlockable?.gt(0) && (
+            <Button onClick={unlock} classes="h-[24px]">
+              <Pill classes={inModal ? 'bg-primary' : 'bg-secondary'}>Unlock</Pill>
+            </Button>
+          )}
         </div>
       )}
       <InfoModal title={title} isOpen={isOpen} close={() => setIsOpen(false)}>
@@ -101,6 +107,7 @@ const CurrentVotingBalanceDetails = ({
             title={'Locked stCELO'}
             value={lockedVoteBalance}
             unlock={lockedVoteBalance?.gt(0) ? unlock : undefined}
+            unlockable={new StCelo(lockedVoteBalance?.minus(lockedStCeloInVoting || 0))}
             inModal={inModal}
           >
             When a you vote on a governance proposal, your stCELO balance gets locked. <br />

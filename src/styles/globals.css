@@ -30,6 +30,7 @@ body:not(.dark-mode) {
   --c-bg-highlight-primary-color: #6759CC;
   --c-bg-highlight-secondary-color: #E5B253;
   --c-bg-callout-modal-color: #FFFDF4;
+  --toastify-color-dark: #324142;
 }
 
 body.dark-mode {
@@ -40,7 +41,7 @@ body.dark-mode {
   --c-text-primary-callout-color: #C8D72B;
   --c-text-secondary-callout-color: #7ED8C2;
   --c-text-tertiary-callout-color: #7ED8C2;
-  --c-text-modal: #212B2E;
+  --c-text-modal: #EBE7DD;
   --c-text-callout-modal-color: #9781EE;
   --c-placeholder-primary: rgb(123, 151, 153, 0.3);
   --c-bg-primary-color: #212B2E;
