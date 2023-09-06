@@ -97,7 +97,9 @@ export const Details = ({ proposal }: Props) => {
                 <div className="text-[18px] text-color-primary">
                   {fetchError
                     ? 'Failed to fetch proposal title'
-                    : `#${proposal!.parsedYAML!.cgp} ${proposal!.parsedYAML!.title}`}
+                    : `CGP-${proposal!.parsedYAML!.cgp} (#${proposal!.proposalID} on-chain) - ${
+                        proposal!.parsedYAML!.title
+                      }`}
                 </div>
                 <LinkOut classes="m-2" href={proposal!.metadata.descriptionURL}>
                   view info
