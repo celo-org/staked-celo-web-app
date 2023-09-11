@@ -26,7 +26,7 @@ export const Governance = ({ proposals, pastProposals }: Props) => {
                   key={proposal.proposalID.toString()}
                   name={
                     proposal.parsedYAML
-                      ? proposal.parsedYAML.title
+                      ? `CGP-${proposal.parsedYAML.cgp} (#${proposal.proposalID}) ${proposal.parsedYAML.title}`
                       : `Proposal #${proposal.proposalID}`
                   }
                   href={`/governance/${proposal.proposalID}`}
@@ -51,7 +51,7 @@ export const Governance = ({ proposals, pastProposals }: Props) => {
                   key={proposal.proposalID.toString()}
                   name={
                     proposal.parsedYAML
-                      ? proposal.parsedYAML.title
+                      ? `CGP-${proposal.parsedYAML.cgp} (#${proposal.proposalID}) ${proposal.parsedYAML.title}`
                       : `Proposal #${proposal.proposalID.toString()}`
                   }
                   nameClasses="text-color-secondary"
