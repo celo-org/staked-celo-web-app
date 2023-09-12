@@ -13,6 +13,8 @@ import CloseDark from 'src/images/icons/close-dark.svg';
 import CloseLight from 'src/images/icons/close-light.svg';
 import DiscordDark from 'src/images/icons/discord-dark.svg';
 import DiscordLight from 'src/images/icons/discord-light.svg';
+import ExitDark from 'src/images/icons/exit-dark.svg';
+import ExitLight from 'src/images/icons/exit-light.svg';
 import GithubDark from 'src/images/icons/github-dark.svg';
 import GithubLight from 'src/images/icons/github-light.svg';
 import InfoAqua from 'src/images/icons/info-aqua.svg';
@@ -49,7 +51,8 @@ type IconName =
   | 'theme'
   | 'theme-oposite'
   | 'close'
-  | 'clipboard';
+  | 'clipboard'
+  | 'exit';
 
 interface ThemedIcons {
   dark: any;
@@ -74,6 +77,7 @@ const icons: Record<IconName, ThemedIcons> = {
   'theme-oposite': { light: ThemeOpositeDark, dark: ThemeOpositeLight },
   close: { light: CloseDark, dark: CloseLight },
   clipboard: { light: ClipboardDark, dark: ClipboardLight },
+  exit: { light: ExitDark, dark: ExitLight },
 };
 
 interface ThemedIconProps {

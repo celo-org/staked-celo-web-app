@@ -6,10 +6,11 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import CurrentVotingBalanceDetails from 'src/features/governance/components/CurrentVotingBalanceDetails';
 import { useVote } from 'src/features/governance/hooks/useVote';
 import { showClipboardToast } from 'src/features/swap/utils/toast';
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 
 export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => void }) => {
   const { address } = useAccount();
+  const { disconnect } = useDisconnect();
   const { celoBalance, stCeloBalance } = useAccountContext();
   const { lockedStCeloInVoting, lockedVoteBalance, unlockVoteBalance } = useVote();
   const title = 'Wallet information';
@@ -60,6 +61,13 @@ export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => 
           unlockVoteBalance={unlockVoteBalance}
           inModal
         />
+
+        <div className="w-full flex flex-col mt-2">
+          <Button classes="self-center px-4 gap-4" onClick={disconnect}>
+            <span>Disconnect</span>
+            <ThemedIcon name="exit" alt={`Disconnect wallet`} height={16} width={16} />
+          </Button>
+        </div>
       </div>
     </Modal>
   );
