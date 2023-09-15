@@ -154,10 +154,12 @@ const SwapFormInput = ({
       infoChild={
         <div>
           <BalanceTools mode={mode} onClickUseMax={setMaxAmount} balance={balance} />
-          <i className="text-[10px] text-color-secondary relative">
-            <span className="absolute left-[-0.5rem] top-0">*</span>
-            Only unlocked funds are shown above. For Locked funds see the Govern tab.
-          </i>
+          {mode === Mode.unstake && (
+            <i className="text-[10px] text-color-secondary relative">
+              <span className="absolute left-[-0.5rem] top-0">*</span>
+              Only unlocked funds are shown above. For Locked funds see the Govern tab.
+            </i>
+          )}
         </div>
       }
     />
