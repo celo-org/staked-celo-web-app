@@ -50,7 +50,7 @@ const Detail = ({
           </i>
           {unlockable?.gt(0) && (
             <Button onClick={unlock} classes="h-[24px]">
-              <Pill classes={inModal ? 'bg-primary' : 'bg-secondary'}>Unlock</Pill>
+              <Pill classes={'bg-action-primary-regular text-white'}>Unlock</Pill>
             </Button>
           )}
         </div>
@@ -81,6 +81,7 @@ const CurrentVotingBalanceDetails = ({
   const bothZero = lockedVoteBalance?.eq(0) && lockedStCeloInVoting?.eq(0);
 
   const unlock = useCallback(() => {
+    setIsCalloutModalOpened(true);
     void unlockVoteBalance?.({
       onSent: () => {
         setIsCalloutModalOpened(false);

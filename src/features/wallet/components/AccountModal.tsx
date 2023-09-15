@@ -36,7 +36,7 @@ export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => 
               <ThemedIcon name="clipboard" alt={`Copy to clipboard`} height={16} width={16} />
             </Button>
           </div>
-          <div className="cursor-pointer bg-tertiary rounded-full flex center p-1">
+          <div className="cursor-pointer bg-tertiary rounded-full flex center p-1" onClick={close}>
             <ThemedIcon name="close" alt="Dismiss" width={24} height={24} />
           </div>
         </div>
