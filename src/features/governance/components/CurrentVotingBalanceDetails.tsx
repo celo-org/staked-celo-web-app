@@ -14,13 +14,11 @@ const Detail = ({
   value,
   unlock,
   unlockable,
-  inModal,
   children,
 }: PropsWithChildren<{
   title: string;
   unlock?: () => void;
   unlockable?: Token;
-  inModal?: boolean;
   value?: Token;
 }>) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,7 +107,6 @@ const CurrentVotingBalanceDetails = ({
             value={lockedVoteBalance}
             unlock={lockedVoteBalance?.gt(0) ? unlock : undefined}
             unlockable={new StCelo(lockedVoteBalance?.minus(lockedStCeloInVoting || 0))}
-            inModal={inModal}
           >
             When a you vote on a governance proposal, your stCELO balance gets locked. <br />
             This stCELO is not automatically unlocked after a proposal voting period has elapsed and
@@ -118,7 +115,7 @@ const CurrentVotingBalanceDetails = ({
           </Detail>
         )}
         {showLockedStCeloInVoting && (
-          <Detail title={'Locked stCELO in voting'} value={lockedStCeloInVoting} inModal={inModal}>
+          <Detail title={'Locked stCELO in voting'} value={lockedStCeloInVoting}>
             When a you vote on a governance proposal, your stCELO balance gets locked. <br />
             You may not unlock your stCELO locked in voting as long as the proposal hasn&apos;t
             expired.

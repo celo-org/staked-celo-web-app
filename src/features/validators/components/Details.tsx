@@ -32,7 +32,7 @@ export const Details = ({ groupAddress, name }: Props) => {
 
   useEffect(() => {
     if (isConnected) {
-      loadBalances?.();
+      void loadBalances?.().catch((error) => console.error(error));
     }
   }, [loadBalances, isConnected]);
 
