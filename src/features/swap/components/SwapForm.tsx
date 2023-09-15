@@ -1,8 +1,8 @@
 import { FormEventHandler, useCallback, useState } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
+import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
-import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { TxCallbacks } from 'src/contexts/blockchain/useBlockchain';
@@ -151,7 +151,15 @@ const SwapFormInput = ({
           inputMode="decimal"
         />
       }
-      infoChild={<BalanceTools mode={mode} onClickUseMax={setMaxAmount} balance={balance} />}
+      infoChild={
+        <div>
+          <BalanceTools mode={mode} onClickUseMax={setMaxAmount} balance={balance} />
+          <i className="text-[10px] text-color-secondary relative">
+            <span className="absolute left-[-0.5rem] top-0">*</span>
+            Only unlocked funds are shown above. For Locked funds see the Govern tab.
+          </i>
+        </div>
+      }
     />
   );
 };
