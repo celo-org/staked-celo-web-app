@@ -114,7 +114,10 @@ export const ThemedIcon = ({
           width={width}
           height={height}
           onClick={onClick}
-          layout={fill ? 'fill' : 'intrinsic'}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
         />
       </span>
     </OpacityTransition>

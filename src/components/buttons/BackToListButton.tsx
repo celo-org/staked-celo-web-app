@@ -22,7 +22,7 @@ export const BackToListButton = ({ mode }: Props) => {
   const chainId = useChainId();
   const href = appendChainIdToLink(`/${mode}`, chainId);
   return (
-    <Link href={href}>
+    <Link href={href} legacyBehavior>
       <div className="flex flex-row items-center rounded-[16px] gap-2 cursor-pointer">
         <ThemedIcon name="arrow" alt="open" classes="rotate-[90deg]" height={24} width={24} />
         <span className="font-medium text-[14px] text-color-secondary">
