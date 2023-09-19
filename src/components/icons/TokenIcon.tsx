@@ -25,6 +25,10 @@ export const TokenIcon = ({ token, quality = 100, width = 32, height = 32 }: Tok
         quality={quality}
         width={width}
         height={height}
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+        }}
       />
     </span>
   </OpacityTransition>

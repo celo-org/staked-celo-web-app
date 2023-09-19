@@ -21,7 +21,17 @@ export const showStakingToast = (amount: StCelo) =>
 
 export const showUnstakingToast = () =>
   showToast(
-    <Image src={Clock} alt="Clock" quality={100} width={32} height={32} />,
+    <Image
+      src={Clock}
+      alt="Clock"
+      quality={100}
+      width={32}
+      height={32}
+      style={{
+        maxWidth: '100%',
+        height: 'auto',
+      }}
+    />,
     <ToastContent>You started unstaking, funds available in 3 days.</ToastContent>
   );
 
