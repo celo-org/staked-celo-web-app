@@ -142,6 +142,7 @@ export async function getYamlForProposal(proposal: MiniProposal) {
     if (!parsed) {
       throw new Error("Couldn't parse markdown");
     }
+    console.log(parsed);
     return parsed;
   } catch {
     console.warn(`Failed to fetch proposal markdown at url ${proposal.metadata.descriptionURL}`);

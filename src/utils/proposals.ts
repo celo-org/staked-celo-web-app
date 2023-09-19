@@ -1,3 +1,5 @@
+import matter from 'gray-matter';
+
 export function camelCasesify(str: string): string {
   const words = str.split(/\W/g);
 
@@ -16,27 +18,28 @@ export type ParsedYAML = {
 };
 
 export function parsedYAMLFromMarkdown(markdown: string): ParsedYAML | null {
-  const parsed = markdown.match(/---(.*?)---/s);
-  if (!parsed) {
+  try {
+    // Note: the typings seem out of date and don't reference the existing `isEmpty` prop
+    // which is true if the front-matter couldn't be parsed
+    const parsed = matter(markdown) as matter.GrayMatterFile<string> & { isEmpty: boolean };
+
+    if (parsed.isEmpty) return null;
+
+    const data = {} as ParsedYAML;
+    Object.keys(parsed.data).forEach((key) => {
+      const newKey = camelCasesify(key) as keyof ParsedYAML;
+
+      data[newKey] = parsed.data[key] ?? '';
+      if (typeof data[newKey] === 'object') {
+        data[newKey] = parsed.data[newKey].toString();
+      }
+    });
+
+    return data;
+  } catch (error) {
+    console.error('Couldnt parse YAML', error);
     return null;
   }
-  const rows = parsed[1].split('\n');
-  const keyValues = rows
-    .map((x) =>
-      x
-        .split(/(.*?):(.*)/)
-        .map((x) => x.trim())
-        .filter(Boolean)
-    )
-    .filter((x) => x.length);
-
-  return keyValues.reduce(
-    (acc, [key, value]) => ({
-      ...acc,
-      [camelCasesify(key)]: value,
-    }),
-    {} as ParsedYAML
-  );
 }
 
 export function getRawGithubUrl(descriptionURL: string) {
