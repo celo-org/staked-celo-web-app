@@ -21,7 +21,7 @@
     "compliance-sdk": "^1.0.5",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.4",
-    "graphql": "^16.6.0",
+    "graphql": "^16.8.1",
     "graphql-request": "^5.2.0",
     "gray-matter": "^4.0.3",
     "next": "^13.4.19",
