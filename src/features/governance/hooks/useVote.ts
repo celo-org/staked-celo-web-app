@@ -1,4 +1,3 @@
-import { add } from 'date-fns';
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
