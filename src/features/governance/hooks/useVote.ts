@@ -1,3 +1,4 @@
+import { add } from 'date-fns';
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
 import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
@@ -188,6 +189,60 @@ export const useVote = () => {
     [address]
   );
 
+  const { writeAsync: _revokeVotes } = useContractWrite({
+    ...managerContract,
+    functionName: 'revokeVotes',
+  });
+
+  const [revokeVotes, revokeVotesStatus] = useAsyncCallback(
+    async (proposal: SerializedProposal, callbacks?: TxCallbacks) => {
+      console.log('************--- revokeVotes proposal --******');
+      console.log(proposal);
+      console.log('************--- /revokeVotes proposal --******');
+
+      if (!address || !managerContract || !proposal.index) {
+        throw new Error('revoke called before loading completed');
+      }
+      if (proposal.stage != ProposalStage.Referendum) {
+        throw new Error('revoke called on a proposal that is passed');
+      }
+      // transactionEvent({
+      //   action: 'revokeVotes',
+      //   status: 'initiated_transaction',
+      // });
+      try {
+        console.log('********* revokeVotes try _revokeVotes() ************');
+        const response = await _revokeVotes?.({
+          args: [BigInt(proposal.proposalID), BigInt(proposal.index)],
+        });
+        console.log(response);
+        // transactionEvent({
+        //   action: 'revokeVotes',
+        //   status: 'signed_transaction',
+        // });
+        console.log('********* /revokeVotes try _revokeVotes() ************');
+      } catch (e: unknown) {
+        logger.error('revokeVotes error', e);
+        showErrorToast(
+          (e as Error).message.includes('rejected')
+            ? 'User rejected the request'
+            : (e as Error).message
+        );
+      } finally {
+        callbacks?.onSent?.();
+        // void refetchLockedVoteBalance();
+        // void refetchLockedStCeloInVoting();
+      }
+    },
+    [
+      address,
+      suggestedGasPrice,
+      // _revokeVotes,
+      // refetchLockedVoteBalance,
+      // refetchLockedStCeloInVoting,
+    ]
+  );
+
   return {
     voteProposal,
     voteProposalStatus,
@@ -196,6 +251,8 @@ export const useVote = () => {
     getProposalVote,
     lockedVoteBalance,
     lockedStCeloInVoting,
+    revokeVotes,
+    revokeVotesStatus,
     unlockVoteBalance,
   };
 };

@@ -16,6 +16,7 @@ import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
 import { StCelo } from 'src/utils/tokens';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
+import { RevokeButton } from 'src/features/governance/components/RevokeButton';
 
 interface Props {
   proposal: SerializedProposal;
@@ -40,6 +41,8 @@ export const Details = ({ proposal }: Props) => {
     getProposalVote,
     lockedVoteBalance,
     lockedStCeloInVoting,
+    revokeVotes,
+    revokeVotesStatus,
     unlockVoteBalance,
   } = useVote();
 
@@ -69,6 +72,14 @@ export const Details = ({ proposal }: Props) => {
     const recentVote = await getProposalVote(proposal.proposalID.toString(), address!);
     setPastVote(recentVote);
   }, [currentVote, hasVoted, voteProposal, proposal, getProposalVote, address]);
+
+  const onRevoke = useCallback(async () => {
+    if (!hasVoted) return;
+    setTransactionModalOpen(true);
+    await revokeVotes(proposal, { onSent: () => setTransactionModalOpen(false) });
+    // const recentVote = await getProposalVote(proposal.proposalID.toString(), address!);
+    // setPastVote(recentVote);
+  }, [hasVoted, proposal, revokeVotes, address]);
 
   useEffect(() => {
     console.info('Checking if user has voted', proposal.proposalID);
@@ -140,6 +151,16 @@ export const Details = ({ proposal }: Props) => {
                   disabled={!loaded || currentVote === undefined || hasVoted}
                   pending={voteProposalStatus.isExecuting || getHasVotedStatus.isExecuting}
                   onVote={onVote}
+                />
+              </div>
+            )}
+            {hasVoted && (
+              <div className="w-full px-4 py-2">
+                <RevokeButton
+                  disabled={!loaded || !hasVoted}
+                  // pending={false}
+                  pending={revokeVotesStatus.isExecuting}
+                  onRevoke={onRevoke}
                 />
               </div>
             )}
