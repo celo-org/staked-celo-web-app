@@ -195,31 +195,24 @@ export const useVote = () => {
 
   const [revokeVotes, revokeVotesStatus] = useAsyncCallback(
     async (proposal: SerializedProposal, callbacks?: TxCallbacks) => {
-      console.log('************--- revokeVotes proposal --******');
-      console.log(proposal);
-      console.log('************--- /revokeVotes proposal --******');
-
       if (!address || !managerContract || !proposal.index) {
         throw new Error('revoke called before loading completed');
       }
       if (proposal.stage != ProposalStage.Referendum) {
         throw new Error('revoke called on a proposal that is passed');
       }
-      // transactionEvent({
-      //   action: 'revokeVotes',
-      //   status: 'initiated_transaction',
-      // });
+      transactionEvent({
+        action: 'revokeVotes',
+        status: 'initiated_transaction',
+      });
       try {
-        console.log('********* revokeVotes try _revokeVotes() ************');
-        const response = await _revokeVotes?.({
+        await _revokeVotes?.({
           args: [BigInt(proposal.proposalID), BigInt(proposal.index)],
         });
-        console.log(response);
-        // transactionEvent({
-        //   action: 'revokeVotes',
-        //   status: 'signed_transaction',
-        // });
-        console.log('********* /revokeVotes try _revokeVotes() ************');
+        transactionEvent({
+          action: 'revokeVotes',
+          status: 'signed_transaction',
+        });
       } catch (e: unknown) {
         logger.error('revokeVotes error', e);
         showErrorToast(
@@ -229,17 +222,9 @@ export const useVote = () => {
         );
       } finally {
         callbacks?.onSent?.();
-        // void refetchLockedVoteBalance();
-        // void refetchLockedStCeloInVoting();
       }
     },
-    [
-      address,
-      suggestedGasPrice,
-      // _revokeVotes,
-      // refetchLockedVoteBalance,
-      // refetchLockedStCeloInVoting,
-    ]
+    [address, suggestedGasPrice]
   );
 
   return {
