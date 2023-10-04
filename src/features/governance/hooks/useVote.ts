@@ -12,7 +12,7 @@ import logger from 'src/services/logger';
 import { VoteType } from 'src/types';
 import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
-import { readFromCache, writeToCache } from 'src/utils/localSave';
+import { deleteFromCache, readFromCache, writeToCache } from 'src/utils/localSave';
 import { StCelo } from 'src/utils/tokens';
 import { Address, useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
 
@@ -139,24 +139,6 @@ export const useVote = () => {
     [getVoteCacheKey, getVotesForProposal]
   );
 
-  const { data: proposalIds } = useContractRead({
-    ...voteContract,
-    functionName: 'getVotedStillRelevantProposals',
-    args: [address!],
-    enabled: !!address,
-    keepPreviousData: false,
-  });
-
-  const [getHasVoted, getHasVotedStatus] = useAsyncCallback(
-    async (proposal: SerializedProposal): Promise<boolean> => {
-      if (!proposalIds) {
-        throw new Error('vote called before loading completed');
-      }
-      return proposalIds.includes(BigInt(proposal.proposalID));
-    },
-    [proposalIds]
-  );
-
   const { writeAsync: _unlockVoteBalance } = useContractWrite({
     ...stakedCeloContract,
     functionName: 'unlockVoteBalance',
@@ -209,6 +191,7 @@ export const useVote = () => {
         await _revokeVotes?.({
           args: [BigInt(proposal.proposalID), BigInt(proposal.index)],
         });
+        deleteFromCache(getVoteCacheKey(proposal.proposalID.toString(), address));
         transactionEvent({
           action: 'revokeVotes',
           status: 'signed_transaction',
@@ -230,8 +213,6 @@ export const useVote = () => {
   return {
     voteProposal,
     voteProposalStatus,
-    getHasVoted,
-    getHasVotedStatus,
     getProposalVote,
     lockedVoteBalance,
     lockedStCeloInVoting,

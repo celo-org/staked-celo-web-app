@@ -8,6 +8,7 @@ import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
 import CurrentVotingBalanceDetails from 'src/features/governance/components/CurrentVotingBalanceDetails';
+import { RevokeButton } from 'src/features/governance/components/RevokeButton';
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { VoteButton } from 'src/features/governance/components/VoteButton';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
@@ -16,7 +17,6 @@ import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
 import { StCelo } from 'src/utils/tokens';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
-import { RevokeButton } from 'src/features/governance/components/RevokeButton';
 
 interface Props {
   proposal: SerializedProposal;
@@ -36,8 +36,8 @@ export const Details = ({ proposal }: Props) => {
   const {
     voteProposal,
     voteProposalStatus,
-    getHasVoted,
-    getHasVotedStatus,
+    // getHasVoted,
+    // getHasVotedStatus,
     getProposalVote,
     lockedVoteBalance,
     lockedStCeloInVoting,
@@ -51,7 +51,7 @@ export const Details = ({ proposal }: Props) => {
   }, [loadBalances, isConnected]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
-  const [hasVoted, setHasVoted] = useState<boolean>(false);
+  // const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [transactionModalOpen, setTransactionModalOpen] = useState<boolean>(false);
 
   const onVoteChange = useCallback((voteType: VoteType) => {
@@ -65,6 +65,8 @@ export const Details = ({ proposal }: Props) => {
     });
   }, [address, getProposalVote, proposal.proposalID]);
 
+  const hasVoted = !!pastVote;
+
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
     setTransactionModalOpen(true);
@@ -77,19 +79,19 @@ export const Details = ({ proposal }: Props) => {
     if (!hasVoted) return;
     setTransactionModalOpen(true);
     await revokeVotes(proposal, { onSent: () => setTransactionModalOpen(false) });
-    // const recentVote = await getProposalVote(proposal.proposalID.toString(), address!);
-    // setPastVote(recentVote);
-  }, [hasVoted, proposal, revokeVotes, address]);
+    setPastVote(null);
+  }, [hasVoted, proposal, revokeVotes]);
 
-  useEffect(() => {
-    console.info('Checking if user has voted', proposal.proposalID);
-    void getHasVoted(proposal)
-      .then((didVote) => {
-        setHasVoted(pastVote != null || didVote);
-      })
-      .catch(() => setHasVoted(pastVote != null));
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
-  }, [pastVote, getHasVoted, proposal, voteProposalStatus.successfullyExecuted]);
+  // useEffect(() => {
+  //   console.info('Checking if user has voted', proposal.proposalID);
+  //   void getHasVoted(proposal)
+  //     .then((didVote) => {
+  //       console.log('hello', didVote);
+  //       setHasVoted(pastVote != null || didVote);
+  //     })
+  //     .catch(() => setHasVoted(pastVote != null));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
+  // }, [pastVote, getHasVoted, proposal, voteProposalStatus.successfullyExecuted]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
@@ -149,7 +151,7 @@ export const Details = ({ proposal }: Props) => {
               <div className="w-full px-4 py-2">
                 <VoteButton
                   disabled={!loaded || currentVote === undefined || hasVoted}
-                  pending={voteProposalStatus.isExecuting || getHasVotedStatus.isExecuting}
+                  pending={voteProposalStatus.isExecuting}
                   onVote={onVote}
                 />
               </div>
