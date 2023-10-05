@@ -1,6 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useCallback, useEffect, useState } from 'react';
 import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
+import { AsyncButton } from 'src/components/buttons/AsyncButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -8,9 +9,7 @@ import { TertiaryCallout } from 'src/components/text/TertiaryCallout';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
 import CurrentVotingBalanceDetails from 'src/features/governance/components/CurrentVotingBalanceDetails';
-import { RevokeButton } from 'src/features/governance/components/RevokeButton';
 import { StagePill } from 'src/features/governance/components/StagePill';
-import { VoteButton } from 'src/features/governance/components/VoteButton';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { useVote } from 'src/features/governance/hooks/useVote';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
@@ -138,20 +137,22 @@ export const Details = ({ proposal }: Props) => {
             )}
             {!hasVoted && (
               <div className="w-full px-4 py-2">
-                <VoteButton
+                <AsyncButton
                   disabled={!loaded || currentVote === undefined || hasVoted}
                   pending={voteProposalStatus.isExecuting}
-                  onVote={onVote}
+                  onClick={onVote}
+                  text="Vote"
                 />
               </div>
             )}
             {hasVoted && (
               <div className="w-full px-4 py-2">
-                <RevokeButton
+                <AsyncButton
                   disabled={!loaded || !hasVoted}
                   // pending={false}
                   pending={revokeVotesStatus.isExecuting}
-                  onRevoke={onRevoke}
+                  onClick={onRevoke}
+                  text="Revoke Votes"
                 />
               </div>
             )}
