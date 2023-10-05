@@ -14,7 +14,14 @@ import chainIdToChain from 'src/utils/chainIdToChain';
 import { transactionEvent } from 'src/utils/ga';
 import { deleteFromCache, readFromCache, writeToCache } from 'src/utils/localSave';
 import { StCelo } from 'src/utils/tokens';
-import { Address, useAccount, useChainId, useContractRead, useContractWrite } from 'wagmi';
+import {
+  Address,
+  useAccount,
+  useChainId,
+  useContractRead,
+  useContractWrite,
+  usePublicClient,
+} from 'wagmi';
 
 export const useVote = () => {
   const { managerContract, voteContract, stakedCeloContract } = useBlockchain();
@@ -23,6 +30,7 @@ export const useVote = () => {
   const { address } = useAccount();
   const chainId = useChainId();
   const network = chainIdToChain(chainId);
+  const publicClient = usePublicClient();
   const { getVotesForProposal } = useProposalVotes();
   const getVoteCacheKey = useCallback(
     (id: string, addr: string) => {
@@ -31,7 +39,7 @@ export const useVote = () => {
     [network.name]
   );
 
-  const { data: voteWeight } = useContractRead({
+  const { data: voteWeight, refetch: refetchVoteWeight } = useContractRead({
     ...managerContract,
     functionName: 'toCelo',
     args: [stCeloBalance.toBigInt()],
@@ -72,8 +80,12 @@ export const useVote = () => {
       if (proposal.stage !== ProposalStage.Referendum) {
         throw new Error('vote called on proposal that is not in Referendum stage');
       }
-      if (!voteWeight) {
-        throw new Error('Unsufficient balance');
+      if (!voteWeight || voteWeight - MAX_AMOUNT_THRESHOLD <= 0) {
+        showErrorToast(
+          'Insufficient balance when taking in account gas costs. Do you have unlockable stCelo?'
+        );
+        callbacks?.onSent?.();
+        return;
       }
       transactionEvent({
         action: 'voteProposal',
@@ -81,7 +93,7 @@ export const useVote = () => {
         value: vote,
       });
       try {
-        await _voteProposal?.({
+        const tx = await _voteProposal?.({
           args: [
             BigInt(proposal.proposalID),
             BigInt(proposal.index),
@@ -90,6 +102,10 @@ export const useVote = () => {
             vote === VoteType.abstain ? voteWeight - MAX_AMOUNT_THRESHOLD : 0n,
           ],
         });
+        if (!tx) {
+          throw new Error('Something went wrong, hash couldnt be fetched');
+        }
+        await publicClient.waitForTransactionReceipt({ hash: tx.hash });
         transactionEvent({
           action: 'voteProposal',
           status: 'signed_transaction',
@@ -111,6 +127,7 @@ export const useVote = () => {
         callbacks?.onSent?.();
         void refetchLockedVoteBalance();
         void refetchLockedStCeloInVoting();
+        void refetchVoteWeight();
       }
     },
     [
@@ -120,6 +137,8 @@ export const useVote = () => {
       _voteProposal,
       refetchLockedVoteBalance,
       refetchLockedStCeloInVoting,
+      refetchVoteWeight,
+      publicClient,
     ]
   );
 
@@ -150,9 +169,13 @@ export const useVote = () => {
         throw new Error('vote called before loading completed');
       }
       try {
-        await _unlockVoteBalance?.({
+        const tx = await _unlockVoteBalance?.({
           args: [address as Address],
         });
+        if (!tx) {
+          throw new Error('Something went wrong, hash couldnt be fetched');
+        }
+        await publicClient.waitForTransactionReceipt({ hash: tx.hash });
         showStakingToast(lockedVoteBalance!);
       } catch (e: unknown) {
         logger.error('voteProposal error', e);
@@ -165,9 +188,16 @@ export const useVote = () => {
         callbacks?.onSent?.();
         void refetchLockedVoteBalance();
         void refetchLockedStCeloInVoting();
+        void refetchVoteWeight();
       }
     },
-    [address]
+    [
+      address,
+      refetchLockedVoteBalance,
+      refetchLockedStCeloInVoting,
+      refetchVoteWeight,
+      publicClient,
+    ]
   );
 
   const { writeAsync: _revokeVotes } = useContractWrite({
@@ -188,14 +218,19 @@ export const useVote = () => {
         status: 'initiated_transaction',
       });
       try {
-        await _revokeVotes?.({
+        const tx = await _revokeVotes?.({
           args: [BigInt(proposal.proposalID), BigInt(proposal.index)],
         });
+        if (!tx) {
+          throw new Error('Something went wrong, hash couldnt be fetched');
+        }
+        await publicClient.waitForTransactionReceipt({ hash: tx.hash });
         deleteFromCache(getVoteCacheKey(proposal.proposalID.toString(), address));
         transactionEvent({
           action: 'revokeVotes',
           status: 'signed_transaction',
         });
+        showVoteToast({ vote: null, proposalID: proposal.proposalID.toString() });
       } catch (e: unknown) {
         logger.error('revokeVotes error', e);
         showErrorToast(
@@ -205,9 +240,19 @@ export const useVote = () => {
         );
       } finally {
         callbacks?.onSent?.();
+        void refetchLockedVoteBalance();
+        void refetchLockedStCeloInVoting();
+        void refetchVoteWeight();
       }
     },
-    [address, suggestedGasPrice]
+    [
+      address,
+      suggestedGasPrice,
+      refetchLockedVoteBalance,
+      refetchLockedStCeloInVoting,
+      refetchVoteWeight,
+      publicClient,
+    ]
   );
 
   return {

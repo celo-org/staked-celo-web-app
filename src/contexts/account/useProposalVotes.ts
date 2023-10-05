@@ -27,7 +27,7 @@ async function getRelevantVoteEvents(
   proposalId: bigint,
   publicClient: PublicClient,
   addresses: ReturnType<typeof useAddresses>
-): Promise<Vote> {
+): Promise<Vote | null> {
   const governanceAddress = await publicClient.readContract({
     ...celoRegistry,
     functionName: 'getAddressForString',
@@ -95,22 +95,22 @@ async function getRelevantVoteEvents(
     fromBlock,
     toBlock,
   });
+  // Sort descending to get the latest event first
+  const sortedEvents = voteEvents.sort((a, b) => Number(b.blockNumber! - a.blockNumber!));
+  console.log(sortedEvents);
+  for (const { args: values } of sortedEvents) {
+    if (!values || !values.proposalId) continue;
 
-  return voteEvents
-    .sort((a, b) => Number(a.blockNumber! - b.blockNumber!))
-    .reduce((sum, currentEvent) => {
-      const values = currentEvent.args;
-      if (!values || !values.proposalId) return sum;
+    const vote = extractVote(values);
+    if (!vote) return null;
 
-      const vote = extractVote(values);
+    return {
+      vote: vote.replace('Votes', '') as VoteType,
+      weight: values[vote as keyof typeof values] as string,
+    } as Vote;
+  }
 
-      if (!vote) return {};
-
-      return {
-        vote: vote.replace('Votes', '') as VoteType,
-        weight: values[vote as keyof typeof values] as string,
-      };
-    }, {} as Vote);
+  return null;
 }
 
 // Don't call directly use `votes` from `useAccountContext`
@@ -130,7 +130,7 @@ export function useProposalVotes() {
         addresses
       );
 
-      if (!voteRecord.vote || !voteRecord.weight) return null;
+      if (!voteRecord?.vote || !voteRecord?.weight) return null;
 
       return voteRecord;
     },

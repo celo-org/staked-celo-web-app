@@ -36,8 +36,6 @@ export const Details = ({ proposal }: Props) => {
   const {
     voteProposal,
     voteProposalStatus,
-    // getHasVoted,
-    // getHasVotedStatus,
     getProposalVote,
     lockedVoteBalance,
     lockedStCeloInVoting,
@@ -48,7 +46,7 @@ export const Details = ({ proposal }: Props) => {
 
   useEffect(() => {
     if (isConnected) void loadBalances?.();
-  }, [loadBalances, isConnected]);
+  }, [loadBalances, isConnected, proposal]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
   // const [hasVoted, setHasVoted] = useState<boolean>(false);
@@ -60,10 +58,12 @@ export const Details = ({ proposal }: Props) => {
 
   const [pastVote, setPastVote] = useState<{ vote: string; weight: string } | null>(null);
   useEffect(() => {
+    if (!proposal?.proposalID) return;
+
     void getProposalVote(proposal.proposalID.toString(), address!).then((vote) => {
       setPastVote(vote);
     });
-  }, [address, getProposalVote, proposal.proposalID]);
+  }, [address, getProposalVote, proposal?.proposalID]);
 
   const hasVoted = !!pastVote;
 
@@ -81,17 +81,6 @@ export const Details = ({ proposal }: Props) => {
     await revokeVotes(proposal, { onSent: () => setTransactionModalOpen(false) });
     setPastVote(null);
   }, [hasVoted, proposal, revokeVotes]);
-
-  // useEffect(() => {
-  //   console.info('Checking if user has voted', proposal.proposalID);
-  //   void getHasVoted(proposal)
-  //     .then((didVote) => {
-  //       console.log('hello', didVote);
-  //       setHasVoted(pastVote != null || didVote);
-  //     })
-  //     .catch(() => setHasVoted(pastVote != null));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
-  // }, [pastVote, getHasVoted, proposal, voteProposalStatus.successfullyExecuted]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);

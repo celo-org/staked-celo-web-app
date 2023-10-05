@@ -42,6 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
       notFound: true,
     };
   }
+  console.log('HERE');
 
   const proposal = await getProposalRecord(chainId, proposalID);
 

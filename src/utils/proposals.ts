@@ -37,7 +37,6 @@ export function parsedYAMLFromMarkdown(markdown: string): ParsedYAML | null {
 
     return data;
   } catch (error) {
-    console.error('Couldnt parse YAML', error);
     return null;
   }
 }
