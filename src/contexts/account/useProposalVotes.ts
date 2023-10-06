@@ -97,7 +97,6 @@ async function getRelevantVoteEvents(
   });
   // Sort descending to get the latest event first
   const sortedEvents = voteEvents.sort((a, b) => Number(b.blockNumber! - a.blockNumber!));
-  console.log(sortedEvents);
   for (const { args: values } of sortedEvents) {
     if (!values || !values.proposalId) continue;
 

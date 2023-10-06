@@ -48,7 +48,6 @@ export const Details = ({ proposal }: Props) => {
   }, [loadBalances, isConnected, proposal]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
-  // const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [transactionModalOpen, setTransactionModalOpen] = useState<boolean>(false);
 
   const onVoteChange = useCallback((voteType: VoteType) => {
@@ -149,7 +148,6 @@ export const Details = ({ proposal }: Props) => {
               <div className="w-full px-4 py-2">
                 <AsyncButton
                   disabled={!loaded || !hasVoted}
-                  // pending={false}
                   pending={revokeVotesStatus.isExecuting}
                   onClick={onRevoke}
                   text="Revoke Votes"
