@@ -52,11 +52,17 @@ export const showHashToast = (hash: string) => {
   );
 };
 
-export const showVoteToast = ({ vote, proposalID }: { vote: VoteType; proposalID: string }) => {
+export const showVoteToast = ({
+  vote,
+  proposalID,
+}: {
+  vote: VoteType | null;
+  proposalID: string;
+}) => {
   showToast(
     <ThemedIcon name="arrow" alt="Change" />,
     <ToastContent>
-      Voted {vote} for proposal #{proposalID}
+      {vote ? `Voted ${vote} for proposal #${proposalID}` : `Revoked votes for #${proposalID}`}
     </ToastContent>
   );
 };

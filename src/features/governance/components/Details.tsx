@@ -1,6 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useCallback, useEffect, useState } from 'react';
 import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
+import { AsyncButton } from 'src/components/buttons/AsyncButton';
 import { ContainerSecondaryBG } from 'src/components/containers/ContainerSecondaryBG';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { LinkOut } from 'src/components/text/LinkOut';
@@ -9,7 +10,6 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Choices } from 'src/features/governance/components/Choices';
 import CurrentVotingBalanceDetails from 'src/features/governance/components/CurrentVotingBalanceDetails';
 import { StagePill } from 'src/features/governance/components/StagePill';
-import { VoteButton } from 'src/features/governance/components/VoteButton';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { useVote } from 'src/features/governance/hooks/useVote';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
@@ -35,20 +35,19 @@ export const Details = ({ proposal }: Props) => {
   const {
     voteProposal,
     voteProposalStatus,
-    getHasVoted,
-    getHasVotedStatus,
     getProposalVote,
     lockedVoteBalance,
     lockedStCeloInVoting,
+    revokeVotes,
+    revokeVotesStatus,
     unlockVoteBalance,
   } = useVote();
 
   useEffect(() => {
     if (isConnected) void loadBalances?.();
-  }, [loadBalances, isConnected]);
+  }, [loadBalances, isConnected, proposal]);
 
   const [currentVote, setCurrentVote] = useState<VoteType>();
-  const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [transactionModalOpen, setTransactionModalOpen] = useState<boolean>(false);
 
   const onVoteChange = useCallback((voteType: VoteType) => {
@@ -57,10 +56,14 @@ export const Details = ({ proposal }: Props) => {
 
   const [pastVote, setPastVote] = useState<{ vote: string; weight: string } | null>(null);
   useEffect(() => {
+    if (!proposal?.proposalID) return;
+
     void getProposalVote(proposal.proposalID.toString(), address!).then((vote) => {
       setPastVote(vote);
     });
-  }, [address, getProposalVote, proposal.proposalID]);
+  }, [address, getProposalVote, proposal?.proposalID]);
+
+  const hasVoted = !!pastVote;
 
   const onVote = useCallback(async () => {
     if (!currentVote || hasVoted) return;
@@ -70,15 +73,12 @@ export const Details = ({ proposal }: Props) => {
     setPastVote(recentVote);
   }, [currentVote, hasVoted, voteProposal, proposal, getProposalVote, address]);
 
-  useEffect(() => {
-    console.info('Checking if user has voted', proposal.proposalID);
-    void getHasVoted(proposal)
-      .then((didVote) => {
-        setHasVoted(pastVote != null || didVote);
-      })
-      .catch(() => setHasVoted(pastVote != null));
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- force rerun when the vote has happened
-  }, [pastVote, getHasVoted, proposal, voteProposalStatus.successfullyExecuted]);
+  const onRevoke = useCallback(async () => {
+    if (!hasVoted) return;
+    setTransactionModalOpen(true);
+    await revokeVotes(proposal, { onSent: () => setTransactionModalOpen(false) });
+    setPastVote(null);
+  }, [hasVoted, proposal, revokeVotes]);
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
@@ -136,10 +136,21 @@ export const Details = ({ proposal }: Props) => {
             )}
             {!hasVoted && (
               <div className="w-full px-4 py-2">
-                <VoteButton
+                <AsyncButton
                   disabled={!loaded || currentVote === undefined || hasVoted}
-                  pending={voteProposalStatus.isExecuting || getHasVotedStatus.isExecuting}
-                  onVote={onVote}
+                  pending={voteProposalStatus.isExecuting}
+                  onClick={onVote}
+                  text="Vote"
+                />
+              </div>
+            )}
+            {hasVoted && (
+              <div className="w-full px-4 py-2">
+                <AsyncButton
+                  disabled={!loaded || !hasVoted}
+                  pending={revokeVotesStatus.isExecuting}
+                  onClick={onRevoke}
+                  text="Revoke Votes"
                 />
               </div>
             )}
