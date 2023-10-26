@@ -14,7 +14,7 @@ export const Governance = ({ proposals }: Props) => {
 
   return (
     <div>
-      <form className="w-full flex flex-col justify-center items-center mt-[24px] bg-secondary p-[8px] pb-4 rounded-[16px] gap-16 min-h-[368px]">
+      <form className="w-full flex flex-col justify-start items-center mt-[24px] bg-secondary p-[8px] pb-4 rounded-[16px] gap-16 min-h-[368px]">
         <>
           <ul className="flex flex-col gap-4 w-full">
             {proposals.length > 0 ? (
