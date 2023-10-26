@@ -40,10 +40,13 @@ export const getProposals = async (chainId: number) => {
   );
 
   const current = proposals.filter((x) => runningProposalStages.has(x.stage));
-  const passed = proposals
-    .filter((x) => pastProposalStages.has(x.stage))
-    .sort((a, b) => (parseInt(a.proposalID, 10) < parseInt(b.proposalID, 10) ? 1 : -1))
-    .slice(0, 5);
+  // TODO: this is kinda wrong, proposals that passed are not in the dequeue
+  // so this filter only gets expired and none voted proposals
+  // const passed = proposals
+  //   .filter((x) => pastProposalStages.has(x.stage))
+  //   .sort((a, b) => (parseInt(a.proposalID, 10) < parseInt(b.proposalID, 10) ? 1 : -1))
+  //   .slice(0, 5);
+  const passed = [] as MiniProposal[];
 
   const relevantProposals = [...current, ...passed];
   const metadataCalls = relevantProposals.map((proposal) => ({
@@ -86,7 +89,7 @@ export const getProposals = async (chainId: number) => {
 };
 
 const runningProposalStages = new Set([ProposalStage.Queued, ProposalStage.Referendum]);
-const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
+// const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
 
 export const getProposalRecord = async (
   chainId: number,
