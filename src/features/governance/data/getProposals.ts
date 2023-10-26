@@ -89,7 +89,7 @@ export const getProposals = async (chainId: number) => {
 };
 
 const runningProposalStages = new Set([ProposalStage.Queued, ProposalStage.Referendum]);
-const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
+// const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
 
 export const getProposalRecord = async (
   chainId: number,
