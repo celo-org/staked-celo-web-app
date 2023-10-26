@@ -3,16 +3,13 @@ import CurrentVotingBalanceDetails from 'src/features/governance/components/Curr
 import { StagePill } from 'src/features/governance/components/StagePill';
 import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { useVote } from 'src/features/governance/hooks/useVote';
-import { useChainId } from 'wagmi';
 
 interface Props {
   proposals: SerializedProposal[];
   pastProposals: SerializedProposal[];
 }
 
-export const Governance = ({ proposals, pastProposals }: Props) => {
-  const chainId = useChainId();
-
+export const Governance = ({ proposals }: Props) => {
   const { lockedVoteBalance, lockedStCeloInVoting, unlockVoteBalance } = useVote();
 
   return (
@@ -42,26 +39,6 @@ export const Governance = ({ proposals, pastProposals }: Props) => {
               </div>
             )}
           </ul>
-
-          <div className="flex flex-col gap-4 w-full">
-            <span className="text-color-primary pl-4">Past proposals</span>
-            <ul className="flex flex-col gap-4 w-full">
-              {pastProposals.map((proposal) => (
-                <Row
-                  key={proposal.proposalID.toString()}
-                  name={
-                    proposal.parsedYAML
-                      ? `CGP-${proposal.parsedYAML.cgp} (#${proposal.proposalID}) ${proposal.parsedYAML.title}`
-                      : `Proposal #${proposal.proposalID.toString()}`
-                  }
-                  nameClasses="text-color-secondary"
-                  href={`/governance/${proposal.proposalID.toString()}?chainId=${chainId}`}
-                >
-                  <StagePill stage={proposal.stage} />
-                </Row>
-              ))}
-            </ul>
-          </div>
         </>
       </form>
       <CurrentVotingBalanceDetails
