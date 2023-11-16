@@ -2,6 +2,7 @@ import { CeloChains } from '@celo/rainbowkit-celo';
 import { PropsWithChildren } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Modal } from 'src/components/modals/Modal';
+import { resolveUnambiguousChainName } from 'src/utils/resolveUnambiguousChainName';
 import { useChainId, useSwitchNetwork } from 'wagmi';
 
 interface ModalProps {
@@ -79,7 +80,7 @@ export const NetworkSwitcherModal = ({ isOpen, close }: { isOpen: boolean; close
                 isLoading={isLoading && pendingChainId === chain.id}
                 onClick={() => switchNetwork?.(chain.id)}
               >
-                <span>{chain.name}</span>
+                <span>{resolveUnambiguousChainName(chain)}</span>
               </NetworkRow>
             ))}
           </ul>
