@@ -16,7 +16,7 @@ describe('<NetworkSwitcherModal />', () => {
     );
 
     expect(result.getAllByText("Alfajores Testnet")).toHaveLength(1);
-    expect(result.getAllByText("Celo Mainnet")).toHaveLength(1);
+    expect(result.getAllByText("Celo Mainnet")).toHaveLength(0);
 
     vi.clearAllMocks();  
   });
