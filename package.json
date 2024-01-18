@@ -1,7 +1,7 @@
 {
   "name": "staked-celo-app",
   "version": "2.0.0",
-  "license":"Apache-2.0",
+  "license": "Apache-2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -20,7 +20,6 @@
     "@wagmi/chains": "^1.4.0",
     "bignumber.js": "^9.0.2",
     "compliance-sdk": "^1.0.5",
-    "date-fns": "^2.29.3",
     "dayjs": "^1.11.4",
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
