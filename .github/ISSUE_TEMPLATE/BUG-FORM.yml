@@ -1,0 +1,45 @@
+name: Bug report
+description: File a bug report
+labels: ["bug report"]
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Please ensure that the bug has not already been filed in the issue tracker.
+
+              Thanks for taking the time to report this bug!
+    - type: dropdown
+      attributes:
+          label: Package
+          description: What feature is the bug in?
+          multiple: true
+          options:
+              - Stake
+              - Unstake
+              - Govern
+              - Select Validator
+              - Other (please describe)
+      validations:
+          required: true
+    - type: input
+      attributes:
+          label: What wallet app are you using to connect?
+          placeholder: "MetaMask, Safe with WalletConnect, Ledger Nano X, ..."
+    - type: dropdown
+      attributes:
+          label: Browser
+          description: What browser and version are you using?
+          options:
+              - Chrome
+              - Opera
+              - Safari
+              - Firefox
+              - Brave
+              - Arc
+              - Other (please describe)
+    - type: textarea
+      attributes:
+          label: Describe the bug
+          description: Please include relevant code snippets, terminal output, and screenshots if relevant.
+      validations:
+          required: true
