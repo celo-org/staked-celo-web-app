@@ -3536,9 +3536,9 @@ commander@^7.2.0:
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
 
 compliance-sdk@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/compliance-sdk/-/compliance-sdk-1.0.5.tgz#42c5a8d82ec9bf25512bb448d7c6bf2138dd8ced"
-  integrity sha512-SygUeVHyVcboyPQzf0jtEWEGFlVaDqyM9ZUnlDWRgogcF15ypGdLmRx9Ej1BLASxkL00H8k8Acq+JvWjun+kAA==
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/compliance-sdk/-/compliance-sdk-1.0.13.tgz#c309a17904ef0e80784a2e24aa1efcbe61674242"
+  integrity sha512-zf2kvtOf5G1yPDohD3c9enX0Cyc3DKoQ3Ascc1fzKFJ4PQP2QUWslI1dt3OLrXLVMRdOSLOmHzNC1brq/rrfwg==
 
 concat-map@0.0.1:
   version "0.0.1"
