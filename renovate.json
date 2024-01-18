@@ -2,5 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>celo-org/.github:renovate-config"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["viem", "wagmi", "@wagmi/connectors"],
+      "groupName": "wevm"
+    }
   ]
 }
