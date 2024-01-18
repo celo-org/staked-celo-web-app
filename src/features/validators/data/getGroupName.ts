@@ -1,4 +1,4 @@
-import { accountsABI } from '@celo/abis/types/wagmi';
+import { accountsABI } from '@celo/abis';
 import { ADDRESS_ZERO } from 'src/config/consts';
 import celoRegistry from 'src/utils/celoRegistry';
 import clients from 'src/utils/clients';
