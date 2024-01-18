@@ -6,7 +6,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { toast, ToastContainer, Zoom } from 'react-toastify';
+import { ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AccountProvider } from 'src/contexts/account/AccountContext';
 import { BlockchainProvider } from 'src/contexts/blockchain/BlockchainContext';
@@ -69,7 +69,7 @@ const App = ({ Component, pageProps, router }: AppProps) => {
                   <Component {...pageProps} />
                   <ToastContainer
                     transition={Zoom}
-                    position={toast.POSITION.TOP_CENTER}
+                    position={"top-right"}
                     icon={false}
                   />
                 </AppLayout>
