@@ -40,7 +40,7 @@
     "@wagmi/connectors": "^3.1.10"
   },
   "devDependencies": {
-    "@celo/contractkit": "^3.2.0",
+    "@celo/contractkit": "^6.0.0",
     "@next/bundle-analyzer": "^13.4.3",
     "@testing-library/react": "^14.1.0",
     "@types/gtag.js": "^0.0.18",
