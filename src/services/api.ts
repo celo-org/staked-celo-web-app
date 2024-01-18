@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 type ActionType =
   | 'activate'
   | 'withdraw'
@@ -7,13 +5,14 @@ type ActionType =
   | ['rebalanceDefault', 'rebalance', 'revoke', 'activate']; // must be this order
 
 export const createAPI = (baseURL: string) => {
-  const apiService = axios.create({ baseURL });
-
   const sendRequest = async (action: ActionType, address?: string) => {
     if (!baseURL) return;
-    await apiService.post('/', {
-      beneficiary: address,
-      type: action,
+    await fetch(baseURL, {
+      method: 'post',
+      headers: {
+      "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ beneficiary: address, type: action }),
     });
   };
 
