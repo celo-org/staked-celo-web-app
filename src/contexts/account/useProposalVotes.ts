@@ -1,4 +1,4 @@
-import { governanceABI } from '@celo/abis/types/wagmi/index';
+import { governanceABI } from '@celo/abis';
 import { useCallback } from 'react';
 import useAddresses from 'src/hooks/useAddresses';
 import { VoteType } from 'src/types';

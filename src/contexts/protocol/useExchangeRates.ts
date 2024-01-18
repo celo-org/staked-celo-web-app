@@ -1,4 +1,4 @@
-import { sortedOraclesABI } from '@celo/abis/types/wagmi';
+import { sortedOraclesABI } from '@celo/abis';
 import { useCallback, useMemo } from 'react';
 import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';

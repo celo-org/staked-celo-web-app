@@ -242,10 +242,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@celo/abis@^9.0.6":
-  version "9.0.6"
-  resolved "https://registry.yarnpkg.com/@celo/abis/-/abis-9.0.6.tgz#3586f578394cb0408f17335cdaedf98fd9f47d7c"
-  integrity sha512-w/zQWAnJMUfthiFyzUoSKgZ1DQDKjXaSmImwGRDi6U9SPyEx5rWsHm7tsoVXoxYzAdPbtpkeFykQPvPqCJfHmA==
+"@celo/abis@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@celo/abis/-/abis-10.0.0.tgz#2c1002f2e82b29ca22cec70c988bf90d26fadc68"
+  integrity sha512-DC8UAEz89+1yEQqKzkxOWLYGUv/XWaqPAOkU0lKuQzhvN25ndP3fitawQl53WYn8i3ZPfRWfLO4w75l//tDSbg==
 
 "@celo/base@3.2.0":
   version "3.2.0"

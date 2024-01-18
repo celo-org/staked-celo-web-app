@@ -1,4 +1,4 @@
-import { registryABI } from '@celo/abis/types/wagmi';
+import { registryABI } from '@celo/abis';
 
 const REGISTRY_CONTRACT_ADDRESS = '0x000000000000000000000000000000000000ce10';
 export default {
