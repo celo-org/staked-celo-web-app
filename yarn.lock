@@ -2140,11 +2140,6 @@
   resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-1.2.0.tgz#d59eaa70ec51a5fdcd113975926992acfb17ab12"
   integrity sha512-dmDRipsE54JfyudOBkuhEexqQWcrZqxn/qiujG8SBzMh/az/AH5xlJSA+j1CPWTx9+QofSMF3B7A4gb6XRmSaQ==
 
-"@wagmi/chains@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-1.4.0.tgz#71855105b510de0b412b8238016808dd9940d370"
-  integrity sha512-9HwJrhcZ1TxyrCbE10y7s1eSiSiyfGam7AHIOLYExaOX+vpOZ+MNTt4orFEDbEpz1fxwJDPPI38lanAUix1OSA==
-
 "@wagmi/connectors@3.1.10", "@wagmi/connectors@^3.1.10":
   version "3.1.10"
   resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-3.1.10.tgz#830cd788579ef56a2526574914481f2d3aabc9f7"
@@ -3752,11 +3747,6 @@ data-urls@^4.0.0:
     abab "^2.0.6"
     whatwg-mimetype "^3.0.0"
     whatwg-url "^12.0.0"
-
-date-fns@^2.29.3:
-  version "2.29.3"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.3.tgz#27402d2fc67eb442b511b70bbdf98e6411cd68a8"
-  integrity sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==
 
 dayjs@^1.11.4:
   version "1.11.10"
