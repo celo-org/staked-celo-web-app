@@ -43,7 +43,7 @@
     "@celo/contractkit": "^3.2.0",
     "@next/bundle-analyzer": "^13.4.3",
     "@testing-library/react": "^14.1.0",
-    "@types/gtag.js": "^0.0.11",
+    "@types/gtag.js": "^0.0.18",
     "@types/node": "18.0.3",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
