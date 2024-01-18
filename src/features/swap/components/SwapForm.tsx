@@ -1,5 +1,5 @@
 import { FormEventHandler, useCallback, useState } from 'react';
-import NumberFormat, { NumberFormatValues } from 'react-number-format';
+import  { NumberFormatValues, NumericFormat } from 'react-number-format';
 import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
@@ -137,7 +137,7 @@ const SwapFormInput = ({
         </OpacityTransition>
       }
       inputChild={
-        <NumberFormat
+        <NumericFormat
           className={`focus:outline-none bg-transparent placeholder-primary ${
             error ? 'text-color-error' : ''
           } ${amount === undefined ? 'text-color-secondary' : ''}`}
@@ -146,7 +146,7 @@ const SwapFormInput = ({
           onValueChange={onInputChange}
           value={amount ? amount.displayAsBase(true) : ''}
           decimalScale={DISPLAY_DECIMALS}
-          isNumericString
+          valueIsNumericString={true}
           allowNegative={false}
           inputMode="decimal"
         />
