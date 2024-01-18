@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Github Discussions
+    url: https://github.com/celo-org/staked-celo-web-app/discussions
+    about: Please ask and answer questions here.
+  - name: Docs
+    url: https://docs.stcelo.xyz/
+    about: Documentation for stCelo.
