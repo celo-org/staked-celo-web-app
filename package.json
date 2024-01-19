@@ -17,7 +17,7 @@
     "@rainbow-me/rainbowkit": "^1.0.4",
     "@types/react-modal": "^3.13.1",
     "@types/react-transition-group": "^4.4.5",
-    "bignumber.js": "^9.0.2",
+    "bignumber.js": "^9.1.2",
     "compliance-sdk": "^1.0.5",
     "dayjs": "^1.11.4",
     "graphql": "^16.6.0",
