@@ -1,7 +1,14 @@
 import Link from 'next/link';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Label } from 'src/components/text/Label';
-import { discordUrl, docsUrl, githubUrl, privacyUrl, twitterUrl } from 'src/config/externalUrls';
+import {
+  discordUrl,
+  docsUrl,
+  githubIssuesUrl,
+  githubUrl,
+  privacyUrl,
+  twitterUrl,
+} from 'src/config/externalUrls';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
 
 export const Footer = () => {
@@ -38,6 +45,11 @@ const FAQLinks = ({ classes }: FAQLinksProps) => {
   const linkPositionClasses = 'sm:mb-0 mb-[16px] sm:mr-[24px]';
   return (
     <div className={`text-[18px] leading-[32px] font-medium underline ${classes}`}>
+      <div className={linkPositionClasses}>
+        <a href={githubIssuesUrl} target="_blank" rel="noreferrer">
+          Bugs and feature requests
+        </a>
+      </div>
       <div className={linkPositionClasses}>
         <Link href="/faq">FAQ</Link>
       </div>
