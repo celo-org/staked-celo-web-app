@@ -97,7 +97,7 @@ export function useStaking() {
         logger.error('afterDeposit error', e);
       }
     },
-    [_stake, address, api, celoAmount, client, loadBalances, stCeloBalance]
+    [_estimateGas, _stake, address, api, celoAmount, client, loadBalances, stCeloBalance]
   );
 
   const estimateStakingGas = useCallback(async () => {
