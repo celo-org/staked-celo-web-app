@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useState } from 'react';
+import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
@@ -7,7 +8,6 @@ import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { useStaking } from './useStaking';
 import { useUnstaking } from './useUnstaking';
-import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 
 export function useSwap(mode: Mode) {
   const { stakingRate, unstakingRate } = useProtocolContext();
@@ -47,8 +47,18 @@ export function useSwap(mode: Mode) {
   }
 
   const setMaxAmount = useCallback(() => {
-    const maxAmount = new Token(BigNumber.max(0, balance.minus(MAX_AMOUNT_THRESHOLD.toString())));
-    setAmount(maxAmount);
+    let maxAmount: Token;
+    if (Mode.stake) {
+      // NOTE: we're doing this weird `minus` operation to make sure the
+      // account owner has enough currency leftover to pay for gasfees.
+
+      // NOTE2: this is a good use-case for alternative gas currencies
+      // (cUSD, cEUR, etc...)
+      maxAmount = new Token(BigNumber.max(0, balance.minus(MAX_AMOUNT_THRESHOLD.toString())));
+    } else if (Mode.unstake) {
+      maxAmount = new Token(BigNumber.max(0, balance));
+    }
+    setAmount(maxAmount!);
   }, [setAmount, balance]);
 
   // Don't override gasFee when estimateGas function is not the latest one
