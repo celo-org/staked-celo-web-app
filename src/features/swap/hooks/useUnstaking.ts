@@ -26,7 +26,7 @@ export function useUnstaking() {
     args: [stCeloAmount?.toBigInt() || 0n] as const,
   });
 
-  const _estimateGas = useCallback(
+  const _estimateWithdrawGas = useCallback(
     (address: Address, value: bigint) => {
       return publicClient.estimateContractGas({
         abi: managerContract.abi,
@@ -56,7 +56,7 @@ export function useUnstaking() {
         value: stCeloAmount.displayAsBase(),
       });
       try {
-        const gas = await _estimateGas(address, stCeloAmount?.toBigInt());
+        const gas = await _estimateWithdrawGas(address, stCeloAmount?.toBigInt());
         await _unstake({ gas });
         await api.withdraw(address);
         showUnstakingToast();
@@ -75,7 +75,7 @@ export function useUnstaking() {
       }
     },
     [
-      _estimateGas,
+      _estimateWithdrawGas,
       _unstake,
       address,
       api,
@@ -96,7 +96,7 @@ export function useUnstaking() {
       return null;
     }
 
-    const gasFee = new Token(await _estimateGas(address!, stCeloAmount?.toBigInt()));
+    const gasFee = new Token(await _estimateWithdrawGas(address!, stCeloAmount?.toBigInt()));
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;
@@ -104,7 +104,7 @@ export function useUnstaking() {
     stCeloAmount,
     stCeloBalance,
     managerContract,
-    _estimateGas,
+    _estimateWithdrawGas,
     address,
     suggestedGasPrice,
     celoToUSDRate,
