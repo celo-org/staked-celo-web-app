@@ -82,7 +82,8 @@ export function useStaking() {
       } catch (e: unknown) {
         console.error(e);
         showErrorToast(
-          (e as Error).message.includes('rejected')
+          (e as Error).message.includes('rejected') ||
+            (e as any).details?.toLowerCase().includes('cancelled')
             ? 'User rejected the request'
             : (e as Error).message
         );
