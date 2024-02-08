@@ -34,7 +34,7 @@ export const EXPLORER_MAINNET_URL = 'https://explorer.celo.org/mainnet';
 export const EXPLORER_ALFAJORES_URL = 'https://explorer.celo.org/alfajores';
 
 export const TWITTER_URL = 'https://twitter.com/Celo';
-export const DISCORD_URL = 'https://discord.com/invite/E9AqUQnWQE';
+export const DISCORD_URL = 'https://discord.com/invite/celo';
 export const GITHUB_URL = 'https://github.com/celo-org/staked-celo-web-app';
 export const DOCS_URL = 'https://docs.stcelo.xyz/';
 export const PRIVACY_URL = 'https://clabs.co/privacy';
