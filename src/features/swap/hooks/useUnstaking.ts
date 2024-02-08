@@ -7,7 +7,7 @@ import { useAPI } from 'src/hooks/useAPI';
 import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { useContractWrite, usePublicClient } from 'wagmi';
+import { Address, useContractWrite, usePublicClient } from 'wagmi';
 import { transactionEvent } from '../../../utils/ga';
 import { showErrorToast, showUnstakingToast } from '../utils/toast';
 
@@ -26,6 +26,19 @@ export function useUnstaking() {
     args: [stCeloAmount?.toBigInt() || 0n] as const,
   });
 
+  const _estimateGas = useCallback(
+    (address: Address, value: bigint) => {
+      return publicClient.estimateContractGas({
+        abi: managerContract.abi,
+        address: managerContract.address!,
+        account: address,
+        functionName: 'withdraw',
+        args: [value || 0n] as const,
+      });
+    },
+    [publicClient, managerContract]
+  );
+
   const unstake = useCallback(
     async (callbacks?: TxCallbacks) => {
       if (
@@ -43,7 +56,8 @@ export function useUnstaking() {
         value: stCeloAmount.displayAsBase(),
       });
       try {
-        await _unstake();
+        const gas = await _estimateGas(address, stCeloAmount?.toBigInt());
+        await _unstake({ gas });
         await api.withdraw(address);
         showUnstakingToast();
         await Promise.all([loadBalances(), loadPendingWithdrawals?.()]);
@@ -51,7 +65,8 @@ export function useUnstaking() {
       } catch (e: unknown) {
         logger.error(e);
         showErrorToast(
-          (e as Error).message.includes('rejected')
+          (e as Error).message.includes('rejected') ||
+            (e as any).details?.toLowerCase().includes('cancelled')
             ? 'User rejected the request'
             : (e as Error).message
         );
@@ -59,7 +74,16 @@ export function useUnstaking() {
         callbacks?.onSent?.();
       }
     },
-    [_unstake, address, api, loadBalances, loadPendingWithdrawals, managerContract, stCeloAmount]
+    [
+      _estimateGas,
+      _unstake,
+      address,
+      api,
+      loadBalances,
+      loadPendingWithdrawals,
+      managerContract,
+      stCeloAmount,
+    ]
   );
 
   const estimateUnstakingGas = useCallback(async () => {
@@ -72,15 +96,7 @@ export function useUnstaking() {
       return null;
     }
 
-    const gasFee = new Token(
-      await publicClient.estimateContractGas({
-        abi: managerContract.abi,
-        address: managerContract.address!,
-        account: address!,
-        functionName: 'withdraw',
-        args: [stCeloAmount?.toBigInt() || 0n] as const,
-      })
-    );
+    const gasFee = new Token(await _estimateGas(address!, stCeloAmount?.toBigInt()));
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;
@@ -88,7 +104,7 @@ export function useUnstaking() {
     stCeloAmount,
     stCeloBalance,
     managerContract,
-    publicClient,
+    _estimateGas,
     address,
     suggestedGasPrice,
     celoToUSDRate,
