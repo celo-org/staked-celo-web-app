@@ -8,7 +8,7 @@ import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { useContractWrite, usePublicClient } from 'wagmi';
+import { Address, useContractWrite, usePublicClient } from 'wagmi';
 import { showErrorToast, showHashToast, showStakingToast } from '../utils/toast';
 
 export function useStaking() {
@@ -28,6 +28,19 @@ export function useStaking() {
 
   const client = usePublicClient();
 
+  const _estimateDepositGas = useCallback(
+    (address: Address, value: bigint) => {
+      return publicClient.estimateContractGas({
+        abi: managerContract.abi,
+        address: managerContract.address!,
+        account: address!,
+        functionName: 'deposit',
+        value,
+      });
+    },
+    [publicClient, managerContract]
+  );
+
   const stake = useCallback(
     async (callbacks?: TxCallbacks) => {
       if (!address || !celoAmount || celoAmount.isEqualTo(0) || !stCeloBalance || !loadBalances) {
@@ -41,7 +54,9 @@ export function useStaking() {
         value: celoAmount.displayAsBase(),
       });
       try {
-        const stakeHash = await _stake({ value: celoAmount?.toBigInt() });
+        const value = celoAmount?.toBigInt();
+        const gas = await _estimateDepositGas(address!, value);
+        const stakeHash = await _stake({ value, gas });
         console.info('stakeHash', stakeHash);
         transactionEvent({
           action: Mode.stake,
@@ -67,7 +82,8 @@ export function useStaking() {
       } catch (e: unknown) {
         console.error(e);
         showErrorToast(
-          (e as Error).message.includes('rejected')
+          (e as Error).message.includes('rejected') ||
+            (e as any).details?.toLowerCase().includes('cancelled')
             ? 'User rejected the request'
             : (e as Error).message
         );
@@ -81,7 +97,7 @@ export function useStaking() {
         logger.error('afterDeposit error', e);
       }
     },
-    [_stake, address, api, celoAmount, client, loadBalances, stCeloBalance]
+    [_estimateDepositGas, _stake, address, api, celoAmount, client, loadBalances, stCeloBalance]
   );
 
   const estimateStakingGas = useCallback(async () => {
@@ -95,19 +111,19 @@ export function useStaking() {
       return null;
     }
 
-    const gasFee = new Token(
-      await publicClient.estimateContractGas({
-        abi: managerContract.abi,
-        address: managerContract.address!,
-        account: address!,
-        functionName: 'deposit',
-        value: celoAmount.toBigInt(),
-      })
-    );
+    const gasFee = new Token(await _estimateDepositGas(address!, celoAmount.toBigInt()));
     const gasFeeInCelo = new Celo(gasFee.multipliedBy(suggestedGasPrice));
     const gasFeeInUSD = new CeloUSD(gasFeeInCelo.multipliedBy(celoToUSDRate));
     return gasFeeInUSD;
-  }, [celoAmount, celoBalance, managerContract, publicClient, suggestedGasPrice, celoToUSDRate]);
+  }, [
+    celoAmount,
+    celoBalance,
+    address,
+    managerContract.address,
+    _estimateDepositGas,
+    suggestedGasPrice,
+    celoToUSDRate,
+  ]);
 
   const receivedStCelo = useMemo(
     () => (celoAmount ? new StCelo(celoAmount.multipliedBy(stakingRate).dp(0)) : null),
