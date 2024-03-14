@@ -17,6 +17,13 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: '*',
+        headers: {
+          key: 'X-Frame-Options',
+          value: 'DENY',
+        },
+      },
+      {
         source: '/manifest.json',
         headers: [
           {
