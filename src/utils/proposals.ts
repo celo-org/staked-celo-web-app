@@ -42,5 +42,30 @@ export function parsedYAMLFromMarkdown(markdown: string): ParsedYAML | null {
 }
 
 export function getRawGithubUrl(descriptionURL: string) {
-  return descriptionURL.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+  return restrictToCeloGovernanceLink(descriptionURL)
+    .replace('github.com', 'raw.githubusercontent.com')
+    .replace('/blob/', '/');
+}
+
+// use governance category of celo forum as fallback url
+const GOVERNANCE_URL_FALLBACK = 'https://forum.celo.org/c/governance/12';
+
+export function restrictToCeloGovernanceLink(descriptionURL: string) {
+  try {
+    // will throw if not a url
+    const strictURL = new URL(descriptionURL);
+    if (
+      strictURL.protocol === 'https:' &&
+      strictURL.host === 'github.com' &&
+      strictURL.pathname.startsWith('/celo-org/governance/blob/main/CGPs/') &&
+      strictURL.pathname.endsWith('.md')
+    ) {
+      return descriptionURL;
+    } else {
+      return GOVERNANCE_URL_FALLBACK;
+    }
+  } catch (e) {
+    // TODO should we have a fallback like to the forum?
+    return GOVERNANCE_URL_FALLBACK;
+  }
 }

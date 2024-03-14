@@ -14,6 +14,7 @@ import { SerializedProposal } from 'src/features/governance/data/getProposals';
 import { useVote } from 'src/features/governance/hooks/useVote';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode, VoteType } from 'src/types';
+import { restrictToCeloGovernanceLink } from 'src/utils/proposals';
 import { StCelo } from 'src/utils/tokens';
 import { BackToListButton } from '../../../components/buttons/BackToListButton';
 
@@ -82,7 +83,7 @@ export const Details = ({ proposal }: Props) => {
 
   const loaded = Boolean(proposal);
   const fetchError = Boolean(loaded && !proposal?.parsedYAML);
-
+  const saferDescriptionUrl = restrictToCeloGovernanceLink(proposal?.metadata.descriptionURL);
   return (
     <CenteredLayout classes="px-[24px]">
       <ContainerSecondaryBG>
@@ -101,7 +102,7 @@ export const Details = ({ proposal }: Props) => {
                         proposal!.parsedYAML!.title
                       }`}
                 </div>
-                <LinkOut classes="m-2" href={proposal!.metadata.descriptionURL}>
+                <LinkOut classes="m-2" href={saferDescriptionUrl}>
                   view info
                 </LinkOut>
               </>
