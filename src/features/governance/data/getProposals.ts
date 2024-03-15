@@ -36,7 +36,7 @@ export const getProposals = async (chainId: number) => {
       ({
         proposalID: proposalID.toString(),
         stage: PROPOSAL_STAGE_KEYS[stages[i]],
-      } as MiniProposal)
+      }) as MiniProposal
   );
 
   const current = proposals.filter((x) => runningProposalStages.has(x.stage));
