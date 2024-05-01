@@ -91,7 +91,8 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     country,
     'region',
     region,
-    req.headers.location,
+    req.headers,
+    req.rawHeaders,
     req.headers['x-forwarded-for'],
     // @ts-expect-error
     req.geo
