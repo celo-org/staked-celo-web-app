@@ -83,11 +83,18 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     'Cache-Control',
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SWR_SECONDS}`
   );
-  console.log('headers', req.headers, req.rawHeaders);
+  console.log('headers', req.headers);
+  // @ts-expect-error
+  const country = req['x-vercel-ip-country'];
+  // @ts-expect-error
+  const city = req['x-vercel-ip-city'];
+
+  console.info('counry', country, 'city', city);
+
   const ipAddress = req.headers['x-forwarded-for'] as string;
 
-  const locationData = getGeoFromIP(ipAddress);
-  console.log('location', locationData);
+  const locationData = await getGeoFromIP(ipAddress);
+  console.log('geolocation', locationData);
 
   const slug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
   const chainId = getChainIdFromQuery(query);
