@@ -112,12 +112,10 @@ const Faq = () => {
         See the FAQ “How does unstaking work?”.
       </FaqItem>
       <FaqItem question="What validator groups does StakedCelo vote for?">
-        StakedCelo votes for a group of randomly selected validator groups, adhering to the principles 
-        of increasing decentralization and on-chain verifiable neutrality. The details of the selection 
-        process are described {' '}
-        <Link url="https://docs.stcelo.xyz/voting-for-validator-groups">
-          here
-        </Link>.
+        StakedCelo votes for a group of randomly selected validator groups, adhering to the
+        principles of increasing decentralization and on-chain verifiable neutrality. The details of
+        the selection process are described{' '}
+        <Link url="https://docs.stcelo.xyz/voting-for-validator-groups">here</Link>.
       </FaqItem>
       <FaqItem question="What are the risks of staking with StakedCelo?">
         There exist a number of potential risks when staking with StakedCelo, in particular smart
@@ -133,6 +131,9 @@ const Faq = () => {
       <FaqItem question="What fee is applied by StakedCelo?">
         At this time, there are no fees. This might change at a later point in time and will be
         enacted through on-chain code changes.
+      </FaqItem>
+      <FaqItem question="Why cant I access the app">
+        In compliance with US Federal law stcelo.xyz is restricted in several jurisdictions.
       </FaqItem>
     </TextLayout>
   );

@@ -16,6 +16,7 @@ import {
 } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
+import { RESTRICED_SUBREGION, RESTRICTED_COUNTRIES } from 'src/utils/sanctioned';
 interface Props {
   serverSideChainId: number;
   validatorGroups?: ValidatorGroup[];
@@ -94,7 +95,16 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
   const ipAddress = req.headers['x-forwarded-for'] as string;
 
   const locationData = await getGeoFromIP(ipAddress);
-  console.log('geolocation', locationData);
+  console.log('geolocation', locationData.data.region);
+
+  if (
+    RESTRICTED_COUNTRIES.has(country) ||
+    (country === 'UA' && RESTRICED_SUBREGION.UA.has(locationData.data.region))
+  ) {
+    return {
+      redirect: '/faq',
+    };
+  }
 
   const slug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
   const chainId = getChainIdFromQuery(query);

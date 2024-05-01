@@ -24,3 +24,14 @@ export async function isSanctionedAddress(address: string): Promise<boolean> {
 
   return isSanctionedAddress(address);
 }
+
+export const RESTRICTED_COUNTRIES = new Set(['KP', 'IR', 'CU', 'SY']);
+
+const crimea = 'UA-43';
+const luhansk = 'UA-09';
+const donetska = 'UA-14';
+// https://www.iso.org/obp/ui/#iso:code:3166:UA
+//https://en.wikipedia.org/wiki/Russian-occupied_territories_of_Ukraine
+export const RESTRICED_SUBREGION = {
+  UA: new Set([crimea, luhansk, donetska]),
+};
