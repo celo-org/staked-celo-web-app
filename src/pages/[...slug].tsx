@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
+import { headers } from 'next/headers';
 import Router from 'next/router';
 import { useLayoutEffect, useMemo } from 'react';
 import { Switcher } from 'src/components/switcher/Switcher';
@@ -31,6 +32,10 @@ const MultiModePage: NextPage<Props> = ({
 }) => {
   const { slug } = Router.query as { slug?: string[] };
   const mode = (slug ? slug[0] : Mode.stake) as Mode;
+
+  const headersList = headers();
+
+  console.log('headers', headersList);
 
   useRedirectToConnectedChainIfNeeded(serverSideChainId, mode);
   const isTransitioning = useIsTransitioning();
