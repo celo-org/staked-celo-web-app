@@ -85,10 +85,8 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SWR_SECONDS}`
   );
   console.log('headers', req.headers);
-  // @ts-expect-error
-  const country = req['x-vercel-ip-country'];
-  // @ts-expect-error
-  const city = req['x-vercel-ip-city'];
+  const country = req.headers['x-vercel-ip-country'] as string;
+  const city = req.headers['x-vercel-ip-city'];
 
   console.info('counry', country, 'city', city);
 
