@@ -102,6 +102,7 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     (country === 'UA' && RESTRICED_SUBREGION.UA.has(locationData.data.region))
   ) {
     return {
+      props: { serverSideChainId: 0 },
       redirect: '/faq',
     };
   }
