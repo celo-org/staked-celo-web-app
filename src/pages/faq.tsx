@@ -132,7 +132,7 @@ const Faq = () => {
         At this time, there are no fees. This might change at a later point in time and will be
         enacted through on-chain code changes.
       </FaqItem>
-      <FaqItem question="Why cant I access the app">
+      <FaqItem question="Why can I not access the app?">
         In compliance with US Federal law stcelo.xyz is restricted in several jurisdictions.
       </FaqItem>
     </TextLayout>
