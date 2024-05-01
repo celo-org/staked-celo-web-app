@@ -1,3 +1,4 @@
+import { get as getGeoFromIP } from 'geoip2-api';
 import type { GetServerSideProps, NextPage } from 'next';
 import Router from 'next/router';
 import { useLayoutEffect, useMemo } from 'react';
@@ -15,7 +16,6 @@ import {
 } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
-
 interface Props {
   serverSideChainId: number;
   validatorGroups?: ValidatorGroup[];
@@ -83,20 +83,11 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     'Cache-Control',
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SWR_SECONDS}`
   );
-  const country = req.headers['X-Vercel-IP-Country'];
-  const region = req.headers['X-Vercel-IP-Country-Region'];
+  console.log('headers', req.headers, req.rawHeaders);
+  const ipAddress = req.headers['x-forwarded-for'] as string;
 
-  console.log(
-    'country',
-    country,
-    'region',
-    region,
-    req.headers,
-    req.rawHeaders,
-    req.headers['x-forwarded-for'],
-    // @ts-expect-error
-    req.geo
-  );
+  const locationData = getGeoFromIP(ipAddress);
+  console.log('location', locationData);
 
   const slug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
   const chainId = getChainIdFromQuery(query);
