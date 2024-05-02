@@ -1,4 +1,3 @@
-import { get as getGeoFromIP } from 'geoip2-api';
 import type { GetServerSideProps, NextPage } from 'next';
 import Router from 'next/router';
 import { useLayoutEffect, useMemo } from 'react';
@@ -16,7 +15,7 @@ import {
 } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
-import { RESTRICED_SUBREGION, RESTRICTED_COUNTRIES } from 'src/utils/sanctioned';
+import { isForbiddenLand } from 'src/utils/sanctioned';
 interface Props {
   serverSideChainId: number;
   validatorGroups?: ValidatorGroup[];
@@ -84,22 +83,12 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     'Cache-Control',
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SWR_SECONDS}`
   );
-  console.log('headers', req.headers);
   const country = req.headers['x-vercel-ip-country'] as string;
-  const city = req.headers['x-vercel-ip-city'];
+  const region = req.headers['x-vercel-ip-country-region'] as string;
 
-  console.info('counry', country, 'city', city);
-
-  const ipAddress = req.headers['x-forwarded-for'] as string;
-
-  const locationData = await getGeoFromIP(ipAddress);
-  console.log('geolocation', locationData.data.region);
-
-  if (
-    RESTRICTED_COUNTRIES.has(country) ||
-    (country === 'UA' && RESTRICED_SUBREGION.UA.has(locationData.data.region))
-  ) {
+  if (isForbiddenLand(country, region)) {
     return {
+      // id rather add a fake chain id here that will not be used than make this an optional prop
       props: { serverSideChainId: 0 },
       redirect: '/faq',
     };
