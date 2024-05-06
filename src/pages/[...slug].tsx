@@ -4,7 +4,7 @@ import { useLayoutEffect, useMemo } from 'react';
 import { Switcher } from 'src/components/switcher/Switcher';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { Governance } from 'src/features/governance/components/Governance';
-import { getProposals, SerializedProposal } from 'src/features/governance/data/getProposals';
+import { SerializedProposal, getProposals } from 'src/features/governance/data/getProposals';
 import { Swap } from 'src/features/swap/components/Swap';
 import { Validators } from 'src/features/validators/components/List';
 import fetchValidGroups, { ValidatorGroup } from 'src/features/validators/data/fetchValidGroups';
@@ -15,7 +15,7 @@ import {
 } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
-
+import { isForbiddenLand } from 'src/utils/sanctioned';
 interface Props {
   serverSideChainId: number;
   validatorGroups?: ValidatorGroup[];
@@ -76,12 +76,23 @@ const SWR_SECONDS = 60 * 60 * 12;
 export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = async ({
   query,
   res,
+  req,
   params,
 }) => {
   res.setHeader(
     'Cache-Control',
     `public, s-maxage=${MAX_AGE_SECONDS}, stale-while-revalidate=${SWR_SECONDS}`
   );
+  const country = req.headers['x-vercel-ip-country'] as string;
+  const region = req.headers['x-vercel-ip-country-region'] as string;
+
+  if (isForbiddenLand(country, region)) {
+    return {
+      // id rather add a fake chain id here that will not be used than make this an optional prop
+      props: { serverSideChainId: 0 },
+      redirect: '/faq',
+    };
+  }
 
   const slug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
   const chainId = getChainIdFromQuery(query);
