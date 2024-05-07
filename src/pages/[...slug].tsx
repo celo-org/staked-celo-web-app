@@ -90,7 +90,7 @@ export const getServerSideProps: GetServerSideProps<Props, { slug: string }> = a
     return {
       // id rather add a fake chain id here that will not be used than make this an optional prop
       props: { serverSideChainId: 0 },
-      redirect: '/faq',
+      redirect: { destination: '/faq', permanent: false },
     };
   }
 

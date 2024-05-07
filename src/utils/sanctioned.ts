@@ -25,7 +25,9 @@ export async function isSanctionedAddress(address: string): Promise<boolean> {
   return isSanctionedAddress(address);
 }
 
-const RESTRICTED_COUNTRIES = new Set(['KP', 'IR', 'CU', 'SY']);
+const TEST_LAND = 'PL';
+
+const RESTRICTED_COUNTRIES = new Set(['KP', 'IR', 'CU', 'SY', TEST_LAND]);
 
 // https://www.iso.org/obp/ui/#iso:code:3166:UA although listed with UA prefix. the header/api recieved that and just used the number
 const crimea = '43';
@@ -37,7 +39,7 @@ const RESTRICED_SUBREGION: Record<string, Set<string>> = {
 };
 
 export function isForbiddenLand(iso3166Country: string, iso3166Region: string) {
-  const iso3166CountryUppercase = iso3166Country.toUpperCase();
+  const iso3166CountryUppercase = iso3166Country?.toUpperCase();
   return (
     RESTRICTED_COUNTRIES.has(iso3166CountryUppercase) ||
     RESTRICED_SUBREGION[iso3166CountryUppercase]?.has(iso3166Region)
