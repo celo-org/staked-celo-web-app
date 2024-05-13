@@ -3536,7 +3536,7 @@ commander@^7.2.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
 
-compliance-sdk@^1.0.5:
+compliance-sdk@^1.0.13:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/compliance-sdk/-/compliance-sdk-1.0.13.tgz#c309a17904ef0e80784a2e24aa1efcbe61674242"
   integrity sha512-zf2kvtOf5G1yPDohD3c9enX0Cyc3DKoQ3Ascc1fzKFJ4PQP2QUWslI1dt3OLrXLVMRdOSLOmHzNC1brq/rrfwg==
