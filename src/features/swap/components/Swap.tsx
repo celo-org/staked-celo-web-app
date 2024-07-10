@@ -1,5 +1,6 @@
 import { OpacityTransition } from 'src/components/transitions/OpacityTransition';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
+import { useVote } from 'src/features/governance/hooks/useVote';
 import { Mode } from 'src/types';
 import { useSwap } from '../hooks/useSwap';
 import { validateAmount } from '../utils/validation';
@@ -13,6 +14,7 @@ interface SwapProps {
 
 export const Swap = ({ mode }: SwapProps) => {
   const { pendingWithdrawals } = useAccountContext();
+  const { lockedStCeloInVoting, lockedVoteBalance, unlockVoteBalance } = useVote();
   const { amount, setAmount, swap, balance, receiveAmount, swapRate, gasFee, setMaxAmount } =
     useSwap(mode);
   const error = validateAmount(amount, balance, mode);

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Button } from 'src/components/buttons/Button';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Modal } from 'src/components/modals/Modal';
@@ -15,16 +14,12 @@ export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => 
   const { lockedStCeloInVoting, lockedVoteBalance, unlockVoteBalance } = useVote();
   const title = 'Wallet information';
 
-  const addressLabel = useMemo(() => {
-    return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
-  }, [address]);
-
   return (
     <Modal isOpen={isOpen} screenReaderLabel={title} close={close}>
       <div className="flex flex-col bg-secondary text-color-primary p-[24px]">
         <div className="flex justify-between items-center text-[20px] leading-[24px] mb-[32px]">
           <div className="flex items-center gap-4">
-            <span>{addressLabel}</span>
+            <span className="font-mono text-[14px]">{address}</span>
             <Button
               classes="cursor-pointer h-[24px]"
               onClick={() => {
