@@ -62,7 +62,7 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
           setError(err as Error);
         });
     }
-  }, [groupsHead, activeGroupsLength]);
+  }, [groupsHead, activeGroupsLength, fetchGroups]);
 
   return { activeGroups, error };
 }

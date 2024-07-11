@@ -6,6 +6,9 @@ import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
 import { Celo, StCelo, Token } from 'src/utils/tokens';
 import { useContractRead } from 'wagmi';
 
+const ONE_CELO = new Celo(WEI_PER_UNIT);
+const ONE_ST_CELO = new StCelo(WEI_PER_UNIT);
+
 export const useExchangeRates = () => {
   const { stakingRate, loadStakingRate } = useStakingRate();
   const { unstakingRate, loadUnstakingRate } = useUnstakingRate();
@@ -26,15 +29,14 @@ export const useExchangeRates = () => {
 const useStakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const oneCelo = new Celo(WEI_PER_UNIT);
   const { data: _stakingRate, refetch: loadStakingRate } = useContractRead({
     ...managerContract,
     functionName: 'toStakedCelo',
-    args: [oneCelo.toBigInt()],
+    args: [ONE_CELO.toBigInt()],
   });
 
   const stakingRate = useMemo(
-    () => new StCelo(_stakingRate).dividedBy(oneCelo).toNumber() || 0,
+    () => new StCelo(_stakingRate).dividedBy(ONE_CELO).toNumber() || 0,
     [_stakingRate]
   );
 
@@ -47,15 +49,14 @@ const useStakingRate = () => {
 const useUnstakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const oneStCelo = new StCelo(WEI_PER_UNIT);
   const { data: _unstakingRate, refetch: loadUnstakingRate } = useContractRead({
     ...managerContract,
     functionName: 'toCelo',
-    args: [oneStCelo.toBigInt()],
+    args: [ONE_ST_CELO.toBigInt()],
   });
 
   const unstakingRate = useMemo(
-    () => new Celo(_unstakingRate).dividedBy(oneStCelo).toNumber() || 0,
+    () => new Celo(_unstakingRate).dividedBy(ONE_ST_CELO).toNumber() || 0,
     [_unstakingRate]
   );
 

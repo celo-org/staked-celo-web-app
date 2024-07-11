@@ -1,5 +1,5 @@
 import { FormEventHandler, useCallback, useState } from 'react';
-import  { NumberFormatValues, NumericFormat } from 'react-number-format';
+import { NumberFormatValues, NumericFormat } from 'react-number-format';
 import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal';
 import { SubmitButton } from 'src/components/buttons/SubmitButton';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
@@ -7,6 +7,8 @@ import { OpacityTransition } from 'src/components/transitions/OpacityTransition'
 import { DISPLAY_DECIMALS } from 'src/config/consts';
 import { TxCallbacks } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { useVote } from 'src/features/governance/hooks/useVote';
+import { AccountModal } from 'src/features/wallet/components/AccountModal';
 import useModeChange from 'src/hooks/useModeChange';
 import { Mode } from 'src/types';
 import { Token, toToken } from 'src/utils/tokens';
@@ -126,6 +128,11 @@ const SwapFormInput = ({
     if (value === '.') return;
     onChange(value ? toToken(value) : undefined);
   };
+  const { lockedVoteBalance, lockedStCeloInVoting } = useVote();
+  const hasLockedVoteBalance =
+    lockedVoteBalance?.gt(0) && !lockedVoteBalance?.eq(lockedStCeloInVoting || 0);
+
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
 
   return (
     <TokenCard
@@ -154,12 +161,21 @@ const SwapFormInput = ({
       infoChild={
         <div>
           <BalanceTools mode={mode} onClickUseMax={setMaxAmount} balance={balance} />
-          {mode === Mode.unstake && (
-            <i className="text-[10px] text-color-secondary relative">
+          {mode === Mode.unstake && hasLockedVoteBalance && (
+            <i className="text-[10px] text-color-primary relative">
               <span className="absolute left-[-0.5rem] top-0">*</span>
-              Only unlocked funds are shown above. For Locked funds see the Govern tab.
+              You have pending locked stCelo.{' '}
+              <button
+                type="button"
+                title="See account details"
+                className="underline"
+                onClick={() => setIsAccountModalOpen(true)}
+              >
+                Click here to see more details.
+              </button>
             </i>
           )}
+          <AccountModal isOpen={isAccountModalOpen} close={() => setIsAccountModalOpen(false)} />
         </div>
       }
     />

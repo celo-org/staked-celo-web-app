@@ -5,11 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "yarn generate-disclaimer && next build",
+    "build": "next build",
     "start": "next start",
     "test": "yarn vitest",
-    "lint": "next lint",
-    "generate-disclaimer": "yarn licenses generate-disclaimer --production > ./public/THIRD_PARTY_LICENSES.txt"
+    "lint": "next lint"
   },
   "dependencies": {
     "@celo/abis": "^10.0.0",
@@ -67,5 +66,6 @@
     "budgetPercentIncreaseRed": 20,
     "minimumChangeThreshold": 0,
     "showDetails": true
-  }
+  },
+  "packageManager": "yarn@4.3.1"
 }

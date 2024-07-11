@@ -40,3 +40,4 @@ public/THIRD_PARTY_LICENSES.txt
 # env
 .env
 src/blockchain/types
+.yarn/install-state.gz
