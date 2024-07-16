@@ -11,6 +11,7 @@ import { ADDRESS_ZERO, EXPLORER_ALFAJORES_URL, EXPLORER_MAINNET_URL } from 'src/
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 
 import { Alfajores } from '@celo/rainbowkit-celo/chains';
+import { useLockedVoteBalance } from 'src/features/governance/hooks/useVote';
 import { useChangeStrategy } from 'src/features/validators/hooks/useChangeStrategy';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
 import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
@@ -26,9 +27,14 @@ export const Details = ({ groupAddress, name }: Props) => {
   const isTransitioning = useIsTransitioning();
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
   const chainId = useChainId();
-  const { loadBalances, stCeloBalance, isConnected, strategy } = useAccountContext();
+  const { loadBalances, stCeloBalance, isConnected, strategy, address } = useAccountContext();
   const displayName = name || removeAddressMiddle(groupAddress);
   const { changeStrategy } = useChangeStrategy();
+
+  const lockedVotedBalance = useLockedVoteBalance(address);
+
+  // disable if there is any value voting (as there is a bug) or if they have no stCeloBalance to begin with.
+  const isDisabled = lockedVotedBalance.data?.gt(0) || stCeloBalance.eq(0);
 
   useEffect(() => {
     if (isConnected) {
@@ -73,24 +79,23 @@ export const Details = ({ groupAddress, name }: Props) => {
             </div>
           </div>
           <TertiaryCallout classes="pl-1">
-            {isConnected && (
-              <>
-                {'Your '}
-                {stCeloBalance.displayAsBase(true)}
-                {' stCELO '}
-                {strategy === groupAddress ? 'is voting for' : 'will vote for'}{' '}
-                {truncateIfLong(displayName)}
-              </>
-            )}
+            {isConnected &&
+              (lockedVotedBalance.data?.gt(0) ? (
+                `Cant switch validator groups while your ${lockedVotedBalance.data.displayAsBase()} tokens are locked for voting on governance proposals`
+              ) : (
+                <>
+                  {'Your '}
+                  {stCeloBalance.displayAsBase(true)}
+                  {' stCELO '}
+                  {strategy === groupAddress ? 'is voting for' : 'will vote for'}{' '}
+                  {truncateIfLong(displayName)}
+                </>
+              ))}
           </TertiaryCallout>
         </ContainerSecondaryBG>
         <div className="flex justify-center mt-[16px]">
           {isConnected ? (
-            <SubmitButton
-              mode={Mode.validators}
-              pending={isExecuting}
-              disabled={stCeloBalance.eq(0)}
-            />
+            <SubmitButton mode={Mode.validators} pending={isExecuting} disabled={isDisabled} />
           ) : (
             <ConnectButton />
           )}
