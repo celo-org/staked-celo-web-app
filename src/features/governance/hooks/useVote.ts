@@ -48,15 +48,8 @@ export const useVote = () => {
     ...managerContract,
     functionName: 'voteProposal',
   });
-  const { data: lockedVoteBalance, refetch: refetchLockedVoteBalance } = useContractRead({
-    ...stakedCeloContract,
-    functionName: 'lockedVoteBalanceOf',
-    args: [address as Address],
-    enabled: !!address,
-    select(data) {
-      return new StCelo(data);
-    },
-  });
+  const { data: lockedVoteBalance, refetch: refetchLockedVoteBalance } =
+    useLockedVoteBalance(address);
 
   const { data: lockedStCeloInVoting, refetch: refetchLockedStCeloInVoting } = useContractRead({
     ...voteContract,
@@ -266,3 +259,18 @@ export const useVote = () => {
     unlockVoteBalance,
   };
 };
+
+// returns all stCelo that was ever used for voting but never unlock (including both currently voted on proposals and already expired proposals that account voted on)
+export function useLockedVoteBalance(address: string | undefined) {
+  const { stakedCeloContract } = useBlockchain();
+
+  return useContractRead({
+    ...stakedCeloContract,
+    functionName: 'lockedVoteBalanceOf',
+    args: [address as Address],
+    enabled: !!address,
+    select(data) {
+      return new StCelo(data);
+    },
+  });
+}
