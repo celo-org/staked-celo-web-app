@@ -25,7 +25,7 @@ import {
 export const useVote = () => {
   const { managerContract, voteContract, stakedCeloContract } = useBlockchain();
   const { suggestedGasPrice } = useGasPrices();
-  const { stCeloBalance, celoBalance } = useAccountContext();
+  const { stCeloBalance } = useAccountContext();
   const { address } = useAccount();
   const chainId = useChainId();
   const network = chainIdToChain(chainId);
