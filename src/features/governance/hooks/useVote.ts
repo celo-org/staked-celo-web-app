@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useAsyncCallback } from 'react-use-async-callback';
-import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { useProposalVotes } from 'src/contexts/account/useProposalVotes';
 import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchain';
@@ -26,7 +25,7 @@ import {
 export const useVote = () => {
   const { managerContract, voteContract, stakedCeloContract } = useBlockchain();
   const { suggestedGasPrice } = useGasPrices();
-  const { stCeloBalance } = useAccountContext();
+  const { stCeloBalance, celoBalance } = useAccountContext();
   const { address } = useAccount();
   const chainId = useChainId();
   const network = chainIdToChain(chainId);
@@ -39,11 +38,6 @@ export const useVote = () => {
     [network.name]
   );
 
-  const { data: voteWeight, refetch: refetchVoteWeight } = useContractRead({
-    ...managerContract,
-    functionName: 'toCelo',
-    args: [stCeloBalance.toBigInt()],
-  });
   const { writeAsync: _voteProposal } = useContractWrite({
     ...managerContract,
     functionName: 'voteProposal',
@@ -61,6 +55,26 @@ export const useVote = () => {
     },
   });
 
+  // This is based on the following lines from
+  // https://github.com/celo-org/staked-celo/blob/master/contracts/Vote.sol
+  /*
+    uint256 stakedCeloBalance = stakedCelo.balanceOf(accountVoter) +
+        stakedCelo.lockedVoteBalanceOf(accountVoter);
+    if (stakedCeloBalance == 0) {
+        revert NoStakedCelo(accountVoter);
+    }
+    uint256 totalWeights = yesVotes + noVotes + abstainVotes;
+    if (totalWeights > toCelo(stakedCeloBalance)) {
+        revert NotEnoughStakedCelo(accountVoter);
+    }
+  */
+  const stakedCeloBalance =
+    (lockedVoteBalance?.toBigInt() || 0n) + (stCeloBalance?.toBigInt() || 0n);
+  const { data: voteWeight, refetch: refetchVoteWeight } = useContractRead({
+    ...managerContract,
+    functionName: 'toCelo',
+    args: [stakedCeloBalance],
+  });
   /*
    * @param proposal - full serialized proposal
    * @param vote - yes | no | abstain
@@ -73,13 +87,12 @@ export const useVote = () => {
       if (proposal.stage !== ProposalStage.Referendum) {
         throw new Error('vote called on proposal that is not in Referendum stage');
       }
-      if (!voteWeight || voteWeight - MAX_AMOUNT_THRESHOLD <= 0) {
-        showErrorToast(
-          'Insufficient balance when taking in account gas costs. Do you have unlockable stCelo?'
-        );
+      if (!voteWeight) {
+        showErrorToast('Insufficient StCelo balance.');
         callbacks?.onSent?.();
         return;
       }
+
       transactionEvent({
         action: 'voteProposal',
         status: 'initiated_transaction',
@@ -90,9 +103,9 @@ export const useVote = () => {
           args: [
             BigInt(proposal.proposalID),
             BigInt(proposal.index),
-            vote === VoteType.yes ? voteWeight - MAX_AMOUNT_THRESHOLD : 0n,
-            vote === VoteType.no ? voteWeight - MAX_AMOUNT_THRESHOLD : 0n,
-            vote === VoteType.abstain ? voteWeight - MAX_AMOUNT_THRESHOLD : 0n,
+            vote === VoteType.yes ? voteWeight : 0n,
+            vote === VoteType.no ? voteWeight : 0n,
+            vote === VoteType.abstain ? voteWeight : 0n,
           ],
         });
         if (!tx) {
