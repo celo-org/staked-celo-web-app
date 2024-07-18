@@ -12,6 +12,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 
 import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import { useLockedVoteBalance } from 'src/features/governance/hooks/useVote';
+import VALIDATOR_VOTERS_EXCEPTIONS from 'src/features/validators/components/validator-voters-exceptions';
 import { useChangeStrategy } from 'src/features/validators/hooks/useChangeStrategy';
 import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle';
 import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
@@ -34,7 +35,10 @@ export const Details = ({ groupAddress, name }: Props) => {
   const lockedVotedBalance = useLockedVoteBalance(address);
 
   // disable if there is any value voting (as there is a bug) or if they have no stCeloBalance to begin with.
-  const isDisabled = lockedVotedBalance.data?.gt(0) || stCeloBalance.eq(0);
+  const isExceptionAccount =
+    address && VALIDATOR_VOTERS_EXCEPTIONS.includes(address.toLowerCase() as `0x${string}`);
+  const hasStCelo = stCeloBalance.gt(0);
+  const canVote = isExceptionAccount || lockedVotedBalance.data?.eq(0);
 
   useEffect(() => {
     if (isConnected) {
@@ -80,8 +84,8 @@ export const Details = ({ groupAddress, name }: Props) => {
           </div>
           <TertiaryCallout classes="pl-1">
             {isConnected &&
-              (lockedVotedBalance.data?.gt(0) ? (
-                `Cant switch validator groups while your ${lockedVotedBalance.data.displayAsBase()} tokens are locked for voting on governance proposals`
+              (!canVote ? (
+                `Cant switch validator groups while your ${lockedVotedBalance.data!.displayAsBase()} tokens are locked for voting on governance proposals`
               ) : (
                 <>
                   {'Your '}
@@ -95,7 +99,11 @@ export const Details = ({ groupAddress, name }: Props) => {
         </ContainerSecondaryBG>
         <div className="flex justify-center mt-[16px]">
           {isConnected ? (
-            <SubmitButton mode={Mode.validators} pending={isExecuting} disabled={isDisabled} />
+            <SubmitButton
+              mode={Mode.validators}
+              pending={isExecuting}
+              disabled={!canVote || !hasStCelo}
+            />
           ) : (
             <ConnectButton />
           )}
