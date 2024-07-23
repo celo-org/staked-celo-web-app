@@ -1,4 +1,4 @@
-import { OFAC_SANCTIONS_LIST_URL, SANCTIONED_ADDRESSES } from 'compliance-sdk';
+import { OFAC_SANCTIONS_LIST_URL, SANCTIONED_ADDRESSES } from '@celo/compliance';
 import { readFromCache, writeToCache } from './localSave';
 
 const DAY = 24 * 60 * 60 * 1000;
