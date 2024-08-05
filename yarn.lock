@@ -2940,7 +2940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-react@npm:^4.1.1":
+"@vitejs/plugin-react@npm:^4.3.1":
   version: 4.3.1
   resolution: "@vitejs/plugin-react@npm:4.3.1"
   dependencies:
@@ -11897,7 +11897,7 @@ __metadata:
     "@types/react-transition-group": "npm:^4.4.10"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
-    "@vitejs/plugin-react": "npm:^4.1.1"
+    "@vitejs/plugin-react": "npm:^4.3.1"
     autoprefixer: "npm:^10.4.19"
     bignumber.js: "npm:^9.1.2"
     dayjs: "npm:^1.11.11"
