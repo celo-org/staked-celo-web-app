@@ -262,6 +262,7 @@ export const useVote = () => {
   );
 
   return {
+    stakedCeloThatCanVoteBalance: new StCelo(stakedCeloBalance),
     voteProposal,
     voteProposalStatus,
     getProposalVote,

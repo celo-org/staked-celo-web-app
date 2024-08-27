@@ -32,8 +32,9 @@ export enum ProposalStage {
 }
 
 export const Details = ({ proposal }: Props) => {
-  const { stCeloBalance, loadBalances, isConnected, address } = useAccountContext();
+  const { loadBalances, isConnected, address } = useAccountContext();
   const {
+    stakedCeloThatCanVoteBalance,
     voteProposal,
     voteProposalStatus,
     getProposalVote,
@@ -131,8 +132,8 @@ export const Details = ({ proposal }: Props) => {
             />
             {currentVote !== undefined && !hasVoted && (
               <TertiaryCallout classes="px-[8px]">
-                {stCeloBalance.displayAsBase()} stCELO will vote {currentVote} for Proposal #
-                {proposal.parsedYAML?.cgp}
+                {stakedCeloThatCanVoteBalance.displayAsBase()} stCELO will vote {currentVote} for
+                Proposal #{proposal.parsedYAML?.cgp}
               </TertiaryCallout>
             )}
             {!hasVoted && (
