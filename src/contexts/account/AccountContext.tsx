@@ -2,7 +2,8 @@ import { createContext, PropsWithChildren, useContext } from 'react';
 import useStrategy from 'src/contexts/account/useStrategy';
 import { Option } from 'src/types';
 import { Celo, StCelo } from 'src/utils/tokens';
-import { Address, useAccount } from 'wagmi';
+import type { Address } from 'viem';
+import { useAccount } from 'wagmi';
 import { useAccountBalances } from './useBalances';
 import {
   PendingWithdrawal,

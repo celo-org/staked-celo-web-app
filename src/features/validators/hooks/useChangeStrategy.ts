@@ -4,17 +4,17 @@ import { TxCallbacks, useBlockchain } from 'src/contexts/blockchain/useBlockchai
 import { showElectionToast, showErrorToast } from 'src/features/swap/utils/toast';
 import logger from 'src/services/logger';
 import { transactionEvent } from 'src/utils/ga';
-import { Address, useAccount, useContractWrite } from 'wagmi';
+import type { Address } from 'viem';
+import { waitForTransactionReceipt } from 'viem/actions';
+import { useAccount, usePublicClient, useWriteContract } from 'wagmi';
 
 export const useChangeStrategy = () => {
   const { managerContract } = useBlockchain();
   const { reloadStrategy } = useAccountContext();
   const { address } = useAccount();
+  const publicClient = usePublicClient();
 
-  const { writeAsync: _changeStrategy } = useContractWrite({
-    ...managerContract,
-    functionName: 'changeStrategy',
-  });
+  const { writeContractAsync: _changeStrategy } = useWriteContract({});
 
   /*
    * @param groupAddress the address of validator group OR 0 for default
@@ -30,7 +30,10 @@ export const useChangeStrategy = () => {
         value: '',
       });
       try {
-        await _changeStrategy?.({
+        const tx = await _changeStrategy({
+          abi: managerContract.abi,
+          address: managerContract.address!,
+          functionName: 'changeStrategy',
           args: [groupAddress],
         });
         transactionEvent({
@@ -39,6 +42,8 @@ export const useChangeStrategy = () => {
           value: '',
         });
         showElectionToast();
+        // otherwise reloading could bring up the old one
+        await waitForTransactionReceipt(publicClient!, { hash: tx });
         await reloadStrategy?.();
       } catch (e: unknown) {
         logger.error('changeStrategy error', e);

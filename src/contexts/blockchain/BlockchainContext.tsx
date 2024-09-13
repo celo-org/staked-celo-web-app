@@ -11,7 +11,8 @@ import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import useAddresses from 'src/hooks/useAddresses';
 import { Option } from 'src/types';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
-import { Address, useAccount } from 'wagmi';
+import type { Address } from 'viem';
+import { useAccount, useConfig } from 'wagmi';
 
 export interface TxCallbacks {
   onSent?: () => void;
@@ -68,6 +69,7 @@ export const BlockchainContext = createContext<BlockchainContext>({
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
   const { address } = useAccount();
   const addresses = useAddresses();
+  const config = useConfig;
   const managerContract = useMemo(
     () => ({
       address: addresses.manager,
@@ -121,10 +123,10 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     void (async () => {
       const sanctioned = address && (await isSanctionedAddress(address));
       if (sanctioned) {
-        await disconnect();
+        await disconnect(config());
       }
     })();
-  }, [address]);
+  }, [address, config]);
 
   return (
     <BlockchainContext.Provider

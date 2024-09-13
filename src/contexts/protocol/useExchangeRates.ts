@@ -4,7 +4,7 @@ import { WEI_PER_UNIT } from 'src/config/consts';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
 import { Celo, StCelo, Token } from 'src/utils/tokens';
-import { useContractRead } from 'wagmi';
+import { useReadContract } from 'wagmi';
 
 const ONE_CELO = new Celo(WEI_PER_UNIT);
 const ONE_ST_CELO = new StCelo(WEI_PER_UNIT);
@@ -29,7 +29,7 @@ export const useExchangeRates = () => {
 const useStakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const { data: _stakingRate, refetch: loadStakingRate } = useContractRead({
+  const { data: _stakingRate, refetch: loadStakingRate } = useReadContract({
     ...managerContract,
     functionName: 'toStakedCelo',
     args: [ONE_CELO.toBigInt()],
@@ -49,7 +49,7 @@ const useStakingRate = () => {
 const useUnstakingRate = () => {
   const { managerContract } = useBlockchain();
 
-  const { data: _unstakingRate, refetch: loadUnstakingRate } = useContractRead({
+  const { data: _unstakingRate, refetch: loadUnstakingRate } = useReadContract({
     ...managerContract,
     functionName: 'toCelo',
     args: [ONE_ST_CELO.toBigInt()],
@@ -69,12 +69,14 @@ const useUnstakingRate = () => {
 const useCeloToUSDRate = () => {
   const sortedOraclesAddress = useCeloRegistryAddress('SortedOracles');
   const stableTokenAddress = useCeloRegistryAddress('StableToken');
-  const { data, isLoading } = useContractRead({
+  const { data, isLoading } = useReadContract({
     abi: sortedOraclesABI,
-    address: sortedOraclesAddress,
+    address: sortedOraclesAddress!,
     args: [stableTokenAddress!],
     functionName: 'medianRate',
-    enabled: !!stableTokenAddress,
+    query: {
+      enabled: !!stableTokenAddress && !!sortedOraclesAddress,
+    },
   });
 
   const celoToUSDRate = useMemo(() => {

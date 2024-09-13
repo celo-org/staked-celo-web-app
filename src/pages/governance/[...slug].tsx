@@ -1,13 +1,14 @@
-import { Celo } from '@celo/rainbowkit-celo/chains';
 import type { GetServerSideProps, NextPage } from 'next';
 import Router from 'next/router';
 import { Details } from 'src/features/governance/components/Details';
 import {
-  SerializedProposal,
   getProposalRecord,
   getYamlForProposal,
+  SerializedProposal,
 } from 'src/features/governance/data/getProposals';
 import { useRedirectToConnectedChainIfNeeded } from 'src/hooks/useRedirectToConnectedChainIfNeeded';
+import { ChainIds } from 'src/utils/clients';
+import { celo as Celo } from 'viem/chains';
 
 interface Props {
   proposal: SerializedProposal;
@@ -35,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query, par
 
   const id = params?.slug;
   const proposalID = Array.isArray(id) ? id[0] : id;
-  const chainId = Number(query.chainId as string) || Celo.id;
+  const chainId = (Number(query.chainId as string) as ChainIds) || Celo.id;
 
   if (typeof proposalID !== 'string') {
     return {

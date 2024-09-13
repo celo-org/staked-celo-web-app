@@ -7,7 +7,8 @@ import { useAPI } from 'src/hooks/useAPI';
 import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { Address, useContractWrite, usePublicClient } from 'wagmi';
+import type { Address } from 'viem';
+import { usePublicClient, useWriteContract } from 'wagmi';
 import { transactionEvent } from '../../../utils/ga';
 import { showErrorToast, showUnstakingToast } from '../utils/toast';
 
@@ -20,15 +21,11 @@ export function useUnstaking() {
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
   const publicClient = usePublicClient();
 
-  const { writeAsync: _unstake } = useContractWrite({
-    ...managerContract,
-    functionName: 'withdraw',
-    args: [stCeloAmount?.toBigInt() || 0n] as const,
-  });
+  const { writeContractAsync: _unstake } = useWriteContract();
 
   const _estimateWithdrawGas = useCallback(
     (address: Address, value: bigint) => {
-      return publicClient.estimateContractGas({
+      return publicClient!.estimateContractGas({
         abi: managerContract.abi,
         address: managerContract.address!,
         account: address,
@@ -57,7 +54,13 @@ export function useUnstaking() {
       });
       try {
         const gas = await _estimateWithdrawGas(address, stCeloAmount?.toBigInt());
-        await _unstake({ gas });
+        await _unstake({
+          address: managerContract.address!,
+          abi: managerContract.abi,
+          functionName: 'withdraw',
+          args: [stCeloAmount?.toBigInt() || 0n] as const,
+          gas,
+        });
         await api.withdraw(address);
         showUnstakingToast();
         await Promise.all([loadBalances(), loadPendingWithdrawals?.()]);

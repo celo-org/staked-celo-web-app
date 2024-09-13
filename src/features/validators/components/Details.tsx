@@ -10,7 +10,6 @@ import { TransactionCalloutModal } from 'src/components/TransactionCalloutModal'
 import { ADDRESS_ZERO, EXPLORER_ALFAJORES_URL, EXPLORER_MAINNET_URL } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import { useLockedVoteBalance } from 'src/features/governance/hooks/useVote';
 import VALIDATOR_VOTERS_EXCEPTIONS from 'src/features/validators/components/validator-voters-exceptions';
 import { useChangeStrategy } from 'src/features/validators/hooks/useChangeStrategy';
@@ -18,7 +17,9 @@ import { removeAddressMiddle } from 'src/features/validators/removeAddressMiddle
 import { useIsTransitioning } from 'src/hooks/useIsTransitioning';
 import { CenteredLayout } from 'src/layout/CenteredLayout';
 import { Mode } from 'src/types';
-import { Address, useChainId } from 'wagmi';
+import type { Address } from 'viem';
+import { celoAlfajores as Alfajores } from 'viem/chains';
+import { useChainId } from 'wagmi';
 interface Props {
   groupAddress: Address;
   name?: string;

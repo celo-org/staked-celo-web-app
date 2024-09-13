@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Celo } from 'src/utils/tokens';
-import { useContractRead } from 'wagmi';
+import { useReadContract } from 'wagmi';
 
 export const useTokenBalances = () => {
   const { accountContract } = useBlockchain();
-  const { data: _totalCeloBalance, refetch: loadTotalCeloBalance } = useContractRead({
+  const { data: _totalCeloBalance, refetch: loadTotalCeloBalance } = useReadContract({
     ...accountContract,
     functionName: 'getTotalCelo',
   });

@@ -1,4 +1,3 @@
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import {
   ACCOUNT_MAINNET_ADDRESS,
   ACCOUNT_TESTNET_ADDRESS,
@@ -16,6 +15,7 @@ import {
   VOTE_TESTNET_ADDRESS,
 } from 'src/config/consts';
 import { Address } from 'viem';
+import { celoAlfajores as Alfajores } from 'viem/chains';
 
 interface ContractAddresses {
   manager: Address;

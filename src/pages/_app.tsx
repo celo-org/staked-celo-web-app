@@ -17,27 +17,29 @@ import 'src/styles/globals.css';
 import 'src/styles/transitions.scss';
 import { pageview } from '../utils/ga';
 
-import celoGroups from '@celo/rainbowkit-celo/lists';
-import { darkTheme, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import {
+  RainbowKitProvider,
+  darkTheme,
+  getDefaultConfig,
+  lightTheme,
+} from '@rainbow-me/rainbowkit';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WALLET_CONNECT_PROJECT_ID } from 'src/config/consts';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+
+import { WagmiProvider, http } from 'wagmi';
+
 import { celo, celoAlfajores } from 'wagmi/chains';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
-const { chains, publicClient } = configureChains(
-  [celo, celoAlfajores],
-  [jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) })]
-);
+const queryClient = new QueryClient();
 
-const connectors = celoGroups({
-  chains,
-  projectId: WALLET_CONNECT_PROJECT_ID,
+const config = getDefaultConfig({
   appName: 'Staked Celo',
-});
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
+  projectId: WALLET_CONNECT_PROJECT_ID,
+  chains: [celo, celoAlfajores],
+  transports: {
+    [celo.id]: http(),
+    [celoAlfajores.id]: http(),
+  },
 });
 
 dayjs.extend(relativeTime);
@@ -52,31 +54,28 @@ const App = ({ Component, pageProps, router }: AppProps) => {
         <title>{`StakedCelo - Liquid staking on Celo | ${getHeadTitle(pathName)}`}</title>
       </Head>
       <ClientOnly>
-        <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider
-            chains={chains}
-            theme={
-              theme === 'dark'
-                ? darkTheme({
-                    accentColor: '#9477F5',
-                  })
-                : lightTheme({ accentColor: '#6F61D7' })
-            }
-          >
-            <TopProvider>
-              <CeloConnectRedirect>
-                <AppLayout pathName={pathName}>
-                  <Component {...pageProps} />
-                  <ToastContainer
-                    transition={Zoom}
-                    position={"top-right"}
-                    icon={false}
-                  />
-                </AppLayout>
-              </CeloConnectRedirect>
-            </TopProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <RainbowKitProvider
+              theme={
+                theme === 'dark'
+                  ? darkTheme({
+                      accentColor: '#9477F5',
+                    })
+                  : lightTheme({ accentColor: '#6F61D7' })
+              }
+            >
+              <TopProvider>
+                <CeloConnectRedirect>
+                  <AppLayout pathName={pathName}>
+                    <Component {...pageProps} />
+                    <ToastContainer transition={Zoom} position={'top-right'} icon={false} />
+                  </AppLayout>
+                </CeloConnectRedirect>
+              </TopProvider>
+            </RainbowKitProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
       </ClientOnly>
     </>
   );

@@ -7,11 +7,12 @@ import { useVote } from 'src/features/governance/hooks/useVote';
 import { AccountModal } from 'src/features/wallet/components/AccountModal';
 import { NetworkSwitcherModal } from 'src/features/wallet/components/NetworkSwitcherModal';
 import chainIdToChain from 'src/utils/chainIdToChain';
+import { ChainIds } from 'src/utils/clients';
 import { useChainId } from 'wagmi';
 
 export const WalletButton = () => {
   const { address } = useAccountContext();
-  const chainId = useChainId();
+  const chainId = useChainId() as ChainIds;
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false);
   const { lockedVoteBalance } = useVote();

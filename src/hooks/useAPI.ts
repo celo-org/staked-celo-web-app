@@ -1,7 +1,7 @@
-import { Celo } from '@celo/rainbowkit-celo/chains';
 import { useMemo } from 'react';
 import { mainnetAPIUrl, testnetAPIUrl } from 'src/config/services';
 import { createAPI } from 'src/services/api';
+import { celo as Celo } from 'viem/chains';
 import { useChainId } from 'wagmi';
 
 export function useAPI() {

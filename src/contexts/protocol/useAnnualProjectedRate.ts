@@ -2,16 +2,16 @@ import { epochRewardsABI } from '@celo/abis';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import useCeloRegistryAddress from 'src/hooks/useCeloRegistryAddress';
-import { useContractRead } from 'wagmi';
+import { useReadContract } from 'wagmi';
 
 export const useAnnualProjectedRate = () => {
   const address = useCeloRegistryAddress('EpochRewards');
-  const { data: rewardsMultiplierFraction, isLoading: multiplierLoading } = useContractRead({
+  const { data: rewardsMultiplierFraction, isLoading: multiplierLoading } = useReadContract({
     abi: epochRewardsABI,
     address,
     functionName: 'getRewardsMultiplier',
   });
-  const { data: targetVotingYieldParameters, isLoading: yieldParamsLoading } = useContractRead({
+  const { data: targetVotingYieldParameters, isLoading: yieldParamsLoading } = useReadContract({
     abi: epochRewardsABI,
     address,
     functionName: 'getTargetVotingYieldParameters',

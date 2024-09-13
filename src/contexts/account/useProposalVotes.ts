@@ -3,7 +3,8 @@ import { useCallback } from 'react';
 import useAddresses from 'src/hooks/useAddresses';
 import { VoteType } from 'src/types';
 import celoRegistry from 'src/utils/celoRegistry';
-import { Address, PublicClient, useAccount, usePublicClient } from 'wagmi';
+import type { Address } from 'viem';
+import { useAccount, usePublicClient, UsePublicClientReturnType } from 'wagmi';
 
 interface Vote {
   vote: VoteType;
@@ -25,17 +26,17 @@ function extractVote(args: VoteEventArgs): 'yesVotes' | 'noVotes' | 'abstainVote
 async function getRelevantVoteEvents(
   account: Address,
   proposalId: bigint,
-  publicClient: PublicClient,
+  publicClient: UsePublicClientReturnType,
   addresses: ReturnType<typeof useAddresses>
 ): Promise<Vote | null> {
-  const governanceAddress = await publicClient.readContract({
+  const governanceAddress = await publicClient!.readContract({
     ...celoRegistry,
     functionName: 'getAddressForString',
     args: ['Governance'],
   });
 
   const [{ result: proposal }, { result: queueExpiry }, { result: referendumStageDurations }] =
-    await publicClient.multicall({
+    await publicClient!.multicall({
       contracts: [
         {
           address: governanceAddress,
@@ -58,7 +59,7 @@ async function getRelevantVoteEvents(
   if (!proposal || !queueExpiry || !referendumStageDurations)
     throw new Error('proposal not found with id ' + proposalId);
 
-  const latestBlock = await publicClient.getBlock();
+  const latestBlock = await publicClient!.getBlock();
 
   const blockPadding = 12n; // probably more than necessary, this is 1 minute
   const now = Date.now() / 1000; // work with seconds, not ms
@@ -75,7 +76,7 @@ async function getRelevantVoteEvents(
   const endedAtBlock = Number(fromBlock) + endedAtBlockDiff;
   const toBlock = BigInt(Math.min(Number(latestBlock.number!), endedAtBlock));
 
-  const voteEvents = await publicClient.getLogs({
+  const voteEvents = await publicClient!.getLogs({
     address: addresses.vote,
     event: {
       type: 'event',

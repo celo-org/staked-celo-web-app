@@ -1,9 +1,8 @@
-import { CeloChains } from '@celo/rainbowkit-celo';
 import { PropsWithChildren } from 'react';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Modal } from 'src/components/modals/Modal';
 import { resolveUnambiguousChainName } from 'src/utils/resolveUnambiguousChainName';
-import { useChainId, useSwitchNetwork } from 'wagmi';
+import { useChainId, useSwitchChain } from 'wagmi';
 
 interface ModalProps {
   highlighted: boolean;
@@ -55,9 +54,11 @@ const NetworkRow = ({
 
 export const NetworkSwitcherModal = ({ isOpen, close }: { isOpen: boolean; close: () => void }) => {
   const chainId = useChainId();
-  const { switchNetwork, isLoading, pendingChainId } = useSwitchNetwork({
-    onSuccess() {
-      close();
+  const { switchChain, chains, status } = useSwitchChain({
+    mutation: {
+      onSuccess() {
+        close();
+      },
     },
   });
   const title = 'Switch Network';
@@ -73,12 +74,12 @@ export const NetworkSwitcherModal = ({ isOpen, close }: { isOpen: boolean; close
         </div>
         <div className="font-normal mb-[24px] text-[16px] leading-[24px]">
           <ul className="flex flex-col gap-4 items-center w-full">
-            {[CeloChains.Celo, CeloChains.Alfajores].map((chain) => (
+            {chains.map((chain) => (
               <NetworkRow
                 key={chain.id}
                 highlighted={chainId === chain.id}
-                isLoading={isLoading && pendingChainId === chain.id}
-                onClick={() => switchNetwork?.(chain.id)}
+                isLoading={status === 'pending'}
+                onClick={() => switchChain({ chainId: chain.id })}
               >
                 <span>{resolveUnambiguousChainName(chain)}</span>
               </NetworkRow>

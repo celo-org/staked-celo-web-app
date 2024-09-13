@@ -1,8 +1,8 @@
 import celoRegistry from 'src/utils/celoRegistry';
-import { useContractRead } from 'wagmi';
+import { useReadContract } from 'wagmi';
 
 export default function useCeloRegistryAddress(contractName: string) {
-  const { data: address } = useContractRead({
+  const { data: address } = useReadContract({
     address: celoRegistry.address,
     abi: celoRegistry.abi,
     functionName: 'getAddressForString',

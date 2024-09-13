@@ -10,24 +10,19 @@ import { showErrorToast, showStakingToast, showVoteToast } from 'src/features/sw
 import logger from 'src/services/logger';
 import { VoteType } from 'src/types';
 import chainIdToChain from 'src/utils/chainIdToChain';
+import { ChainIds } from 'src/utils/clients';
 import { transactionEvent } from 'src/utils/ga';
 import { deleteFromCache, readFromCache, writeToCache } from 'src/utils/localSave';
 import { StCelo } from 'src/utils/tokens';
-import {
-  Address,
-  useAccount,
-  useChainId,
-  useContractRead,
-  useContractWrite,
-  usePublicClient,
-} from 'wagmi';
+import type { Address } from 'viem';
+import { useAccount, useChainId, usePublicClient, useReadContract, useWriteContract } from 'wagmi';
 
 export const useVote = () => {
   const { managerContract, voteContract, stakedCeloContract } = useBlockchain();
   const { suggestedGasPrice } = useGasPrices();
   const { stCeloBalance } = useAccountContext();
   const { address } = useAccount();
-  const chainId = useChainId();
+  const chainId = useChainId() as ChainIds;
   const network = chainIdToChain(chainId);
   const publicClient = usePublicClient();
   const { getVotesForProposal } = useProposalVotes();
@@ -38,20 +33,19 @@ export const useVote = () => {
     [network.name]
   );
 
-  const { writeAsync: _voteProposal } = useContractWrite({
-    ...managerContract,
-    functionName: 'voteProposal',
-  });
+  const { writeContractAsync: _voteProposal } = useWriteContract();
   const { data: lockedVoteBalance, refetch: refetchLockedVoteBalance } =
     useLockedVoteBalance(address);
 
-  const { data: lockedStCeloInVoting, refetch: refetchLockedStCeloInVoting } = useContractRead({
+  const { data: lockedStCeloInVoting, refetch: refetchLockedStCeloInVoting } = useReadContract({
     ...voteContract,
     functionName: 'getLockedStCeloInVoting',
     args: [address as Address],
-    enabled: !!address,
-    select(data) {
-      return new StCelo(data);
+    query: {
+      enabled: !!address,
+      select(data) {
+        return new StCelo(data);
+      },
     },
   });
 
@@ -70,7 +64,7 @@ export const useVote = () => {
   */
   const stakedCeloBalance =
     (lockedVoteBalance?.toBigInt() || 0n) + (stCeloBalance?.toBigInt() || 0n);
-  const { data: voteWeight, refetch: refetchVoteWeight } = useContractRead({
+  const { data: voteWeight, refetch: refetchVoteWeight } = useReadContract({
     ...managerContract,
     functionName: 'toCelo',
     args: [stakedCeloBalance],
@@ -99,7 +93,11 @@ export const useVote = () => {
         value: vote,
       });
       try {
-        const tx = await _voteProposal?.({
+        const tx = await _voteProposal({
+          authorizationList: [],
+          ...managerContract,
+          address: managerContract.address!,
+          functionName: 'voteProposal',
           args: [
             BigInt(proposal.proposalID),
             BigInt(proposal.index),
@@ -111,7 +109,7 @@ export const useVote = () => {
         if (!tx) {
           throw new Error('Something went wrong, hash couldnt be fetched');
         }
-        await publicClient.waitForTransactionReceipt({ hash: tx.hash });
+        await publicClient!.waitForTransactionReceipt({ hash: tx });
         transactionEvent({
           action: 'voteProposal',
           status: 'signed_transaction',
@@ -164,24 +162,24 @@ export const useVote = () => {
     [getVoteCacheKey, getVotesForProposal]
   );
 
-  const { writeAsync: _unlockVoteBalance } = useContractWrite({
-    ...stakedCeloContract,
-    functionName: 'unlockVoteBalance',
-  });
+  const { writeContractAsync: _unlockVoteBalance } = useWriteContract();
 
   const [unlockVoteBalance] = useAsyncCallback(
     async (callbacks?: TxCallbacks) => {
-      if (!address || !_unlockVoteBalance) {
+      if (!address || !_unlockVoteBalance || !publicClient || !stakedCeloContract) {
         throw new Error('vote called before loading completed');
       }
       try {
-        const tx = await _unlockVoteBalance?.({
+        const txHash = await _unlockVoteBalance({
+          abi: stakedCeloContract.abi,
+          address: stakedCeloContract.address!,
+          functionName: 'unlockVoteBalance',
           args: [address as Address],
         });
-        if (!tx) {
+        if (!txHash) {
           throw new Error('Something went wrong, hash couldnt be fetched');
         }
-        await publicClient.waitForTransactionReceipt({ hash: tx.hash });
+        await publicClient.waitForTransactionReceipt({ hash: txHash });
         showStakingToast(lockedVoteBalance!);
       } catch (e: unknown) {
         logger.error('voteProposal error', e);
@@ -206,14 +204,11 @@ export const useVote = () => {
     ]
   );
 
-  const { writeAsync: _revokeVotes } = useContractWrite({
-    ...managerContract,
-    functionName: 'revokeVotes',
-  });
+  const { writeContractAsync: _revokeVotes } = useWriteContract();
 
   const [revokeVotes, revokeVotesStatus] = useAsyncCallback(
     async (proposal: SerializedProposal, callbacks?: TxCallbacks) => {
-      if (!address || !managerContract || !proposal.index) {
+      if (!address || !managerContract || !proposal.index || !publicClient) {
         throw new Error('revoke called before loading completed');
       }
       if (proposal.stage != ProposalStage.Referendum) {
@@ -224,13 +219,17 @@ export const useVote = () => {
         status: 'initiated_transaction',
       });
       try {
-        const tx = await _revokeVotes?.({
+        const tx = await _revokeVotes({
+          authorizationList: [],
+          ...managerContract,
+          address: managerContract.address!,
+          functionName: 'revokeVotes',
           args: [BigInt(proposal.proposalID), BigInt(proposal.index)],
         });
         if (!tx) {
           throw new Error('Something went wrong, hash couldnt be fetched');
         }
-        await publicClient.waitForTransactionReceipt({ hash: tx.hash });
+        await publicClient.waitForTransactionReceipt({ hash: tx });
         deleteFromCache(getVoteCacheKey(proposal.proposalID.toString(), address));
         transactionEvent({
           action: 'revokeVotes',
@@ -278,13 +277,15 @@ export const useVote = () => {
 export function useLockedVoteBalance(address: string | undefined) {
   const { stakedCeloContract } = useBlockchain();
 
-  return useContractRead({
+  return useReadContract({
     ...stakedCeloContract,
     functionName: 'lockedVoteBalanceOf',
     args: [address as Address],
-    enabled: !!address,
-    select(data) {
-      return new StCelo(data);
+    query: {
+      enabled: !!address,
+      select(data) {
+        return new StCelo(data);
+      },
     },
   });
 }

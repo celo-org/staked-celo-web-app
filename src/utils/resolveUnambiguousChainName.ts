@@ -1,14 +1,14 @@
-import { CeloChains } from "@celo/rainbowkit-celo";
-import { Chain } from "@rainbow-me/rainbowkit";
+import { Chain } from '@rainbow-me/rainbowkit';
+import { celo, celoAlfajores } from 'viem/chains';
 
 export const resolveUnambiguousChainName = (chain: Chain): string => {
-  if (chain.id == CeloChains.Alfajores.id) {
+  if (chain.id == celoAlfajores.id) {
     return `${chain.name} Testnet`;
   }
 
-  if (chain.id == CeloChains.Celo.id) {
+  if (chain.id == celo.id) {
     return `${chain.name} Mainnet`;
   }
-  
+
   return chain.name;
-}
+};

@@ -1,7 +1,7 @@
 import { governanceABI } from '@celo/abis';
 import { ProposalStage } from 'src/features/governance/components/Details';
 import celoRegistry from 'src/utils/celoRegistry';
-import clients from 'src/utils/clients';
+import clients, { ChainIds } from 'src/utils/clients';
 import { getRawGithubUrl, ParsedYAML, parsedYAMLFromMarkdown } from 'src/utils/proposals';
 import { Address, getContract } from 'viem';
 import { MiniProposal, Proposal } from './Proposal';
@@ -9,18 +9,23 @@ import { MiniProposal, Proposal } from './Proposal';
 const PROPOSAL_STAGE_KEYS = Object.keys(ProposalStage);
 type MetadataResult = [Address, bigint, bigint, bigint, string];
 
-export const getProposals = async (chainId: number) => {
+export const getProposals = async (chainId: ChainIds) => {
   const publicClient = clients[chainId];
-  const registryContract = getContract({ ...celoRegistry, publicClient });
+  const registryContract = getContract({ ...celoRegistry, client: publicClient });
   const governanceAddress = await registryContract.read.getAddressForString(['Governance']);
   const governanceContract = getContract({
     address: governanceAddress,
     abi: governanceABI,
-    publicClient,
+    client: publicClient,
   });
 
   const _dequeue = await governanceContract.read.getDequeue();
-  const stageCalls = _dequeue.map((proposalId) => ({
+  const stageCalls: Array<{
+    address: Address;
+    abi: typeof governanceABI;
+    functionName: 'getProposalStage';
+    args: [bigint];
+  }> = _dequeue.map((proposalId) => ({
     address: governanceAddress,
     abi: governanceABI,
     functionName: 'getProposalStage',
@@ -49,7 +54,12 @@ export const getProposals = async (chainId: number) => {
   const passed = [] as MiniProposal[];
 
   const relevantProposals = [...current, ...passed];
-  const metadataCalls = relevantProposals.map((proposal) => ({
+  const metadataCalls: Array<{
+    address: Address;
+    abi: typeof governanceABI;
+    functionName: 'getProposal';
+    args: [string];
+  }> = relevantProposals.map((proposal) => ({
     address: governanceAddress,
     abi: governanceABI,
     functionName: 'getProposal',
@@ -57,10 +67,11 @@ export const getProposals = async (chainId: number) => {
   }));
 
   const metadatas = (await publicClient.multicall({ contracts: metadataCalls })).map(
-    (x) => x.result as MetadataResult
+    (x) => x.result
   );
 
   metadatas.forEach((metadata, i) => {
+    if (!metadata) return; // dont filter becasuse indexes are matched
     relevantProposals[i].metadata = {
       timestamp: metadata[2].toString(),
       descriptionURL: metadata[4],
@@ -92,11 +103,11 @@ const runningProposalStages = new Set([ProposalStage.Queued, ProposalStage.Refer
 // const pastProposalStages = new Set([ProposalStage.Expiration, ProposalStage.Execution]);
 
 export const getProposalRecord = async (
-  chainId: number,
+  chainId: ChainIds,
   proposalID: string
 ): Promise<SerializedProposal | null> => {
   const publicClient = clients[chainId];
-  const registryContract = getContract({ ...celoRegistry, publicClient });
+  const registryContract = getContract({ ...celoRegistry, client: publicClient });
   const governanceAddress = await registryContract.read.getAddressForString(['Governance']);
 
   const [_dequeue, _stage, _metadata] = (
