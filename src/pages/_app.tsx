@@ -1,7 +1,16 @@
 import '@rainbow-me/rainbowkit/styles.css';
 
+import {
+  braveWallet,
+  coinbaseWallet,
+  injectedWallet,
+  safeWallet,
+  valoraWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
@@ -36,6 +45,16 @@ const config = getDefaultConfig({
   appName: 'Staked Celo',
   projectId: WALLET_CONNECT_PROJECT_ID,
   chains: [celo, celoAlfajores],
+  wallets: [
+    {
+      groupName: 'Recommended',
+      wallets: [safeWallet, valoraWallet, braveWallet, coinbaseWallet],
+    },
+    {
+      groupName: 'Fallbacks',
+      wallets: [walletConnectWallet, injectedWallet],
+    },
+  ],
   transports: {
     [celo.id]: http(),
     [celoAlfajores.id]: http(),
