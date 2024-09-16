@@ -30,18 +30,15 @@
     "react-toastify": "^10.0.5",
     "react-transition-group": "^4.4.5",
     "react-use-async-callback": "^2.1.2",
-    "viem": "^2.21.6",
-    "wagmi": "^2.12.11"
-  },
-  "resolutions": {
-    "@wagmi/connectors": "^3.1.10"
+    "viem": "2.21.6",
+    "wagmi": "2.12.11"
   },
   "devDependencies": {
     "@celo/contractkit": "^8.0.0",
     "@next/bundle-analyzer": "^13.5.6",
     "@testing-library/react": "^14.3.1",
     "@types/gtag.js": "^0.0.20",
-    "@types/node": "18.19.50",
+    "@types/node": "22.5.5",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -68,7 +65,7 @@
     "showDetails": true
   },
   "engines": {
-    "node": ">=18"
+    "node": "22"
   },
   "packageManager": "yarn@4.3.1"
 }
