@@ -38,7 +38,7 @@
     "@next/bundle-analyzer": "^13.5.6",
     "@testing-library/react": "^14.3.1",
     "@types/gtag.js": "^0.0.20",
-    "@types/node": "22.5.5",
+    "@types/node": "20.14.8",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -65,7 +65,7 @@
     "showDetails": true
   },
   "engines": {
-    "node": "22"
+    "node": "20"
   },
   "packageManager": "yarn@4.3.1"
 }
