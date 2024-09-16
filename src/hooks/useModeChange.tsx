@@ -1,7 +1,7 @@
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import Router from 'next/router';
 import { useCallback } from 'react';
 import { Mode } from 'src/types';
+import { celoAlfajores as Alfajores } from 'viem/chains';
 import { useChainId } from 'wagmi';
 
 export default function useModeChange() {

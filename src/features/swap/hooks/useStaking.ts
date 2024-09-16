@@ -8,7 +8,8 @@ import logger from 'src/services/logger';
 import { Mode } from 'src/types';
 import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
-import { Address, useContractWrite, usePublicClient } from 'wagmi';
+import type { Address } from 'viem';
+import { usePublicClient, useWriteContract } from 'wagmi';
 import { showErrorToast, showHashToast, showStakingToast } from '../utils/toast';
 
 export function useStaking() {
@@ -20,17 +21,11 @@ export function useStaking() {
   const [celoAmount, setCeloAmount] = useState<Celo | null>(null);
   const publicClient = usePublicClient();
 
-  const { writeAsync: _stake } = useContractWrite({
-    ...managerContract,
-    functionName: 'deposit',
-    value: 0n,
-  });
-
-  const client = usePublicClient();
+  const { writeContractAsync: _stake } = useWriteContract();
 
   const _estimateDepositGas = useCallback(
     (address: Address, value: bigint) => {
-      return publicClient.estimateContractGas({
+      return publicClient!.estimateContractGas({
         abi: managerContract.abi,
         address: managerContract.address!,
         account: address!,
@@ -56,18 +51,24 @@ export function useStaking() {
       try {
         const value = celoAmount?.toBigInt();
         const gas = await _estimateDepositGas(address!, value);
-        const stakeHash = await _stake({ value, gas });
+        const stakeHash = await _stake({
+          address: managerContract.address!,
+          abi: managerContract.abi,
+          functionName: 'deposit',
+          value,
+          gas,
+        });
         console.info('stakeHash', stakeHash);
         transactionEvent({
           action: Mode.stake,
           status: 'signed_transaction',
           value: celoAmount.displayAsBase(),
         });
-        showHashToast(stakeHash.hash);
+        showHashToast(stakeHash);
         callbacks?.onSent?.();
         // Must wait for reciept or balances will not have changed yet
-        const receipt = await client.waitForTransactionReceipt({
-          hash: stakeHash.hash,
+        const receipt = await publicClient!.waitForTransactionReceipt({
+          hash: stakeHash,
           pollingInterval: 500,
         });
         console.info('stake receipt', receipt);
@@ -97,7 +98,16 @@ export function useStaking() {
         logger.error('afterDeposit error', e);
       }
     },
-    [_estimateDepositGas, _stake, address, api, celoAmount, client, loadBalances, stCeloBalance]
+    [
+      _estimateDepositGas,
+      _stake,
+      address,
+      api,
+      celoAmount,
+      publicClient,
+      loadBalances,
+      stCeloBalance,
+    ]
   );
 
   const estimateStakingGas = useCallback(async () => {

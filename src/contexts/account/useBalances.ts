@@ -2,7 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Option } from 'src/types';
 import { Celo, StCelo } from 'src/utils/tokens';
-import { Address, useBalance, useContractRead } from 'wagmi';
+import type { Address } from 'viem';
+import { useBalance, useReadContract } from 'wagmi';
 
 export const useAccountBalances = (address: Option<Address>) => {
   const { stakedCeloContract } = useBlockchain();
@@ -12,14 +13,16 @@ export const useAccountBalances = (address: Option<Address>) => {
     fetchStatus,
   } = useBalance({
     address,
-    enabled: !!address,
+    query: { enabled: !!address },
   });
-  const { data: stCeloBalance, refetch: refetchStCelo } = useContractRead({
+  const { data: stCeloBalance, refetch: refetchStCelo } = useReadContract({
     ...stakedCeloContract,
     functionName: 'balanceOf',
     args: [address!],
-    enabled: !!address,
-    select: (data) => new StCelo(data),
+    query: {
+      enabled: !!address,
+      select: (data) => new StCelo(data),
+    },
   });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- force update when fetchStatus changes

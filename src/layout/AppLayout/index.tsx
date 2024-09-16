@@ -1,7 +1,7 @@
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
 import { useThemeContext } from 'src/contexts/theme/ThemeContext';
+import { celoAlfajores as Alfajores } from 'viem/chains';
 import { useChainId } from 'wagmi';
 import { Footer } from './Footer';
 import { Header } from './Header';

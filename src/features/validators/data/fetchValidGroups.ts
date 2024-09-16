@@ -1,8 +1,9 @@
-import { Alfajores } from '@celo/rainbowkit-celo/chains';
 import { gql, request } from 'graphql-request';
 import { EXPLORER_GRAPH_ALFAJORES_URL, EXPLORER_GRAPH_MAINNET_URL } from 'src/config/consts';
 import { healthyGroupsOnly } from 'src/features/validators/data/healthyGroupsOnly';
 import { nonBlockedGroupsOnly } from 'src/features/validators/data/nonBlockedGroupsOnly';
+import { ChainIds } from 'src/utils/clients';
+import { celoAlfajores as Alfajores } from 'viem/chains';
 
 export interface ValidatorGroup {
   name: string;
@@ -29,7 +30,7 @@ interface ValidGroups {
 
 // returns ValidatorGroups that are healthy and not blocked based on
 // criteria defined i https://github.com/celo-org/staked-celo/blob/master/contracts/Manager.sol#L348
-export default async function fetchValidGroups(chainId: number): Promise<ValidGroups> {
+export default async function fetchValidGroups(chainId: ChainIds): Promise<ValidGroups> {
   const url = Alfajores.id === chainId ? EXPLORER_GRAPH_ALFAJORES_URL : EXPLORER_GRAPH_MAINNET_URL;
   const data = await request<GraphValues>(url, query);
 

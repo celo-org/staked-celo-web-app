@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useBlockchain } from 'src/contexts/blockchain/useBlockchain';
 import { Option } from 'src/types';
 import { readFromCache, writeToCache } from 'src/utils/localSave';
-import { Address, useContractRead } from 'wagmi';
+import type { Address } from 'viem';
+import { useConfig, useReadContract } from 'wagmi';
 
 const FEW_HOURS = 4 * 60 * 60 * 1000;
 
@@ -14,16 +15,18 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
   const [activeGroups, setActiveGroups] = useState<Address[]>([]);
   const [error, setError] = useState<Error>();
 
-  const { data: activeGroupsLength } = useContractRead({
+  const { data: activeGroupsLength } = useReadContract({
     ...defaultGroupStrategyContract,
     functionName: 'getNumberOfGroups',
-    cacheTime: FEW_HOURS,
+    query: { gcTime: FEW_HOURS },
   });
 
-  const { data: groupsHead } = useContractRead({
+  const config = useConfig();
+
+  const { data: groupsHead } = useReadContract({
     ...defaultGroupStrategyContract,
     functionName: 'getGroupsHead',
-    cacheTime: FEW_HOURS,
+    query: { gcTime: FEW_HOURS },
   });
 
   const fetchGroups = useCallback(
@@ -31,7 +34,7 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
       const groups: Address[] = [key];
 
       for (let i = 0; i < length; i++) {
-        const previousAndNext = await readContract({
+        const previousAndNext = await readContract(config, {
           address: defaultGroupStrategyContract.address!,
           abi: defaultGroupStrategyContract.abi,
           functionName: 'getGroupPreviousAndNext',
@@ -43,7 +46,7 @@ export default function useDefaultGroups(): { activeGroups: Address[]; error: Op
 
       return groups;
     },
-    [defaultGroupStrategyContract]
+    [defaultGroupStrategyContract, config]
   );
 
   useEffect(() => {

@@ -1,17 +1,26 @@
-import { CeloChains } from "@celo/rainbowkit-celo";
-import { resolveUnambiguousChainName } from "src/utils/resolveUnambiguousChainName";
-import { describe, expect, test } from "vitest";
+import { celo, celoAlfajores } from 'viem/chains';
+
+import { resolveUnambiguousChainName } from 'src/utils/resolveUnambiguousChainName';
+import { describe, expect, test } from 'vitest';
 
 describe('resolveUnambiguousChainName', () => {
   test('it resolves name for mainnet', () => {
-    expect(resolveUnambiguousChainName(CeloChains.Celo)).toEqual('Celo Mainnet');
+    expect(resolveUnambiguousChainName(celo)).toEqual('Celo Mainnet');
   });
 
   test('it resolves name for alfajores', () => {
-    expect(resolveUnambiguousChainName(CeloChains.Alfajores)).toEqual('Alfajores Testnet');
+    expect(resolveUnambiguousChainName(celoAlfajores)).toEqual('Alfajores Testnet');
   });
 
   test('it resolves default name', () => {
-    expect(resolveUnambiguousChainName(CeloChains.Baklava)).toEqual('Baklava');
+    expect(
+      resolveUnambiguousChainName({
+        name: 'Baklava',
+        id: 62320,
+        rpcUrls: {
+          default: 'https://baklava-forno.celo-testnet.org',
+        },
+      })
+    ).toEqual('Baklava');
   });
 });

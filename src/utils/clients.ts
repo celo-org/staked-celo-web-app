@@ -1,5 +1,7 @@
-import { Alfajores, Celo } from '@celo/rainbowkit-celo/chains';
 import { createPublicClient, http } from 'viem';
+import { celoAlfajores as Alfajores, celo as Celo } from 'viem/chains';
+
+export type ChainIds = typeof Celo.id | typeof Alfajores.id;
 
 const clients = {
   [Celo.id]: createPublicClient({
