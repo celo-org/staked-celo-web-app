@@ -28,10 +28,10 @@ export const TESTNET_API_URL =
 export const MAINNET_API_URL =
   'https://us-central1-staked-celo-bot.cloudfunctions.net/mainnet-functions';
 
-export const EXPLORER_GRAPH_MAINNET_URL = 'https://explorer.celo.org/mainnet/graphiql';
-export const EXPLORER_GRAPH_ALFAJORES_URL = 'https://explorer.celo.org/alfajores/graphiql';
-export const EXPLORER_MAINNET_URL = 'https://explorer.celo.org/mainnet';
-export const EXPLORER_ALFAJORES_URL = 'https://explorer.celo.org/alfajores';
+export const EXPLORER_GRAPH_MAINNET_URL = 'https://celo.blockscout.com/graphiql';
+export const EXPLORER_GRAPH_ALFAJORES_URL = 'https://celo-alfajores.blockscout.com/graphiql';
+export const EXPLORER_MAINNET_URL = 'https://celo.blockscout.com/';
+export const EXPLORER_ALFAJORES_URL = 'https://celo-alfajores.blockscout.com/';
 
 export const TWITTER_URL = 'https://twitter.com/Celo';
 export const DISCORD_URL = 'https://discord.com/invite/celo';
