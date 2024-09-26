@@ -1,26 +1,14 @@
-import { gql, request } from 'graphql-request';
-import { EXPLORER_GRAPH_ALFAJORES_URL, EXPLORER_GRAPH_MAINNET_URL } from 'src/config/consts';
+import { accountsABI, validatorsABI } from '@celo/abis';
 import { healthyGroupsOnly } from 'src/features/validators/data/healthyGroupsOnly';
 import { nonBlockedGroupsOnly } from 'src/features/validators/data/nonBlockedGroupsOnly';
+import celoRegistry from 'src/utils/celoRegistry';
 import { ChainIds } from 'src/utils/clients';
-import { celoAlfajores as Alfajores } from 'viem/chains';
+import { createPublicClient, http } from 'viem';
+import { celo, celoAlfajores } from 'viem/chains';
 
 export interface ValidatorGroup {
   name: string;
   address: string;
-}
-
-const query = gql`
-  {
-    celoValidatorGroups {
-      name
-      address
-    }
-  }
-`;
-
-interface GraphValues {
-  celoValidatorGroups: ValidatorGroup[];
 }
 
 interface ValidGroups {
@@ -31,21 +19,51 @@ interface ValidGroups {
 // returns ValidatorGroups that are healthy and not blocked based on
 // criteria defined i https://github.com/celo-org/staked-celo/blob/master/contracts/Manager.sol#L348
 export default async function fetchValidGroups(chainId: ChainIds): Promise<ValidGroups> {
-  const url = Alfajores.id === chainId ? EXPLORER_GRAPH_ALFAJORES_URL : EXPLORER_GRAPH_MAINNET_URL;
-  const data = await request<GraphValues>(url, query);
+  const client = createPublicClient({
+    chain: chainId === celo.id ? celo : celoAlfajores,
+    transport: http(),
+  });
+  client;
 
-  const allPossibleGroups = data.celoValidatorGroups;
+  const validatorsAddress = await client.readContract({
+    ...celoRegistry,
+    functionName: 'getAddressForString',
+    args: ['Validators'],
+  });
 
-  const groupAddresses = allPossibleGroups.map((group) => group.address);
+  const accountsAddress = await client.readContract({
+    ...celoRegistry,
+    functionName: 'getAddressForString',
+    args: ['Accounts'],
+  });
+
+  const allPossibleGroups = await client.readContract({
+    abi: validatorsABI,
+    address: validatorsAddress,
+    functionName: 'getRegisteredValidatorGroups',
+  });
+
+  const groupAddresses = allPossibleGroups.map((group) => group);
   const [healthyGroups, nonBlockedGroups] = await Promise.all(
     [healthyGroupsOnly, nonBlockedGroupsOnly].map((fn) => fn(groupAddresses, chainId))
   );
   const validGroups = allPossibleGroups.filter(
-    (group) => healthyGroups.has(group.address) && nonBlockedGroups.has(group.address)
+    (address) => healthyGroups.has(address) && nonBlockedGroups.has(address)
+  );
+
+  const names = await Promise.all(
+    validGroups.map((address) => {
+      return client.readContract({
+        abi: accountsABI,
+        address: accountsAddress,
+        functionName: 'getName',
+        args: [address],
+      });
+    })
   );
 
   return {
     chainId: chainId,
-    groups: validGroups,
+    groups: validGroups.map((address, index) => ({ address, name: names[index] })),
   };
 }
