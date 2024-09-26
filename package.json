@@ -19,8 +19,6 @@
     "@types/react-transition-group": "^4.4.10",
     "bignumber.js": "^9.1.2",
     "dayjs": "^1.11.13",
-    "graphql": "^16.9.0",
-    "graphql-request": "^6.1.0",
     "gray-matter": "^4.0.3",
     "next": "^14.2.11",
     "react": "18.3.1",
