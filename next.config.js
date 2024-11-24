@@ -23,12 +23,21 @@ const nextConfig = {
   async headers() {
     return [
       {
-        key: 'X-XSS-Protection',
-        value: '1; mode=block',
-      },
-      {
-        key: 'X-Frame-Options',
-        value: `ALLOW-FROM ${FRAME_SRC_HOSTS.join(' ')}`,
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: `ALLOW-FROM ${FRAME_SRC_HOSTS.join(' ')}`,
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+        ],
       },
       {
         source: '/manifest.json',
