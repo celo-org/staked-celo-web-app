@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const webpack = require('webpack');
 
+const FRAME_SRC_HOSTS = [
+  'https://*.walletconnect.com',
+  'https://*.walletconnect.org',
+  'https://app.safe.global',
+];
+
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: false,
@@ -17,11 +23,19 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: '/(.*)',
         headers: [
           {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: `ALLOW-FROM ${FRAME_SRC_HOSTS.join(' ')}`,
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
           },
         ],
       },
