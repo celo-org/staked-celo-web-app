@@ -68,7 +68,7 @@ export const BlockchainContext = createContext<BlockchainContext>({
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
   const { address } = useAccount();
-  const {disconnectAsync} = useDisconnect()
+  const { disconnectAsync } = useDisconnect()
   const addresses = useAddresses();
   const managerContract = useMemo(
     () => ({
