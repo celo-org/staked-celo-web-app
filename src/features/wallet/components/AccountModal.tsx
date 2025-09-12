@@ -11,15 +11,14 @@ import { useAccount, useDisconnect } from 'wagmi';
 
 export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => void }) => {
   const { address } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { disconnectAsync } = useDisconnect();
   const { celoBalance, stCeloBalance } = useAccountContext();
   const { lockedStCeloInVoting, lockedVoteBalance, unlockVoteBalance } = useVote();
   const title = 'Wallet information';
 
   const onDisconnectClick = useCallback(() => {
-    disconnect();
-    void walletConnectCleanup();
-  }, [disconnect]);
+    void disconnectAsync().then(walletConnectCleanup);
+  }, [disconnectAsync]);
 
   return (
     <Modal isOpen={isOpen} screenReaderLabel={title} close={close}>
