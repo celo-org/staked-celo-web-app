@@ -11,6 +11,7 @@ import { mainnetAddresses, testnetAddresses } from 'src/config/contracts';
 import useAddresses from 'src/hooks/useAddresses';
 import { Option } from 'src/types';
 import { isSanctionedAddress } from 'src/utils/sanctioned';
+import { walletConnectCleanup } from 'src/utils/walletconnect';
 import type { Address } from 'viem';
 import { useAccount, useConfig } from 'wagmi';
 
@@ -124,6 +125,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
       const sanctioned = address && (await isSanctionedAddress(address));
       if (sanctioned) {
         await disconnect(config());
+        await walletConnectCleanup();
       }
     })();
   }, [address, config]);

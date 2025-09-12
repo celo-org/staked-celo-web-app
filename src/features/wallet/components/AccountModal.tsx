@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Button } from 'src/components/buttons/Button';
 import { ThemedIcon } from 'src/components/icons/ThemedIcon';
 import { Modal } from 'src/components/modals/Modal';
@@ -5,6 +6,7 @@ import { useAccountContext } from 'src/contexts/account/AccountContext';
 import CurrentVotingBalanceDetails from 'src/features/governance/components/CurrentVotingBalanceDetails';
 import { useVote } from 'src/features/governance/hooks/useVote';
 import { showClipboardToast } from 'src/features/swap/utils/toast';
+import { walletConnectCleanup } from 'src/utils/walletconnect';
 import { useAccount, useDisconnect } from 'wagmi';
 
 export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => void }) => {
@@ -13,6 +15,11 @@ export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => 
   const { celoBalance, stCeloBalance } = useAccountContext();
   const { lockedStCeloInVoting, lockedVoteBalance, unlockVoteBalance } = useVote();
   const title = 'Wallet information';
+
+  const onDisconnectClick = useCallback(() => {
+    disconnect();
+    void walletConnectCleanup();
+  }, [disconnect]);
 
   return (
     <Modal isOpen={isOpen} screenReaderLabel={title} close={close}>
@@ -58,7 +65,7 @@ export const AccountModal = ({ isOpen, close }: { isOpen: boolean; close: () => 
         />
 
         <div className="w-full flex flex-col mt-2">
-          <Button classes="self-center px-4 gap-4" onClick={disconnect}>
+          <Button classes="self-center px-4 gap-4" onClick={onDisconnectClick}>
             <span>Disconnect</span>
             <ThemedIcon name="exit" alt={`Disconnect wallet`} height={16} width={16} />
           </Button>
