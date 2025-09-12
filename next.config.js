@@ -9,7 +9,6 @@ const FRAME_SRC_HOSTS = [
 
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: false,
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.plugins.push(
