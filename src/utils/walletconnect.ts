@@ -7,11 +7,12 @@ export async function walletConnectCleanup() {
       table: 'keyvaluestorage',
     });
     const entries = await keychainStorage.getEntries();
-    const keychain = entries.find(([key]) => key.indexOf('keychain') > -1);
-    if (keychain) {
-      const [key, values] = keychain;
-      if (values['client_ed25519_seed']) {
-        await keychainStorage.removeItem(key);
+    const keychainEntries = entries.filter(([key]) => key.indexOf('keychain') > -1);
+    if (keychainEntries.length) {
+      for (const [key, values] of keychainEntries) {
+        if (values['client_ed25519_seed']) {
+          await keychainStorage.removeItem(key);
+        }
       }
     }
   } catch (e) {
