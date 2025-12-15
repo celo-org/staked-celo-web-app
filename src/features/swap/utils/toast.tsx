@@ -7,9 +7,37 @@ import { VoteType } from 'src/types';
 import { showToast } from 'src/utils/toast';
 import { StCelo } from 'src/utils/tokens';
 
+// Error message constants
+export const WITHDRAWAL_AMOUNT_TOO_HIGH_ERROR =
+  'Received "WithdrawalAmountTooHigh". If you are voting for a specific group try moving to the default strategy before unstaking.';
+
 const ToastContent = ({ children }: PropsWithChildren) => (
   <span className="text-[16px] leading-[24px] font-medium text-color-modal">{children}</span>
 );
+
+/**
+ * Converts error into a user-friendly message
+ */
+export const getUserFriendlyErrorMessage = (error: unknown): string => {
+  const errorMessage = (error as Error).message;
+  const errorDetails = (error as any).details;
+
+  // Check for user rejection
+  if (
+    errorMessage.includes('rejected') ||
+    errorDetails?.toLowerCase().includes('cancelled')
+  ) {
+    return 'User rejected the request';
+  }
+
+  // Check for specific contract errors
+  if (errorMessage.includes('WithdrawalAmountTooHigh')) {
+    return WITHDRAWAL_AMOUNT_TOO_HIGH_ERROR;
+  }
+
+  // Return original error message for unknown errors
+  return errorMessage;
+};
 
 export const showStakingToast = (amount: StCelo) =>
   showToast(

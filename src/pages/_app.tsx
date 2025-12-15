@@ -2,8 +2,8 @@ import '@rainbow-me/rainbowkit/styles.css';
 
 import {
   braveWallet,
-  coinbaseWallet,
   injectedWallet,
+  rabbyWallet,
   safeWallet,
   valoraWallet,
   walletConnectWallet,
@@ -33,22 +33,21 @@ import {
   lightTheme,
 } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WALLET_CONNECT_PROJECT_ID } from 'src/config/consts';
 
 import { WagmiProvider, http } from 'wagmi';
 
-import { celo, celoAlfajores } from 'wagmi/chains';
+import { celo } from 'wagmi/chains';
 
 const queryClient = new QueryClient();
 
 const config = getDefaultConfig({
   appName: 'Staked Celo',
-  projectId: WALLET_CONNECT_PROJECT_ID,
-  chains: [celo, celoAlfajores],
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '',
+  chains: [celo],
   wallets: [
     {
       groupName: 'Recommended',
-      wallets: [safeWallet, valoraWallet, braveWallet, coinbaseWallet],
+      wallets: [safeWallet, rabbyWallet, valoraWallet, braveWallet],
     },
     {
       groupName: 'Fallbacks',
@@ -57,7 +56,6 @@ const config = getDefaultConfig({
   ],
   transports: {
     [celo.id]: http(),
-    [celoAlfajores.id]: http(),
   },
 });
 
