@@ -45,4 +45,4 @@ export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';
 
 // the default is Nico's test/dev project (not sensitive)
 export const WALLET_CONNECT_PROJECT_ID =
-  process.env.WALLET_CONNECT_PROJECT_ID || 'e6e81d9f3439a3d1571b3f4193271978';
+  process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'e6e81d9f3439a3d1571b3f4193271978';
