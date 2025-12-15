@@ -33,7 +33,6 @@ import {
   lightTheme,
 } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WALLET_CONNECT_PROJECT_ID } from 'src/config/consts';
 
 import { WagmiProvider, http } from 'wagmi';
 
@@ -43,7 +42,7 @@ const queryClient = new QueryClient();
 
 const config = getDefaultConfig({
   appName: 'Staked Celo',
-  projectId: WALLET_CONNECT_PROJECT_ID,
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '',
   chains: [celo],
   wallets: [
     {
