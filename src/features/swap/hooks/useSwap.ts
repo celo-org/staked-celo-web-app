@@ -4,6 +4,7 @@ import { MAX_AMOUNT_THRESHOLD } from 'src/config/consts';
 import { useAccountContext } from 'src/contexts/account/AccountContext';
 import { TxCallbacks } from 'src/contexts/blockchain/useBlockchain';
 import { useProtocolContext } from 'src/contexts/protocol/ProtocolContext';
+import { showErrorToast, WITHDRAWAL_AMOUNT_TOO_HIGH_ERROR } from 'src/features/swap/utils/toast';
 import { Mode } from 'src/types';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import { useStaking } from './useStaking';
@@ -12,15 +13,16 @@ import { useUnstaking } from './useUnstaking';
 export function useSwap(mode: Mode) {
   const { stakingRate, unstakingRate } = useProtocolContext();
   const { celoBalance, stCeloBalance } = useAccountContext();
-  const { celoAmount, setCeloAmount, stake, receivedStCelo, estimateStakingGas } = useStaking();
-  const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, estimateUnstakingGas } =
+  const { celoAmount, setCeloAmount, stake, receivedStCelo, estimateStakingGasInUSD } =
+    useStaking();
+  const { stCeloAmount, setStCeloAmount, unstake, receivedCelo, estimateUnstakingGasInUSD } =
     useUnstaking();
 
   let balance: Token;
   let amount: Token | null;
   let receiveAmount: Token | null;
   let swapRate: number;
-  let estimateGas: () => Promise<CeloUSD | null>;
+  let estimateGasInUSD: () => Promise<CeloUSD | null>;
   let swap: (callbacks?: TxCallbacks) => void;
   let setAmount: (amount?: Token) => void;
 
@@ -30,7 +32,7 @@ export function useSwap(mode: Mode) {
       amount = stCeloAmount;
       receiveAmount = receivedCelo;
       swapRate = unstakingRate;
-      estimateGas = estimateUnstakingGas;
+      estimateGasInUSD = estimateUnstakingGasInUSD;
       swap = unstake;
       setAmount = (amount?: Token) => setStCeloAmount(!amount ? null : new StCelo(amount));
       break;
@@ -40,7 +42,7 @@ export function useSwap(mode: Mode) {
       amount = celoAmount;
       receiveAmount = receivedStCelo;
       swapRate = stakingRate;
-      estimateGas = estimateStakingGas;
+      estimateGasInUSD = estimateStakingGasInUSD;
       swap = stake;
       setAmount = (amount?: Token) => setCeloAmount(!amount ? null : new Celo(amount));
       break;
@@ -65,11 +67,17 @@ export function useSwap(mode: Mode) {
   const [gasFee, setGasFee] = useState<CeloUSD | null>(null);
   useEffect(() => {
     let aborted = false;
-    void estimateGas().then((estimatedGas) => !aborted && setGasFee(estimatedGas));
+    void estimateGasInUSD()
+      .then((estimatedGas) => !aborted && setGasFee(estimatedGas))
+      .catch((error) => {
+        if (error.message.includes('WithdrawalAmountTooHigh')) {
+          showErrorToast(WITHDRAWAL_AMOUNT_TOO_HIGH_ERROR);
+        }
+      });
     return () => {
       aborted = true;
     };
-  }, [estimateGas]);
+  }, [estimateGasInUSD]);
 
   // When switching modes expected received amount should be set as provided amount
   // Because receiveAmount is updated after mode is changed we need to perform instance type check

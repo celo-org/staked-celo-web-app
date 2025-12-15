@@ -10,30 +10,52 @@ import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import type { Address } from 'viem';
 import { usePublicClient, useWriteContract } from 'wagmi';
 import { transactionEvent } from '../../../utils/ga';
-import { showErrorToast, showUnstakingToast } from '../utils/toast';
+import { showErrorToast, showUnstakingToast, getUserFriendlyErrorMessage } from '../utils/toast';
 
 export function useUnstaking() {
   const { address, loadBalances, loadPendingWithdrawals, stCeloBalance } = useAccountContext();
-  const { managerContract } = useBlockchain();
+  const {
+    accountContract,
+    managerContract,
+    stakedCeloContract,
+    specificGroupStrategyContract,
+    defaultGroupStrategyContract,
+  } = useBlockchain();
   const { api } = useAPI();
   const { unstakingRate, celoToUSDRate } = useProtocolContext();
   const { suggestedGasPrice } = useGasPrices();
   const [stCeloAmount, setStCeloAmount] = useState<StCelo | null>(null);
   const publicClient = usePublicClient();
-
+  const allAbis = useMemo(
+    () => [
+      ...stakedCeloContract.abi,
+      ...specificGroupStrategyContract.abi,
+      ...defaultGroupStrategyContract.abi,
+      ...accountContract.abi,
+      ...managerContract.abi,
+    ],
+    [
+      accountContract.abi,
+      managerContract.abi,
+      stakedCeloContract.abi,
+      specificGroupStrategyContract.abi,
+      defaultGroupStrategyContract.abi,
+    ]
+  );
   const { writeContractAsync: _unstake } = useWriteContract();
 
   const _estimateWithdrawGas = useCallback(
-    (address: Address, value: bigint) => {
+    async (address: Address, value: bigint) => {
       return publicClient!.estimateContractGas({
-        abi: managerContract.abi,
+        // errors might come from any contract the manager calls
+        abi: allAbis,
         address: managerContract.address!,
         account: address,
         functionName: 'withdraw',
         args: [value || 0n] as const,
       });
     },
-    [publicClient, managerContract]
+    [publicClient, allAbis, managerContract.address]
   );
 
   const unstake = useCallback(
@@ -56,7 +78,8 @@ export function useUnstaking() {
         const gas = await _estimateWithdrawGas(address, stCeloAmount?.toBigInt());
         await _unstake({
           address: managerContract.address!,
-          abi: managerContract.abi,
+          // errors might come from any contract the manager calls
+          abi: allAbis,
           functionName: 'withdraw',
           args: [stCeloAmount?.toBigInt() || 0n] as const,
           gas,
@@ -67,29 +90,25 @@ export function useUnstaking() {
         setStCeloAmount(null);
       } catch (e: unknown) {
         logger.error(e);
-        showErrorToast(
-          (e as Error).message.includes('rejected') ||
-            (e as any).details?.toLowerCase().includes('cancelled')
-            ? 'User rejected the request'
-            : (e as Error).message
-        );
+        showErrorToast(getUserFriendlyErrorMessage(e));
       } finally {
         callbacks?.onSent?.();
       }
     },
     [
+      address,
+      stCeloAmount,
+      managerContract,
+      loadBalances,
       _estimateWithdrawGas,
       _unstake,
-      address,
+      allAbis,
       api,
-      loadBalances,
       loadPendingWithdrawals,
-      managerContract,
-      stCeloAmount,
     ]
   );
 
-  const estimateUnstakingGas = useCallback(async () => {
+  const estimateUnstakingGasInUSD = useCallback(async () => {
     if (
       !stCeloAmount ||
       stCeloAmount.isEqualTo(0) ||
@@ -122,7 +141,7 @@ export function useUnstaking() {
     stCeloAmount,
     setStCeloAmount,
     unstake,
-    estimateUnstakingGas,
+    estimateUnstakingGasInUSD,
     receivedCelo,
   };
 }

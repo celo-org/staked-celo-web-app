@@ -10,7 +10,7 @@ import { transactionEvent } from 'src/utils/ga';
 import { Celo, CeloUSD, StCelo, Token } from 'src/utils/tokens';
 import type { Address } from 'viem';
 import { usePublicClient, useWriteContract } from 'wagmi';
-import { showErrorToast, showHashToast, showStakingToast } from '../utils/toast';
+import { showErrorToast, showHashToast, showStakingToast, getUserFriendlyErrorMessage } from '../utils/toast';
 
 export function useStaking() {
   const { address, loadBalances, celoBalance, stCeloBalance } = useAccountContext();
@@ -82,12 +82,7 @@ export function useStaking() {
         setCeloAmount(null);
       } catch (e: unknown) {
         console.error(e);
-        showErrorToast(
-          (e as Error).message.includes('rejected') ||
-            (e as any).details?.toLowerCase().includes('cancelled')
-            ? 'User rejected the request'
-            : (e as Error).message
-        );
+        showErrorToast(getUserFriendlyErrorMessage(e));
         callbacks?.onSent?.();
       }
       try {
@@ -99,18 +94,20 @@ export function useStaking() {
       }
     },
     [
+      address,
+      celoAmount,
+      stCeloBalance,
+      loadBalances,
       _estimateDepositGas,
       _stake,
-      address,
-      api,
-      celoAmount,
+      managerContract.address,
+      managerContract.abi,
       publicClient,
-      loadBalances,
-      stCeloBalance,
+      api,
     ]
   );
 
-  const estimateStakingGas = useCallback(async () => {
+  const estimateStakingGasInUSD = useCallback(async () => {
     if (
       !celoAmount ||
       celoAmount.isEqualTo(0) ||
@@ -144,7 +141,7 @@ export function useStaking() {
     celoAmount,
     setCeloAmount,
     stake,
-    estimateStakingGas,
+    estimateStakingGasInUSD,
     receivedStCelo,
   };
 }
