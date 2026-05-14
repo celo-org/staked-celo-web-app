@@ -25,49 +25,66 @@ you will understand the development process and workflow.
 
 To start contributing to the project, clone it to your local machine using git:
 
-```sh
 $ git clone https://github.com/celo-org/staked-celo-web-app.git
-```
 
 Navigate to the project's root directory:
 
-```sh
 $ cd staked-celo-web-app
-```
 
 ### Installing Node.js
 
 We use [Node.js](https://nodejs.org/en/) to run the project locally.
 
+Please use the Node.js version defined by the project. If you use
+[nvm](https://github.com/nvm-sh/nvm), run:
+
+$ nvm use
+
+If you do not have the required version installed, run:
+
+$ nvm install
+$ nvm use
+
+This project expects contributors to use the same Node.js version as CI. The supported runtime
+versions are defined in the repository configuration, such as `.nvmrc` and the `engines` field in
+`package.json`.
+
+### Installing Yarn
+
+This project uses [Yarn](https://yarnpkg.com/) for dependency management.
+
+Please use the Yarn version defined by the project configuration. You can verify your local Yarn
+version with:
+
+$ yarn --version
+
+The expected Yarn version is defined in the `engines` field in `package.json`.
+
 ### Installing dependencies
 
-Once in the project's root directory, run the following command to install the project's 
+Once in the project's root directory, run the following command to install the project's
 dependencies:
 
-```sh
 $ yarn install
-```
 
-After installing the dependencies, the project is ready to be run. 
+After installing the dependencies, the project is ready to be run.
 
 ### Running the web app
 
-Inspect the `package.json` file and look for the `scripts` section. 
+Inspect the `package.json` file and look for the `scripts` section.
 It contains the list of available scripts that can be run.
 
-### Running the test suite 
+### Running the test suite
 
 Run all available tests with:
 
-```sh
 $ yarn run test
-```
 
 When you open a Pull Request, the GitHub CI will run any available test suites for you.
 
 > **INFO**
-> Some tests are run automatically when you open a Pull Request, while others are run when a 
-> maintainer approves the Pull Request. This is for security reasons, as some tests require access 
+> Some tests are run automatically when you open a Pull Request, while others are run when a
+> maintainer approves the Pull Request. This is for security reasons, as some tests require access
 > to secrets.
 
 ### Open a Pull Request
