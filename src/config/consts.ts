@@ -26,7 +26,7 @@ export const DEFAULT_GROUP_STRATEGY_MAINNET_ADDRESS = '0x3A3ed74B1cC543D5EB323f7
 export const TESTNET_API_URL =
   'https://us-central1-staked-celo-bot.cloudfunctions.net/alfajores-functions';
 export const MAINNET_API_URL =
-  'https://us-central1-staked-celo-bot.cloudfunctions.net/mainnet-functions';
+  'https://us-central1-staked-celo-bot.cloudfunctions.net/mainnet-functions-v2';
 
 export const EXPLORER_GRAPH_MAINNET_URL = 'https://celo.blockscout.com/graphiql';
 export const EXPLORER_GRAPH_ALFAJORES_URL = 'https://celo-alfajores.blockscout.com/graphiql';
