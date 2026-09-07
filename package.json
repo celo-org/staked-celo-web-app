@@ -11,7 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@celo/abis": "^13.0.0",
+    "@celo/abis": "^13.0.1",
     "@celo/compliance": "^1.0.23",
     "@rainbow-me/rainbowkit": "^2.2.10",
     "@tanstack/react-query": "^5.90.12",
