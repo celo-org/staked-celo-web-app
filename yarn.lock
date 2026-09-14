@@ -360,10 +360,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@celo/abis@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "@celo/abis@npm:13.0.0"
-  checksum: 10c0/94849df8b1896e2f1627f422a85141ab44c2c6afd84142e0fddbed41632bb23436d958313b4c2729a93b95ff48b65e7ea950bd896e02c8ffd10e63edfca5a2cd
+"@celo/abis@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "@celo/abis@npm:13.0.1"
+  checksum: 10c0/1d1e72a4da0b4487912465ae2b886e37f7bfc9c61ac3f05041bd67975ff93e4d3df0bcac657a8f91a41693834f78b990aaa84d35e3bc99bd5f7f72c03d52f334
   languageName: node
   linkType: hard
 
@@ -12344,7 +12344,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "staked-celo-app@workspace:."
   dependencies:
-    "@celo/abis": "npm:^13.0.0"
+    "@celo/abis": "npm:^13.0.1"
     "@celo/compliance": "npm:^1.0.23"
     "@celo/contractkit": "npm:^8.0.0"
     "@next/bundle-analyzer": "npm:^13.5.6"
