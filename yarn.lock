@@ -374,10 +374,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@celo/compliance@npm:^1.0.23":
-  version: 1.0.23
-  resolution: "@celo/compliance@npm:1.0.23"
-  checksum: 10c0/5bd472ae3b9e00cfbe62e8faa5dcf6b8f7e4ccfe9561b8a08080983010b67435992660e70672e63096ac7518532eafd2c3e2a2209a0da74bd77195b62e8bc150
+"@celo/compliance@npm:^1.0.30":
+  version: 1.0.30
+  resolution: "@celo/compliance@npm:1.0.30"
+  checksum: 10c0/277c6cb8061212f3dfd3886a9c536896bf4e092ea33d212d591529b1b37c15e92e704455682fa99de7cd5d9e34ea341705f1899273e0554843e6b5a7361ecb09
   languageName: node
   linkType: hard
 
@@ -12682,7 +12682,7 @@ __metadata:
   resolution: "staked-celo-app@workspace:."
   dependencies:
     "@celo/abis": "npm:^13.0.0"
-    "@celo/compliance": "npm:^1.0.23"
+    "@celo/compliance": "npm:^1.0.30"
     "@celo/contractkit": "npm:^8.0.0"
     "@next/bundle-analyzer": "npm:^13.5.6"
     "@rainbow-me/rainbowkit": "npm:^2.2.10"
